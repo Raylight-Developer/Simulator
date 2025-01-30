@@ -43,7 +43,8 @@ void GUI::Form::addRow(const QString& label, QWidget* widget) {
 }
 
 GUI::Graphics_View::Graphics_View(QWidget* parent) :
-	QGraphicsView(parent)
+	QGraphicsView(parent),
+	zoom_sensitivity(0.1)
 {
 	QSurfaceFormat format = QSurfaceFormat::defaultFormat();
 	format.setSwapInterval(1);
@@ -62,7 +63,6 @@ GUI::Graphics_View::Graphics_View(QWidget* parent) :
 	setMaxSize();
 	centerOn(0, 0);
 
-	zoom_sensitivity = 0.2;
 	is_panning = false;
 }
 

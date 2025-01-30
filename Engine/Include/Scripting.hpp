@@ -2,8 +2,6 @@
 
 #include "Include.hpp"
 
-#include "Lace.hpp"
-
 namespace CORE {
 	class Session;
 	class Script;
@@ -39,8 +37,7 @@ namespace CORE {
 	};
 
 	class Script_Manager {
-		static void loadDLL(HINSTANCE& dynlib);
-		static void recompileDLL(HINSTANCE& dynlib);
+		static void loadDLL(HINSTANCE& dynlib, const string& path);
 		static void unloadDLL(HINSTANCE& dynlib);
 	};
 }

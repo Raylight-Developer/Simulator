@@ -13,19 +13,41 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Node_Editor.cpp" />
-    <ClCompile Include="Source\Lace.cpp" />
     <ClCompile Include="Source\QT.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
+    <ClCompile Include="Source\Utils\Lace.cpp" />
     <ClCompile Include="Source\Session.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Import.hpp" />
     <ClInclude Include="Include\Include.hpp" />
-    <ClInclude Include="Include\Lace.hpp" />
+    <ClInclude Include="Include\Inline\Glm.hpp" />
+    <ClInclude Include="Include\Inline\Templates.hpp" />
+    <ClInclude Include="Include\Inline\Templates\BiMap.hpp" />
+    <ClInclude Include="Include\Inline\Templates\List.hpp" />
+    <ClInclude Include="Include\Inline\Templates\Observable.hpp" />
+    <ClInclude Include="Include\Inline\Templates\Observable_BiMap.hpp" />
+    <ClInclude Include="Include\Inline\Templates\Observable_Map.hpp" />
+    <ClInclude Include="Include\Inline\Templates\Observable_Pointer.hpp" />
+    <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
+    <ClInclude Include="Include\Inline\Types.hpp" />
     <ClInclude Include="Include\QT.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Glm.hpp" />
+    <ClInclude Include="Include\Utils\Inline\String.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\BiMap.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\List.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\Observable.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\Observable_BiMap.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Map.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Pointer.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Vector.hpp" />
+    <ClInclude Include="Include\Utils\Inline\Types.hpp" />
+    <ClInclude Include="Include\Utils\Lace.hpp" />
+    <ClInclude Include="Include\Session.hpp" />
     <ClInclude Include="Include\Window.hpp" />
     <ClInclude Include="Include\Scripting.hpp" />
-    <ClInclude Include="Include\Session.hpp" />
     <ClInclude Include="Include\Node_Editor.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -113,6 +135,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:\Programs\Coding\Lib\glm 0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +168,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(C
       <OpenMPSupport>true</OpenMPSupport>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:\Programs\Coding\Lib\glm 0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -4,8 +4,6 @@
 
 #include "Include.hpp"
 
-#include "Lace.hpp"
-
 #include "Scripting.hpp"
 
 #undef LOG

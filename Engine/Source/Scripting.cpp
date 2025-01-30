@@ -2,6 +2,14 @@
 
 #include "Session.hpp"
 
+#define SOLUTION_DIR string("D:/Simulator/")
+
+#ifdef _DEBUG
+	#define BUILD_DIR (std::filesystem::current_path().parent_path().string() + "/x64/Debug/")
+#else
+	#define BUILD_DIR (std::filesystem::current_path().parent_path().string() + "/x64/Release/")
+#endif
+
 SCRIPT_LAYER::Session::Session(CORE::Script* script, CORE::Session* session) :
 	session(session)
 {}
@@ -25,11 +33,10 @@ void CORE::Script::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
 	painter->drawRect(boundingRect());
 }
 
-void CORE::Script_Manager::loadDLL(HINSTANCE& dynlib) {
-	const string libfile = SOLUTION_DIR + "x64/Debug/Scripting/Scripting.dll";
-	wstring stemp = wstring(libfile.begin(), libfile.end());
+void CORE::Script_Manager::loadDLL(HINSTANCE& dynlib, const string& path) {
+	wstring stemp = wstring(path.begin(), path.end());
 	LPCWSTR file_path = stemp.c_str();
-	LOG ENDL ANSI_PURPLE << "[DLL Loading]" ANSI_RESET << " Loading: " << libfile << "..."; FLUSH;
+	LOG ENDL ANSI_PURPLE << "[DLL Loading]" ANSI_RESET << " Loading: " << path << "..."; FLUSH;
 	dynlib = LoadLibrary(file_path);
 	if (!dynlib) {
 		const unsigned int errorCode = static_cast<unsigned int>(GetLastError());
@@ -37,28 +44,6 @@ void CORE::Script_Manager::loadDLL(HINSTANCE& dynlib) {
 		exit(EXIT_FAILURE);
 	}
 	LOG ENDL ANSI_G << "[DLL Loading]" ANSI_RESET << " Loaded."; FLUSH;
-}
-
-void CORE::Script_Manager::recompileDLL(HINSTANCE& dynlib) {
-	unloadDLL(dynlib);
-
-	Lace temp;
-	temp << "C:/Programs/Coding/Microsoft/VisualStudio/Community/MSBuild/Current/Bin/MSBuild.exe";
-	temp << " /t:Scripting";
-	temp << " /p:Configuration=Release";
-	temp << " /p:Platform=x64";
-	temp << " /v:quiet";
-	temp << " \"" << SOLUTION_DIR << "Trader.sln\"";
-	const string rebuildCommand = temp.str();
-	const int result = system(rebuildCommand.c_str());
-	if (result == 0) {
-		LOG ENDL ANSI_G << "[DLL Compilation]" ANSI_RESET << " Succesfully Compiled."; FLUSH;
-	}
-	else {
-		LOG ENDL ANSI_R << "[DLL Compilation]" ANSI_RESET << " Compilation Failed."; FLUSH;
-	}
-
-	loadDLL(dynlib);
 }
 
 void CORE::Script_Manager::unloadDLL(HINSTANCE& dynlib) {

@@ -68,7 +68,7 @@ namespace GUI {
 	};
 
 	struct Graphics_View : QGraphicsView {
-		qreal zoom_sensitivity;
+		const qreal zoom_sensitivity;
 
 		void pan(QPointF delta);
 		void fitContents();
