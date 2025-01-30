@@ -33,8 +33,9 @@ namespace CORE {
 
 		virtual void onLoad() {}
 		virtual void onUnload() {}
+
 		QRectF boundingRect() const override;
-		void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
+		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 	};
 
 	class Script_Manager {

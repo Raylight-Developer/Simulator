@@ -21,8 +21,7 @@ QRectF CORE::Script::boundingRect() const {
 	return QRectF(-25, -25, 50, 50);
 }
 
-void CORE::Script::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
-	painter->setBrush(Qt::blue);
+void CORE::Script::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->drawRect(boundingRect());
 }
 

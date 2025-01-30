@@ -12,7 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\Node_Editor.cpp" />
     <ClCompile Include="Source\Lace.cpp" />
+    <ClCompile Include="Source\QT.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
     <ClCompile Include="Source\Session.cpp" />
     <ClCompile Include="Source\Window.cpp" />
@@ -20,9 +22,11 @@
   <ItemGroup>
     <ClInclude Include="Include\Include.hpp" />
     <ClInclude Include="Include\Lace.hpp" />
+    <ClInclude Include="Include\QT.hpp" />
     <ClInclude Include="Include\Window.hpp" />
     <ClInclude Include="Include\Scripting.hpp" />
     <ClInclude Include="Include\Session.hpp" />
+    <ClInclude Include="Include\Node_Editor.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>

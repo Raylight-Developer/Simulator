@@ -61,10 +61,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\Core;$(ProjectDir)\Include;$(SolutionDir)\Core\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Core;$(ProjectDir)\Include;$(SolutionDir)\Engine\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)\Core;$(ProjectDir)\Include;$(SolutionDir)\Core\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Core;$(ProjectDir)\Include;$(SolutionDir)\Engine\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
