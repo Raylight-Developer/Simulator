@@ -2,39 +2,50 @@
 
 #include "Session.hpp"
 
-Viewport::Viewport(QWidget* parent) :
+Node_Editor::Node_Editor(QWidget* parent) :
 	GUI::Graphics_View(parent)
-{}
-
-void Viewport::drawBackground(QPainter* painter, const QRectF& rect) {
-	// Call the base class to draw the background
-	QGraphicsView::drawBackground(painter, rect);
-
-	// Set grid line color and style
-	QPen gridPen(Qt::lightGray, 0.5);
-	painter->setPen(gridPen);
-
-	// Draw vertical grid lines
-	qreal left = int(rect.left()) - int(rect.left()) % 50;
-	qreal right = int(rect.right()) - int(rect.right()) % 50;
-	for (qreal x = left; x <= right; x += 50) {
-		painter->drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()));
-	}
-
-	// Draw horizontal grid lines
-	qreal top = int(rect.top()) - int(rect.top()) % 50;
-	qreal bottom = int(rect.bottom()) - int(rect.bottom()) % 50;
-	for (qreal y = top; y <= bottom; y += 50) {
-		painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
-	}
+{
+	scene = new GUI::Graphics_Scene(this);
+	setScene(scene);
 }
 
-Node_Editor::Node_Editor(QWidget* parent) :
-	GUI::Linear_Contents(parent)
-{
-	viewport = new Viewport(this);
-	scene = new GUI::Graphics_Scene(viewport);
-	viewport->setScene(scene);
+void Node_Editor::drawBackground(QPainter* painter, const QRectF& rect) {
+	QGraphicsView::drawBackground(painter, rect);
 
-	addWidget(viewport);
+	constexpr qreal smallGridSpacing = 10.0;
+	constexpr qreal majorGridSpacing = smallGridSpacing * 10;
+
+	qreal left = int(rect.left()) - int(rect.left()) % int(smallGridSpacing);
+	qreal right = int(rect.right());
+	qreal top = int(rect.top()) - int(rect.top()) % int(smallGridSpacing);
+	qreal bottom = int(rect.bottom());
+
+	if (transform().m11() > 0.6) {
+		for (qreal x = left; x <= right; x += smallGridSpacing) {
+			bool isMajorLine = (int(x) % int(majorGridSpacing) == 0);
+			QPen gridPen(isMajorLine ? QColor(255, 255, 255) : QColor(150, 150, 150), isMajorLine ? 0.2 : 0.1);
+			painter->setPen(gridPen);
+			painter->drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()));
+		}
+
+		for (qreal y = top; y <= bottom; y += smallGridSpacing) {
+			bool isMajorLine = (int(y) % int(majorGridSpacing) == 0);
+			QPen gridPen(isMajorLine ? QColor(255, 255, 255) : QColor(150, 150, 150), isMajorLine ? 0.2 : 0.1);
+			painter->setPen(gridPen);
+			painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
+		}
+	}
+	else {
+		for (qreal x = left; x <= right; x += majorGridSpacing) {
+			QPen gridPen(QColor(150, 150, 150), 0.6);
+			painter->setPen(gridPen);
+			painter->drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()));
+		}
+
+		for (qreal y = top; y <= bottom; y += majorGridSpacing) {
+			QPen gridPen(QColor(150, 150, 150), 0.6);
+			painter->setPen(gridPen);
+			painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
+		}
+	}
 }

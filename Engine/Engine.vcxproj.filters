@@ -40,6 +40,9 @@
     <ClInclude Include="Include\Utils\Inline\Glm.hpp" />
     <ClInclude Include="Include\Utils\Inline\Templates.hpp" />
     <ClInclude Include="Include\Utils\Inline\String.hpp" />
+    <ClInclude Include="Include\Node.hpp" />
+    <ClInclude Include="Include\Variable.hpp" />
+    <ClInclude Include="Include\Node_Shelf.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -65,5 +68,8 @@
     </ClCompile>
     <ClCompile Include="Source\Utils\Lace.cpp" />
     <ClCompile Include="Source\Session.cpp" />
+    <ClCompile Include="Source\Node.cpp" />
+    <ClCompile Include="Source\Variable.cpp" />
+    <ClCompile Include="Source\Node_Shelf.cpp" />
   </ItemGroup>
 </Project>

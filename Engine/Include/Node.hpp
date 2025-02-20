@@ -2,99 +2,43 @@
 
 #include "Include.hpp"
 
+#include "Variable.hpp"
+
 namespace NODE {
-	struct Node : QGraphicsObject {
+	struct Node;
+	struct Port;
+
+	struct Node : QGraphicsItem {
 		QString label;
 		QRectF rect;
-		KL::NODE::Type type;
-		uint16 sub_type;
-		QPointF real_pos;
-		QPointF node_pos;
 
-		vector<Port*> inputs;  // src
-		vector<Port*> outputs; // src
+		vector<Port*> children;
 
-		unordered_map<string, any> internal_data;
-
-		Node(QGraphicsItem* parent = nullptr);
+		Node(const QString& label = "NODE");
 		~Node();
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-
-		QRectF boundingRect() const override { return rect; };
+		QRectF boundingRect() const override;;
 	};
 
 	struct Port : QGraphicsItem {
-		Node* node; // ref
-		uint64 slot_id;
+		Node* node;
 
 		QRectF rect;
 		QColor color;
 		QString label;
-		KL::NODE::PORT::Type type;
 
 		Port(Node* node);
 
-		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		QRectF boundingRect() const override;
+		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
+		QRectF boundingRect() const override;;
 	};
-	namespace PORT {
-		struct Data_I_Port : Port {
-			Connection* connection; // src
 
-			CORE::PROP::Modifier modifier;
-			KL::PROP::Type data_type;
-
-			KL::PROP::Type any_data_type;
-
-			Data_I_Port(Node* parent, const QString& label, const KL::PROP::Type& type, const CORE::PROP::Modifier& modifier = CORE::PROP::Modifier::SINGLE);
-			~Data_I_Port();
-
-			void setDataType(const KL::PROP::Type& type);
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-
-		struct Data_O_Port : Port {
-			vector<Connection*> outgoing_connections; // ref
-
-			CORE::PROP::Modifier modifier;
-			KL::PROP::Type data_type;
-
-			KL::PROP::Type any_data_type;
-
-			Data_O_Port(Node* parent, const QString& label, const KL::PROP::Type& type, const CORE::PROP::Modifier& modifier = CORE::PROP::Modifier::SINGLE);
-			~Data_O_Port();
-
-			void setDataType(const KL::PROP::Type& type);
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-
-		struct Exec_I_Port : Port {
-			vector<Connection*> incoming_connections; // ref
-
-			Exec_I_Port(Node* parent, const QString& label);
-			~Exec_I_Port();
-
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-
-		struct Exec_O_Port : Port {
-			Connection* connection; // src
-
-			Exec_O_Port(Node* parent, const QString& label);
-			~Exec_O_Port();
-
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-	}
 	struct Connection : QGraphicsItem {
-		Port* port_l; // ref
-		Port* port_r; // ref
+		Port* port_l;
+		Port* port_r;
 		QPointF pos_l;
 		QPointF pos_r;
-
-		KL::PROP::Type data_type;
-		QColor color;
 
 		Connection(Port* port_l, Port* port_r);
 		~Connection();
@@ -105,4 +49,60 @@ namespace NODE {
 		void updateL(const QPointF& point);
 		void updateR(const QPointF& point);
 	};
+
+	namespace PORT {
+		struct Exec_I : Port {
+			QString label;
+
+			vector<Connection*> connections;
+
+			Exec_I(Node* parent, const QString& label);
+			~Exec_I();
+
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
+
+		struct Exec_O : Port {
+			QString label;
+
+			Connection* connection;
+
+			Exec_O(Node* parent, const QString& label);
+			~Exec_O();
+
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
+
+		struct Data_I : Port {
+			QString label;
+			QColor color;
+
+			VARIABLE::Modifier modifier;
+			VARIABLE::Type type;
+			Variable variable;
+
+			Connection* connection;
+
+			Data_I(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+			~Data_I();
+
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
+
+		struct Data_O : Port {
+			QString label;
+			QColor color;
+
+			VARIABLE::Modifier modifier;
+			VARIABLE::Type type;
+
+			vector<Connection*> connections;
+
+			Data_O(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+			~Data_O();
+
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
+
+	}
 }

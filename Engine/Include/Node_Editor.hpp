@@ -5,17 +5,10 @@
 
 #include "Scripting.hpp"
 
-class Viewport : public GUI::Graphics_View {
+class Node_Editor : public GUI::Graphics_View {
+	GUI::Graphics_Scene* scene;
 public:
-	Viewport(QWidget* parent = nullptr);
+	Node_Editor(QWidget* parent = nullptr);
 
 	void drawBackground(QPainter* painter, const QRectF& rect) override;
-};
-
-class Node_Editor : public GUI::Linear_Contents {
-public:
-	Viewport* viewport;
-	GUI::Graphics_Scene* scene;
-
-	Node_Editor(QWidget* parent = nullptr);
 };

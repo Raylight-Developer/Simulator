@@ -1,197 +1,122 @@
 #include "Variable.hpp"
 
-KL::Prop::Prop() :
-	CORE::Prop()
+Variable::Variable() :
+	data(nullptr),
+	type(VARIABLE::Type::NONE),
+	modifier(VARIABLE::Modifier::SINGLE)
 {}
 
-KL::Prop::Prop(Object* data) {
-	this->data = data;
-	modifier = CORE::PROP::Modifier::SINGLE;
-	type = PROP::Type::OBJECT;
+Variable::Variable(const any& data, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) :
+	data(data),
+	type(type),
+	modifier(modifier)
+{}
+
+Variable::Variable(const string& data) : data(data) {
+	modifier = VARIABLE::Modifier::SINGLE; type = VARIABLE::Type::STRING;
 }
-KL::Prop::Prop(SHADER::Texture* data) {
-	this->data = data;
-	modifier = CORE::PROP::Modifier::SINGLE;
-	type = PROP::Type::TEXTURE;
+Variable::Variable(const dvec1& data) : data(data) {
+	modifier = VARIABLE::Modifier::SINGLE; type = VARIABLE::Type::DOUBLE;
 }
-KL::Prop::Prop(const any& data, const PROP::Type& type, const CORE::PROP::Modifier& modifier) :
-	CORE::Prop()
-{
-	this->data = data;
-	this->type = type;
-	this->modifier = modifier;
+Variable::Variable(const bool& data) : data(data) {
+	modifier = VARIABLE::Modifier::SINGLE; type = VARIABLE::Type::BOOL;
+}
+Variable::Variable(const uint64& data) : data(data) {
+	modifier = VARIABLE::Modifier::SINGLE; type = VARIABLE::Type::UINT;
+}
+Variable::Variable(const int64& data) : data(data) {
+	modifier = VARIABLE::Modifier::SINGLE; type = VARIABLE::Type::INT;
+}
+Variable::Variable(vector<dvec1> data) : data(data) {
+	modifier = VARIABLE::Modifier::VECTOR; type = VARIABLE::Type::DOUBLE;
 }
 
-KL::Prop KL::Prop::operator+(const KL::Prop & other) const {
+Variable Variable::operator+(const Variable & other) const {
 	if (type == other.type) {
 		switch (type) {
-		case PROP::Type::DOUBLE: return KL::Prop(getDouble() + other.getDouble(), type);
+		case VARIABLE::Type::DOUBLE: return Variable(getDouble() + other.getDouble(), type);
 		}
 	}
 	switch (type) {
-	case PROP::Type::DOUBLE: {
+	case VARIABLE::Type::DOUBLE: {
 		switch (other.type) {
-		case PROP::Type::INT: {
-			return KL::Prop(getDouble() + other.getInt(), type);
+		case VARIABLE::Type::INT: {
+			return Variable(getDouble() + other.getInt(), type);
 		}
-		case PROP::Type::UINT: {
-			return KL::Prop(getDouble() + other.getUint(), type);
+		case VARIABLE::Type::UINT: {
+			return Variable(getDouble() + other.getUint(), type);
 		}
 		}
 	}
 	}
-	return KL::Prop();
+	return Variable();
 }
-KL::Prop KL::Prop::operator-(const KL::Prop& other) const {
+Variable Variable::operator-(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-		case PROP::Type::DOUBLE: return KL::Prop(getDouble() - other.getDouble(), type);
+		case VARIABLE::Type::DOUBLE: return Variable(getDouble() - other.getDouble(), type);
 		}
 	}
-	return KL::Prop();
+	return Variable();
 }
 
-KL::Prop KL::Prop::operator*(const KL::Prop& other) const {
+Variable Variable::operator*(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-		case PROP::Type::DOUBLE: return KL::Prop(getDouble() * other.getDouble(), type);
+		case VARIABLE::Type::DOUBLE: return Variable(getDouble() * other.getDouble(), type);
 		}
 	}
-	return KL::Prop();
+	return Variable();
 }
 
-KL::Prop KL::Prop::operator/(const KL::Prop& other) const {
+Variable Variable::operator/(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-		case PROP::Type::DOUBLE: return KL::Prop(getDouble() / other.getDouble(), type);
+		case VARIABLE::Type::DOUBLE: return Variable(getDouble() / other.getDouble(), type);
 		}
 	}
-	return KL::Prop();
+	return Variable();
 }
 
-KL::Prop KL::Prop::pow(const Prop& other) const {
+Variable Variable::pow(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-		case PROP::Type::DOUBLE: return KL::Prop(std::pow(getDouble(), other.getDouble()), type);
+		case VARIABLE::Type::DOUBLE: return Variable(std::pow(getDouble(), other.getDouble()), type);
 		}
 	}
-	return KL::Prop();
+	return Variable();
 }
 
-KL::Scene* KL::Prop::getScene() const {
-	return any_cast<KL::Scene*>(data);
+int64 Variable::getInt() const {
+	return any_cast<int64>(data);
 }
 
-KL::Object* KL::Prop::getObject() const {
-	return any_cast<KL::Object*>(data);
+uint64 Variable::getUint() const {
+	return any_cast<uint64>(data);
 }
 
-KL::SHADER::Texture* KL::Prop::getTexture() const {
-	return any_cast<KL::SHADER::Texture*>(data);
-}
-
-string KL::Prop::to_string() const {
+dvec1 Variable::getDouble() const {
 	switch (type) {
-	case PROP::Type::TRANSFORM: return any_cast<Transform>(data).serialize();
+	case VARIABLE::Type::DOUBLE: return any_cast<dvec1>(data);
+	case VARIABLE::Type::UINT: return static_cast<dvec1>(any_cast<uint64>(data));
+	case VARIABLE::Type::INT: return static_cast<dvec1>(any_cast<int64>(data));
 	}
-	return CORE::Prop::to_string();
+	return 0.0;
 }
 
-uvec3 typeColor(const KL::PROP::Type& type) {
-	switch (type) {
-	case KL::PROP::Type::NONE:   return uvec3(  0,   0,   0);
-	case KL::PROP::Type::ANY:    return uvec3(150, 150, 150);
-	case KL::PROP::Type::STRING: return uvec3(215, 155, 135);
-	case KL::PROP::Type::DOUBLE: return uvec3( 95, 230,  95);
-	case KL::PROP::Type::BOOL:   return uvec3(240, 100, 175);
-	case KL::PROP::Type::UINT:   return uvec3(105, 125,  60);
-	case KL::PROP::Type::INT:    return uvec3( 40, 130,  40);
-
-	case KL::PROP::Type::VEC2:
-	case KL::PROP::Type::VEC3:
-	case KL::PROP::Type::VEC4:
-	case KL::PROP::Type::IVEC2:
-	case KL::PROP::Type::IVEC3:
-	case KL::PROP::Type::IVEC4:
-	case KL::PROP::Type::UVEC2:
-	case KL::PROP::Type::UVEC3:
-	case KL::PROP::Type::UVEC4: return uvec3(165, 110, 230);
-
-	case KL::PROP::Type::MAT2:
-	case KL::PROP::Type::MAT3:
-	case KL::PROP::Type::MAT4:
-	case KL::PROP::Type::IMAT2:
-	case KL::PROP::Type::IMAT3:
-	case KL::PROP::Type::IMAT4:
-	case KL::PROP::Type::UMAT2:
-	case KL::PROP::Type::UMAT3:
-	case KL::PROP::Type::UMAT4: return uvec3(230, 180, 240);
-	}
-	return uvec3(0, 0, 0);
+string Variable::getStr() const {
+	return any_cast<string>(data);
 }
 
-string KL::PROP::serialize(const Type& type) {
+vector<dvec1> Variable::getDoubleVector() const {
+	return any_cast<vector<dvec1>>(data);
+}
+
+string Variable::to_string() const {
 	switch (type) {
-	case Type::NONE:      return "NONE";
-	case Type::ANY:       return "ANY";
-
-	case Type::STRING:    return "STRING";
-	case Type::DOUBLE:    return "DOUBLE";
-	case Type::BOOL:      return "BOOL";
-	case Type::UINT:      return "UINT";
-	case Type::INT:       return "INT";
-
-	case Type::UMAT2:     return "UMAT2";
-	case Type::UMAT3:     return "UMAT3";
-	case Type::UMAT4:     return "UMAT4";
-	case Type::IMAT2:     return "IMAT2";
-	case Type::IMAT3:     return "IMAT3";
-	case Type::IMAT4:     return "IMAT4";
-	case Type::MAT2:      return "MAT2";
-	case Type::MAT3:      return "MAT3";
-	case Type::MAT4:      return "MAT4";
-
-	case Type::UVEC2:     return "UVEC2";
-	case Type::UVEC3:     return "UVEC3";
-	case Type::UVEC4:     return "UVEC4";
-	case Type::IVEC2:     return "IVEC2";
-	case Type::IVEC3:     return "IVEC3";
-	case Type::IVEC4:     return "IVEC4";
-	case Type::VEC2:      return "VEC2";
-	case Type::VEC3:      return "VEC3";
-	case Type::VEC4:      return "VEC4";
+	case VARIABLE::Type::DOUBLE:    return std::to_string(any_cast<dvec1>(data));
+	case VARIABLE::Type::UINT:      return std::to_string(static_cast<dvec1>(any_cast<uint64>(data)));
+	case VARIABLE::Type::INT:       return std::to_string(static_cast<dvec1>(any_cast<int64>(data)));
 	}
 	return "";
-}
-
-KL::PROP::Type KL::PROP::fromString(const string& type) {
-	if      (type == "NONE")      return Type::NONE;
-	else if (type == "ANY")       return Type::ANY;
-
-	else if (type == "STRING")    return Type::STRING;
-	else if (type == "DOUBLE")    return Type::DOUBLE;
-	else if (type == "BOOL")      return Type::BOOL;
-	else if (type == "UINT")      return Type::UINT;
-	else if (type == "INT")       return Type::INT;
-
-	else if (type == "UMAT2")     return Type::UMAT2;
-	else if (type == "UMAT3")     return Type::UMAT3;
-	else if (type == "UMAT4")     return Type::UMAT4;
-	else if (type == "IMAT2")     return Type::IMAT2;
-	else if (type == "IMAT3")     return Type::IMAT3;
-	else if (type == "IMAT4")     return Type::IMAT4;
-	else if (type == "MAT2")      return Type::MAT2;
-	else if (type == "MAT3")      return Type::MAT3;
-	else if (type == "MAT4")      return Type::MAT4;
-
-	else if (type == "UVEC2")     return Type::UVEC2;
-	else if (type == "UVEC3")     return Type::UVEC3;
-	else if (type == "UVEC4")     return Type::UVEC4;
-	else if (type == "IVEC2")     return Type::IVEC2;
-	else if (type == "IVEC3")     return Type::IVEC3;
-	else if (type == "IVEC4")     return Type::IVEC4;
-	else if (type == "VEC2")      return Type::VEC2;
-	else if (type == "VEC3")      return Type::VEC3;
-	else if (type == "VEC4")      return Type::VEC4;
-	return Type::NONE;
 }
