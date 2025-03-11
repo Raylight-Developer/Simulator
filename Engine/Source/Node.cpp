@@ -8,9 +8,32 @@ NODE::Node::Node(const QString& label) :
 }
 
 NODE::Node::~Node() {
-	for (Port* child : children) {
-		delete child;
+	for (Port* port : inputs) {
+		delete port;
 	}
+	for (Port* port : outputs) {
+		delete port;
+	}
+}
+
+void NODE::Node::addInputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) {
+	PORT::Data_I* port = new PORT::Data_I(this, label, type, modifier);
+	inputs.push_back(port);
+}
+
+void NODE::Node::addInputExec(const QString& label) {
+	PORT::Exec_I* port = new PORT::Exec_I(this, label);
+	inputs.push_back(port);
+}
+
+void NODE::Node::addOutputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) {
+	PORT::Data_O* port = new PORT::Data_O(this, label, type, modifier);
+	outputs.push_back(port);
+}
+
+void NODE::Node::addOutputExec(const QString& label) {
+	PORT::Exec_O* port = new PORT::Exec_O(this, label);
+	outputs.push_back(port);
 }
 
 void NODE::Node::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {

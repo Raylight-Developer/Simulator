@@ -7,18 +7,31 @@
 namespace NODE {
 	struct Node;
 	struct Port;
+	namespace PORT {
+		struct Data_I;
+		struct Exec_I;
+		struct Data_O;
+		struct Exec_O;
+	}
 
 	struct Node : QGraphicsItem {
 		QString label;
 		QRectF rect;
 
-		vector<Port*> children;
+		vector<Node*> children;
+		vector<Port*> inputs;
+		vector<Port*> outputs;
 
 		Node(const QString& label = "NODE");
 		~Node();
 
+		void addInputData (const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+		void addInputExec (const QString& label);
+		void addOutputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+		void addOutputExec(const QString& label);
+
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		QRectF boundingRect() const override;;
+		QRectF boundingRect() const override;
 	};
 
 	struct Port : QGraphicsItem {
@@ -31,7 +44,7 @@ namespace NODE {
 		Port(Node* node);
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
-		QRectF boundingRect() const override;;
+		QRectF boundingRect() const override;
 	};
 
 	struct Connection : QGraphicsItem {

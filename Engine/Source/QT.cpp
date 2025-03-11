@@ -51,6 +51,7 @@ GUI::Graphics_View::Graphics_View(QWidget* parent) :
 	QSurfaceFormat::setDefaultFormat(format);
 
 	setViewportUpdateMode(QGraphicsView::ViewportUpdateMode::FullViewportUpdate);
+	setTransformationAnchor(QGraphicsView::ViewportAnchor::AnchorUnderMouse);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -134,9 +135,7 @@ void GUI::Graphics_View::pan(QPointF delta) {
 
 GUI::Graphics_Scene::Graphics_Scene(QWidget* parent) :
 	QGraphicsScene(parent)
-{
-
-}
+{}
 
 GUI::Label::Label(QWidget* parent, const QString& label) :
 	QLabel(label)
