@@ -40,23 +40,23 @@ QRectF NODE::Node::boundingRect() const {
 NODE::Port::Port(Node* node) :
 	QGraphicsItem(node),
 	node(node),
-	connRequested(nullptr),
-	disconnection(nullptr),
+	onConnRequested(nullptr),
+	onDisconnection(nullptr),
 	rect(QRectF(0, 0, 10, 10))
 {
 	setZValue(10);
 }
 
-bool NODE::Port::onConnRequested(Connection* connection) {
-	if (connRequested) {
-		return connRequested(this, connection);
+bool NODE::Port::requestConnection(Connection* connection) {
+	if (onConnRequested) {
+		return onConnRequested(this, connection);
 	}
 	return true;
 }
 
-void NODE::Port::onDisconnected() {
-	if (disconnection) {
-		disconnection(this);
+void NODE::Port::disconnect() {
+	if (onDisconnection) {
+		onDisconnection(this);
 	}
 }
 
@@ -250,6 +250,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	label(label),
 	var_type(VARIABLE::Type::NONE),
 	color(VARIABLE::toColor(var_type)),
+	onTypeChanged(nullptr),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
@@ -261,12 +262,12 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::T
 	label(label),
 	var_type(var_type),
 	color(VARIABLE::toColor(var_type)),
+	onTypeChanged(nullptr),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
-
 
 NODE::PORT::Data_I::~Data_I() {
 	if (connection) {
@@ -285,6 +286,16 @@ bool NODE::PORT::Data_I::connected() const {
 void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
 	var_type = type;
 	color = VARIABLE::toColor(type);
+	if (connection) {
+		connection->color = toColor(var_type);
+		auto other = static_cast<Data_O*>(connection->port_l);
+		if (other->var_type != var_type) {
+			other->setType(var_type);
+		}
+	}
+	if (onTypeChanged) {
+		onTypeChanged(this, var_type);
+	}
 }
 
 Variable NODE::PORT::Data_I::getData() const {
@@ -306,7 +317,8 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
 	var_type(VARIABLE::Type::NONE),
-	color(VARIABLE::toColor(var_type))
+	color(VARIABLE::toColor(var_type)),
+	onTypeChanged(nullptr)
 {
 	parent->outputs.push_back(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
@@ -316,7 +328,8 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::T
 	Port(parent),
 	label(label),
 	var_type(var_type),
-	color(VARIABLE::toColor(var_type))
+	color(VARIABLE::toColor(var_type)),
+	onTypeChanged(nullptr)
 {
 	parent->outputs.push_back(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
@@ -336,6 +349,16 @@ bool NODE::PORT::Data_O::connected() const {
 void NODE::PORT::Data_O::setType(const VARIABLE::Type& type) {
 	var_type = type;
 	color = VARIABLE::toColor(type);
+	for (Connection* conn : connections) {
+		conn->color = toColor(var_type);
+		auto other = static_cast<Data_I*>(conn->port_r);
+		if (other->var_type != var_type) {
+			other->setType(var_type);
+		}
+	}
+	if (onTypeChanged) {
+		onTypeChanged(this, var_type);
+	}
 }
 
 Variable NODE::PORT::Data_O::getData() const {

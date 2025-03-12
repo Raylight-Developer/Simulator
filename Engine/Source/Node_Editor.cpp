@@ -90,7 +90,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
 						auto new_conn = new NODE::Connection(source_port, drop_port);
-						if (drop_port->onConnRequested(new_conn) and source_port->onConnRequested(new_conn)) {
+						if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
 							if (drop_port->connection) {
 								delete drop_port->connection;
 							}
@@ -105,7 +105,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
 						auto new_conn = new NODE::Connection(drop_port, source_port);
-						if (source_port->onConnRequested(new_conn) and drop_port->onConnRequested(new_conn)) {
+						if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
 							if (source_port->connection) {
 								delete source_port->connection;
 							}
@@ -120,7 +120,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
 						auto new_conn = new NODE::Connection(source_port, drop_port);
-						if (drop_port->onConnRequested(new_conn) and source_port->onConnRequested(new_conn)) {
+						if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
 							if (source_port->connection) {
 								delete source_port->connection;
 							}
@@ -135,7 +135,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
 						auto new_conn = new NODE::Connection(drop_port, source_port);
-						if (source_port->onConnRequested(new_conn) and drop_port->onConnRequested(new_conn)) {
+						if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
 							if (drop_port->connection) {
 								delete drop_port->connection;
 							}
@@ -236,16 +236,16 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 				if (port_r->connection) {
 					auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
 					delete port_r->connection;
-					port_l->onDisconnected();
-					port_r->onDisconnected();
+					port_l->disconnect();
+					port_r->disconnect();
 				}
 			}
 			else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(item)) {
 				for (auto conn : port_l->connections) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(conn->port_r);
 					delete port_r->connection;
-					port_l->onDisconnected();
-					port_r->onDisconnected();
+					port_l->disconnect();
+					port_r->disconnect();
 				}
 				port_l->connections.clear();
 			}
@@ -253,8 +253,8 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 				for (auto conn : port_r->connections) {
 					auto port_l = static_cast<NODE::PORT::Exec_O*>(conn->port_l);
 					delete port_l->connection;
-					port_l->onDisconnected();
-					port_r->onDisconnected();
+					port_l->disconnect();
+					port_r->disconnect();
 				}
 				port_r->connections.clear();
 			}
@@ -262,8 +262,8 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 				if (port_l->connection) {
 					auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
 					delete port_l->connection;
-					port_l->onDisconnected();
-					port_r->onDisconnected();
+					port_l->disconnect();
+					port_r->disconnect();
 				}
 			}
 		}

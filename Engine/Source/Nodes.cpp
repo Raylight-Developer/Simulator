@@ -2,23 +2,26 @@
 
 NODE::NODES::Arithmetic::Arithmetic() :
 	NODE::Node("Arithmetic"),
-	allowed_types({ VARIABLE_INTEGRALS })
+	var_type(VARIABLE::Type::NONE),
+	allowed_types({ VARIABLE::Type::NONE, VARIABLE_INTEGRALS })
 {
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	i_a = new PORT::Data_I(this, "A");
-	i_b = new PORT::Data_I(this, "B");
-	out = new PORT::Data_O(this, "O");
+	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::NONE);
+	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::NONE);
+	out = new PORT::Data_O(this, "O", VARIABLE::Type::NONE);
 
-	i_a->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	i_b->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	out->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	i_a->disconnection = [this](Port* port){ call_disconnection(port); };
-	i_b->disconnection = [this](Port* port){ call_disconnection(port); };
-	out->disconnection = [this](Port* port){ call_disconnection(port); };
+	i_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	i_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	out->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	i_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	i_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	out->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	i_a->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
+	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
+	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
 
-	setType(VARIABLE::Type::NONE);
 
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(40, 20);
@@ -32,13 +35,15 @@ NODE::NODES::Arithmetic::Arithmetic() :
 }
 
 void NODE::NODES::Arithmetic::setType(const VARIABLE::Type& type) {
-	var_type = type;
-	i_a->setType(type);
-	i_b->setType(type);
-	out->setType(type);
+	if (var_type != type) {
+		var_type = type;
+		i_a->setType(type);
+		i_b->setType(type);
+		out->setType(type);
+	}
 }
 
-bool NODE::NODES::Arithmetic::call_connRequest(Port* port, Connection* conn) {
+bool NODE::NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
 	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
 	if (allowed_types.contains(incoming_type)) {
 		if (var_type == VARIABLE::Type::NONE) {
@@ -46,18 +51,22 @@ bool NODE::NODES::Arithmetic::call_connRequest(Port* port, Connection* conn) {
 			conn->color = VARIABLE::toColor(incoming_type);
 			return true;
 		}
-		else if (var_type == incoming_type) {
+		else if (var_type == incoming_type or incoming_type == VARIABLE::Type::NONE) {
 			return true;
 		}
 	}
 	return false;
 }
 
-void NODE::NODES::Arithmetic::call_disconnection(Port* port) {
+void NODE::NODES::Arithmetic::onDisconnection(Port* port) {
 	if (not i_a->connected() and not i_b->connected() and not out->connected()) {
 		setType(VARIABLE::Type::NONE);
 	}
 }
+
+//void NODE::NODES::Arithmetic::onTypeChanged(Port* port, const VARIABLE::Type& var_type) {
+//	setType(var_type);
+//}
 
 Variable NODE::NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
@@ -78,8 +87,8 @@ NODE::NODES::Trigonometry::Trigonometry() :
 	in = new PORT::Data_I(this, "I", VARIABLE::Type::FLOAT);
 	out = new PORT::Data_O(this, "O", VARIABLE::Type::FLOAT);
 
-	in->connRequested  = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	out->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	in->onConnRequested  = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	out->onConnRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
 
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(80, 20);

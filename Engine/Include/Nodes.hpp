@@ -86,8 +86,9 @@ namespace NODE {
 
 			void setType(const VARIABLE::Type& type);
 
-			bool call_connRequest(Port* port, Connection* conn);
-			void call_disconnection(Port* port);
+			bool onConnRequested(Port* port, Connection* conn);
+			void onDisconnection(Port* port);
+			//void onTypeChanged(Port* port, const VARIABLE::Type& var_type);
 
 			Variable getData(const Port* port) const override;
 		};

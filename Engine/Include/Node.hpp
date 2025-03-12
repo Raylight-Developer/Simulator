@@ -41,10 +41,10 @@ namespace NODE {
 
 		Port(Node* node);
 
-		function<bool(Port*, Connection*)> connRequested;
-		function<void(Port*)> disconnection;
-		bool onConnRequested(Connection* connection);
-		void onDisconnected();
+		function<bool(Port*, Connection*)> onConnRequested;
+		function<void(Port*)> onDisconnection;
+		bool requestConnection(Connection* connection);
+		void disconnect();
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
 		QRectF boundingRect() const override;
@@ -113,7 +113,8 @@ namespace NODE {
 			~Data_I();
 			bool connected() const;
 
-			void setType(const VARIABLE::Type& type);
+			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
+			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -132,10 +133,9 @@ namespace NODE {
 			~Data_O();
 			bool connected() const;
 
-			void setType(const VARIABLE::Type& type);
+			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
+			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
-
-			//function<bool(Port*, Connection*)> typeChanged;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
