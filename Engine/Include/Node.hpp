@@ -7,6 +7,7 @@
 namespace NODE {
 	struct Node;
 	struct Port;
+	struct Connection;
 	namespace PORT {
 		struct Data_I;
 		struct Exec_I;
@@ -25,10 +26,8 @@ namespace NODE {
 		Node(const QString& label = "NODE");
 		~Node();
 
-		void addInputData (const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
-		void addInputExec (const QString& label);
-		void addOutputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
-		void addOutputExec(const QString& label);
+		virtual void exec(const Port* port) {}
+		virtual Variable getData(const Port* port) const { return Variable(); };
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		QRectF boundingRect() const override;
@@ -42,6 +41,11 @@ namespace NODE {
 		QString label;
 
 		Port(Node* node);
+
+		function<bool(Connection*)> conn_request;
+		function<void(Connection*)> disconnection;
+		bool onConnRequested(Connection* connection);
+		void onDisconnected(Connection* connection);
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
 		QRectF boundingRect() const override;
@@ -61,11 +65,16 @@ namespace NODE {
 
 		void updateL(const QPointF& point);
 		void updateR(const QPointF& point);
+
+		PORT::Exec_I* getExecI() const;
+		PORT::Exec_O* getExecO() const;
+		PORT::Data_I* getDataI() const;
+		PORT::Data_O* getDataO() const;
 	};
 
 	namespace PORT {
 		struct Exec_I : Port {
-			QString label;
+			const QString label;
 
 			vector<Connection*> connections;
 
@@ -76,7 +85,7 @@ namespace NODE {
 		};
 
 		struct Exec_O : Port {
-			QString label;
+			const QString label;
 
 			Connection* connection;
 
@@ -87,32 +96,36 @@ namespace NODE {
 		};
 
 		struct Data_I : Port {
-			QString label;
-			QColor color;
+			const QString label;
 
-			VARIABLE::Modifier modifier;
 			VARIABLE::Type type;
 			Variable variable;
+			QColor color;
 
 			Connection* connection;
 
-			Data_I(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+			Data_I(Node* parent, const QString& label);
+			Data_I(Node* parent, const QString& label, const VARIABLE::Type& type);
 			~Data_I();
+
+			Variable getData() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
 		struct Data_O : Port {
-			QString label;
-			QColor color;
+			const QString label;
 
-			VARIABLE::Modifier modifier;
 			VARIABLE::Type type;
+			QColor color;
 
 			vector<Connection*> connections;
 
-			Data_O(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier);
+			Data_O(Node* parent, const QString& label);
+			Data_O(Node* parent, const QString& label, const VARIABLE::Type& type);
 			~Data_O();
+
+			Variable getData() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};

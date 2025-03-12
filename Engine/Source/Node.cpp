@@ -16,26 +16,6 @@ NODE::Node::~Node() {
 	}
 }
 
-void NODE::Node::addInputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) {
-	PORT::Data_I* port = new PORT::Data_I(this, label, type, modifier);
-	inputs.push_back(port);
-}
-
-void NODE::Node::addInputExec(const QString& label) {
-	PORT::Exec_I* port = new PORT::Exec_I(this, label);
-	inputs.push_back(port);
-}
-
-void NODE::Node::addOutputData(const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) {
-	PORT::Data_O* port = new PORT::Data_O(this, label, type, modifier);
-	outputs.push_back(port);
-}
-
-void NODE::Node::addOutputExec(const QString& label) {
-	PORT::Exec_O* port = new PORT::Exec_O(this, label);
-	outputs.push_back(port);
-}
-
 void NODE::Node::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	if (isSelected()) {
 		painter->setPen(QPen(QColor(150, 200, 255), 3.0));
@@ -56,9 +36,24 @@ QRectF NODE::Node::boundingRect() const {
 }
 
 NODE::Port::Port(Node* node) :
-	node(node)
+	node(node),
+	conn_request(nullptr),
+	disconnection(nullptr)
 {
 	setZValue(10);
+}
+
+bool NODE::Port::onConnRequested(Connection* connection) {
+	if (conn_request) {
+		return conn_request(connection);
+	}
+	return true;
+}
+
+void NODE::Port::onDisconnected(Connection* connection) {
+	if (disconnection) {
+		disconnection(connection);
+	}
 }
 
 void NODE::Port::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
@@ -129,10 +124,28 @@ void NODE::Connection::updateR(const QPointF& point) {
 	pos_r = mapToParent(point) - port_l->scenePos();
 }
 
+NODE::PORT::Exec_I* NODE::Connection::getExecI() const {
+	return static_cast<PORT::Exec_I*>(port_r);
+}
+
+NODE::PORT::Exec_O* NODE::Connection::getExecO() const {
+	return static_cast<PORT::Exec_O*>(port_l);
+}
+
+NODE::PORT::Data_I* NODE::Connection::getDataI() const {
+	return static_cast<PORT::Data_I*>(port_r);
+}
+
+NODE::PORT::Data_O* NODE::Connection::getDataO() const {
+	return static_cast<PORT::Data_O*>(port_l);
+}
+
 NODE::PORT::Exec_I::Exec_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label)
-{}
+{
+	parent->inputs.push_back(this);
+}
 
 NODE::PORT::Exec_I::~Exec_I() {
 	for (Connection* connection : connections) {
@@ -151,8 +164,11 @@ void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 
 NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
 	Port(parent),
-	label(label)
-{}
+	label(label),
+	connection(nullptr)
+{
+	parent->outputs.push_back(this);
+}
 
 NODE::PORT::Exec_O::~Exec_O() {
 	if (connection) {
@@ -173,12 +189,24 @@ void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->drawText(rect.bottomLeft() + QPointF(5, -4), label);
 }
 
-NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) :
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
+	Port(parent),
+	label(label),
+	type(VARIABLE::Type::NONE),
+	connection(nullptr)
+{
+	parent->inputs.push_back(this);
+}
+
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& type) :
 	Port(parent),
 	label(label),
 	type(type),
-	modifier(modifier)
-{}
+	connection(nullptr)
+{
+	parent->inputs.push_back(this);
+}
+
 
 NODE::PORT::Data_I::~Data_I() {
 	if (connection) {
@@ -190,6 +218,13 @@ NODE::PORT::Data_I::~Data_I() {
 	}
 }
 
+Variable NODE::PORT::Data_I::getData() const {
+	if (connection) {
+		connection->getDataO()->getData();
+	}
+	return variable;
+}
+
 void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
@@ -198,18 +233,31 @@ void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->drawText(rect.bottomLeft() + QPointF(20, -4), label);
 }
 
-NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& type, const VARIABLE::Modifier& modifier) :
+NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	type(type),
-	modifier(modifier)
-{}
-	
+	type(VARIABLE::Type::NONE)
+{
+	parent->outputs.push_back(this);
+}
+
+NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& type) :
+	Port(parent),
+	label(label),
+	type(type)
+{
+	parent->outputs.push_back(this);
+}
+
 NODE::PORT::Data_O::~Data_O() {
 	for (Connection* connection : connections) {
 		static_cast<Data_I*>(connection->port_l)->connection = nullptr;
 		delete connection;
 	}
+}
+
+Variable NODE::PORT::Data_O::getData() const {
+	return node->getData(this);
 }
 
 void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
