@@ -41,7 +41,7 @@ namespace NODE {
 
 		Port(Node* node);
 
-		function<bool(Port*, Connection*)> conn_request;
+		function<bool(Port*, Connection*)> connRequested;
 		function<void(Port*)> disconnection;
 		bool onConnRequested(Connection* connection);
 		void onDisconnected();
@@ -134,6 +134,8 @@ namespace NODE {
 
 			void setType(const VARIABLE::Type& type);
 			Variable getData() const;
+
+			//function<bool(Port*, Connection*)> typeChanged;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};

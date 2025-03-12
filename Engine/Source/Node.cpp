@@ -40,7 +40,7 @@ QRectF NODE::Node::boundingRect() const {
 NODE::Port::Port(Node* node) :
 	QGraphicsItem(node),
 	node(node),
-	conn_request(nullptr),
+	connRequested(nullptr),
 	disconnection(nullptr),
 	rect(QRectF(0, 0, 10, 10))
 {
@@ -48,8 +48,8 @@ NODE::Port::Port(Node* node) :
 }
 
 bool NODE::Port::onConnRequested(Connection* connection) {
-	if (conn_request) {
-		return conn_request(this, connection);
+	if (connRequested) {
+		return connRequested(this, connection);
 	}
 	return true;
 }

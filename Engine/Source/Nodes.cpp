@@ -11,9 +11,9 @@ NODE::NODES::Arithmetic::Arithmetic() :
 	i_b = new PORT::Data_I(this, "B");
 	out = new PORT::Data_O(this, "O");
 
-	i_a->conn_request = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	i_b->conn_request = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	out->conn_request = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	i_a->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	i_b->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	out->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
 	i_a->disconnection = [this](Port* port){ call_disconnection(port); };
 	i_b->disconnection = [this](Port* port){ call_disconnection(port); };
 	out->disconnection = [this](Port* port){ call_disconnection(port); };
@@ -72,17 +72,17 @@ Variable NODE::NODES::Arithmetic::getData(const Port* port) const {
 NODE::NODES::Trigonometry::Trigonometry() :
 	NODE::Node("Trigonometry")
 {
-	rect.setWidth(120);
+	rect.setWidth(140);
 	rect.setHeight(60);
 
 	in = new PORT::Data_I(this, "I", VARIABLE::Type::FLOAT);
 	out = new PORT::Data_O(this, "O", VARIABLE::Type::FLOAT);
 
-	in->conn_request  = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	out->conn_request = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	in->connRequested  = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
+	out->connRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
 
 	enums = new GUI::Options(); // TODO verify delete
-	enums->setFixedSize(60, 20);
+	enums->setFixedSize(80, 20);
 	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
 
 	QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget(this);
@@ -94,7 +94,7 @@ NODE::NODES::Trigonometry::Trigonometry() :
 
 bool NODE::NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
 	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
-	if (incoming_type == VARIABLE::Type::FLOAT) {
+	if (incoming_type == VARIABLE::Type::FLOAT or incoming_type == VARIABLE::Type::NONE) {
 		return true;
 	}
 	return false;

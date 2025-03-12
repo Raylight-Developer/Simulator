@@ -1,0 +1,8 @@
+- Circular Dependencies Check
+- Scripting
+- Node Groups
+- Cascade Type Setting
+- Auto Suggest on Connection Creation Empty Drop
+- Escape to cancel
+- Scroll fix for QGraphicsProxyWidget inside QGraphicsView
+- Style fix for QGraphicsProxyWidget
