@@ -6,6 +6,7 @@
 #include "Utils/Inline/Glm.hpp"
 
 #include "Utils/Lace.hpp"
+#include "QT.hpp"
 
 //#include "Variable.hpp"
 //#include "Node.hpp"

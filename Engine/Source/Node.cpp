@@ -45,14 +45,14 @@ NODE::Port::Port(Node* node) :
 
 bool NODE::Port::onConnRequested(Connection* connection) {
 	if (conn_request) {
-		return conn_request(connection);
+		return conn_request(this, connection);
 	}
 	return true;
 }
 
 void NODE::Port::onDisconnected(Connection* connection) {
 	if (disconnection) {
-		disconnection(connection);
+		disconnection(this, connection);
 	}
 }
 
@@ -154,6 +154,10 @@ NODE::PORT::Exec_I::~Exec_I() {
 	}
 }
 
+bool NODE::PORT::Exec_I::connected() const {
+	return connections.empty();
+}
+
 void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
@@ -180,6 +184,10 @@ NODE::PORT::Exec_O::~Exec_O() {
 	}
 }
 
+bool NODE::PORT::Exec_O::connected() const {
+	return connection != nullptr;
+}
+
 void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
@@ -192,16 +200,16 @@ void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	type(VARIABLE::Type::NONE),
+	var_type(VARIABLE::Type::NONE),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
 }
 
-NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& type) :
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
 	Port(parent),
 	label(label),
-	type(type),
+	var_type(var_type),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
@@ -216,6 +224,15 @@ NODE::PORT::Data_I::~Data_I() {
 		delete connection;
 		connection = nullptr;
 	}
+}
+
+bool NODE::PORT::Data_I::connected() const {
+	return connection != nullptr;
+}
+
+void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
+	var_type = type;
+	color = VARIABLE::toColor(type);
 }
 
 Variable NODE::PORT::Data_I::getData() const {
@@ -236,15 +253,15 @@ void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	type(VARIABLE::Type::NONE)
+	var_type(VARIABLE::Type::NONE)
 {
 	parent->outputs.push_back(this);
 }
 
-NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& type) :
+NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
 	Port(parent),
 	label(label),
-	type(type)
+	var_type(var_type)
 {
 	parent->outputs.push_back(this);
 }
@@ -254,6 +271,15 @@ NODE::PORT::Data_O::~Data_O() {
 		static_cast<Data_I*>(connection->port_l)->connection = nullptr;
 		delete connection;
 	}
+}
+
+bool NODE::PORT::Data_O::connected() const {
+	return connections.empty();
+}
+
+void NODE::PORT::Data_O::setType(const VARIABLE::Type& type) {
+	var_type = type;
+	color = VARIABLE::toColor(type);
 }
 
 Variable NODE::PORT::Data_O::getData() const {

@@ -91,3 +91,7 @@ struct Variable {
 		}
 	}
 };
+
+namespace VARIABLE {
+	QColor toColor(const VARIABLE::Type& type);
+}

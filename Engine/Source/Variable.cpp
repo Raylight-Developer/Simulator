@@ -179,3 +179,7 @@ QString Variable::to_string() const {
 	}
 	return "";
 }
+
+QColor VARIABLE::toColor(const VARIABLE::Type& type) {
+	return QColor(255, 0, 255);
+}

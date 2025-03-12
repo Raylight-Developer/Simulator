@@ -42,8 +42,8 @@ namespace NODE {
 
 		Port(Node* node);
 
-		function<bool(Connection*)> conn_request;
-		function<void(Connection*)> disconnection;
+		function<bool(Port*, Connection*)> conn_request;
+		function<void(Port*, Connection*)> disconnection;
 		bool onConnRequested(Connection* connection);
 		void onDisconnected(Connection* connection);
 
@@ -80,6 +80,7 @@ namespace NODE {
 
 			Exec_I(Node* parent, const QString& label);
 			~Exec_I();
+			bool connected() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
@@ -91,6 +92,7 @@ namespace NODE {
 
 			Exec_O(Node* parent, const QString& label);
 			~Exec_O();
+			bool connected() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
@@ -98,16 +100,18 @@ namespace NODE {
 		struct Data_I : Port {
 			const QString label;
 
-			VARIABLE::Type type;
+			VARIABLE::Type var_type;
 			Variable variable;
 			QColor color;
 
 			Connection* connection;
 
 			Data_I(Node* parent, const QString& label);
-			Data_I(Node* parent, const QString& label, const VARIABLE::Type& type);
+			Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type);
 			~Data_I();
+			bool connected() const;
 
+			void setType(const VARIABLE::Type& type);
 			Variable getData() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -116,19 +120,20 @@ namespace NODE {
 		struct Data_O : Port {
 			const QString label;
 
-			VARIABLE::Type type;
+			VARIABLE::Type var_type;
 			QColor color;
 
 			vector<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
-			Data_O(Node* parent, const QString& label, const VARIABLE::Type& type);
+			Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type);
 			~Data_O();
+			bool connected() const;
 
+			void setType(const VARIABLE::Type& type);
 			Variable getData() const;
 
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
-
 	}
 }

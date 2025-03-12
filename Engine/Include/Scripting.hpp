@@ -2,42 +2,24 @@
 
 #include "Include.hpp"
 
-namespace CORE {
-	class Session;
-	class Script;
+#include "Node.hpp"
+
+namespace NODE {
+	namespace NODES {
+		namespace EXEC {
+			struct Script_Node;
+			struct Script;
+		}
+	}
 }
 
-namespace SCRIPT_LAYER {
-	class Session;
-
-	class Session {
-	private:
-		CORE::Session* session;
-	public:
-		Session(CORE::Script* script = nullptr, CORE::Session* session = nullptr);
-
-		CORE::Lace& log();
-		void flush();
-	};
-}
-
-namespace CORE {
-	class Script : public QGraphicsItem {
-	public:
-		SCRIPT_LAYER::Session* session;
-
-		Script() = default;
-		virtual ~Script();
-
-		virtual void onLoad() {}
-		virtual void onUnload() {}
-
-		QRectF boundingRect() const override;
-		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-	};
-
-	class Script_Manager {
-		static void loadDLL(HINSTANCE& dynlib, const string& path);
-		static void unloadDLL(HINSTANCE& dynlib);
-	};
+namespace NODE {
+	namespace NODES {
+		namespace EXEC {
+			struct Script : Node {
+				Script(const QString& id);
+				virtual ~Script() {};
+			};
+		}
+	}
 }

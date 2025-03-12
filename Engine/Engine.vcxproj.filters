@@ -7,9 +7,6 @@
     <ClInclude Include="Include\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Scripting.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Node_Editor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -43,6 +40,8 @@
     <ClInclude Include="Include\Node.hpp" />
     <ClInclude Include="Include\Variable.hpp" />
     <ClInclude Include="Include\Node_Shelf.hpp" />
+    <ClInclude Include="Include\Nodes.hpp" />
+    <ClInclude Include="Include\Scripting.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -53,9 +52,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Scripting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Window.cpp">
       <Filter>Source Files</Filter>
@@ -71,5 +67,7 @@
     <ClCompile Include="Source\Node.cpp" />
     <ClCompile Include="Source\Variable.cpp" />
     <ClCompile Include="Source\Node_Shelf.cpp" />
+    <ClCompile Include="Source\Nodes.cpp" />
+    <ClCompile Include="Source\Scripting.cpp" />
   </ItemGroup>
 </Project>

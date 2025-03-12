@@ -1,7 +1,13 @@
 #include "Script.hpp"
 
-void Script::onLoad() {
+Script::Script() : SCRIPT("Test Script") {
+	cout << "Loaded Test Script" << endl;
 }
 
-void Script::onUnload() {
+void Script::exec(const Port* port) {
+	cout << "Exec" << endl;
+}
+
+Variable Script::getData(const Port* port) const {
+	return Variable();
 }
