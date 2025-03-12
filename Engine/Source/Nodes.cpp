@@ -8,9 +8,16 @@ NODE::NODES::ARITHMETIC::Template::Template() :
 	i_b = new PORT::Data_I(this, "B");
 	out = new PORT::Data_O(this, "RES");
 
-	i_a->conn_request = std::bind(&Template::call_connRequestI, this, nullptr, nullptr);
-	i_b->conn_request = std::bind(&Template::call_connRequestI, this, nullptr, nullptr);
-	out->conn_request = std::bind(&Template::call_connRequestO, this, nullptr, nullptr);
+	i_a->conn_request = std::bind(&Template::call_connRequest, this, nullptr, nullptr);
+	i_b->conn_request = std::bind(&Template::call_connRequest, this, nullptr, nullptr);
+	out->conn_request = std::bind(&Template::call_connRequest, this, nullptr, nullptr);
+
+	enums = new GUI::Options(); // TODO verify delete
+	enums->addItems({ "+", "-", "*", "/" });
+
+	QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget(this);
+	proxyWidget->setWidget(enums);
+	proxyWidget->setPos(40, 40);
 }
 
 void NODE::NODES::ARITHMETIC::Template::setType(const VARIABLE::Type& type) {
@@ -20,22 +27,8 @@ void NODE::NODES::ARITHMETIC::Template::setType(const VARIABLE::Type& type) {
 	out->setType(type);
 }
 
-bool NODE::NODES::ARITHMETIC::Template::call_connRequestI(Port* port, Connection* conn) {
-	const VARIABLE::Type& incoming_type = conn->getDataO()->var_type;
-	if (allowed_types.contains(incoming_type)) {
-		if (var_type == VARIABLE::Type::NONE) {
-			setType(incoming_type);
-			return true;
-		}
-		else if (var_type == incoming_type) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool NODE::NODES::ARITHMETIC::Template::call_connRequestO(Port* port, Connection* conn) {
-	const VARIABLE::Type& incoming_type = conn->getDataI()->var_type;
+bool NODE::NODES::ARITHMETIC::Template::call_connRequest(Port* port, Connection* conn) {
+	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
 	if (allowed_types.contains(incoming_type)) {
 		if (var_type == VARIABLE::Type::NONE) {
 			setType(incoming_type);
@@ -54,20 +47,14 @@ void NODE::NODES::ARITHMETIC::Template::call_disconnection(Port* port, Connectio
 	}
 }
 
-Variable NODE::NODES::ARITHMETIC::Add::getData(const Port* port) const {
-	return i_a->getData() + i_b->getData();
-}
-
-Variable NODE::NODES::ARITHMETIC::Sub::getData(const Port* port) const {
-	return i_a->getData() - i_b->getData();
-}
-
-Variable NODE::NODES::ARITHMETIC::Mul::getData(const Port* port) const {
-	return i_a->getData() * i_b->getData();
-}
-
-Variable NODE::NODES::ARITHMETIC::Div::getData(const Port* port) const {
-	return i_a->getData() / i_b->getData();
+Variable NODE::NODES::ARITHMETIC::Template::getData(const Port* port) const {
+	switch (enums->currentIndex()) {
+		case 0: return i_a->getData() + i_b->getData();
+		case 1: return i_a->getData() - i_b->getData();
+		case 2: return i_a->getData() * i_b->getData();
+		case 3: return i_a->getData() / i_b->getData();
+	}
+	return Variable(0.0);
 }
 
 NODE::NODES::TRIGONOMETRY::Template::Template() {
@@ -77,12 +64,16 @@ NODE::NODES::TRIGONOMETRY::Template::Template() {
 	in->conn_request = std::bind(&Template::call_connRequest, this, nullptr, nullptr);
 	out->conn_request = std::bind(&Template::call_connRequest, this, nullptr, nullptr);
 
-	enums = new GUI::Options(); // TODO delete
+	enums = new GUI::Options(); // TODO verify delete
 	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
+
+	QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget(this);
+	proxyWidget->setWidget(enums);
+	proxyWidget->setPos(40, 40);
 }
 
 bool NODE::NODES::TRIGONOMETRY::Template::call_connRequest(Port* port, Connection* conn) {
-	const VARIABLE::Type& incoming_type = (port == in) ? conn->getDataO()->var_type : (port == out) ? conn->getDataI()->var_type : VARIABLE::Type::NONE;
+	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
 	if (incoming_type == VARIABLE::Type::FLOAT) {
 		return true;
 	}

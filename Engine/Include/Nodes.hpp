@@ -81,24 +81,15 @@ namespace NODE {
 				PORT::Data_I* i_b;
 				PORT::Data_O* out;
 
+				GUI::Options* enums;
+
 				Template();
 
 				void setType(const VARIABLE::Type& type);
 
-				bool call_connRequestI(Port* port, Connection* conn);
-				bool call_connRequestO(Port* port, Connection* conn);
+				bool call_connRequest(Port* port, Connection* conn);
 				void call_disconnection(Port* port, Connection* conn);
-			};
-			struct Add : Template {
-				Variable getData(const Port* port) const override;
-			};
-			struct Sub : Template {
-				Variable getData(const Port* port) const override;
-			};
-			struct Mul : Template {
-				Variable getData(const Port* port) const override;
-			};
-			struct Div : Template {
+
 				Variable getData(const Port* port) const override;
 			};
 		}
