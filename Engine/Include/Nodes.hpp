@@ -72,40 +72,36 @@ namespace NODE {
 
 namespace NODE {
 	namespace NODES {
-		namespace ARITHMETIC {
-			struct Template : Node {
-				const set<VARIABLE::Type> allowed_types;
-				VARIABLE::Type var_type;
+		struct Arithmetic : Node {
+			const set<VARIABLE::Type> allowed_types;
+			VARIABLE::Type var_type;
 
-				PORT::Data_I* i_a;
-				PORT::Data_I* i_b;
-				PORT::Data_O* out;
+			PORT::Data_I* i_a;
+			PORT::Data_I* i_b;
+			PORT::Data_O* out;
 
-				GUI::Options* enums;
+			GUI::Options* enums;
 
-				Template();
+			Arithmetic();
 
-				void setType(const VARIABLE::Type& type);
+			void setType(const VARIABLE::Type& type);
 
-				bool call_connRequest(Port* port, Connection* conn);
-				void call_disconnection(Port* port, Connection* conn);
+			bool call_connRequest(Port* port, Connection* conn);
+			void call_disconnection(Port* port);
 
-				Variable getData(const Port* port) const override;
-			};
-		}
-		namespace TRIGONOMETRY {
-			struct Template : Node {
-				PORT::Data_I* in;
-				PORT::Data_O* out;
+			Variable getData(const Port* port) const override;
+		};
+		struct Trigonometry : Node {
+			PORT::Data_I* in;
+			PORT::Data_O* out;
 
-				GUI::Options* enums;
+			GUI::Options* enums;
 
-				Template();
-				bool call_connRequest(Port* port, Connection* conn);
+			Trigonometry();
+			bool call_connRequest(Port* port, Connection* conn);
 
-				Variable getData(const Port* port) const override;
-			};
-		}
+			Variable getData(const Port* port) const override;
+		};
 
 		namespace RENDERING {
 			namespace DIM_2D {

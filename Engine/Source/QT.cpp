@@ -376,11 +376,14 @@ GUI::ToolBar::ToolBar(QWidget* parent) :
 	layout()->setSpacing(1);
 }
 
-GUI::Tree_Item::Tree_Item(GUI::Tree* parent, const QString& label, const uint& level) :
+GUI::Tree_Item::Tree_Item(GUI::Tree* parent, const QString& label, const uint& level, const map<uint, QString>& data) :
 	QTreeWidgetItem(parent)
 {
 	setText(0, label);
 	setData(0, 500, level);
+	for (const auto& [key, value] : data) {
+		setData(0, key, value);
+	}
 }
 
 GUI::Tree_Item::Tree_Item(Tree_Item* parent, const QString& label, const uint& level, const map<uint, QString>& data) :
@@ -388,8 +391,9 @@ GUI::Tree_Item::Tree_Item(Tree_Item* parent, const QString& label, const uint& l
 {
 	setText(0, label);
 	setData(0, 500, level);
-	for (const auto& [key, value] : data)
+	for (const auto& [key, value] : data) {
 		setData(0, key, value);
+	}
 }
 
 GUI::Tree_Item::~Tree_Item() {
@@ -585,6 +589,7 @@ QString qstr(const string& val) {
 GUI::Options::Options(QWidget* parent) :
 	QComboBox(parent)
 {
-	setInsertPolicy(QComboBox::InsertPolicy::NoInsert);
-	setEditable(true);
+	setEditable(false);
+	setInsertPolicy(QComboBox::NoInsert);
+	setSizeAdjustPolicy(QComboBox::AdjustToContents);
 }

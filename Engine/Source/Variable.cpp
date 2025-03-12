@@ -1,15 +1,5 @@
 #include "Variable.hpp"
 
-static const std::unordered_map<VARIABLE::Type, std::unordered_map<VARIABLE::Type, BinaryOp>> operations = {
-	{ VARIABLE::Type::FLOAT, {
-		{ VARIABLE::Type::FLOAT, [](const Variable& a, const Variable& b) { return Variable(a.get<dvec1>() + b.get<dvec1>()); } },
-	{ VARIABLE::Type::INT,   [](const Variable& a, const Variable& b) { return Variable(a.get<dvec1>() + b.getCast<dvec1, qint64>()); } }
-}},
-	{ VARIABLE::Type::INT, {
-		{ VARIABLE::Type::FLOAT, [](const Variable& a, const Variable& b) { return Variable(a.getCast<dvec1, qint64>() + b.get<dvec1>()); } },
-	{ VARIABLE::Type::INT,   [](const Variable& a, const Variable& b) { return Variable(a.get<qint64>() + b.get<qint64>()); } }
-}}};
-
 Variable::Variable() :
 	data(nullptr),
 	type(VARIABLE::Type::NONE)
@@ -181,5 +171,21 @@ QString Variable::to_string() const {
 }
 
 QColor VARIABLE::toColor(const VARIABLE::Type& type) {
+	switch (type) {
+		case VARIABLE::Type::NONE  : return QColor(175, 175, 175);
+		case VARIABLE::Type::FLOAT : return QColor(  0, 255,   0);
+		case VARIABLE::Type::INT   : return QColor(  0, 150,   0);
+		case VARIABLE::Type::BOOL  : return QColor(255, 180, 240);
+		case VARIABLE::Type::STRING: return QColor(210, 145,  75);
+		case VARIABLE::Type::VEC2  : return QColor(160,  80, 255);
+		case VARIABLE::Type::VEC3  : return QColor(160,  80, 255);
+		case VARIABLE::Type::VEC4  : return QColor(160,  80, 255);
+		case VARIABLE::Type::QUAT  : return QColor(255,  80, 180);
+		case VARIABLE::Type::MAT2  : return QColor(255,  80, 255);
+		case VARIABLE::Type::MAT3  : return QColor(255,  80, 255);
+		case VARIABLE::Type::MAT4  : return QColor(255,  80, 255);
+		case VARIABLE::Type::TRANSFORM_2D : return QColor(255, 235, 0);
+		case VARIABLE::Type::TRANSFORM_3D : return QColor(255, 235, 0);
+	}
 	return QColor(255, 0, 255);
 }

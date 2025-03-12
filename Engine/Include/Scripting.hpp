@@ -7,7 +7,6 @@
 namespace NODE {
 	namespace NODES {
 		namespace EXEC {
-			struct Script_Node;
 			struct Script;
 		}
 	}
@@ -18,7 +17,7 @@ namespace NODE {
 		namespace EXEC {
 			struct Script : Node {
 				Script(const QString& id);
-				virtual ~Script() {};
+				~Script();
 			};
 		}
 	}

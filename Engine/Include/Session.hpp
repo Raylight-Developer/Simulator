@@ -28,5 +28,5 @@ namespace CORE {
 }
 
 #define SESSION CORE::Session::getInstance()
-#define LOG     CORE::Session::getInstance().log
-#define FLUSH   CORE::Session::getInstance().flushLog()
+#define SESSION_LOG   CORE::Session::getInstance().log
+#define SESSION_FLUSH CORE::Session::getInstance().flushLog()

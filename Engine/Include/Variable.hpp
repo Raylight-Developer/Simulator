@@ -15,13 +15,7 @@ namespace VARIABLE {
 		VEC2, VEC3, VEC4, QUAT, MAT2, MAT3, MAT4,
 		TRANSFORM_2D, TRANSFORM_3D
 	};
-	enum struct Operator {
-		ADD,
-		SUB,
-		MUL,
-		DIV,
-		MOD
-	};
+	QColor toColor(const VARIABLE::Type& type);
 }
 
 #define VARIABLE_MATS VARIABLE::Type:: MAT2, VARIABLE::Type:: MAT3, VARIABLE::Type:: MAT4
@@ -76,22 +70,13 @@ struct Variable {
 			case VARIABLE::Type::INT    : return static_cast<To>(*static_cast<qint64 *>(data));
 			case VARIABLE::Type::BOOL   : return static_cast<To>(*static_cast<bool   *>(data));
 			case VARIABLE::Type::STRING : return static_cast<To>(*static_cast<QString*>(data));
-			case VARIABLE::Type::IMAT2  : return static_cast<To>(*static_cast<imat2  *>(data));
-			case VARIABLE::Type::IMAT3  : return static_cast<To>(*static_cast<imat3  *>(data));
-			case VARIABLE::Type::IMAT4  : return static_cast<To>(*static_cast<imat4  *>(data));
-			case VARIABLE::Type::MAT2   : return static_cast<To>(*static_cast<dmat2  *>(data));
-			case VARIABLE::Type::MAT3   : return static_cast<To>(*static_cast<dmat3  *>(data));
-			case VARIABLE::Type::MAT4   : return static_cast<To>(*static_cast<dmat4  *>(data));
-			case VARIABLE::Type::IVEC2  : return static_cast<To>(*static_cast<ivec2  *>(data));
-			case VARIABLE::Type::IVEC3  : return static_cast<To>(*static_cast<ivec3  *>(data));
-			case VARIABLE::Type::IVEC4  : return static_cast<To>(*static_cast<ivec4  *>(data));
 			case VARIABLE::Type::VEC2   : return static_cast<To>(*static_cast<dvec2  *>(data));
 			case VARIABLE::Type::VEC3   : return static_cast<To>(*static_cast<dvec3  *>(data));
 			case VARIABLE::Type::VEC4   : return static_cast<To>(*static_cast<dvec4  *>(data));
+			case VARIABLE::Type::QUAT   : return static_cast<To>(*static_cast<dquat  *>(data));
+			case VARIABLE::Type::MAT2   : return static_cast<To>(*static_cast<dmat2  *>(data));
+			case VARIABLE::Type::MAT3   : return static_cast<To>(*static_cast<dmat3  *>(data));
+			case VARIABLE::Type::MAT4   : return static_cast<To>(*static_cast<dmat4  *>(data));
 		}
 	}
 };
-
-namespace VARIABLE {
-	QColor toColor(const VARIABLE::Type& type);
-}

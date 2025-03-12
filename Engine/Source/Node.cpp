@@ -1,7 +1,9 @@
 #include "Node.hpp"
 
 NODE::Node::Node(const QString& label) :
-	label(label)
+	QGraphicsItem(),
+	label(label),
+	rect(QRectF(0, 0, 200, 200))
 {
 	setZValue(1);
 	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
@@ -36,9 +38,11 @@ QRectF NODE::Node::boundingRect() const {
 }
 
 NODE::Port::Port(Node* node) :
+	QGraphicsItem(node),
 	node(node),
 	conn_request(nullptr),
-	disconnection(nullptr)
+	disconnection(nullptr),
+	rect(QRectF(0, 0, 10, 10))
 {
 	setZValue(10);
 }
@@ -50,54 +54,96 @@ bool NODE::Port::onConnRequested(Connection* connection) {
 	return true;
 }
 
-void NODE::Port::onDisconnected(Connection* connection) {
+void NODE::Port::onDisconnected() {
 	if (disconnection) {
-		disconnection(this, connection);
+		disconnection(this);
 	}
 }
 
 void NODE::Port::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	painter->setBrush(color);
+	painter->setPen(Qt::white);
+
+	painter->drawEllipse(rect);
 }
 
 QRectF NODE::Port::boundingRect() const {
 	return rect.marginsAdded(QMarginsF(5, 5, 5, 5));
 }
 
+NODE::Connection::Connection(Port* source_port) :
+	QGraphicsItem(source_port),
+	port_l(source_port),
+	port_r(nullptr)
+{
+	setZValue(5);
+	color = QColor(255, 255, 255);
+
+	pos_l = mapFromItem(port_l, port_l->boundingRect().center());
+	pos_r = pos_l;
+
+	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
+		color = VARIABLE::toColor(t_port_l->var_type);
+	}
+	else if (auto t_port_l = dynamic_cast<PORT::Data_I*>(port_l)) {
+		color = VARIABLE::toColor(t_port_l->var_type);
+	}
+}
+
 NODE::Connection::Connection(Port* port_l, Port* port_r) :
+	QGraphicsItem(port_l),
 	port_l(port_l),
 	port_r(port_r)
 {
 	setZValue(5);
+	color = QColor(255, 255, 255);
+
+	pos_l = mapFromItem(port_l, port_l->boundingRect().center());
+	pos_r = mapFromItem(port_r, port_r->boundingRect().center());
+
+	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
+		color = VARIABLE::toColor(t_port_l->var_type);
+	}
 }
 
 NODE::Connection::~Connection() {
-	pos_l = mapFromItem(port_l, port_l->boundingRect().topRight());
-	if (port_l and port_r) {
-		pos_r = mapFromItem(port_r, port_r->boundingRect().center());
+	if (auto port = dynamic_cast<PORT::Exec_I*>(port_r)) {
+		auto it = std::find(port->connections.begin(), port->connections.end(), this);
+		if (it != port->connections.end()) {
+			port->connections.erase(it);
+		}
 	}
-	else {
-		pos_r = pos_l;
+	if (auto port = dynamic_cast<PORT::Exec_O*>(port_l)) {
+		port->connection = nullptr;
 	}
-
+	if (auto port = dynamic_cast<PORT::Data_I*>(port_r)) {
+		port->connection = nullptr;
+	}
+	if (auto port = dynamic_cast<PORT::Data_O*>(port_l)) {
+		auto it = std::find(port->connections.begin(), port->connections.end(), this);
+		if (it != port->connections.end()) {
+			port->connections.erase(it);
+		}
+	}
 }
 
 void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-	painter->setPen(QPen(port_l->color, 2.0));
+	painter->setPen(QPen(color, 2.0));
 	if (port_l and port_r) {
-		pos_l = mapFromItem(port_l, port_l->boundingRect().topRight());
-		pos_r = mapFromItem(port_r, port_r->boundingRect().topLeft());
+		pos_l = mapFromItem(port_l, port_l->boundingRect().center());
+		pos_r = mapFromItem(port_r, port_r->boundingRect().center());
 
 		QPainterPath path;
-		path.moveTo(pos_l + QPointF(0, 15));
-		path.lineTo(pos_l + QPointF((pos_r.x() - pos_l.x())/2.0, 15));
-		path.lineTo(pos_r + QPointF((pos_l.x() - pos_r.x())/2.0, 15));
-		path.lineTo(pos_r + QPointF(0, 15));
+		path.moveTo(pos_l);
+		path.lineTo(pos_l + QPointF((pos_r.x() - pos_l.x())/2.0, 0));
+		path.lineTo(pos_r + QPointF((pos_l.x() - pos_r.x())/2.0, 0));
+		path.lineTo(pos_r);
 
 		painter->drawPath(path);
 	}
 	else {
 		QPainterPath path;
-		path.moveTo(pos_l + QPointF(0, 15));
+		path.moveTo(pos_l);
 		path.lineTo(pos_r);
 
 		painter->drawPath(path);
@@ -105,8 +151,8 @@ void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* 
 }
 
 QRectF NODE::Connection::boundingRect() const {
-	const QPointF point_a = pos_l + QPointF(0, 15);
-	const QPointF point_b = pos_r + QPointF(0, 15);
+	const QPointF point_a = pos_l;
+	const QPointF point_b = pos_r;
 
 	const qreal left   = qMin(point_a.x(), point_b.x());
 	const qreal top    = qMin(point_a.y(), point_b.y());
@@ -145,6 +191,7 @@ NODE::PORT::Exec_I::Exec_I(Node* parent, const QString& label) :
 	label(label)
 {
 	parent->inputs.push_back(this);
+	rect.moveTopLeft(parent->rect.topLeft() + QPointF(-5, 20 + parent->inputs.size() * 20));
 }
 
 NODE::PORT::Exec_I::~Exec_I() {
@@ -155,15 +202,15 @@ NODE::PORT::Exec_I::~Exec_I() {
 }
 
 bool NODE::PORT::Exec_I::connected() const {
-	return connections.empty();
+	return !connections.empty();
 }
 
 void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
-	painter->drawRoundedRect(QRectF(rect.topLeft() + QPointF(0,5), QSizeF(10,10)), 2, 2);
+	painter->drawRoundedRect(rect, 1, 1);
 
-	painter->drawText(rect.bottomLeft() + QPointF(20, -4), label);
+	painter->drawText(rect.bottomRight() + QPointF(10, 0), label);
 }
 
 NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
@@ -172,6 +219,7 @@ NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
 	connection(nullptr)
 {
 	parent->outputs.push_back(this);
+	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
 NODE::PORT::Exec_O::~Exec_O() {
@@ -192,27 +240,31 @@ void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
 
-	painter->drawRoundedRect(QRectF(rect.topRight() + QPointF(-10,5), QSizeF(10,10)), 2, 2);
-	const QFontMetrics fontMetrics(painter->font());
-	painter->drawText(rect.bottomLeft() + QPointF(5, -4), label);
+	painter->drawRoundedRect(rect, 1, 1);
+	const qreal width = - QFontMetrics(QApplication::font()).horizontalAdvance(label) - 10;
+	painter->drawText(rect.bottomLeft() + QPointF(width, 0), label);
 }
 
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
 	var_type(VARIABLE::Type::NONE),
+	color(VARIABLE::toColor(var_type)),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
+	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
 	Port(parent),
 	label(label),
 	var_type(var_type),
+	color(VARIABLE::toColor(var_type)),
 	connection(nullptr)
 {
 	parent->inputs.push_back(this);
+	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
 
@@ -245,25 +297,29 @@ Variable NODE::PORT::Data_I::getData() const {
 void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
-	painter->drawEllipse(QRectF(rect.topLeft() + QPointF(0,5), QSizeF(10,10)));
+	painter->drawEllipse(rect);
 
-	painter->drawText(rect.bottomLeft() + QPointF(20, -4), label);
+	painter->drawText(rect.bottomRight() + QPointF(10, 0), label);
 }
 
 NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	var_type(VARIABLE::Type::NONE)
+	var_type(VARIABLE::Type::NONE),
+	color(VARIABLE::toColor(var_type))
 {
 	parent->outputs.push_back(this);
+	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
 NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
 	Port(parent),
 	label(label),
-	var_type(var_type)
+	var_type(var_type),
+	color(VARIABLE::toColor(var_type))
 {
 	parent->outputs.push_back(this);
+	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
 NODE::PORT::Data_O::~Data_O() {
@@ -274,7 +330,7 @@ NODE::PORT::Data_O::~Data_O() {
 }
 
 bool NODE::PORT::Data_O::connected() const {
-	return connections.empty();
+	return !connections.empty();
 }
 
 void NODE::PORT::Data_O::setType(const VARIABLE::Type& type) {
@@ -290,7 +346,7 @@ void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
 
-	painter->drawEllipse(QRectF(rect.topRight() + QPointF(-10,5), QSizeF(10,10)));
-	const QFontMetrics fontMetrics(painter->font());
-	painter->drawText(rect.bottomLeft() + QPointF(5, -4), label);
+	painter->drawEllipse(rect);
+	const qreal width = - QFontMetrics(QApplication::font()).horizontalAdvance(label) - 10;
+	painter->drawText(rect.bottomLeft() + QPointF(width, 0), label);
 }

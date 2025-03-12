@@ -4,6 +4,7 @@
 #include "QT.hpp"
 
 #include "Scripting.hpp"
+#include "Nodes.hpp"
 
 class Node_Shelf;
 namespace NODE_SHELF {
@@ -21,5 +22,7 @@ namespace NODE_SHELF {
 	class Tree : public GUI::Tree {
 	public:
 		Tree(Node_Shelf* parent = nullptr);
+
+		void startDrag(Qt::DropActions actions) override;
 	};
 }

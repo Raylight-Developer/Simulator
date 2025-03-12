@@ -3,3 +3,6 @@
 NODE::NODES::EXEC::Script::Script(const QString& id) :
 	Node(id)
 {}
+
+NODE::NODES::EXEC::Script::~Script() {
+}

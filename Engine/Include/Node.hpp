@@ -38,14 +38,13 @@ namespace NODE {
 
 		QRectF rect;
 		QColor color;
-		QString label;
 
 		Port(Node* node);
 
 		function<bool(Port*, Connection*)> conn_request;
-		function<void(Port*, Connection*)> disconnection;
+		function<void(Port*)> disconnection;
 		bool onConnRequested(Connection* connection);
-		void onDisconnected(Connection* connection);
+		void onDisconnected();
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
 		QRectF boundingRect() const override;
@@ -57,6 +56,9 @@ namespace NODE {
 		QPointF pos_l;
 		QPointF pos_r;
 
+		QColor color;
+
+		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
 		~Connection();
 

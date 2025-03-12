@@ -7,6 +7,21 @@ Node_Editor::Node_Editor(QWidget* parent) :
 {
 	scene = new GUI::Graphics_Scene(this);
 	setScene(scene);
+
+	selection_rect = new QGraphicsRectItem(QRectF(0, 0, 0, 0));
+	selection_rect->setBrush(QColor(255, 135, 25, 50));
+	selection_rect->setPen(QPen(QColor(255, 135, 25, 200), 2.5));
+	selection_rect->setZValue(10);
+	selection_rect->hide();
+
+	creating_connection = nullptr;
+
+	scene->addItem(selection_rect);
+}
+
+Node_Editor::~Node_Editor() {
+	delete creating_connection;
+	delete selection_rect;
 }
 
 void Node_Editor::drawBackground(QPainter* painter, const QRectF& rect) {
@@ -46,6 +61,263 @@ void Node_Editor::drawBackground(QPainter* painter, const QRectF& rect) {
 			QPen gridPen(QColor(150, 150, 150), 0.6);
 			painter->setPen(gridPen);
 			painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
+		}
+	}
+}
+
+void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
+	if (event->button() == Qt::MouseButton::RightButton) {
+		moving = false;
+		setCursor(Qt::ArrowCursor);
+	}
+	if (event->button() == Qt::MouseButton::LeftButton) {
+		moving = false;
+		setCursor(Qt::ArrowCursor);
+		if (selecting) {
+			for (auto item : scene->items(selection_rect->rect())) {
+				if (NODE::Node* node = dynamic_cast<NODE::Node*>(item)) {
+					if (!node->isSelected()) {
+						node->setSelected(true);
+						selection.push_back(node);
+					}
+				}
+			}
+			selecting = false;
+			selection_rect->hide();
+		}
+		if (creating_connection) {
+			if (auto item = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
+				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(item)) {
+					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
+						auto new_conn = new NODE::Connection(source_port, drop_port);
+						if (drop_port->onConnRequested(new_conn) and source_port->onConnRequested(new_conn)) {
+							if (drop_port->connection) {
+								delete drop_port->connection;
+							}
+							drop_port->connection = new_conn;
+							source_port->connections.push_back(new_conn);
+						}
+					}
+				}
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(item)) {
+					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
+						auto new_conn = new NODE::Connection(drop_port, source_port);
+						if (source_port->onConnRequested(new_conn) and drop_port->onConnRequested(new_conn)) {
+							if (source_port->connection) {
+								delete source_port->connection;
+							}
+							source_port->connection = new_conn;
+							drop_port->connections.push_back(new_conn);
+						}
+					}
+				}
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
+					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
+						auto new_conn = new NODE::Connection(source_port, drop_port);
+						if (drop_port->onConnRequested(new_conn) and source_port->onConnRequested(new_conn)) {
+							if (source_port->connection) {
+								delete source_port->connection;
+							}
+							source_port->connection = new_conn;
+							drop_port->connections.push_back(new_conn);
+						}
+					}
+				}
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
+					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
+						auto new_conn = new NODE::Connection(drop_port, source_port);
+						if (source_port->onConnRequested(new_conn) and drop_port->onConnRequested(new_conn)) {
+							if (drop_port->connection) {
+								delete drop_port->connection;
+							}
+							drop_port->connection = new_conn;
+							source_port->connections.push_back(new_conn);
+						}
+					}
+				}
+			}
+			delete creating_connection;
+			creating_connection = nullptr;
+		};
+	}
+	Graphics_View::mouseReleaseEvent(event);
+}
+
+void Node_Editor::mousePressEvent(QMouseEvent* event) {
+	if (event->button() == Qt::MouseButton::LeftButton) {
+		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
+			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
+				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
+					if (!port_r->connection) {
+						creating_connection = new NODE::Connection(port_r);
+					}
+					else {
+						auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
+						delete port_r->connection;
+						creating_connection = new NODE::Connection(port_l);
+					}
+				}
+				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
+					if (!port_l->connection) {
+						creating_connection = new NODE::Connection(port_l);
+					}
+					else {
+						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
+						delete port_l->connection;
+						creating_connection = new NODE::Connection(port_r);
+					}
+				}
+				else {
+					creating_connection = new NODE::Connection(port);
+				}
+			}
+			else if (NODE::Node* node = dynamic_cast<NODE::Node*>(item)) {
+				moving = true;
+				setCursor(Qt::ClosedHandCursor);
+				if (event->modifiers() & Qt::KeyboardModifier::ShiftModifier) {
+					if (!node->isSelected()) {
+						node->setSelected(true);
+						selection.push_back(node);
+					}
+					else {
+						node->setSelected(false);
+					}
+				}
+				else {
+					if (!node->isSelected()) {
+						for (auto item : selection) {
+							item->setSelected(false);
+						}
+						selection.clear();
+						node->setSelected(true);
+						selection.push_back(node);
+					}
+				}
+				move_pos = mapToScene(event->pos()) - node->pos();
+			}
+			else {
+				for (auto item : selection) {
+					item->setSelected(false);
+				}
+				selection.clear();
+			}
+		}
+		else {
+			for (auto item : selection) {
+				item->setSelected(false);
+			}
+			selection.clear();
+
+			selecting = true;
+			selection_start = mapToScene(event->pos());
+			selection_rect->setRect(QRectF(selection_start, QSizeF(0,0)));
+			selection_rect->show();
+		}
+	}
+	Graphics_View::mousePressEvent(event);
+}
+
+void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
+	if (event->modifiers() & Qt::KeyboardModifier::AltModifier) {
+		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
+			if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(item)) {
+				if (port_r->connection) {
+					auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
+					delete port_r->connection;
+					port_l->onDisconnected();
+					port_r->onDisconnected();
+				}
+			}
+			else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(item)) {
+				for (auto conn : port_l->connections) {
+					auto port_r = static_cast<NODE::PORT::Data_I*>(conn->port_r);
+					delete port_r->connection;
+					port_l->onDisconnected();
+					port_r->onDisconnected();
+				}
+				port_l->connections.clear();
+			}
+			else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
+				for (auto conn : port_r->connections) {
+					auto port_l = static_cast<NODE::PORT::Exec_O*>(conn->port_l);
+					delete port_l->connection;
+					port_l->onDisconnected();
+					port_r->onDisconnected();
+				}
+				port_r->connections.clear();
+			}
+			else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
+				if (port_l->connection) {
+					auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
+					delete port_l->connection;
+					port_l->onDisconnected();
+					port_r->onDisconnected();
+				}
+			}
+		}
+	}
+	else {
+		if (moving) {
+			for (auto& node : selection) {
+				const QPointF delta = mapToScene(event->pos()) - move_pos;
+				node->setPos(f_roundToNearest(delta.x(), 10.0), f_roundToNearest(delta.y(), 10.0));
+			}
+		}
+		if (selecting) {
+			const QRectF newRect(selection_start, mapToScene(event->pos()));
+			selection_rect->setRect(newRect.normalized());
+		}
+		if (creating_connection) {
+			if (creating_connection->port_l) {
+				creating_connection->updateR(mapToScene(event->pos()));
+			}
+			else {
+				creating_connection->updateL(mapToScene(event->pos()));
+			}
+			creating_connection->update();
+		}
+	}
+	Graphics_View::mouseMoveEvent(event);
+}
+
+void Node_Editor::keyPressEvent(QKeyEvent* event) {
+	Graphics_View::keyPressEvent(event);
+	if (event->key() == Qt::Key_Delete) {
+		for (NODE::Node* node : selection) {
+			scene->removeItem(node);
+			delete node;
+		}
+		selection.clear();
+	}
+	Graphics_View::keyPressEvent(event);
+}
+
+void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
+	event->acceptProposedAction();
+}
+
+void Node_Editor::dropEvent(QDropEvent* event) {
+	const QPointF drop_pos = d_to_p(f_roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
+	if (event->mimeData()->hasText()) {
+		NODE::Node* node = nullptr;
+
+		if (event->mimeData()->text() == "NODE") {
+			QByteArray itemDataType = event->mimeData()->data("Type");
+			QDataStream dataStreamType(&itemDataType, QIODevice::ReadOnly);
+			QString type;
+			dataStreamType >> type;
+
+			if (type == "ARITHMETIC") {
+				node = new NODE::NODES::Arithmetic();
+			}
+			else if (type == "TRIGONOMETRY") {
+				node = new NODE::NODES::Trigonometry();
+			}
+		}
+		if (node) {
+			scene->addItem(node);
+			node->setPos(drop_pos);
+			event->acceptProposedAction();
 		}
 	}
 }

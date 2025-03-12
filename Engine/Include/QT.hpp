@@ -2,6 +2,9 @@
 
 #include "Import.hpp"
 
+#include "Utils/Inline/String.hpp"
+#include "Utils/Inline/Types.hpp"
+
 namespace GUI {
 	// Base Classes
 	struct Application;
@@ -178,7 +181,7 @@ namespace GUI {
 
 	struct Tree_Item : QTreeWidgetItem {
 		Tree_Item(Tree_Item* parent, const QString& label, const uint& level = 1, const map<uint, QString>& data = {});
-		Tree_Item(Tree* parent = nullptr, const QString& label = "", const uint& level = 0);
+		Tree_Item(Tree* parent = nullptr, const QString& label = "", const uint& level = 0, const map<uint, QString>& data = {});
 		~Tree_Item();
 
 		void clear();
@@ -242,3 +245,15 @@ namespace GUI {
 };
 
 QString qstr(const string& val);
+
+inline ivec2 p_to_i(const QPoint& val) {
+	return ivec2(val.x(), val.y());
+}
+
+inline dvec2 p_to_d(const QPointF& val) {
+	return dvec2(val.x(), val.y());
+}
+
+inline QPointF d_to_p(const dvec2& val) {
+	return QPointF(val.x, val.y);
+}
