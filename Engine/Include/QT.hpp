@@ -142,6 +142,8 @@ namespace GUI {
 	struct Options : QComboBox {
 		Options(QWidget* parent = nullptr);
 		~Options() {};
+
+		void scrollBy(const int& itemCount);
 	};
 
 	struct Value_Input : QLineEdit {

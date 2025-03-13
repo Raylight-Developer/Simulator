@@ -304,6 +304,24 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 	Graphics_View::keyPressEvent(event);
 }
 
+void Node_Editor::wheelEvent(QWheelEvent* event) {
+	const QPoint scrollAmount = event->angleDelta();
+	for (QWidget* widget : QApplication::topLevelWidgets()) {
+		if (widget->inherits("QComboBox") && widget->isVisible()) {
+			auto combo_box = static_cast<GUI::Options*>(widget);
+			if (scrollAmount.y() > 0) {
+				combo_box->scrollBy(-1);
+			}
+			else if (scrollAmount.y() < 0) {
+				combo_box->scrollBy(1);
+			}
+			return;
+		}
+	}
+
+	GUI::Graphics_View::wheelEvent(event);
+}
+
 void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
 	event->acceptProposedAction();
 }

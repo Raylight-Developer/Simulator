@@ -22,7 +22,6 @@ NODE::NODES::Arithmetic::Arithmetic() :
 	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
 	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
 
-
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(40, 20);
 	enums->addItems({ "+", "-", "*", "/" });

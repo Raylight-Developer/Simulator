@@ -593,3 +593,8 @@ GUI::Options::Options(QWidget* parent) :
 	setInsertPolicy(QComboBox::NoInsert);
 	setSizeAdjustPolicy(QComboBox::AdjustToContents);
 }
+
+void GUI::Options::scrollBy(const int& itemCount) {
+	const int currentScrollValue = view()->verticalScrollBar()->value();
+	view()->verticalScrollBar()->setValue(currentScrollValue + itemCount);
+}
