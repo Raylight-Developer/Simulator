@@ -106,7 +106,17 @@ namespace NODE {
 
 		namespace RENDERING {
 			namespace DIM_2D {
-				struct Line;
+				struct Line : Node {
+					PORT::Exec_I* exec_in;
+					PORT::Exec_O* exec_out;
+
+					PORT::Data_I* vert_a;
+					PORT::Data_I* vert_b;
+
+					Line();
+
+					void exec(const Port* port) override;
+				};
 			}
 		}
 	}

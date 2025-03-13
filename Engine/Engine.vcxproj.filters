@@ -42,6 +42,7 @@
     <ClInclude Include="Include\Node_Shelf.hpp" />
     <ClInclude Include="Include\Nodes.hpp" />
     <ClInclude Include="Include\Scripting.hpp" />
+    <ClInclude Include="Include\Viewport.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -69,5 +70,6 @@
     <ClCompile Include="Source\Node_Shelf.cpp" />
     <ClCompile Include="Source\Nodes.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
+    <ClCompile Include="Source\Viewport.cpp" />
   </ItemGroup>
 </Project>

@@ -37,7 +37,6 @@ namespace NODE {
 		Node* node;
 
 		QRectF rect;
-		QColor color;
 
 		Port(Node* node);
 

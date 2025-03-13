@@ -61,7 +61,7 @@ void NODE::Port::disconnect() {
 }
 
 void NODE::Port::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-	painter->setBrush(color);
+	painter->setBrush(Qt::black);
 	painter->setPen(Qt::white);
 
 	painter->drawEllipse(rect);
@@ -76,7 +76,7 @@ NODE::Connection::Connection(Port* source_port) :
 	port_l(source_port),
 	port_r(nullptr)
 {
-	setZValue(5);
+	setZValue(-5);
 	color = QColor(255, 255, 255);
 
 	pos_l = mapFromItem(port_l, port_l->boundingRect().center());
@@ -128,7 +128,7 @@ NODE::Connection::~Connection() {
 }
 
 void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-	painter->setPen(QPen(color, 2.0));
+	painter->setPen(QPen(color, 2.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	if (port_l and port_r) {
 		pos_l = mapFromItem(port_l, port_l->boundingRect().center());
 		pos_r = mapFromItem(port_r, port_r->boundingRect().center());
@@ -191,7 +191,7 @@ NODE::PORT::Exec_I::Exec_I(Node* parent, const QString& label) :
 	label(label)
 {
 	parent->inputs.push_back(this);
-	rect.moveTopLeft(parent->rect.topLeft() + QPointF(-5, 20 + parent->inputs.size() * 20));
+	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
 NODE::PORT::Exec_I::~Exec_I() {
@@ -206,9 +206,18 @@ bool NODE::PORT::Exec_I::connected() const {
 }
 
 void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-	painter->setBrush(color);
-	painter->setPen(Qt::white);
-	painter->drawRoundedRect(rect, 1, 1);
+	painter->setBrush(Qt::black);
+	painter->setPen(QPen(Qt::white, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+
+	QPainterPath path;
+	path.moveTo(rect.topLeft());
+	path.lineTo(rect.topRight() - QPointF(2.5, 0));
+	path.lineTo(rect.center() + QPointF(7.5, 0));
+	path.lineTo(rect.bottomRight() - QPointF(2.5, 0));
+	path.lineTo(rect.bottomLeft());
+	path.lineTo(rect.center() - QPointF(2.5, 0));
+	path.lineTo(rect.topLeft());
+	painter->drawPath(path);
 
 	painter->drawText(rect.bottomRight() + QPointF(10, 0), label);
 }
@@ -237,10 +246,19 @@ bool NODE::PORT::Exec_O::connected() const {
 }
 
 void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-	painter->setBrush(color);
-	painter->setPen(Qt::white);
+	painter->setBrush(Qt::black);
+	painter->setPen(QPen(Qt::white, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 
-	painter->drawRoundedRect(rect, 1, 1);
+	QPainterPath path;
+	path.moveTo(rect.topLeft());
+	path.lineTo(rect.topRight() - QPointF(2.5, 0));
+	path.lineTo(rect.center() + QPointF(7.5, 0));
+	path.lineTo(rect.bottomRight() - QPointF(2.5, 0));
+	path.lineTo(rect.bottomLeft());
+	path.lineTo(rect.center() - QPointF(2.5, 0));
+	path.lineTo(rect.topLeft());
+	painter->drawPath(path);
+
 	const qreal width = - QFontMetrics(QApplication::font()).horizontalAdvance(label) - 10;
 	painter->drawText(rect.bottomLeft() + QPointF(width, 0), label);
 }

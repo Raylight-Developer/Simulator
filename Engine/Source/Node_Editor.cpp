@@ -89,61 +89,69 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 			if (auto item = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
 				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
-						auto new_conn = new NODE::Connection(source_port, drop_port);
-						if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
-							if (drop_port->connection) {
-								delete drop_port->connection;
+						if (source_port->node != drop_port->node) {
+							auto new_conn = new NODE::Connection(source_port, drop_port);
+							if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
+								if (drop_port->connection) {
+									delete drop_port->connection;
+								}
+								drop_port->connection = new_conn;
+								source_port->connections.push_back(new_conn);
 							}
-							drop_port->connection = new_conn;
-							source_port->connections.push_back(new_conn);
-						}
-						else {
-							delete new_conn;
+							else {
+								delete new_conn;
+							}
 						}
 					}
 				}
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
-						auto new_conn = new NODE::Connection(drop_port, source_port);
-						if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
-							if (source_port->connection) {
-								delete source_port->connection;
+						if (source_port->node != drop_port->node) {
+							auto new_conn = new NODE::Connection(drop_port, source_port);
+							if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
+								if (source_port->connection) {
+									delete source_port->connection;
+								}
+								source_port->connection = new_conn;
+								drop_port->connections.push_back(new_conn);
 							}
-							source_port->connection = new_conn;
-							drop_port->connections.push_back(new_conn);
-						}
-						else {
-							delete new_conn;
+							else {
+								delete new_conn;
+							}
 						}
 					}
 				}
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
-						auto new_conn = new NODE::Connection(source_port, drop_port);
-						if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
-							if (source_port->connection) {
-								delete source_port->connection;
+						if (source_port->node != drop_port->node) {
+							auto new_conn = new NODE::Connection(source_port, drop_port);
+							if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
+								if (source_port->connection) {
+									delete source_port->connection;
+								}
+								source_port->connection = new_conn;
+								drop_port->connections.push_back(new_conn);
 							}
-							source_port->connection = new_conn;
-							drop_port->connections.push_back(new_conn);
-						}
-						else {
-							delete new_conn;
+							else {
+								delete new_conn;
+							}
 						}
 					}
 				}
 				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
-						auto new_conn = new NODE::Connection(drop_port, source_port);
-						if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
-							if (drop_port->connection) {
-								delete drop_port->connection;
+						if (source_port->node != drop_port->node) {
+							auto new_conn = new NODE::Connection(drop_port, source_port);
+							if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
+								if (drop_port->connection) {
+									delete drop_port->connection;
+								}
+								drop_port->connection = new_conn;
+								source_port->connections.push_back(new_conn);
 							}
-							drop_port->connection = new_conn;
-							source_port->connections.push_back(new_conn);
-						}
-						else {
-							delete new_conn;
+							else {
+								delete new_conn;
+							}
 						}
 					}
 				}
@@ -232,38 +240,40 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 	if (event->modifiers() & Qt::KeyboardModifier::AltModifier) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
-			if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(item)) {
-				if (port_r->connection) {
-					auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
-					delete port_r->connection;
+			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
+				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(item)) {
+					if (port_r->connection) {
+						auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
+						delete port_r->connection;
+						port_l->disconnect();
+						port_r->disconnect();
+					}
+				}
+				else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(item)) {
+					for (auto conn : port_l->connections) {
+						auto port_r = static_cast<NODE::PORT::Data_I*>(conn->port_r);
+						delete conn;
+						port_r->disconnect();
+					}
+					port_l->connections.clear();
 					port_l->disconnect();
+				}
+				else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
+					for (auto conn : port_r->connections) {
+						auto port_l = static_cast<NODE::PORT::Exec_O*>(conn->port_l);
+						delete conn;
+						port_l->disconnect();
+					}
+					port_r->connections.clear();
 					port_r->disconnect();
 				}
-			}
-			else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(item)) {
-				for (auto conn : port_l->connections) {
-					auto port_r = static_cast<NODE::PORT::Data_I*>(conn->port_r);
-					delete port_r->connection;
-					port_l->disconnect();
-					port_r->disconnect();
-				}
-				port_l->connections.clear();
-			}
-			else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
-				for (auto conn : port_r->connections) {
-					auto port_l = static_cast<NODE::PORT::Exec_O*>(conn->port_l);
-					delete port_l->connection;
-					port_l->disconnect();
-					port_r->disconnect();
-				}
-				port_r->connections.clear();
-			}
-			else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
-				if (port_l->connection) {
-					auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
-					delete port_l->connection;
-					port_l->disconnect();
-					port_r->disconnect();
+				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
+					if (port_l->connection) {
+						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
+						delete port_l->connection;
+						port_l->disconnect();
+						port_r->disconnect();
+					}
 				}
 			}
 		}
@@ -309,13 +319,15 @@ void Node_Editor::wheelEvent(QWheelEvent* event) {
 	for (QWidget* widget : QApplication::topLevelWidgets()) {
 		if (widget->inherits("QComboBox") && widget->isVisible()) {
 			auto combo_box = static_cast<GUI::Options*>(widget);
-			if (scrollAmount.y() > 0) {
-				combo_box->scrollBy(-1);
+			if (combo_box->view()->isVisible()) {
+				if (scrollAmount.y() > 0) {
+					combo_box->scrollBy(-1);
+				}
+				else if (scrollAmount.y() < 0) {
+					combo_box->scrollBy(1);
+				}
+				return;
 			}
-			else if (scrollAmount.y() < 0) {
-				combo_box->scrollBy(1);
-			}
-			return;
 		}
 	}
 
@@ -342,6 +354,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "TRIGONOMETRY") {
 				node = new NODE::NODES::Trigonometry();
+			}
+			else if (type == "RENDER 2D LINE") {
+				node = new NODE::NODES::RENDERING::DIM_2D::Line();
 			}
 		}
 		if (node) {

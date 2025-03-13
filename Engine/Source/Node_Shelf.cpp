@@ -13,10 +13,13 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	setDragEnabled(true);
 	setDragDropMode(QAbstractItemView::DragDropMode::DragOnly);
 
-	auto tree_math    = new GUI::Tree_Item(this, "Math");
+	auto tree_math      = new GUI::Tree_Item(this, "Math");
+	auto tree_render_2d = new GUI::Tree_Item(this, "2D Rendering");
 
-	auto arithmetic   = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
-	auto trigonometry = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+	auto arithmetic     = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
+	auto trigonometry   = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+
+	auto render_2d_line = new GUI::Tree_Item(tree_render_2d, "Line", 1, { { 1000, "RENDER 2D LINE" } });
 
 	expandAll();
 }

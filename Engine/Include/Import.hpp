@@ -29,12 +29,9 @@
 #include <map>
 #include <set>
 
-#include <windows.h>
-#include <math.h>
-#include <omp.h>
-
+#include <QtOpenGL/qopenglfunctions_4_5_core.h>
+#include <QtOpenGLWidgets>
 #include <QtWidgets>
-#include <QtCharts>
 #include <QtCore>
 #include <QtGui>
 

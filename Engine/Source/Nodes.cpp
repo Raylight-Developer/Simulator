@@ -129,3 +129,20 @@ Variable NODE::NODES::Trigonometry::getData(const Port* port) const {
 	}
 	return Variable(x);
 }
+
+NODE::NODES::RENDERING::DIM_2D::Line::Line() :
+	NODE::Node("2D Line")
+{
+	rect.setWidth(100);
+	rect.setHeight(120);
+
+	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_out = new PORT::Exec_O(this, "");
+
+	vert_a = new PORT::Data_I(this, "", VARIABLE::Type::VEC2);
+	vert_b = new PORT::Data_I(this, "", VARIABLE::Type::VEC2);
+}
+ 
+void NODE::NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
+
+}
