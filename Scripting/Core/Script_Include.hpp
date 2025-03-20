@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "Include.hpp"
+#include "KL.hpp"
 
 #include "Scripting.hpp"
 
@@ -10,8 +10,11 @@
 #undef FLUSH
 #undef SESSION
 
-#define SCRIPT NODE::NODES::EXEC::Script
+#define SCRIPT NODES::SCRIPT::Script
 #define EXPORT(cls_name) extern "C" __declspec(dllexport) cls_name* scriptInstance() { return new cls_name(); }
+
+#define LOG this->session->log()
+#define FLUSH this->session->flush()
 
 typedef NODE::Port Port;
 typedef NODE::PORT::Data_I Data_I;

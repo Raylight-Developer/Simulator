@@ -17,16 +17,12 @@
     <ClCompile Include="Source\Node.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Node_Editor.cpp" />
-    <ClCompile Include="Source\QT.cpp" />
-    <ClCompile Include="Source\Utils\Lace.cpp" />
     <ClCompile Include="Source\Session.cpp" />
     <ClCompile Include="Source\Variable.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Import.hpp" />
-    <ClInclude Include="Include\Include.hpp" />
     <ClInclude Include="Include\Inline\Glm.hpp" />
     <ClInclude Include="Include\Inline\Templates.hpp" />
     <ClInclude Include="Include\Inline\Templates\BiMap.hpp" />
@@ -38,19 +34,6 @@
     <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
     <ClInclude Include="Include\Inline\Types.hpp" />
     <ClInclude Include="Include\Node.hpp" />
-    <ClInclude Include="Include\QT.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Glm.hpp" />
-    <ClInclude Include="Include\Utils\Inline\String.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\BiMap.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\List.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_BiMap.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Map.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Pointer.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Vector.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Types.hpp" />
-    <ClInclude Include="Include\Utils\Lace.hpp" />
     <ClInclude Include="Include\Session.hpp" />
     <ClInclude Include="Include\Variable.hpp" />
     <ClInclude Include="Include\Window.hpp" />
@@ -100,10 +83,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;D:\Coding\KL\KL\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\Include;D:\Coding\KL\KL\Include;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -150,10 +133,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Coding\KL\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>KL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -185,10 +166,8 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(C
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Coding\KL\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>KL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>

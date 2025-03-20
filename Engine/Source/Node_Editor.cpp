@@ -17,6 +17,10 @@ Node_Editor::Node_Editor(QWidget* parent) :
 	creating_connection = nullptr;
 
 	scene->addItem(selection_rect);
+
+	auto node = new NODES::EXEC::Euler_Tick();
+	scene->addItem(node);
+	node->setPos(QPointF(0,0));
 }
 
 Node_Editor::~Node_Editor() {
@@ -51,16 +55,20 @@ void Node_Editor::drawBackground(QPainter* painter, const QRectF& rect) {
 		}
 	}
 	else {
-		for (qreal x = left; x <= right; x += majorGridSpacing) {
-			QPen gridPen(QColor(150, 150, 150), 0.6);
-			painter->setPen(gridPen);
-			painter->drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()));
+		for (qreal x = left; x <= right; x += smallGridSpacing) {
+			if (int(x) % int(majorGridSpacing) == 0) {
+				QPen gridPen(QColor(255, 255, 255), 0.2);
+				painter->setPen(gridPen);
+				painter->drawLine(QPointF(x, rect.top()), QPointF(x, rect.bottom()));
+			}
 		}
 
-		for (qreal y = top; y <= bottom; y += majorGridSpacing) {
-			QPen gridPen(QColor(150, 150, 150), 0.6);
-			painter->setPen(gridPen);
-			painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
+		for (qreal y = top; y <= bottom; y += smallGridSpacing) {
+			if (int(y) % int(majorGridSpacing) == 0) {
+				QPen gridPen(QColor(255, 255, 255), 0.2);
+				painter->setPen(gridPen);
+				painter->drawLine(QPointF(rect.left(), y), QPointF(rect.right(), y));
+			}
 		}
 	}
 }
@@ -75,7 +83,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 		setCursor(Qt::ArrowCursor);
 		if (selecting) {
 			for (auto item : scene->items(selection_rect->rect())) {
-				if (NODE::Node* node = dynamic_cast<NODE::Node*>(item)) {
+				if (Node* node = dynamic_cast<Node*>(item)) {
 					if (!node->isSelected()) {
 						node->setSelected(true);
 						selection.push_back(node);
@@ -156,6 +164,9 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					}
 				}
 			}
+			else {
+				// TODO create context nodes
+			}
 			delete creating_connection;
 			creating_connection = nullptr;
 		};
@@ -191,7 +202,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 					creating_connection = new NODE::Connection(port);
 				}
 			}
-			else if (NODE::Node* node = dynamic_cast<NODE::Node*>(item)) {
+			else if (Node* node = dynamic_cast<Node*>(item)) {
 				moving = true;
 				setCursor(Qt::ClosedHandCursor);
 				if (event->modifiers() & Qt::KeyboardModifier::ShiftModifier) {
@@ -282,7 +293,7 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 		if (moving) {
 			for (auto& node : selection) {
 				const QPointF delta = mapToScene(event->pos()) - move_pos;
-				node->setPos(f_roundToNearest(delta.x(), 10.0), f_roundToNearest(delta.y(), 10.0));
+				node->setPos(KL::f_roundToNearest(delta.x(), 10.0), KL::f_roundToNearest(delta.y(), 10.0));
 			}
 		}
 		if (selecting) {
@@ -305,9 +316,11 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 void Node_Editor::keyPressEvent(QKeyEvent* event) {
 	Graphics_View::keyPressEvent(event);
 	if (event->key() == Qt::Key_Delete) {
-		for (NODE::Node* node : selection) {
-			scene->removeItem(node);
-			delete node;
+		for (Node* node : selection) {
+			if (not dynamic_cast<NODES::EXEC::Euler_Tick*>(node)) {
+				scene->removeItem(node);
+				delete node;
+			}
 		}
 		selection.clear();
 	}
@@ -339,9 +352,9 @@ void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
 }
 
 void Node_Editor::dropEvent(QDropEvent* event) {
-	const QPointF drop_pos = d_to_p(f_roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
+	const QPointF drop_pos = d_to_p(KL::f_roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
 	if (event->mimeData()->hasText()) {
-		NODE::Node* node = nullptr;
+		Node* node = nullptr;
 
 		if (event->mimeData()->text() == "NODE") {
 			QByteArray itemDataType = event->mimeData()->data("Type");
@@ -350,14 +363,38 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			dataStreamType >> type;
 
 			if (type == "ARITHMETIC") {
-				node = new NODE::NODES::Arithmetic();
+				node = new NODES::Arithmetic();
 			}
 			else if (type == "TRIGONOMETRY") {
-				node = new NODE::NODES::Trigonometry();
+				node = new NODES::Trigonometry();
 			}
 			else if (type == "RENDER 2D LINE") {
-				node = new NODE::NODES::RENDERING::DIM_2D::Line();
+				node = new NODES::RENDERING::DIM_2D::Line();
 			}
+			else if (type == "MAKE VEC2") {
+				node = new NODES::CAST::MAKE::Vec2();
+			}
+			else if (type == "MAKE VEC3") {
+				node = new NODES::CAST::MAKE::Vec3();
+			}
+			else if (type == "MAKE VEC4") {
+				node = new NODES::CAST::MAKE::Vec4();
+			}
+			else if (type == "MAKE QUAT") {
+				node = new NODES::CAST::MAKE::Quat();
+			}
+			else if (type == "MAKE MAT2") {
+				node = new NODES::CAST::MAKE::Mat2();
+			}
+			else if (type == "MAKE MAT3") {
+				node = new NODES::CAST::MAKE::Mat3();
+			}
+			else if (type == "MAKE MAT4") {
+				node = new NODES::CAST::MAKE::Mat4();
+			}
+			//else if (type == "EULER TICK") {
+			//	node = new NODES::EXEC::Euler_Tick();
+			//}
 		}
 		if (node) {
 			scene->addItem(node);

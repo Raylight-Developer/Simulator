@@ -1,15 +1,21 @@
 #include "Script.hpp"
 
 Script::Script() : SCRIPT("Test Script") {
-	cout << "Loaded Test Script" << endl;
+	LOG NL << "Loaded Test Script"; FLUSH;
 }
 
 Script::~Script() {
-	cout << "Unloaded Test Script" << endl;
+	LOG NL << "Unloaded Test Script"; FLUSH;
+}
+
+void Script::onLoad() {
+}
+
+void Script::onUnload() {
 }
 
 void Script::exec(const Port* port) {
-	cout << "Exec" << endl;
+	LOG NL << "Exec"; FLUSH;
 }
 
 Variable Script::getData(const Port* port) const {

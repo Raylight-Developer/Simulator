@@ -3,16 +3,11 @@
 #include "Window.hpp"
 #include "Scripting.hpp"
 
-CORE::Session::Session() :
-	log(nullptr)
+Session::Session() :
+	KL::Session()
 {}
 
-CORE::Session& CORE::Session::getInstance() {
+Session& Session::getInstance() {
 	static Session instance;
 	return instance;
-}
-
-void CORE::Session::flushLog() {
-	cout << log.str();
-	log.clear();
 }

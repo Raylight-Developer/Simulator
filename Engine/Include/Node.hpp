@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Include.hpp"
+#include "KL.hpp"
 
 #include "Variable.hpp"
 
+struct Node;
 namespace NODE {
-	struct Node;
 	struct Port;
 	struct Connection;
 	namespace PORT {
@@ -14,25 +14,28 @@ namespace NODE {
 		struct Data_O;
 		struct Exec_O;
 	}
+}
 
-	struct Node : QGraphicsItem {
-		QString label;
-		QRectF rect;
+struct Node : QGraphicsItem {
+	QColor header_color;
+	QString label;
+	QRectF rect;
 
-		vector<Node*> children;
-		vector<Port*> inputs;
-		vector<Port*> outputs;
+	vector<Node*> children;
+	vector<NODE::Port*> inputs;
+	vector<NODE::Port*> outputs;
 
-		Node(const QString& label = "NODE");
-		~Node();
+	Node(const QString& label = "NODE");
+	~Node();
 
-		virtual void exec(const Port* port) {}
-		virtual Variable getData(const Port* port) const { return Variable(); };
+	virtual void exec(const NODE::Port* port) {}
+	virtual Variable getData(const NODE::Port* port) const { return Variable(); };
 
-		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		QRectF boundingRect() const override;
-	};
+	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+	QRectF boundingRect() const override;
+};
 
+namespace NODE {
 	struct Port : QGraphicsItem {
 		Node* node;
 
@@ -42,7 +45,7 @@ namespace NODE {
 
 		function<bool(Port*, Connection*)> onConnRequested;
 		function<void(Port*)> onDisconnection;
-		bool requestConnection(Connection* connection);
+		virtual bool requestConnection(Connection* connection);
 		void disconnect();
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
@@ -56,6 +59,7 @@ namespace NODE {
 		QPointF pos_r;
 
 		QColor color;
+		vector<QGraphicsItem*> reroutes;
 
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
@@ -95,6 +99,7 @@ namespace NODE {
 			~Exec_O();
 			bool connected() const;
 
+			void exec() const;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -116,6 +121,7 @@ namespace NODE {
 			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
 
+			bool requestConnection(Connection* connection) override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -136,6 +142,7 @@ namespace NODE {
 			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
 
+			bool requestConnection(Connection* connection) override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 	}

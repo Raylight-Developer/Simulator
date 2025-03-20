@@ -1,7 +1,7 @@
 #include "Nodes.hpp"
 
-NODE::NODES::Arithmetic::Arithmetic() :
-	NODE::Node("Arithmetic"),
+NODES::Arithmetic::Arithmetic() :
+	Node("Arithmetic"),
 	var_type(VARIABLE::Type::NONE),
 	allowed_types({ VARIABLE::Type::NONE, VARIABLE_INTEGRALS })
 {
@@ -33,7 +33,7 @@ NODE::NODES::Arithmetic::Arithmetic() :
 	proxyWidget->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
-void NODE::NODES::Arithmetic::setType(const VARIABLE::Type& type) {
+void NODES::Arithmetic::setType(const VARIABLE::Type& type) {
 	if (var_type != type) {
 		var_type = type;
 		i_a->setType(type);
@@ -42,7 +42,7 @@ void NODE::NODES::Arithmetic::setType(const VARIABLE::Type& type) {
 	}
 }
 
-bool NODE::NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
+bool NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
 	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
 	if (allowed_types.contains(incoming_type)) {
 		if (var_type == VARIABLE::Type::NONE) {
@@ -57,17 +57,17 @@ bool NODE::NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
 	return false;
 }
 
-void NODE::NODES::Arithmetic::onDisconnection(Port* port) {
+void NODES::Arithmetic::onDisconnection(Port* port) {
 	if (not i_a->connected() and not i_b->connected() and not out->connected()) {
 		setType(VARIABLE::Type::NONE);
 	}
 }
 
-//void NODE::NODES::Arithmetic::onTypeChanged(Port* port, const VARIABLE::Type& var_type) {
+//void NODES::Arithmetic::onTypeChanged(Port* port, const VARIABLE::Type& var_type) {
 //	setType(var_type);
 //}
 
-Variable NODE::NODES::Arithmetic::getData(const Port* port) const {
+Variable NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
 		case 0: return i_a->getData() + i_b->getData();
 		case 1: return i_a->getData() - i_b->getData();
@@ -77,8 +77,8 @@ Variable NODE::NODES::Arithmetic::getData(const Port* port) const {
 	return Variable(0.0);
 }
 
-NODE::NODES::Trigonometry::Trigonometry() :
-	NODE::Node("Trigonometry")
+NODES::Trigonometry::Trigonometry() :
+	Node("Trigonometry")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);
@@ -100,7 +100,7 @@ NODE::NODES::Trigonometry::Trigonometry() :
 	proxyWidget->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
-bool NODE::NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
+bool NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
 	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
 	if (incoming_type == VARIABLE::Type::FLOAT or incoming_type == VARIABLE::Type::NONE) {
 		return true;
@@ -108,7 +108,7 @@ bool NODE::NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
 	return false;
 }
 
-Variable NODE::NODES::Trigonometry::getData(const Port* port) const {
+Variable NODES::Trigonometry::getData(const Port* port) const {
 	const dvec1 x = in->getData().get<dvec1>();
 	switch (enums->currentIndex()) {
 		case  0: return sin(x);
@@ -130,19 +130,233 @@ Variable NODE::NODES::Trigonometry::getData(const Port* port) const {
 	return Variable(x);
 }
 
-NODE::NODES::RENDERING::DIM_2D::Line::Line() :
-	NODE::Node("2D Line")
+NODES::CAST::MAKE::Vec2::Vec2() :
+	Node("Make")
 {
-	rect.setWidth(100);
-	rect.setHeight(120);
+	rect.setWidth(30);
+	rect.setHeight(40);
+
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	i_x->rect.moveCenter(QPointF( 0, 10));
+	i_y->rect.moveCenter(QPointF( 0, 30));
+	out->rect.moveCenter(QPointF(30, 20));
+}
+
+void NODES::CAST::MAKE::Vec2::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
+	return Variable(dvec2(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>()));
+}
+
+NODES::CAST::MAKE::Vec3::Vec3() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(60);
+
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
+	i_x->rect.moveCenter(QPointF( 0, 10));
+	i_y->rect.moveCenter(QPointF( 0, 30));
+	i_z->rect.moveCenter(QPointF( 0, 50));
+	out->rect.moveCenter(QPointF(30, 30));
+}
+
+void NODES::CAST::MAKE::Vec3::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
+	return Variable(dvec3(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>()));
+}
+
+NODES::CAST::MAKE::Vec4::Vec4() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(80);
+
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
+	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
+	i_x->rect.moveCenter(QPointF( 0, 10));
+	i_y->rect.moveCenter(QPointF( 0, 30));
+	i_z->rect.moveCenter(QPointF( 0, 50));
+	i_w->rect.moveCenter(QPointF( 0, 70));
+	out->rect.moveCenter(QPointF(30, 40));
+}
+
+void NODES::CAST::MAKE::Vec4::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
+	return Variable(dvec4(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>(), i_w->getData().get<dvec1>()));
+}
+
+NODES::CAST::MAKE::Quat::Quat() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(80);
+
+	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::FLOAT);
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::QUAT);
+	i_w->rect.moveCenter(QPointF( 0, 10));
+	i_x->rect.moveCenter(QPointF( 0, 30));
+	i_y->rect.moveCenter(QPointF( 0, 50));
+	i_z->rect.moveCenter(QPointF( 0, 70));
+	out->rect.moveCenter(QPointF(30, 40));
+}
+
+void NODES::CAST::MAKE::Quat::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Quat::getData(const Port* port) const {
+	return Variable(dquat(i_w->getData().get<dvec1>(), i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>()));
+}
+
+NODES::CAST::MAKE::Mat2::Mat2() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(40);
+
+	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC2);
+	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC2);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT2);
+	i_a->rect.moveCenter(QPointF( 0, 10));
+	i_b->rect.moveCenter(QPointF( 0, 30));
+	out->rect.moveCenter(QPointF(30, 20));
+}
+
+void NODES::CAST::MAKE::Mat2::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
+	return Variable(dmat2(i_a->getData().get<dvec2>(), i_b->getData().get<dvec2>()));
+}
+
+NODES::CAST::MAKE::Mat3::Mat3() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(60);
+
+	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC3);
+	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC3);
+	i_c = new PORT::Data_I(this, "C", VARIABLE::Type::VEC3);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT3);
+	i_a->rect.moveCenter(QPointF( 0, 10));
+	i_b->rect.moveCenter(QPointF( 0, 30));
+	i_c->rect.moveCenter(QPointF( 0, 50));
+	out->rect.moveCenter(QPointF(30, 30));
+}
+
+void NODES::CAST::MAKE::Mat3::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
+	return Variable(dmat3(i_a->getData().get<dvec3>(), i_b->getData().get<dvec3>(), i_c->getData().get<dvec3>()));
+}
+
+NODES::CAST::MAKE::Mat4::Mat4() :
+	Node("Make")
+{
+	rect.setWidth(30);
+	rect.setHeight(80);
+
+	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC4);
+	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC4);
+	i_c = new PORT::Data_I(this, "C", VARIABLE::Type::VEC4);
+	i_d = new PORT::Data_I(this, "D", VARIABLE::Type::VEC4);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT4);
+	i_a->rect.moveCenter(QPointF( 0, 10));
+	i_b->rect.moveCenter(QPointF( 0, 30));
+	i_c->rect.moveCenter(QPointF( 0, 50));
+	i_d->rect.moveCenter(QPointF( 0, 70));
+	out->rect.moveCenter(QPointF(30, 40));
+}
+
+void NODES::CAST::MAKE::Mat4::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
+	if (isSelected()) {
+		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
+	}
+	painter->setBrush(QColor(40, 40, 40));
+	painter->drawRoundedRect(rect, 5, 5);
+}
+
+Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
+	return Variable(dmat4(i_a->getData().get<dvec4>(), i_b->getData().get<dvec4>(), i_c->getData().get<dvec4>(), i_d->getData().get<dvec4>()));
+}
+
+NODES::RENDERING::DIM_2D::Line::Line() :
+	Node("2D Line")
+{
+	header_color = QColor(50, 25, 25);
+	rect.setWidth(80);
+	rect.setHeight(100);
 
 	exec_in  = new PORT::Exec_I(this, "Draw");
 	exec_out = new PORT::Exec_O(this, "");
 
-	vert_a = new PORT::Data_I(this, "", VARIABLE::Type::VEC2);
-	vert_b = new PORT::Data_I(this, "", VARIABLE::Type::VEC2);
+	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
+	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
 }
  
-void NODE::NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
+void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
+	// TODO Render Line
+	exec_out->exec();
+}
 
+NODES::EXEC::Euler_Tick::Euler_Tick() :
+	Node("Tick")
+{
+	rect.setWidth(60);
+	rect.setHeight(80);
+
+	exec_out = new PORT::Exec_O(this, "Tick");
+	delta_out = new PORT::Data_O(this, "Delta", VARIABLE::Type::FLOAT);
+}
+
+void NODES::EXEC::Euler_Tick::exec(const Port* port) {
+	exec_out->exec();
 }

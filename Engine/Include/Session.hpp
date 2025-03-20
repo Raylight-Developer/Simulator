@@ -1,30 +1,22 @@
 #pragma once
 
-#include "Include.hpp"
+#include "KL.hpp"
 
-// FWD DECL OTHER
-namespace CORE {
-	class Lace;
-}
+#include "Node.hpp"
+#include "Nodes.hpp"
+#include "Scripting.hpp"
 
-// FWD DECL THIS
+struct Session : KL::Session {
+	static Session& getInstance();
 
-// DECL
-namespace CORE {
-	struct Session {
-		Lace log;
-		static Session& getInstance();
-		void flushLog();
+	QMap<QString, NODES::SCRIPT::Script*> scripts;
+	QMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
-		Session();
-		~Session() = default;
-		Session(const Session&) = delete;
-		Session& operator=(const Session&) = delete;
-	};
-}
+	Session();
+	~Session() = default;
+	Session(const Session&) = delete;
+	Session& operator=(const Session&) = delete;
+};
 
-#define SESSION CORE::Session::getInstance()
-#define SESSION_LOG   CORE::Session::getInstance().log
-#define SESSION_FLUSH CORE::Session::getInstance().flushLog()
-
+#define SESSION Session::getInstance()
 #define FILE

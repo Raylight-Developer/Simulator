@@ -5,5 +5,9 @@
 - Escape to cancel
 - Scroll fix for QGraphicsProxyWidget inside QGraphicsView
 - Style fix for QGraphicsProxyWidget
+- Copy Paste
+- Undo Redo
+- Cache Sim
+- File Save Load
 
 - Maybe: ? Cascade Type Un-Setting if only connected nodes are wildcard NONE as well

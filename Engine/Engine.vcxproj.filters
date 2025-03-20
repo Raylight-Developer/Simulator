@@ -1,16 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Include\Include.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Node_Editor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\QT.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\Inline\Types.hpp" />
@@ -24,25 +18,12 @@
     <ClInclude Include="Include\Inline\Templates\Observable_Pointer.hpp" />
     <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
     <ClInclude Include="Include\Session.hpp" />
-    <ClInclude Include="Include\Utils\Lace.hpp" />
-    <ClInclude Include="Include\Import.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Types.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\BiMap.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\List.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_BiMap.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Map.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Pointer.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates\Observable_Vector.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Glm.hpp" />
-    <ClInclude Include="Include\Utils\Inline\Templates.hpp" />
-    <ClInclude Include="Include\Utils\Inline\String.hpp" />
     <ClInclude Include="Include\Node.hpp" />
     <ClInclude Include="Include\Variable.hpp" />
     <ClInclude Include="Include\Node_Shelf.hpp" />
     <ClInclude Include="Include\Nodes.hpp" />
-    <ClInclude Include="Include\Scripting.hpp" />
     <ClInclude Include="Include\Viewport.hpp" />
+    <ClInclude Include="Include\Scripting.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -60,10 +41,6 @@
     <ClCompile Include="Source\Node_Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\QT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\Lace.cpp" />
     <ClCompile Include="Source\Session.cpp" />
     <ClCompile Include="Source\Node.cpp" />
     <ClCompile Include="Source\Variable.cpp" />

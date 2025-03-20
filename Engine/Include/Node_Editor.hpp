@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Include.hpp"
-#include "QT.hpp"
+#include "KL.hpp"
 
 #include "Scripting.hpp"
 #include "Nodes.hpp"
@@ -17,7 +16,7 @@ class Node_Editor : public GUI::Graphics_View {
 	QGraphicsRectItem* selection_rect;
 	NODE::Connection* creating_connection;
 public:
-	vector<NODE::Node*> selection;
+	vector<Node*> selection;
 
 	Node_Editor(QWidget* parent = nullptr);
 	~Node_Editor();
