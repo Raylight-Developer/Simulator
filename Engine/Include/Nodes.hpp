@@ -224,6 +224,8 @@ namespace NODES {
 				Line();
 
 				void init();
+				void render();
+
 				void exec(const Port* port) override;
 			};
 			static GLuint SP_Rect;

@@ -25,11 +25,10 @@ namespace VARIABLE {
 #define VARIABLE_FULL_INTEGRALS VARIABLE_INTEGRALS, VARIABLE_VECS, VARIABLE_MATS,
 
 struct Variable {
-	void* data;
+	any data;
 	VARIABLE::Type type;
 
 	Variable();
-	~Variable();
 
 	Variable(const dvec1&   data);
 	Variable(const int64&   data);
@@ -55,28 +54,28 @@ struct Variable {
 
 	template <typename T>
 	inline T get() const {
-		return *static_cast<T*>(data);
+		return any_cast<T>(data);
 	}
 
 	template <typename T, typename S>
 	inline T getCast() const {
-		return static_cast<T>(*static_cast<S*>(data));
+		return static_cast<T>(any_cast<S>(data));
 	}
 
 	template <typename T>
 	inline T getInfer() const {
 		switch (type) {
-			case VARIABLE::Type::FLOAT  : return static_cast<T>(*static_cast<dvec1  *>(data));
-			case VARIABLE::Type::INT    : return static_cast<T>(*static_cast<qint64 *>(data));
-			case VARIABLE::Type::BOOL   : return static_cast<T>(*static_cast<bool   *>(data));
-			case VARIABLE::Type::STRING : return static_cast<T>(*static_cast<QString*>(data));
-			case VARIABLE::Type::VEC2   : return static_cast<T>(*static_cast<dvec2  *>(data));
-			case VARIABLE::Type::VEC3   : return static_cast<T>(*static_cast<dvec3  *>(data));
-			case VARIABLE::Type::VEC4   : return static_cast<T>(*static_cast<dvec4  *>(data));
-			case VARIABLE::Type::QUAT   : return static_cast<T>(*static_cast<dquat  *>(data));
-			case VARIABLE::Type::MAT2   : return static_cast<T>(*static_cast<dmat2  *>(data));
-			case VARIABLE::Type::MAT3   : return static_cast<T>(*static_cast<dmat3  *>(data));
-			case VARIABLE::Type::MAT4   : return static_cast<T>(*static_cast<dmat4  *>(data));
+			case VARIABLE::Type::FLOAT  : return static_cast<T>(any_cast<dvec1  >(data));
+			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<qint64 >(data));
+			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool   >(data));
+			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString>(data));
+			case VARIABLE::Type::VEC2   : return static_cast<T>(any_cast<dvec2  >(data));
+			case VARIABLE::Type::VEC3   : return static_cast<T>(any_cast<dvec3  >(data));
+			case VARIABLE::Type::VEC4   : return static_cast<T>(any_cast<dvec4  >(data));
+			case VARIABLE::Type::QUAT   : return static_cast<T>(any_cast<dquat  >(data));
+			case VARIABLE::Type::MAT2   : return static_cast<T>(any_cast<dmat2  >(data));
+			case VARIABLE::Type::MAT3   : return static_cast<T>(any_cast<dmat3  >(data));
+			case VARIABLE::Type::MAT4   : return static_cast<T>(any_cast<dmat4  >(data));
 		}
 	}
 };

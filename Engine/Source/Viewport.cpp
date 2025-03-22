@@ -3,8 +3,8 @@
 #include "Session.hpp"
 #include "OpenGL.hpp"
 
-Viewport::Viewport(QWidget* parent) :
-	QOpenGLWidget(parent),
+Viewport::Viewport() :
+	QOpenGLWindow(),
 
 	frame_counter(0),
 	frame_count(0),
@@ -87,7 +87,7 @@ void Viewport::paintGL() {
 	f_frameUpdate();
 	f_guiUpdate();
 
-	update();
+	requestUpdate();
 }
 
 void Viewport::resizeGL(int w, int h) {

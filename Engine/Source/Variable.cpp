@@ -1,59 +1,53 @@
 #include "Variable.hpp"
 
 Variable::Variable() :
-	data(nullptr),
+	data(any()),
 	type(VARIABLE::Type::NONE)
 {}
 
-Variable::~Variable() {
-	if (data) {
-		delete data;
-	}
-}
-
 Variable::Variable(const dvec1& data) :
 	type(VARIABLE::Type::FLOAT),
-	data(new dvec1(data))
+	data(data)
 {}
 Variable::Variable(const int64& data) :
 	type(VARIABLE::Type::INT),
-	data(new int64(data))
+	data(data)
 {}
 Variable::Variable(const bool& data) :
 	type(VARIABLE::Type::BOOL),
-	data(new bool(data))
+	data(data)
 {}
 Variable::Variable(const QString& data) :
 	type(VARIABLE::Type::STRING),
-	data(new QString(data))
+	data(data)
 {}
 Variable::Variable(const dvec2 & data) :
 	type(VARIABLE::Type::VEC2),
-	data(new dvec2(data))
+	data(data)
 {}
 Variable::Variable(const dvec3 & data) :
 	type(VARIABLE::Type::VEC3),
-	data(new dvec3(data))
+	data(data)
 {}
 Variable::Variable(const dvec4 & data) :
 	type(VARIABLE::Type::VEC4),
-	data(new dvec4(data))
+	data(data)
 {}
 Variable::Variable(const dquat & data) :
 	type(VARIABLE::Type::QUAT),
-	data(new dquat(data))
+	data(data)
 {}
 Variable::Variable(const dmat2 & data) :
 	type(VARIABLE::Type::MAT2),
-	data(new dmat2(data))
+	data(data)
 {}
 Variable::Variable(const dmat3 & data) :
 	type(VARIABLE::Type::MAT3),
-	data(new dmat3(data))
+	data(data)
 {}
 Variable::Variable(const dmat4 & data) :
 	type(VARIABLE::Type::MAT4),
-	data(new dmat4(data))
+	data(data)
 {}
 
 Variable Variable::operator+(const Variable & other) const {

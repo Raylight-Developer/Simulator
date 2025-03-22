@@ -119,7 +119,7 @@ namespace NODE {
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
 			void setType(const VARIABLE::Type& var_type);
-			const Variable& getData() const;
+			Variable getData() const;
 
 			bool requestConnection(Connection* connection) override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;

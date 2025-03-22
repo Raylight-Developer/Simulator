@@ -2,7 +2,7 @@
 
 #include "KL.hpp"
 
-struct Viewport : QOpenGLWidget, protected QOpenGLFunctions_4_5_Core {
+struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
 	dvec1 aspect_ratio;
 	uvec2 resolution;
 
@@ -19,7 +19,7 @@ struct Viewport : QOpenGLWidget, protected QOpenGLFunctions_4_5_Core {
 	dvec2 current_mouse;
 	dvec2 last_mouse;
 
-	Viewport(QWidget* parent);
+	Viewport();
 	~Viewport();
 
 	void f_pipeline();

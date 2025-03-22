@@ -336,9 +336,9 @@ void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
 	}
 }
 
-const Variable& NODE::PORT::Data_I::getData() const {
+Variable NODE::PORT::Data_I::getData() const {
 	if (connection) {
-		connection->getDataO()->getData();
+		return connection->getDataO()->getData();
 	}
 	return variable;
 }
