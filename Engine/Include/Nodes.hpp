@@ -195,25 +195,55 @@ namespace NODES {
 
 	namespace EXEC {
 		struct Euler_Tick : Node {
+			dvec1 delta;
 			PORT:: Exec_O* exec_out;
 			PORT:: Data_O* delta_out;
-				
+
 			Euler_Tick();
 
-			void exec(const Port* port) override;
+			void exec(const dvec1& delta);
+			Variable getData(const Port* port) const override;
 		};
 	}
 
 	namespace RENDERING {
 		namespace DIM_2D {
+			static GLuint SP_Line;
 			struct Line : Node {
+				GLuint VAO;
+				GLuint VBO;
+
 				PORT::Exec_I* exec_in;
 				PORT::Exec_O* exec_out;
 
 				PORT::Data_I* vert_a;
 				PORT::Data_I* vert_b;
+				PORT::Data_I* width;
+				PORT::Data_I* color;
 
 				Line();
+
+				void init();
+				void exec(const Port* port) override;
+			};
+			static GLuint SP_Rect;
+			struct Rect : Node {
+				GLuint VAO;
+				GLuint VBO;
+
+				PORT::Exec_I* exec_in;
+				PORT::Exec_O* exec_out;
+
+				PORT::Data_I* vert_a;
+				PORT::Data_I* vert_b;
+				PORT::Data_I* vert_c;
+				PORT::Data_I* vert_d;
+				PORT::Data_I* color;
+
+				Rect();
+
+				void init();
+				void render();
 
 				void exec(const Port* port) override;
 			};

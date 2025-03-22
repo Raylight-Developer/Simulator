@@ -21,6 +21,7 @@ namespace NODES {
 				SL_Session(Script* script = nullptr, Session* session = nullptr);
 
 				KL::Lace& log();
+				KL::Lace& printer();
 				void flush();
 			};
 		}

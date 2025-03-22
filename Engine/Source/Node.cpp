@@ -131,7 +131,7 @@ NODE::Connection::~Connection() {
 void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setPen(QPen(color, 1.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	if (port_l and port_r) {
-		if (reroutes.empty());
+		//if (reroutes.empty());
 		pos_l = mapFromItem(port_l, port_l->boundingRect().center());
 		pos_r = mapFromItem(port_r, port_r->boundingRect().center());
 
@@ -286,6 +286,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	label(label),
 	var_type(VARIABLE::Type::NONE),
 	color(VARIABLE::toColor(var_type)),
+	variable(Variable()),
 	onTypeChanged(nullptr),
 	connection(nullptr)
 {
@@ -298,6 +299,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::T
 	label(label),
 	var_type(var_type),
 	color(VARIABLE::toColor(var_type)),
+	variable(Variable()),
 	onTypeChanged(nullptr),
 	connection(nullptr)
 {
@@ -334,7 +336,7 @@ void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
 	}
 }
 
-Variable NODE::PORT::Data_I::getData() const {
+const Variable& NODE::PORT::Data_I::getData() const {
 	if (connection) {
 		connection->getDataO()->getData();
 	}

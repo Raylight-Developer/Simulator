@@ -37,6 +37,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	//auto euler_tick     = new GUI::Tree_Item(tree_exec, "Euler Tick", 2, { { 1000, "EULER TICK" } });
 
 	auto render_2d_line = new GUI::Tree_Item(tree_render_2d, "Line", 2, { { 1000, "RENDER 2D LINE" } });
+	auto render_2d_rect = new GUI::Tree_Item(tree_render_2d, "Rect", 2, { { 1000, "RENDER 2D RECT" } });
 
 	expandAll();
 }

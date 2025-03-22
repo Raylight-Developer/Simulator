@@ -8,6 +8,7 @@
 
 #undef LOG
 #undef FLUSH
+#undef PRINT
 #undef SESSION
 
 #define SCRIPT NODES::SCRIPT::Script
@@ -15,9 +16,10 @@
 
 #define LOG this->session->log()
 #define FLUSH this->session->flush()
+#define PRINT(msg) this->session->printer() msg; printf(this->session->printer().str().c_str()); this->session->printer().clear()
 
-typedef NODE::Port Port;
-typedef NODE::PORT::Data_I Data_I;
-typedef NODE::PORT::Data_O Data_O;
-typedef NODE::PORT::Exec_I Exec_I;
-typedef NODE::PORT::Exec_O Exec_O;
+using Port = NODE::Port;
+using Data_I = NODE::PORT::Data_I;
+using Data_O = NODE::PORT::Data_O;
+using Exec_I = NODE::PORT::Exec_I;
+using Exec_O = NODE::PORT::Exec_O;

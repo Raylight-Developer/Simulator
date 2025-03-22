@@ -18,9 +18,8 @@ Node_Editor::Node_Editor(QWidget* parent) :
 
 	scene->addItem(selection_rect);
 
-	auto node = new NODES::EXEC::Euler_Tick();
-	scene->addItem(node);
-	node->setPos(QPointF(0,0));
+	scene->addItem(FILE.tick.pointer);
+	FILE.tick.pointer->setPos(QPointF(0,0));
 }
 
 Node_Editor::~Node_Editor() {
@@ -137,7 +136,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 								if (source_port->connection) {
 									delete source_port->connection;
 								}
-								source_port->connection = new_conn;
+								source_port->connection = new_conn; // Not Working?
 								drop_port->connections.push_back(new_conn);
 							}
 							else {
@@ -368,9 +367,6 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "TRIGONOMETRY") {
 				node = new NODES::Trigonometry();
 			}
-			else if (type == "RENDER 2D LINE") {
-				node = new NODES::RENDERING::DIM_2D::Line();
-			}
 			else if (type == "MAKE VEC2") {
 				node = new NODES::CAST::MAKE::Vec2();
 			}
@@ -391,6 +387,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "MAKE MAT4") {
 				node = new NODES::CAST::MAKE::Mat4();
+			}
+			else if (type == "RENDER 2D LINE") {
+				node = new NODES::RENDERING::DIM_2D::Line();
+			}
+			else if (type == "RENDER 2D RECT") {
+				node = new NODES::RENDERING::DIM_2D::Rect();
 			}
 			//else if (type == "EULER TICK") {
 			//	node = new NODES::EXEC::Euler_Tick();

@@ -1,9 +1,10 @@
 #include "Viewport.hpp"
 
 #include "Session.hpp"
+#include "OpenGL.hpp"
 
 Viewport::Viewport(QWidget* parent) :
-	QOpenGLWindow(),
+	QOpenGLWidget(parent),
 
 	frame_counter(0),
 	frame_count(0),
@@ -15,18 +16,16 @@ Viewport::Viewport(QWidget* parent) :
 	last_mouse(current_mouse),
 
 	window_time(0.0),
-	frame_time(0.01666666)
+	delta_time(0.01666666)
 {}
 
 Viewport::~Viewport() {
 }
 
-void Viewport::f_displayLoop() {
-	glClear(GL_COLOR_BUFFER_BIT);
-}
-
 void Viewport::f_tickUpdate() {
+	glClear(GL_COLOR_BUFFER_BIT);
 
+	FILE.tick.pointer->exec(delta_time);
 }
 
 void Viewport::f_guiUpdate() {
@@ -45,9 +44,9 @@ void Viewport::f_inputLoop() {
 
 void Viewport::f_timings() {
 	current_time = chrono::high_resolution_clock::now();
-	frame_time = chrono::duration<double>(current_time - last_time).count();
+	delta_time = chrono::duration<double>(current_time - last_time).count();
 	last_time = current_time;
-	window_time += frame_time;
+	window_time += delta_time;
 }
 
 void Viewport::f_frameUpdate() {
@@ -55,12 +54,25 @@ void Viewport::f_frameUpdate() {
 }
 
 void Viewport::f_pipeline() {
-	// compile shaders
+	GL = this;
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
+		if (confirm) {
+			NODES::RENDERING::DIM_2D::SP_Line = confirm.data;
+		}
+	}
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
+		if (confirm) {
+			NODES::RENDERING::DIM_2D::SP_Rect = confirm.data;
+		}
+	}
 }
 
 void Viewport::initializeGL() {
 	initializeOpenGLFunctions();
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glViewport(0, 0, resolution.x, resolution.y);
 
 	f_pipeline();
@@ -72,12 +84,10 @@ void Viewport::paintGL() {
 	f_inputLoop();
 	f_tickUpdate();
 
-	f_displayLoop();
-
 	f_frameUpdate();
 	f_guiUpdate();
 
-	requestUpdate();
+	update();
 }
 
 void Viewport::resizeGL(int w, int h) {

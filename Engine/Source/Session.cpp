@@ -4,7 +4,8 @@
 #include "Scripting.hpp"
 
 Session::Session() :
-	KL::Session()
+	KL::Session(),
+	file(File())
 {}
 
 Session& Session::getInstance() {

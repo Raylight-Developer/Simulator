@@ -2,7 +2,7 @@
 
 #include "KL.hpp"
 
-struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
+struct Viewport : QOpenGLWidget, protected QOpenGLFunctions_4_5_Core {
 	dvec1 aspect_ratio;
 	uvec2 resolution;
 
@@ -13,7 +13,7 @@ struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
 	Timestamp start_time;
 	Timestamp last_time;
 	dvec1 window_time;
-	dvec1 frame_time;
+	dvec1 delta_time;
 
 	unordered_map<uint, bool> inputs;
 	dvec2 current_mouse;
@@ -29,7 +29,6 @@ struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
 	void f_timings();
 	void f_guiUpdate();
 	void f_inputLoop();
-	void f_displayLoop();
 	void f_frameUpdate();
 
 	void initializeGL() override;

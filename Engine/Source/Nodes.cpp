@@ -1,5 +1,7 @@
 #include "Nodes.hpp"
 
+#include "Session.hpp"
+
 NODES::Arithmetic::Arithmetic() :
 	Node("Arithmetic"),
 	var_type(VARIABLE::Type::NONE),
@@ -328,28 +330,10 @@ Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
 	return Variable(dmat4(i_a->getData().get<dvec4>(), i_b->getData().get<dvec4>(), i_c->getData().get<dvec4>(), i_d->getData().get<dvec4>()));
 }
 
-NODES::RENDERING::DIM_2D::Line::Line() :
-	Node("2D Line")
-{
-	header_color = QColor(50, 25, 25);
-	rect.setWidth(80);
-	rect.setHeight(100);
-
-	exec_in  = new PORT::Exec_I(this, "Draw");
-	exec_out = new PORT::Exec_O(this, "");
-
-	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
-	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
-}
- 
-void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
-	// TODO Render Line
-	exec_out->exec();
-}
-
 NODES::EXEC::Euler_Tick::Euler_Tick() :
 	Node("Tick")
 {
+	delta = 0.016;
 	rect.setWidth(60);
 	rect.setHeight(80);
 
@@ -357,6 +341,166 @@ NODES::EXEC::Euler_Tick::Euler_Tick() :
 	delta_out = new PORT::Data_O(this, "Delta", VARIABLE::Type::FLOAT);
 }
 
-void NODES::EXEC::Euler_Tick::exec(const Port* port) {
+void NODES::EXEC::Euler_Tick::exec(const dvec1& delta) {
+	this->delta = delta;
+	exec_out->exec();
+}
+
+Variable NODES::EXEC::Euler_Tick::getData(const Port* port) const {
+	return Variable(delta);
+}
+
+NODES::RENDERING::DIM_2D::Line::Line() :
+	Node("2D Line")
+{
+	VAO = 0;
+	VBO = 0;
+
+	header_color = QColor(50, 25, 25);
+	rect.setWidth(80);
+	rect.setHeight(140);
+
+	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_out = new PORT::Exec_O(this, "");
+
+	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
+	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
+	width  = new PORT::Data_I(this, "Width", VARIABLE::Type::FLOAT);
+	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+
+	vert_a->variable = Variable(dvec2(-5, -5));
+	vert_b->variable = Variable(dvec2(5, 5));
+	width->variable = Variable(5.0);
+	color->variable = Variable(dvec4(1, 0, 1, 1));
+	init();
+}
+
+void NODES::RENDERING::DIM_2D::Line::init() {
+	GL->glGenVertexArrays(1, &VAO);
+	GL->glGenBuffers(1, &VBO);
+
+	const array<float, 6> vertices = { 0, 0, 0, 0, 0, 0 };
+	GL->glBindVertexArray(VAO);
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_DYNAMIC_DRAW);
+
+	GL->glVertexAttribLPointer(0, 2, GL_FLOAT, 2 * sizeof(double), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
+void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
+	{
+		// Update vertices
+		const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
+		const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
+		const vec1 radius  = d_to_f(width->getData().get<dvec1>());
+		const vec4 u_color = d_to_f(color->getData().get<dvec4>());
+
+		vec2 lineDir = d_to_f(glm::normalize(v2 - v1));
+		vec2 perpDir = vec2(-lineDir.y, lineDir.x);
+
+		vec2 np1_top    = v1 + perpDir * radius * 0.5f;
+		vec2 np1_bottom = v1 - perpDir * radius * 0.5f;
+		vec2 np2_top    = v2 + perpDir * radius * 0.5f;
+		vec2 np2_bottom = v2 - perpDir * radius * 0.5f;
+
+		const float vertices[] = {
+			np1_top.x, np1_top.y,
+			np1_bottom.x, np1_bottom.y,
+			np2_top.x, np2_top.y,
+
+			np2_top.x, np2_top.y,
+			np1_bottom.x, np1_bottom.y,
+			np2_bottom.x, np2_bottom.y
+		};
+
+		GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render
+		GL->glUseProgram(SP_Line);
+		GL->glUniform4fv(GL->glGetUniformLocation(SP_Line, "u_color"), 0, glm::value_ptr(u_color));
+		GL->glBindVertexArray(VAO);
+		GL->glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+		color->variable = Variable(dvec4(0, 0, 0, 0));
+	}
+	exec_out->exec();
+}
+
+NODES::RENDERING::DIM_2D::Rect::Rect() :
+	Node("2D Rect")
+{
+	VAO = 0;
+	VBO = 0;
+
+	header_color = QColor(50, 25, 25);
+	rect.setWidth(80);
+	rect.setHeight(140);
+
+	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_out = new PORT::Exec_O(this, "");
+
+	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
+	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
+	vert_c = new PORT::Data_I(this, "Pos C", VARIABLE::Type::VEC2);
+	vert_d = new PORT::Data_I(this, "Pos D", VARIABLE::Type::VEC2);
+	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+
+	vert_a->variable = Variable(dvec2(-5, -5));
+	vert_b->variable = Variable(dvec2(-5,  5));
+	vert_c->variable = Variable(dvec2( 5,  5));
+	vert_d->variable = Variable(dvec2( 5, -5));
+	color->variable = Variable(dvec4(1, 0, 1, 1));
+	init();
+}
+
+void NODES::RENDERING::DIM_2D::Rect::init() {
+	float vertices[] = {
+		-0.5f, -0.5f,
+		 0.5f, -0.5f,
+		 0.5f,  0.5f,
+	
+		-0.5f, -0.5f,
+		 0.5f,  0.5f,
+		-0.5f,  0.5f
+	};
+	
+	// Create VAO and VBO
+	GL->glGenVertexArrays(1, &VAO);
+	GL->glGenBuffers(1, &VBO);
+
+	GL->glBindVertexArray(VAO);
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Position attribute
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
+void NODES::RENDERING::DIM_2D::Rect::render() {
+	init();
+	const vec4 u_color = d_to_f(color->getData().get<dvec4>());
+
+	GL->glUseProgram(SP_Rect);
+	GL->glUniform4fv(GL->glGetUniformLocation(SP_Rect, "u_color"), 0, glm::value_ptr(u_color));
+	GL->glBindVertexArray(VAO);
+	GL->glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void NODES::RENDERING::DIM_2D::Rect::exec(const Port* port) {
+	render();
 	exec_out->exec();
 }

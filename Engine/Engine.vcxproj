@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\File.cpp" />
+    <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
     <ClCompile Include="Source\Nodes.cpp" />
     <ClCompile Include="Source\Node_Shelf.cpp" />
@@ -23,6 +25,7 @@
     <ClCompile Include="Source\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\File.hpp" />
     <ClInclude Include="Include\Inline\Glm.hpp" />
     <ClInclude Include="Include\Inline\Templates.hpp" />
     <ClInclude Include="Include\Inline\Templates\BiMap.hpp" />
@@ -42,6 +45,7 @@
     <ClInclude Include="Include\Nodes.hpp" />
     <ClInclude Include="Include\Scripting.hpp" />
     <ClInclude Include="Include\Viewport.hpp" />
+    <ClInclude Include="Include\OpenGL.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>
@@ -133,7 +137,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Coding\KL\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Coding\KL\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>KL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -162,7 +166,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(C
       <AdditionalIncludeDirectories>C:\Programs\Coding\Lib\glm 0.9.9.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>

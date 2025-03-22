@@ -24,6 +24,8 @@
     <ClInclude Include="Include\Nodes.hpp" />
     <ClInclude Include="Include\Viewport.hpp" />
     <ClInclude Include="Include\Scripting.hpp" />
+    <ClInclude Include="Include\OpenGL.hpp" />
+    <ClInclude Include="Include\File.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -48,5 +50,7 @@
     <ClCompile Include="Source\Nodes.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
     <ClCompile Include="Source\Viewport.cpp" />
+    <ClCompile Include="Source\OpenGL.cpp" />
+    <ClCompile Include="Source\File.cpp" />
   </ItemGroup>
 </Project>

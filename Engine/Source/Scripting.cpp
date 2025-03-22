@@ -10,6 +10,10 @@ KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() {
 	return session->buffer;
 }
 
+KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() {
+	return session->printer;
+}
+
 void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
 	session->flushLog();
 }

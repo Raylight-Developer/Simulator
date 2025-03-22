@@ -6,7 +6,9 @@ Variable::Variable() :
 {}
 
 Variable::~Variable() {
-	delete data;
+	if (data) {
+		delete data;
+	}
 }
 
 Variable::Variable(const dvec1& data) :
