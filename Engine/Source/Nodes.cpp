@@ -377,13 +377,8 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 
 #include "OpenGL.hpp"
 void NODES::RENDERING::DIM_2D::Line::init() {
-	const GLfloat vertices[] = {
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-	};
-	const GLuint indices[] = {
+	const GLfloat vertices[8] = { 0 };
+	const GLuint indices[6] = {
 		0, 1, 2,
 		0, 2, 3
 	};
@@ -473,11 +468,7 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 }
 
 void NODES::RENDERING::DIM_2D::Triangle::init() {
-	const GLfloat vertices[] = {
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-	};
+	const GLfloat vertices[6] = { 0 };
 	GL->glGenVertexArrays(1, &VAO);
 	GL->glGenBuffers(1, &VBO);
 
@@ -500,7 +491,7 @@ void NODES::RENDERING::DIM_2D::Triangle::render() {
 	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
 	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
 
-	const GLfloat vertices[] = {
+	const GLfloat vertices[6] = {
 		v1.x, v1.y,
 		v2.x, v2.y,
 		v3.x, v3.y
@@ -553,13 +544,8 @@ NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 }
 
 void NODES::RENDERING::DIM_2D::Rectangle::init() {
-	const GLfloat vertices[] = {
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f,
-	};
-	const GLuint indices[] = {
+	const GLfloat vertices[8] = { 0 };
+	const GLuint indices[6] = {
 		0, 1, 2,
 		0, 2, 3
 	};
@@ -590,7 +576,7 @@ void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	const vec2 v4      = d_to_f(vert_d->getData().get<dvec2>());
 	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
 
-	const GLfloat vertices[] = {
+	const GLfloat vertices[8] = {
 		v1.x, v1.y,
 		v2.x, v2.y,
 		v3.x, v3.y,
@@ -640,15 +626,15 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 }
 
 void NODES::RENDERING::DIM_2D::Circle::init() {
-	const GLfloat vertices[] = {
-		-1.0f, -1.0f,
-		 1.0f, -1.0f,
-		-1.0f,  1.0f,
-		 1.0f,  1.0f
+	const GLfloat vertices[8] = {
+		-1, -1,
+		-1,  1,
+		 1,  1,
+		 1, -1
 	};
-	const GLuint indices[] = {
+	const GLuint indices[6] = {
 		0, 1, 2,
-		1, 2, 3
+		0, 2, 3
 	};
 	GL->glGenVertexArrays(1, &VAO);
 	GL->glGenBuffers(1, &VBO);
