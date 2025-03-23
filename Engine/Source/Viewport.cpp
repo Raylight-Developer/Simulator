@@ -17,7 +17,9 @@ Viewport::Viewport() :
 
 	window_time(0.0),
 	delta_time(0.01666666)
-{}
+{
+	SESSION.viewport_resolution = resolution;
+}
 
 Viewport::~Viewport() {
 }
@@ -26,6 +28,33 @@ void Viewport::f_tickUpdate() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	FILE.tick.pointer->exec(delta_time);
+}
+
+void Viewport::f_compile() {
+	// TODO Static Shader Programs do not work.
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
+		if (confirm) {
+			NODES::RENDERING::DIM_2D::SP_Line = confirm.data;
+		}
+	}
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
+		if (confirm) {
+			NODES::RENDERING::DIM_2D::SP_Rect = confirm.data;
+		}
+	}
+}
+
+void Viewport::f_pipeline() {
+	GL = this;
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glViewport(0, 0, resolution.x, resolution.y);
+
+	f_compile();
 }
 
 void Viewport::f_guiUpdate() {
@@ -53,28 +82,8 @@ void Viewport::f_frameUpdate() {
 	frame_counter++;
 }
 
-void Viewport::f_pipeline() {
-	GL = this;
-	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
-		if (confirm) {
-			NODES::RENDERING::DIM_2D::SP_Line = confirm.data;
-		}
-	}
-	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
-		if (confirm) {
-			NODES::RENDERING::DIM_2D::SP_Rect = confirm.data;
-		}
-	}
-}
-
 void Viewport::initializeGL() {
 	initializeOpenGLFunctions();
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glViewport(0, 0, resolution.x, resolution.y);
-
 	f_pipeline();
 	start_time = chrono::high_resolution_clock::now();
 }
@@ -94,6 +103,7 @@ void Viewport::resizeGL(int w, int h) {
 	resolution = uvec2(i_to_u(w), i_to_u(h));
 	aspect_ratio = u_to_d(resolution.x) / u_to_d(resolution.y);
 
+	SESSION.viewport_resolution = resolution;
 	glViewport(0, 0, resolution.x, resolution.y);
 }
 
@@ -116,6 +126,9 @@ void Viewport::keyReleaseEvent(QKeyEvent* event) {
 
 void Viewport::keyPressEvent(QKeyEvent* event) {
 	inputs[event->key()] = true;
+	if (event->key() == Qt::Key::Key_R) {
+		f_compile();
+	}
 }
 
 void Viewport::wheelEvent(QWheelEvent* event) {

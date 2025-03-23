@@ -368,35 +368,45 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	width  = new PORT::Data_I(this, "Width", VARIABLE::Type::FLOAT);
 	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
 
-	vert_a->variable = Variable(dvec2(-5, -5));
-	vert_b->variable = Variable(dvec2(5, 5));
-	width->variable  = Variable(0.1);
+	vert_a->variable = Variable(dvec2(-500, -500));
+	vert_b->variable = Variable(dvec2( 500,  500));
+	width->variable  = Variable(5.0);
 	color->variable  = Variable(dvec4(1, 0, 1, 1));
 	init();
 }
 
+#include "OpenGL.hpp"
 void NODES::RENDERING::DIM_2D::Line::init() {
-	const float vertices[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-
-		-0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
+	const GLfloat vertices[] = {
+		-0.0f,  0.0f,
+		-0.0f, -0.0f,
+		 0.0f, -0.0f,
+		 0.0f,  0.0f,
+	};
+	const GLuint indices[] = {
+		0, 1, 2,
+		0, 2, 3
 	};
 	GL->glGenVertexArrays(1, &VAO);
 	GL->glGenBuffers(1, &VBO);
+	GL->glGenBuffers(1, &EBO);
 
 	GL->glBindVertexArray(VAO);
+
 	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
 	GL->glEnableVertexAttribArray(0);
 
 	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	GL->glBindVertexArray(0);
+
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
+	Shader = confirm.data;
 }
 
 void NODES::RENDERING::DIM_2D::Line::render() {
@@ -414,26 +424,25 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	vec2 np2_top    = v2 + perpDir * radius * 0.5f;
 	vec2 np2_bottom = v2 - perpDir * radius * 0.5f;
 
-	const float vertices[] = {
+	const GLfloat vertices[] = {
 		np1_top.x, np1_top.y,
 		np1_bottom.x, np1_bottom.y,
-		np2_top.x, np2_top.y,
-
-		np2_top.x, np2_top.y,
-		np1_bottom.x, np1_bottom.y,
-		np2_bottom.x, np2_bottom.y
+		np2_bottom.x, np2_bottom.y,
+		np2_top.x, np2_top.y
 	};
 	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	GL->glUseProgram(SP_Line);
-	GL->glUniform4fv(GL->glGetUniformLocation(SP_Line, "u_color"), 1, glm::value_ptr(u_color));
-	GL->glBindVertexArray(VAO);
-	GL->glDrawArrays(GL_TRIANGLES, 0, 6);
+	GL->glUseProgram(Shader);
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	GL->glBindVertexArray(VAO);
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//GL->glBindVertexArray(0);
+	//GL->glUseProgram(0);
 }
 
 void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
@@ -460,49 +469,74 @@ NODES::RENDERING::DIM_2D::Rect::Rect() :
 	vert_d = new PORT::Data_I(this, "Pos D", VARIABLE::Type::VEC2);
 	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
 
-	vert_a->variable = Variable(dvec2(-5, -5));
-	vert_b->variable = Variable(dvec2(-5,  5));
-	vert_c->variable = Variable(dvec2( 5,  5));
-	vert_d->variable = Variable(dvec2( 5, -5));
+	vert_a->variable = Variable(dvec2(-100, -100));
+	vert_b->variable = Variable(dvec2(-100,  100));
+	vert_c->variable = Variable(dvec2( 100,  100));
+	vert_d->variable = Variable(dvec2( 100, -100));
 	color->variable = Variable(dvec4(1, 0, 1, 1));
 	init();
 }
 
 void NODES::RENDERING::DIM_2D::Rect::init() {
-	const float vertices[] = {
-		-0.5f, -0.5f,
-		 0.5f, -0.5f,
-		 0.5f,  0.5f,
-
-		-0.5f, -0.5f,
-		 0.5f,  0.5f,
-		-0.5f,  0.5f
+	const GLfloat vertices[] = {
+		-0.0f,  0.0f,
+		-0.0f, -0.0f,
+		 0.0f, -0.0f,
+		 0.0f,  0.0f,
+	};
+	const GLuint indices[] = {
+		0, 1, 2,
+		0, 2, 3
 	};
 	GL->glGenVertexArrays(1, &VAO);
 	GL->glGenBuffers(1, &VBO);
+	GL->glGenBuffers(1, &EBO);
 
 	GL->glBindVertexArray(VAO);
+
 	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
 	GL->glEnableVertexAttribArray(0);
 
 	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	GL->glBindVertexArray(0);
+
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
+	Shader = confirm.data;
 }
 
 void NODES::RENDERING::DIM_2D::Rect::render() {
+	// Update vertices
+	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
+	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
+	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
+	const vec2 v4      = d_to_f(vert_d->getData().get<dvec2>());
 	const vec4 u_color = d_to_f(color->getData().get<dvec4>());
 
-	// Render
-	GL->glUseProgram(SP_Rect);
-	GL->glUniform4fv(GL->glGetUniformLocation(SP_Rect, "u_color"), 1, glm::value_ptr(u_color));
-	GL->glBindVertexArray(VAO);
-	GL->glDrawArrays(GL_TRIANGLES, 0, 6);
+	const GLfloat vertices[] = {
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y,
+		v4.x, v4.y
+	};
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	// Render
+	GL->glUseProgram(Shader);
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
+
+	GL->glBindVertexArray(VAO);
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//GL->glBindVertexArray(0);
+	//GL->glUseProgram(0);
 }
 
 void NODES::RENDERING::DIM_2D::Rect::exec(const Port* port) {

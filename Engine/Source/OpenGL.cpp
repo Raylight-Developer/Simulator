@@ -1,8 +1,6 @@
 #include "OpenGL.hpp"
 
 KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, const string& frag_file_path) {
-	GLuint shader_program = GL->glCreateShader(GL_VERTEX_SHADER);
-
 	GLuint vert_shader = GL->glCreateShader(GL_VERTEX_SHADER);
 	const string vertex_code = loadFromFile(vert_file_path);
 	const char* vertex_code_cstr = vertex_code.c_str();
@@ -20,10 +18,10 @@ KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, co
 	GL->glCompileShader(frag_shader);
 
 	if (!checkShaderCompilation(frag_shader, fragment_code)) {
-		return  KL::Confirm<GLuint>();
+		return KL::Confirm<GLuint>();
 	}
 
-	shader_program = GL->glCreateProgram();
+	GLuint shader_program = GL->glCreateProgram();
 	GL->glAttachShader(shader_program, vert_shader);
 	GL->glAttachShader(shader_program, frag_shader);
 	GL->glLinkProgram(shader_program);
@@ -37,7 +35,6 @@ KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, co
 }
 
 KL::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
-	GLuint shader_program;
 	string compute_code = preprocessShader(comp_file_path);
 
 	const char* compute_code_cstr = compute_code.c_str();
@@ -49,7 +46,7 @@ KL::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
 		return KL::Confirm<GLuint>();
 	}
 
-	shader_program = GL->glCreateProgram();
+	GLuint shader_program = GL->glCreateProgram();
 	GL->glAttachShader(shader_program, comp_shader);
 	GL->glLinkProgram(shader_program);
 
@@ -66,7 +63,7 @@ bool OpenGL::checkShaderCompilation(const GLuint& shader, const string& shader_c
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
-		LOG NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Shader Compilation Failed: "; FLUSH;
+		PRINT(NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Shader Compilation Failed: ");
 		printShaderErrorWithContext(shader_code, infoLog);
 		return false;
 	}
@@ -79,7 +76,7 @@ bool OpenGL::checkProgramLinking(const GLuint& program) {
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetProgramInfoLog(program, sizeof(infoLog), nullptr, infoLog);
-		LOG NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Program Linking Failed: " << infoLog; FLUSH;
+		PRINT(NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Program Linking Failed: " << infoLog);
 		return false;
 	}
 	return true;

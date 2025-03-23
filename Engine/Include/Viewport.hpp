@@ -23,8 +23,8 @@ struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
 	~Viewport();
 
 	void f_pipeline();
-
 	void f_tickUpdate();
+	void f_compile();
 
 	void f_timings();
 	void f_guiUpdate();
