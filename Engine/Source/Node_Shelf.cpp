@@ -20,6 +20,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_make      = new GUI::Tree_Item(tree_cast, "Make", 1);
 	auto tree_break     = new GUI::Tree_Item(tree_cast, "Break", 1);
+
 	auto tree_render_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
 	auto tree_render_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
 
@@ -36,8 +37,10 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	//auto euler_tick     = new GUI::Tree_Item(tree_exec, "Euler Tick", 2, { { 1000, "EULER TICK" } });
 
-	auto render_2d_line = new GUI::Tree_Item(tree_render_2d, "Line", 2, { { 1000, "RENDER 2D LINE" } });
-	auto render_2d_rect = new GUI::Tree_Item(tree_render_2d, "Rect", 2, { { 1000, "RENDER 2D RECT" } });
+	auto render_2d_line      = new GUI::Tree_Item(tree_render_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
+	auto render_2d_triangle  = new GUI::Tree_Item(tree_render_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });
+	auto render_2d_rectangle = new GUI::Tree_Item(tree_render_2d, "Rectangle", 2, { { 1000, "RENDER 2D RECTANGLE" } });
+	auto render_2d_circle    = new GUI::Tree_Item(tree_render_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
 
 	expandAll();
 }

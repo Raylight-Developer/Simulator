@@ -391,12 +391,15 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "RENDER 2D LINE") {
 				node = new NODES::RENDERING::DIM_2D::Line();
 			}
-			else if (type == "RENDER 2D RECT") {
-				node = new NODES::RENDERING::DIM_2D::Rect();
+			else if (type == "RENDER 2D TRIANGLE") {
+				node = new NODES::RENDERING::DIM_2D::Triangle();
 			}
-			//else if (type == "EULER TICK") {
-			//	node = new NODES::EXEC::Euler_Tick();
-			//}
+			else if (type == "RENDER 2D RECTANGLE") {
+				node = new NODES::RENDERING::DIM_2D::Rectangle();
+			}
+			else if (type == "RENDER 2D CIRCLE") {
+				node = new NODES::RENDERING::DIM_2D::Circle();
+			}
 		}
 		if (node) {
 			scene->addItem(node);

@@ -32,17 +32,18 @@ void Viewport::f_tickUpdate() {
 }
 
 void Viewport::f_compile() {
-	// TODO Static Shader Programs do not work.
 	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Template.vert", "./Shaders/2D/Template.frag");
 		if (confirm) {
-			SP_Line = confirm.data;
+			SP_2D_Line      = confirm.data;
+			SP_2D_Triangle  = confirm.data;
+			SP_2D_Rectangle = confirm.data;
 		}
 	}
 	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Circle.vert", "./Shaders/2D/Circle.frag");
 		if (confirm) {
-			SP_Rect = confirm.data;
+			SP_2D_Circle = confirm.data;
 		}
 	}
 }

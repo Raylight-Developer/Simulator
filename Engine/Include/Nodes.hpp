@@ -225,7 +225,24 @@ namespace NODES {
 
 				void exec(const Port* port) override;
 			};
-			struct Rect : Node {
+			struct Triangle : Node {
+				PORT::Exec_I* exec_in;
+				PORT::Exec_O* exec_out;
+
+				PORT::Data_I* vert_a;
+				PORT::Data_I* vert_b;
+				PORT::Data_I* vert_c;
+				PORT::Data_I* color;
+
+				Triangle();
+
+				GLuint VAO, VBO;
+				void init();
+				void render();
+
+				void exec(const Port* port) override;
+			};
+			struct Rectangle : Node {
 				PORT::Exec_I* exec_in;
 				PORT::Exec_O* exec_out;
 
@@ -235,7 +252,23 @@ namespace NODES {
 				PORT::Data_I* vert_d;
 				PORT::Data_I* color;
 
-				Rect();
+				Rectangle();
+
+				GLuint VAO, VBO, EBO;
+				void init();
+				void render();
+
+				void exec(const Port* port) override;
+			};
+			struct Circle : Node {
+				PORT::Exec_I* exec_in;
+				PORT::Exec_O* exec_out;
+
+				PORT::Data_I* center;
+				PORT::Data_I* radius;
+				PORT::Data_I* color;
+
+				Circle();
 
 				GLuint VAO, VBO, EBO;
 				void init();

@@ -354,8 +354,7 @@ Variable NODES::EXEC::Euler_Tick::getData(const Port* port) const {
 NODES::RENDERING::DIM_2D::Line::Line() :
 	Node("2D Line")
 {
-	VAO = 0;
-	VBO = 0;
+	VAO, VBO, EBO = 0;
 
 	header_color = QColor(50, 25, 25);
 	rect.setWidth(80);
@@ -369,20 +368,20 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	width  = new PORT::Data_I(this, "Width", VARIABLE::Type::FLOAT);
 	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
 
-	vert_a->variable = Variable(dvec2(-500, -500));
-	vert_b->variable = Variable(dvec2( 500,  500));
-	width->variable  = Variable(5.0);
-	color->variable  = Variable(dvec4(1, 0, 1, 1));
+	vert_a->variable = Variable(dvec2(-200, -200));
+	vert_b->variable = Variable(dvec2( 200,  200));
+	width->variable  = Variable(3.0);
+	color->variable  = Variable(dvec4(1, 1, 1, 1));
 	init();
 }
 
 #include "OpenGL.hpp"
 void NODES::RENDERING::DIM_2D::Line::init() {
 	const GLfloat vertices[] = {
-		-0.0f,  0.0f,
-		-0.0f, -0.0f,
-		 0.0f, -0.0f,
-		 0.0f,  0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
 	};
 	const GLuint indices[] = {
 		0, 1, 2,
@@ -411,8 +410,8 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	// Update vertices
 	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
 	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
-	const vec1 radius  = d_to_f(width->getData().get<dvec1>());
-	const vec4 u_color = d_to_f(color->getData().get<dvec4>());
+	const vec1 radius  = d_to_f(width ->getData().get<dvec1>());
+	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
 
 	vec2 lineDir = d_to_f(glm::normalize(v2 - v1));
 	vec2 perpDir = vec2(-lineDir.y, lineDir.x);
@@ -432,10 +431,10 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_Line;
+	const GLuint Shader = SESSION.viewport->SP_2D_Line;
 	GL->glUseProgram(Shader);
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -449,11 +448,88 @@ void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
 	exec_out->exec();
 }
 
-NODES::RENDERING::DIM_2D::Rect::Rect() :
+NODES::RENDERING::DIM_2D::Triangle::Triangle() :
+	Node("2D Tri")
+{
+	VAO, VBO = 0;
+
+	header_color = QColor(50, 25, 25);
+	rect.setWidth(80);
+	rect.setHeight(140);
+
+	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_out = new PORT::Exec_O(this, "");
+
+	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
+	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
+	vert_c = new PORT::Data_I(this, "Pos C", VARIABLE::Type::VEC2);
+	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+
+	vert_a->variable = Variable(dvec2(  0,  57.777));
+	vert_b->variable = Variable(dvec2(-50, -28.868));
+	vert_c->variable = Variable(dvec2( 50, -28.868));
+	color->variable  = Variable(dvec4(1, 1, 1, 1));
+	init();
+}
+
+void NODES::RENDERING::DIM_2D::Triangle::init() {
+	const GLfloat vertices[] = {
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+	};
+	GL->glGenVertexArrays(1, &VAO);
+	GL->glGenBuffers(1, &VBO);
+
+	GL->glBindVertexArray(VAO);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
+void NODES::RENDERING::DIM_2D::Triangle::render() {
+	// Update vertices
+	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
+	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
+	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
+	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
+
+	const GLfloat vertices[] = {
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y
+	};
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+	// Render
+	const GLuint Shader = SESSION.viewport->SP_2D_Triangle;
+	GL->glUseProgram(Shader);
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
+
+	GL->glBindVertexArray(VAO);
+	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void NODES::RENDERING::DIM_2D::Triangle::exec(const Port* port) {
+	render();
+	exec_out->exec();
+}
+
+NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 	Node("2D Rect")
 {
-	VAO = 0;
-	VBO = 0;
+	VAO, VBO, EBO = 0;
 
 	header_color = QColor(50, 25, 25);
 	rect.setWidth(80);
@@ -472,16 +548,16 @@ NODES::RENDERING::DIM_2D::Rect::Rect() :
 	vert_b->variable = Variable(dvec2(-100,  100));
 	vert_c->variable = Variable(dvec2( 100,  100));
 	vert_d->variable = Variable(dvec2( 100, -100));
-	color->variable = Variable(dvec4(1, 0, 1, 1));
+	color->variable  = Variable(dvec4(1, 1, 1, 1));
 	init();
 }
 
-void NODES::RENDERING::DIM_2D::Rect::init() {
+void NODES::RENDERING::DIM_2D::Rectangle::init() {
 	const GLfloat vertices[] = {
-		-0.0f,  0.0f,
-		-0.0f, -0.0f,
-		 0.0f, -0.0f,
-		 0.0f,  0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
+		0.0f, 0.0f,
 	};
 	const GLuint indices[] = {
 		0, 1, 2,
@@ -506,13 +582,13 @@ void NODES::RENDERING::DIM_2D::Rect::init() {
 	GL->glBindVertexArray(0);
 }
 
-void NODES::RENDERING::DIM_2D::Rect::render() {
+void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	// Update vertices
 	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
 	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
 	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
 	const vec2 v4      = d_to_f(vert_d->getData().get<dvec2>());
-	const vec4 u_color = d_to_f(color->getData().get<dvec4>());
+	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
 
 	const GLfloat vertices[] = {
 		v1.x, v1.y,
@@ -524,10 +600,10 @@ void NODES::RENDERING::DIM_2D::Rect::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_Rect;
+	const GLuint Shader = SESSION.viewport->SP_2D_Rectangle;
 	GL->glUseProgram(Shader);
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -536,7 +612,84 @@ void NODES::RENDERING::DIM_2D::Rect::render() {
 	GL->glUseProgram(0);
 }
 
-void NODES::RENDERING::DIM_2D::Rect::exec(const Port* port) {
+void NODES::RENDERING::DIM_2D::Rectangle::exec(const Port* port) {
+	render();
+	exec_out->exec();
+}
+
+NODES::RENDERING::DIM_2D::Circle::Circle() :
+	Node("2D Circle")
+{
+	VAO, VBO, EBO = 0;
+
+	header_color = QColor(50, 25, 25);
+	rect.setWidth(80);
+	rect.setHeight(120);
+
+	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_out = new PORT::Exec_O(this, "");
+
+	center = new PORT::Data_I(this, "Center", VARIABLE::Type::VEC2);
+	radius = new PORT::Data_I(this, "Radius", VARIABLE::Type::VEC2);
+	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+
+	center->variable = Variable(dvec2(0, 0));
+	radius->variable = Variable(50.0);
+	color->variable  = Variable(dvec4(1, 1, 1, 1));
+	init();
+}
+
+void NODES::RENDERING::DIM_2D::Circle::init() {
+	const GLfloat vertices[] = {
+		-1.0f, -1.0f,
+		 1.0f, -1.0f,
+		-1.0f,  1.0f,
+		 1.0f,  1.0f
+	};
+	const GLuint indices[] = {
+		0, 1, 2,
+		1, 2, 3
+	};
+	GL->glGenVertexArrays(1, &VAO);
+	GL->glGenBuffers(1, &VBO);
+	GL->glGenBuffers(1, &EBO);
+
+	GL->glBindVertexArray(VAO);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
+void NODES::RENDERING::DIM_2D::Circle::render() {
+	const vec4 u_color  = d_to_f(color ->getData().get<dvec4>());
+	const vec2 u_center = d_to_f(center->getData().get<dvec2>());
+	const vec1 u_radius = d_to_f(radius->getData().get<dvec1>());
+
+	// Render
+	const GLuint Shader = SESSION.viewport->SP_2D_Circle;
+	GL->glUseProgram(Shader);
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(u_color));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(u_center));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uRadius"), u_radius);
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
+
+	GL->glBindVertexArray(VAO);
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void NODES::RENDERING::DIM_2D::Circle::exec(const Port* port) {
 	render();
 	exec_out->exec();
 }
