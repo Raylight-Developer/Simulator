@@ -2,7 +2,7 @@
 
 #include "KL.hpp"
 
-struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
+struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	dvec1 aspect_ratio;
 	uvec2 resolution;
 
@@ -41,4 +41,6 @@ struct Viewport : QOpenGLWindow, protected QOpenGLFunctions_4_5_Core {
 	void keyReleaseEvent(QKeyEvent* event) override;
 	void keyPressEvent(QKeyEvent* event) override;
 	void wheelEvent(QWheelEvent* event) override;
+
+	GLuint SP_Line, SP_Rect;
 };

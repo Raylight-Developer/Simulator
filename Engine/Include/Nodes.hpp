@@ -208,7 +208,6 @@ namespace NODES {
 
 	namespace RENDERING {
 		namespace DIM_2D {
-			static GLuint SP_Line;
 			struct Line : Node {
 				PORT::Exec_I* exec_in;
 				PORT::Exec_O* exec_out;
@@ -220,13 +219,12 @@ namespace NODES {
 
 				Line();
 
-				GLuint VAO, VBO, EBO, Shader;
+				GLuint VAO, VBO, EBO;
 				void init();
 				void render();
 
 				void exec(const Port* port) override;
 			};
-			static GLuint SP_Rect;
 			struct Rect : Node {
 				PORT::Exec_I* exec_in;
 				PORT::Exec_O* exec_out;
@@ -239,7 +237,7 @@ namespace NODES {
 
 				Rect();
 
-				GLuint VAO, VBO, EBO, Shader;
+				GLuint VAO, VBO, EBO;
 				void init();
 				void render();
 

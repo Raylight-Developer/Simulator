@@ -1,6 +1,7 @@
 #include "Nodes.hpp"
 
 #include "Session.hpp"
+#include "Viewport.hpp"
 
 NODES::Arithmetic::Arithmetic() :
 	Node("Arithmetic"),
@@ -404,9 +405,6 @@ void NODES::RENDERING::DIM_2D::Line::init() {
 
 	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	GL->glBindVertexArray(0);
-
-	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
-	Shader = confirm.data;
 }
 
 void NODES::RENDERING::DIM_2D::Line::render() {
@@ -434,6 +432,7 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
+	const GLuint Shader = SESSION.viewport->SP_Line;
 	GL->glUseProgram(Shader);
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
 	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
@@ -441,8 +440,8 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	//GL->glBindVertexArray(0);
-	//GL->glUseProgram(0);
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
 }
 
 void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
@@ -505,9 +504,6 @@ void NODES::RENDERING::DIM_2D::Rect::init() {
 
 	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
 	GL->glBindVertexArray(0);
-
-	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
-	Shader = confirm.data;
 }
 
 void NODES::RENDERING::DIM_2D::Rect::render() {
@@ -528,6 +524,7 @@ void NODES::RENDERING::DIM_2D::Rect::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
+	const GLuint Shader = SESSION.viewport->SP_Rect;
 	GL->glUseProgram(Shader);
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "u_color"), 1, glm::value_ptr(u_color));
 	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "u_resolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
@@ -535,8 +532,8 @@ void NODES::RENDERING::DIM_2D::Rect::render() {
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	//GL->glBindVertexArray(0);
-	//GL->glUseProgram(0);
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
 }
 
 void NODES::RENDERING::DIM_2D::Rect::exec(const Port* port) {

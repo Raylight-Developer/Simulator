@@ -1,6 +1,7 @@
 #include "Session.hpp"
 
 #include "Window.hpp"
+#include "Viewport.hpp"
 #include "Scripting.hpp"
 
 Session::Session() :

@@ -18,6 +18,7 @@ Viewport::Viewport() :
 	window_time(0.0),
 	delta_time(0.01666666)
 {
+	SESSION.viewport = this;
 	SESSION.viewport_resolution = resolution;
 }
 
@@ -35,13 +36,13 @@ void Viewport::f_compile() {
 	{
 		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
 		if (confirm) {
-			NODES::RENDERING::DIM_2D::SP_Line = confirm.data;
+			SP_Line = confirm.data;
 		}
 	}
 	{
 		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rect.vert", "./Shaders/2D/Rect.frag");
 		if (confirm) {
-			NODES::RENDERING::DIM_2D::SP_Rect = confirm.data;
+			SP_Rect = confirm.data;
 		}
 	}
 }
