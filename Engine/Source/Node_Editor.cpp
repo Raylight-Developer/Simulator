@@ -136,7 +136,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 								if (source_port->connection) {
 									delete source_port->connection;
 								}
-								source_port->connection = new_conn; // Not Working?
+								source_port->connection = new_conn; // TODO Not Working. connection being deleted somewhere.
 								drop_port->connections.push_back(new_conn);
 							}
 							else {

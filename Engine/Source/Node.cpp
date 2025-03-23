@@ -108,22 +108,24 @@ NODE::Connection::Connection(Port* port_l, Port* port_r) :
 }
 
 NODE::Connection::~Connection() {
-	if (auto port = dynamic_cast<PORT::Exec_I*>(port_r)) {
-		auto it = std::find(port->connections.begin(), port->connections.end(), this);
-		if (it != port->connections.end()) {
-			port->connections.erase(it);
+	if (port_r and port_l) {
+		if (auto port = dynamic_cast<PORT::Exec_I*>(port_r)) {
+			auto it = std::find(port->connections.begin(), port->connections.end(), this);
+			if (it != port->connections.end()) {
+				port->connections.erase(it);
+			}
 		}
-	}
-	if (auto port = dynamic_cast<PORT::Exec_O*>(port_l)) {
-		port->connection = nullptr;
-	}
-	if (auto port = dynamic_cast<PORT::Data_I*>(port_r)) {
-		port->connection = nullptr;
-	}
-	if (auto port = dynamic_cast<PORT::Data_O*>(port_l)) {
-		auto it = std::find(port->connections.begin(), port->connections.end(), this);
-		if (it != port->connections.end()) {
-			port->connections.erase(it);
+		if (auto port = dynamic_cast<PORT::Exec_O*>(port_l)) {
+			port->connection = nullptr;
+		}
+		if (auto port = dynamic_cast<PORT::Data_I*>(port_r)) {
+			port->connection = nullptr;
+		}
+		if (auto port = dynamic_cast<PORT::Data_O*>(port_l)) {
+			auto it = std::find(port->connections.begin(), port->connections.end(), this);
+			if (it != port->connections.end()) {
+				port->connections.erase(it);
+			}
 		}
 	}
 }
@@ -245,9 +247,9 @@ NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
 
 NODE::PORT::Exec_O::~Exec_O() {
 	if (connection) {
-		if (Exec_I* port = dynamic_cast<Exec_I*>(connection->port_r)) {
-			port->connections.erase(std::find(port->connections.begin(), port->connections.end(), connection));
-		}
+		Exec_I* port = static_cast<Exec_I*>(connection->port_r);
+		port->connections.erase(std::find(port->connections.begin(), port->connections.end(), connection));
+
 		delete connection;
 		connection = nullptr;
 	}
