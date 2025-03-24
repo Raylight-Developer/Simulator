@@ -22,6 +22,8 @@ namespace NODES {
 
 				KL::Lace& log();
 				KL::Lace& printer();
+				QOpenGLFunctions_4_5_Core* gl();
+
 				void flush();
 			};
 		}

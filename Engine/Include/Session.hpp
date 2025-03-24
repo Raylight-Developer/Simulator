@@ -13,7 +13,6 @@ struct Session : KL::Session {
 	static Session& getInstance();
 
 	QOpenGLFunctions_4_5_Core* gl;
-	uvec2 viewport_resolution;
 	Viewport* viewport;
 
 	File file;

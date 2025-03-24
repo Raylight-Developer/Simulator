@@ -356,7 +356,7 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 {
 	VAO, VBO, EBO = 0;
 
-	header_color = QColor(50, 25, 25);
+	header_color = QColor(75, 25, 25);
 	rect.setWidth(80);
 	rect.setHeight(140);
 
@@ -375,7 +375,6 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	init();
 }
 
-#include "OpenGL.hpp"
 void NODES::RENDERING::DIM_2D::Line::init() {
 	const GLfloat vertices[8] = { 0 };
 	const GLuint indices[6] = {
@@ -428,8 +427,11 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	// Render
 	const GLuint Shader = SESSION.viewport->SP_2D_Line;
 	GL->glUseProgram(Shader);
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -448,7 +450,7 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 {
 	VAO, VBO = 0;
 
-	header_color = QColor(50, 25, 25);
+	header_color = QColor(75, 25, 25);
 	rect.setWidth(80);
 	rect.setHeight(140);
 
@@ -502,8 +504,11 @@ void NODES::RENDERING::DIM_2D::Triangle::render() {
 	// Render
 	const GLuint Shader = SESSION.viewport->SP_2D_Triangle;
 	GL->glUseProgram(Shader);
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -522,7 +527,7 @@ NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 {
 	VAO, VBO, EBO = 0;
 
-	header_color = QColor(50, 25, 25);
+	header_color = QColor(75, 25, 25);
 	rect.setWidth(80);
 	rect.setHeight(160);
 
@@ -588,8 +593,11 @@ void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	// Render
 	const GLuint Shader = SESSION.viewport->SP_2D_Rectangle;
 	GL->glUseProgram(Shader);
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -608,7 +616,7 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 {
 	VAO, VBO, EBO = 0;
 
-	header_color = QColor(50, 25, 25);
+	header_color = QColor(75, 25, 25);
 	rect.setWidth(80);
 	rect.setHeight(120);
 
@@ -616,8 +624,8 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	exec_out = new PORT::Exec_O(this, "");
 
 	center = new PORT::Data_I(this, "Center", VARIABLE::Type::VEC2);
-	radius = new PORT::Data_I(this, "Radius", VARIABLE::Type::VEC2);
-	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+	radius = new PORT::Data_I(this, "Radius", VARIABLE::Type::FLOAT);
+	color  = new PORT::Data_I(this, "Color" , VARIABLE::Type::VEC4);
 
 	center->variable = Variable(dvec2(0, 0));
 	radius->variable = Variable(50.0);
@@ -663,10 +671,13 @@ void NODES::RENDERING::DIM_2D::Circle::render() {
 	// Render
 	const GLuint Shader = SESSION.viewport->SP_2D_Circle;
 	GL->glUseProgram(Shader);
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(u_color));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(u_center));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(u_center));
 	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uRadius"), u_radius);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport_resolution));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

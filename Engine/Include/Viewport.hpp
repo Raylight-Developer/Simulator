@@ -6,6 +6,10 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	dvec1 aspect_ratio;
 	uvec2 resolution;
 
+	dvec2 center_2d;
+	dvec1 zoom_2d;
+	bool  move_2d;
+
 	uint64 frame_counter;
 	uint64 frame_count;
 
@@ -15,7 +19,6 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	dvec1 window_time;
 	dvec1 delta_time;
 
-	unordered_map<uint, bool> inputs;
 	dvec2 current_mouse;
 	dvec2 last_mouse;
 

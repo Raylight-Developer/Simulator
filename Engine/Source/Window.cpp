@@ -16,7 +16,7 @@ Window::Window() {
 	GUI::Splitter* main_splitter = new GUI::Splitter(this, true);
 	main_splitter->addWidget(container);
 	main_splitter->addWidget(splitter);
-	main_splitter->setSizes({ 1000, 500 });
+	main_splitter->setSizes({ 1000, 1000 });
 	
 	setCentralWidget(main_splitter);
 	showMaximized();

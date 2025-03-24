@@ -12,6 +12,10 @@ Viewport::Viewport() :
 	resolution(uvec2(3840U, 2160U)),
 	aspect_ratio(u_to_d(resolution.x) / u_to_d(resolution.y)),
 
+	center_2d(dvec2(0.0, 0.0)),
+	zoom_2d(1.0),
+	move_2d(false),
+
 	current_mouse(u_to_d(resolution / 2U)),
 	last_mouse(current_mouse),
 
@@ -19,7 +23,6 @@ Viewport::Viewport() :
 	delta_time(0.01666666)
 {
 	SESSION.viewport = this;
-	SESSION.viewport_resolution = resolution;
 }
 
 Viewport::~Viewport() {
@@ -68,9 +71,6 @@ void Viewport::f_guiUpdate() {
 }
 
 void Viewport::f_inputLoop() {
-	if (inputs[Qt::Key::Key_Enter]) {
-		
-	}
 }
 
 void Viewport::f_timings() {
@@ -105,29 +105,35 @@ void Viewport::resizeGL(int w, int h) {
 	resolution = uvec2(i_to_u(w), i_to_u(h));
 	aspect_ratio = u_to_d(resolution.x) / u_to_d(resolution.y);
 
-	SESSION.viewport_resolution = resolution;
 	glViewport(0, 0, resolution.x, resolution.y);
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event) {
-	inputs[event->button()] = false;
+	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
+		move_2d = false;
+	}
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event) {
-	inputs[event->button()] = true;
 	last_mouse = p_to_d(event->pos());
+	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
+		move_2d = true;
+	}
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event) {
 	current_mouse = p_to_d(event->pos());
+	if (move_2d) {
+		const dvec2 delta = last_mouse - p_to_d(event->pos());
+		center_2d += dvec2(-delta.x, delta.y) / zoom_2d;
+		last_mouse = p_to_d(event->pos());
+	}
 }
 
 void Viewport::keyReleaseEvent(QKeyEvent* event) {
-	inputs[event->key()] = false;
 }
 
 void Viewport::keyPressEvent(QKeyEvent* event) {
-	inputs[event->key()] = true;
 	if (event->key() == Qt::Key::Key_R) {
 		f_compile();
 	}
@@ -136,7 +142,9 @@ void Viewport::keyPressEvent(QKeyEvent* event) {
 void Viewport::wheelEvent(QWheelEvent* event) {
 	const QPoint scrollAmount = event->angleDelta();
 	if (scrollAmount.y() > 0) {
+		zoom_2d *= 1.1;
 	}
 	else {
+		zoom_2d /= 1.1;
 	}
 }

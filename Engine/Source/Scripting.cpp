@@ -14,6 +14,10 @@ KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() {
 	return session->printer;
 }
 
+QOpenGLFunctions_4_5_Core* NODES::SCRIPT::SCRIPT_LAYER::SL_Session::gl() {
+	return session->gl;
+}
+
 void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
 	session->flushLog();
 }

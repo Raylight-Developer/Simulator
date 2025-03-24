@@ -2,14 +2,14 @@
 
 out vec4 fragColor;
 
+uniform vec4  uColor;
+uniform float uRadius;
+uniform vec2  uPosition;
+
 in vec2 vFragCoord;
 
-uniform vec4  uColor;
-uniform vec2  uCenter;
-uniform float uRadius;
-
 void main() {
-	float dist = distance(vFragCoord, uCenter);
+	float dist = distance(vFragCoord, uPosition);
 	if (dist > 1.0) {
 		discard;
 	}
