@@ -25,15 +25,15 @@ NODES::Arithmetic::Arithmetic() :
 	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
 	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
 
+	i_a->variable = Variable(0LL);
+	i_b->variable = Variable(0LL);
+
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(40, 20);
 	enums->addItems({ "+", "-", "*", "/" });
 
-	QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget(this);
-	proxyWidget->setWidget(enums);
-	proxyWidget->setPos(30, 30);
-	proxyWidget->setFlag(QGraphicsItem::ItemIsMovable);
-	proxyWidget->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+	auto pw_enums = new GUI::Graphics_Widget(enums, this);
+	pw_enums->setPos(30, 30);
 }
 
 void NODES::Arithmetic::setType(const VARIABLE::Type& type) {
@@ -66,10 +66,6 @@ void NODES::Arithmetic::onDisconnection(Port* port) {
 	}
 }
 
-//void NODES::Arithmetic::onTypeChanged(Port* port, const VARIABLE::Type& var_type) {
-//	setType(var_type);
-//}
-
 Variable NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
 		case 0: return i_a->getData() + i_b->getData();
@@ -96,11 +92,8 @@ NODES::Trigonometry::Trigonometry() :
 	enums->setFixedSize(80, 20);
 	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
 
-	QGraphicsProxyWidget* proxyWidget = new QGraphicsProxyWidget(this);
-	proxyWidget->setWidget(enums);
+	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
 	proxyWidget->setPos(30, 30);
-	proxyWidget->setFlag(QGraphicsItem::ItemIsMovable);
-	proxyWidget->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
 
 bool NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
@@ -131,6 +124,180 @@ Variable NODES::Trigonometry::getData(const Port* port) const {
 		case 14: return 1.0 / sinh(x);
 	}
 	return Variable(x);
+}
+
+NODES::INPUT::Integer::Integer() :
+	Node("Integer")
+{
+	rect.setWidth(80);
+	rect.setHeight(60);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::INT);
+	value = 0;
+
+	input = new GUI::Value_Input();
+	input->setFixedSize(60, 20);
+	input->setText("0");
+	input->setValidator(new QIntValidator(input));
+
+	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
+	proxyWidget->setPos(10, 30);
+
+	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val.toInt(); });
+}
+
+Variable NODES::INPUT::Integer::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::Double::Double() :
+	Node("Double")
+{
+	rect.setWidth(80);
+	rect.setHeight(60);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::FLOAT);
+	value = 0.0;
+
+	input = new GUI::Value_Input();
+	input->setFixedSize(60, 20);
+	input->setText("0");
+	input->setValidator(new QDoubleValidator(input));
+
+	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
+	proxyWidget->setPos(10, 30);
+
+	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val.toDouble(); });
+}
+
+Variable NODES::INPUT::Double::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::Vec2::Vec2() :
+	Node("Vec2")
+{
+	rect.setWidth(80);
+	rect.setHeight(80);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	value = dvec2(0.0, 0.0);
+
+	input_x = new GUI::Value_Input();
+	input_x->setFixedSize(60, 20);
+	input_x->setText("0");
+	input_x->setValidator(new QDoubleValidator(input_x));
+
+	input_y = new GUI::Value_Input();
+	input_y->setFixedSize(60, 20);
+	input_y->setText("0");
+	input_y->setValidator(new QDoubleValidator(input_y));
+
+	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
+	proxyWidgetX->setPos(10, 30);
+
+	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
+	proxyWidgetY->setPos(10, 50);
+
+	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
+	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
+}
+
+Variable NODES::INPUT::Vec2::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::Vec3::Vec3() :
+	Node("Vec3")
+{
+	rect.setWidth(80);
+	rect.setHeight(100);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	value = dvec3(0.0, 0.0, 0.0);
+
+	input_x = new GUI::Value_Input();
+	input_x->setFixedSize(60, 20);
+	input_x->setText("0");
+	input_x->setValidator(new QDoubleValidator(input_x));
+
+	input_y = new GUI::Value_Input();
+	input_y->setFixedSize(60, 20);
+	input_y->setText("0");
+	input_y->setValidator(new QDoubleValidator(input_y));
+	
+	input_z = new GUI::Value_Input();
+	input_z->setFixedSize(60, 20);
+	input_z->setText("0");
+	input_z->setValidator(new QDoubleValidator(input_z));
+
+	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
+	proxyWidgetX->setPos(10, 30);
+
+	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
+	proxyWidgetY->setPos(10, 50);
+	
+	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
+	proxyWidgetZ->setPos(10, 70);
+
+	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
+	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
+	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
+}
+
+Variable NODES::INPUT::Vec3::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::Vec4::Vec4() :
+	Node("Vec4")
+{
+	rect.setWidth(80);
+	rect.setHeight(120);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	value = dvec4(0.0, 0.0, 0.0, 0.0);
+
+	input_x = new GUI::Value_Input();
+	input_x->setFixedSize(60, 20);
+	input_x->setText("0");
+	input_x->setValidator(new QDoubleValidator(input_x));
+
+	input_y = new GUI::Value_Input();
+	input_y->setFixedSize(60, 20);
+	input_y->setText("0");
+	input_y->setValidator(new QDoubleValidator(input_y));
+	
+	input_z = new GUI::Value_Input();
+	input_z->setFixedSize(60, 20);
+	input_z->setText("0");
+	input_z->setValidator(new QDoubleValidator(input_z));
+	
+	input_w = new GUI::Value_Input();
+	input_w->setFixedSize(60, 20);
+	input_w->setText("0");
+	input_w->setValidator(new QDoubleValidator(input_w));
+
+	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
+	proxyWidgetX->setPos(10, 30);
+
+	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
+	proxyWidgetY->setPos(10, 50);
+
+	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
+	proxyWidgetZ->setPos(10, 70);
+
+	auto* proxyWidgetW = new GUI::Graphics_Widget(input_w, this);
+	proxyWidgetW->setPos(10, 90);
+
+	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
+	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
+	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
+	QObject::connect(input_w, &GUI::Value_Input::textEdited, [this](const QString& val) { value.w = val.toDouble(); });
+}
+
+Variable NODES::INPUT::Vec4::getData(const Port* port) const {
+	return Variable(value);
 }
 
 NODES::CAST::MAKE::Vec2::Vec2() :

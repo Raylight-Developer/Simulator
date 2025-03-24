@@ -170,7 +170,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 			creating_connection = nullptr;
 		};
 	}
-	Graphics_View::mouseReleaseEvent(event);
+	GUI::Graphics_View::mouseReleaseEvent(event);
 }
 
 void Node_Editor::mousePressEvent(QMouseEvent* event) {
@@ -244,7 +244,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			selection_rect->show();
 		}
 	}
-	Graphics_View::mousePressEvent(event);
+	GUI::Graphics_View::mousePressEvent(event);
 }
 
 void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
@@ -309,21 +309,31 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 			creating_connection->update();
 		}
 	}
-	Graphics_View::mouseMoveEvent(event);
+	GUI::Graphics_View::mouseMoveEvent(event);
 }
 
 void Node_Editor::keyPressEvent(QKeyEvent* event) {
-	Graphics_View::keyPressEvent(event);
-	if (event->key() == Qt::Key_Delete) {
-		for (Node* node : selection) {
-			if (not dynamic_cast<NODES::EXEC::Euler_Tick*>(node)) {
-				scene->removeItem(node);
-				delete node;
+	switch (event->key()) {
+		case Qt::Key_Delete: {
+			for (Node* node : selection) {
+				if (not dynamic_cast<NODES::EXEC::Euler_Tick*>(node)) {
+					scene->removeItem(node);
+					delete node;
+				}
 			}
+			selection.clear();
+			return;
 		}
-		selection.clear();
+		case Qt::Key_R: {
+			return;
+		}
 	}
-	Graphics_View::keyPressEvent(event);
+	for (QWidget* widget : QApplication::topLevelWidgets()) {
+		if (widget->inherits("QLineEdit") && widget->hasFocus()) {
+			QApplication::sendEvent(widget, event);
+		}
+	}
+	GUI::Graphics_View::keyPressEvent(event);
 }
 
 void Node_Editor::wheelEvent(QWheelEvent* event) {
@@ -366,6 +376,21 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "TRIGONOMETRY") {
 				node = new NODES::Trigonometry();
+			}
+			else if (type == "INPUT INTEGER") {
+				node = new NODES::INPUT::Integer();
+			}
+			else if (type == "INPUT DOUBLE") {
+				node = new NODES::INPUT::Double();
+			}
+			else if (type == "INPUT VEC2") {
+				node = new NODES::INPUT::Vec2();
+			}
+			else if (type == "INPUT VEC3") {
+				node = new NODES::INPUT::Vec3();
+			}
+			else if (type == "INPUT VEC4") {
+				node = new NODES::INPUT::Vec4();
 			}
 			else if (type == "MAKE VEC2") {
 				node = new NODES::CAST::MAKE::Vec2();

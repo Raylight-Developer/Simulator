@@ -42,6 +42,9 @@ namespace NODES {
 	namespace UTILS {
 		enum struct Type { RNG_GEN, RNG_DISTRIBUTION };
 	}
+	namespace INPUT {
+		enum struct Type { DOUBLE, VEC2 };
+	}
 	namespace CAST {
 		namespace MAKE {
 			enum struct Type { VEC2 };
@@ -109,6 +112,59 @@ namespace NODES {
 
 		Variable getData(const Port* port) const override;
 	};
+	namespace INPUT {
+		struct Integer : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input;
+			int64 value;
+
+			Integer();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Double : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input;
+			dvec1 value;
+
+			Double();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Vec2 : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input_x;
+			GUI::Value_Input* input_y;
+			dvec2 value;
+
+			Vec2();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Vec3 : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input_x;
+			GUI::Value_Input* input_y;
+			GUI::Value_Input* input_z;
+			dvec3 value;
+
+			Vec3();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Vec4 : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input_x;
+			GUI::Value_Input* input_y;
+			GUI::Value_Input* input_z;
+			GUI::Value_Input* input_w;
+			dvec4 value;
+
+			Vec4();
+
+			Variable getData(const Port* port) const override;
+		};
+	}
 
 	namespace CAST {
 		namespace MAKE {

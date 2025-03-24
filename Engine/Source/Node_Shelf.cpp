@@ -14,6 +14,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	setDragDropMode(QAbstractItemView::DragDropMode::DragOnly);
 
 	auto tree_math      = new GUI::Tree_Item(this, "Math");
+	auto tree_inputs    = new GUI::Tree_Item(this, "Inputs");
 	auto tree_cast      = new GUI::Tree_Item(this, "Casting");
 	auto tree_exec      = new GUI::Tree_Item(this, "Exec");
 	auto tree_render    = new GUI::Tree_Item(this, "Rendering");
@@ -26,6 +27,12 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto arithmetic     = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
 	auto trigonometry   = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+
+	auto input_int      = new GUI::Tree_Item(tree_inputs, "Integer", 2, { { 1000, "INPUT INTEGER" } });
+	auto input_double   = new GUI::Tree_Item(tree_inputs, "Double", 2, { { 1000, "INPUT DOUBLE" } });
+	auto input_vec2     = new GUI::Tree_Item(tree_inputs, "Vec 2", 2, { { 1000, "INPUT VEC2" } });
+	auto input_vec3     = new GUI::Tree_Item(tree_inputs, "Vec 3", 2, { { 1000, "INPUT VEC3" } });
+	auto input_vec4     = new GUI::Tree_Item(tree_inputs, "Vec 4", 2, { { 1000, "INPUT VEC4" } });
 
 	auto make_vec2      = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
 	auto make_vec3      = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
