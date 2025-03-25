@@ -7,14 +7,36 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace ARITHMETIC {
-		enum struct Type { ADD, SUB, MUL, DIV };
+	namespace INPUT {
+		struct Integer;
+		struct Double;
+		struct Bool;
+		struct String;
+		struct Vec2;
+		struct Vec3;
+		struct Vec4;
+		struct Quat;
 	}
+	namespace CAST {
+		namespace MAKE {
+			struct Vec2;
+			struct Vec3;
+			struct Vec4;
+			struct Quat;
+			struct Mat2;
+			struct Mat3;
+			struct Mat4;
+		}
+		namespace BREAK {
+
+		}
+	}
+
+	struct Arithmetic;
+	struct Trigonometry;
+
 	namespace ALGEBRA {
 		enum struct Type { ABS, POW, SQRT, LOGARITHM, MOD };
-	}
-	namespace TRIGONOMETRY {
-		enum struct Type { SIN, COS, TAN, ASIN, ACOS, ATAN, SINH, COSH, TANH, COT, SEC, CSC, COTH, SECH, CSCH };
 	}
 	namespace ROUNDING {
 		enum struct Type { ROUND, FLOOR, CEIL };
@@ -28,32 +50,9 @@ namespace NODES {
 	namespace INTERPOLATION {
 		enum struct Type { LERP, EASE };
 	}
-	namespace BOOLEAN_COMPARISON {
-		enum struct Type { EQUAL, GT, LT, GEQ, LEQ, SIGN, COMPARE };
-	}
-	namespace BOOLEAN {
-		enum struct Type { IF, IF_ELSE, SWITCH, AND, OR, NOT };
-	}
-	namespace EXEC {
-		enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
-	}
-	namespace SCRIPT {
-	}
 	namespace UTILS {
 		enum struct Type { RNG_GEN, RNG_DISTRIBUTION };
 	}
-	namespace INPUT {
-		enum struct Type { DOUBLE, VEC2 };
-	}
-	namespace CAST {
-		namespace MAKE {
-			enum struct Type { VEC2 };
-		}
-		namespace BREAK {
-
-		}
-	}
-
 	namespace CONTAINER {
 		namespace VECTOR {
 			enum struct Type { AT, PUSH, POP, INSERT, REMOVE, SIZE };
@@ -66,10 +65,28 @@ namespace NODES {
 		}
 	}
 
+	namespace BOOLEAN_COMPARISON {
+		enum struct Type { EQUAL, GT, LT, GEQ, LEQ, SIGN, COMPARE };
+	}
+	namespace BOOLEAN {
+		enum struct Type { IF, IF_ELSE, SWITCH, AND, OR, NOT };
+		struct If;
+		struct If_Else;
+		struct Select;
+	}
+	namespace SCRIPT {
+	}
+
+	namespace EXEC {
+		enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
+	}
 	namespace RENDERING {
 		namespace DIM_2D {
 			namespace PRIMITIVE {
-				enum struct Type { CIRCLE };
+				struct Line;
+				struct Triangle;
+				struct Rectangle;
+				struct Circle;
 			}
 		}
 		namespace DIM_3D {
@@ -81,47 +98,6 @@ namespace NODES {
 }
 
 namespace NODES {
-//	struct Arithmetic : Node {
-//		const set<VARIABLE::Type> allowed_types;
-//		VARIABLE::Type var_type;
-//
-//		PORT::Data_I* i_a;
-//		PORT::Data_I* i_b;
-//		PORT::Data_O* out;
-//
-//		GUI::Options* enums;
-//
-//		Arithmetic();
-//
-//		void setType(const VARIABLE::Type& type);
-//
-//		bool onConnRequested(Port* port, Connection* conn);
-//		void onDisconnection(Port* port);
-//
-//		Variable getData(const Port* port) const override;
-//	};
-	struct Arithmetic : Node {
-		PORT::Data_I* i_a;
-		PORT::Data_I* i_b;
-		PORT::Data_O* out;
-
-		GUI::Options* enums;
-
-		Arithmetic();
-
-		Variable getData(const Port* port) const override;
-	};
-	struct Trigonometry : Node {
-		PORT::Data_I* in;
-		PORT::Data_O* out;
-
-		GUI::Options* enums;
-
-		Trigonometry();
-		bool call_connRequest(Port* port, Connection* conn);
-
-		Variable getData(const Port* port) const override;
-	};
 	namespace INPUT {
 		struct Integer : Node {
 			PORT::Data_O* out;
@@ -192,8 +168,19 @@ namespace NODES {
 
 			Variable getData(const Port* port) const override;
 		};
-	}
+		struct Quat : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input_w;
+			GUI::Value_Input* input_x;
+			GUI::Value_Input* input_y;
+			GUI::Value_Input* input_z;
+			dquat value;
 
+			Quat();
+
+			Variable getData(const Port* port) const override;
+		};
+	}
 	namespace CAST {
 		namespace MAKE {
 			struct Vec2 : Node {
@@ -275,6 +262,69 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 		}
+	}
+
+	struct Arithmetic : Node {
+		PORT::Data_I* i_a;
+		PORT::Data_I* i_b;
+		PORT::Data_O* out;
+
+		GUI::Options* enums;
+
+		Arithmetic();
+
+		Variable getData(const Port* port) const override;
+	};
+	struct Trigonometry : Node {
+		PORT::Data_I* in;
+		PORT::Data_O* out;
+
+		GUI::Options* enums;
+
+		Trigonometry();
+
+		Variable getData(const Port* port) const override;
+	};
+
+	namespace BOOLEAN_COMPARISON {
+	}
+
+	namespace BOOLEAN {
+		struct If : Node {
+			PORT::Exec_I* in;
+			PORT::Data_I* condition;
+			PORT::Exec_O* out;
+
+			If();
+
+			void exec(const Port* port) override;
+		};
+		struct If_Else : Node {
+			PORT::Exec_I* in;
+			PORT::Data_I* condition;
+			PORT::Exec_O* out_a;
+			PORT::Exec_O* out_b;
+
+			If_Else();
+
+			void exec(const Port* port) override;
+		};
+		struct Select : Node {
+			PORT::Data_I* condition;
+			PORT::Data_I* i_true;
+			PORT::Data_I* i_false;
+			PORT::Data_O* out;
+
+			Select();
+
+			bool onConnRequested(Port* port, Connection* conn);
+			void onDisconnection(Port* port);
+
+			Variable getData(const Port* port) const override;
+		};
+	}
+
+	namespace SCRIPT {
 	}
 
 	namespace EXEC {

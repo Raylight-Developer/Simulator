@@ -6,7 +6,7 @@ Variable::Variable() :
 {}
 
 Variable::Variable(const dvec1& data) :
-	type(VARIABLE::Type::FLOAT),
+	type(VARIABLE::Type::DOUBLE),
 	data(data)
 {}
 Variable::Variable(const int64& data) :
@@ -53,7 +53,7 @@ Variable::Variable(const dmat4 & data) :
 Variable Variable::operator+(const Variable & other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return Variable(get<dvec1  >() + other.get<dvec1  >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() + other.get<dvec1  >());
 			case VARIABLE::Type::INT   : return Variable(get<qint64 >() + other.get<qint64 >());
 			case VARIABLE::Type::BOOL  : return Variable(true);
 			case VARIABLE::Type::STRING: return Variable(get<QString>() + other.get<QString>());
@@ -78,7 +78,7 @@ Variable Variable::operator+(const Variable & other) const {
 Variable Variable::operator-(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return Variable(get<dvec1  >() - other.get<dvec1  >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() - other.get<dvec1  >());
 			case VARIABLE::Type::INT   : return Variable(get<qint64 >() - other.get<qint64 >());
 			case VARIABLE::Type::BOOL  : return Variable(false);
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() - other.get<dvec2  >());
@@ -102,7 +102,7 @@ Variable Variable::operator-(const Variable& other) const {
 Variable Variable::operator*(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return Variable(get<dvec1  >() * other.get<dvec1  >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() * other.get<dvec1  >());
 			case VARIABLE::Type::INT   : return Variable(get<qint64 >() * other.get<qint64 >());
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() * other.get<dvec2  >());
 			case VARIABLE::Type::VEC3  : return Variable(get<dvec3  >() * other.get<dvec3  >());
@@ -125,7 +125,7 @@ Variable Variable::operator*(const Variable& other) const {
 Variable Variable::operator/(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return Variable(get<dvec1  >() / other.get<dvec1  >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() / other.get<dvec1  >());
 			case VARIABLE::Type::INT   : return Variable(get<qint64 >() / other.get<qint64 >());
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() / other.get<dvec2  >());
 			case VARIABLE::Type::VEC3  : return Variable(get<dvec3  >() / other.get<dvec3  >());
@@ -147,7 +147,7 @@ Variable Variable::operator/(const Variable& other) const {
 bool Variable::operator==(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return get<dvec1  >() == other.get<dvec1  >();
+			case VARIABLE::Type::DOUBLE: return get<dvec1  >() == other.get<dvec1  >();
 			case VARIABLE::Type::INT   : return get<qint64 >() == other.get<qint64 >();
 			case VARIABLE::Type::BOOL  : return get<bool   >() == other.get<bool   >();
 			case VARIABLE::Type::STRING: return get<QString>() == other.get<QString>();
@@ -166,7 +166,7 @@ bool Variable::operator==(const Variable& other) const {
 bool Variable::operator!=(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::FLOAT : return get<dvec1  >() != other.get<dvec1  >();
+			case VARIABLE::Type::DOUBLE: return get<dvec1  >() != other.get<dvec1  >();
 			case VARIABLE::Type::INT   : return get<qint64 >() != other.get<qint64 >();
 			case VARIABLE::Type::BOOL  : return get<bool   >() != other.get<bool   >();
 			case VARIABLE::Type::STRING: return get<QString>() != other.get<QString>();
@@ -184,8 +184,8 @@ bool Variable::operator!=(const Variable& other) const {
 
 QString Variable::to_string() const {
 	switch (type) {
-		case VARIABLE::Type::FLOAT: return QString::number(get<dvec1>(), 'f', 15);
-		case VARIABLE::Type::INT:   return QString::number(get<int64>());
+		case VARIABLE::Type::DOUBLE: return QString::number(get<dvec1>(), 'f', 15);
+		case VARIABLE::Type::INT   : return QString::number(get<int64>());
 	}
 	return "";
 }
@@ -193,7 +193,7 @@ QString Variable::to_string() const {
 QColor VARIABLE::toColor(const VARIABLE::Type& type) {
 	switch (type) {
 		case VARIABLE::Type::NONE  : return QColor(175, 175, 175);
-		case VARIABLE::Type::FLOAT : return QColor(  0, 255,   0);
+		case VARIABLE::Type::DOUBLE: return QColor(  0, 255,   0);
 		case VARIABLE::Type::INT   : return QColor(  0, 150,   0);
 		case VARIABLE::Type::BOOL  : return QColor(255, 180, 240);
 		case VARIABLE::Type::STRING: return QColor(210, 145,  75);

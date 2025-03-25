@@ -10,7 +10,7 @@ struct Variable;
 namespace VARIABLE {
 	enum struct Type {
 		NONE,
-		FLOAT, INT,
+		DOUBLE, INT,
 		BOOL, STRING,
 		VEC2, VEC3, VEC4, QUAT, MAT2, MAT3, MAT4,
 		TRANSFORM_2D, TRANSFORM_3D
@@ -21,7 +21,7 @@ namespace VARIABLE {
 #define VARIABLE_MATS VARIABLE::Type:: MAT2, VARIABLE::Type:: MAT3, VARIABLE::Type:: MAT4
 #define VARIABLE_VECS VARIABLE::Type:: VEC2, VARIABLE::Type:: VEC3, VARIABLE::Type:: VEC4
 
-#define VARIABLE_INTEGRALS VARIABLE::Type::INT, VARIABLE::Type::FLOAT
+#define VARIABLE_INTEGRALS VARIABLE::Type::INT, VARIABLE::Type::DOUBLE
 #define VARIABLE_FULL_INTEGRALS VARIABLE_INTEGRALS, VARIABLE_VECS, VARIABLE_MATS,
 
 struct Variable {
@@ -65,7 +65,7 @@ struct Variable {
 	template <typename T>
 	inline T getInfer() const {
 		switch (type) {
-			case VARIABLE::Type::FLOAT  : return static_cast<T>(any_cast<dvec1  >(data));
+			case VARIABLE::Type::DOUBLE  : return static_cast<T>(any_cast<dvec1  >(data));
 			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<qint64 >(data));
 			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool   >(data));
 			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString>(data));

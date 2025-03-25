@@ -11,7 +11,6 @@ int main(int argc, char *argv[]) {
 		QStringList fontFamilies = QFontDatabase::applicationFontFamilies(font);
 		if (!fontFamilies.empty()) {
 			QFont font(fontFamilies.first());
-			font.setPointSize(10);
 			app->setFont(font);
 		}
 	}

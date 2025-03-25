@@ -3,172 +3,17 @@
 #include "Session.hpp"
 #include "Viewport.hpp"
 
-//NODES::Arithmetic::Arithmetic() :
-//	Node("Arithmetic"),
-//	var_type(VARIABLE::Type::NONE),
-//	allowed_types({ VARIABLE::Type::NONE, VARIABLE_INTEGRALS })
-//{
-//	rect.setWidth(100);
-//	rect.setHeight(80);
-//
-//	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::NONE);
-//	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::NONE);
-//	out = new PORT::Data_O(this, "O", VARIABLE::Type::NONE);
-//
-//	i_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-//	i_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-//	out->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-//	i_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
-//	i_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
-//	out->onDisconnection = [this](Port* port){ onDisconnection(port); };
-//	i_a->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-//	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-//	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-//
-//	i_a->variable = Variable(0LL);
-//	i_b->variable = Variable(0LL);
-//
-//	enums = new GUI::Options(); // TODO verify delete
-//	enums->setFixedSize(40, 20);
-//	enums->addItems({ "+", "-", "*", "/" });
-//
-//	auto pw_enums = new GUI::Graphics_Widget(enums, this);
-//	pw_enums->setPos(30, 30);
-//}
-//
-//void NODES::Arithmetic::setType(const VARIABLE::Type& type) {
-//	if (var_type != type) {
-//		var_type = type;
-//		i_a->setType(type);
-//		i_b->setType(type);
-//		out->setType(type);
-//	}
-//}
-//
-//bool NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
-//	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
-//	if (allowed_types.contains(incoming_type)) {
-//		if (var_type == VARIABLE::Type::NONE) {
-//			setType(incoming_type);
-//			conn->color = VARIABLE::toColor(incoming_type);
-//			return true;
-//		}
-//		else if (var_type == incoming_type or incoming_type == VARIABLE::Type::NONE) {
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-//
-//void NODES::Arithmetic::onDisconnection(Port* port) {
-//	if (not i_a->connected() and not i_b->connected() and not out->connected()) {
-//		setType(VARIABLE::Type::NONE);
-//	}
-//}
-//
-//Variable NODES::Arithmetic::getData(const Port* port) const {
-//	switch (enums->currentIndex()) {
-//		case 0: return i_a->getData() + i_b->getData();
-//		case 1: return i_a->getData() - i_b->getData();
-//		case 2: return i_a->getData() * i_b->getData();
-//		case 3: return i_a->getData() / i_b->getData();
-//	}
-//	return Variable(0.0);
-//}
-
-
-NODES::Arithmetic::Arithmetic() :
-	Node("Arithmetic")
-{
-	rect.setWidth(100);
-	rect.setHeight(80);
-
-	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::FLOAT);
-	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::FLOAT);
-	out = new PORT::Data_O(this, "O", VARIABLE::Type::FLOAT);
-
-	i_a->variable = Variable(0.0);
-	i_b->variable = Variable(0.0);
-
-	enums = new GUI::Options(); // TODO verify delete
-	enums->setFixedSize(60, 20);
-	enums->addItems({ "A+B", "A-B", "A*B", "A/B" });
-
-	auto pw_enums = new GUI::Graphics_Widget(enums, this);
-	pw_enums->setPos(30, 50);
-}
-
-Variable NODES::Arithmetic::getData(const Port* port) const {
-	switch (enums->currentIndex()) {
-		case 0: return Variable(i_a->getData().get<dvec1>() + i_b->getData().get<dvec1>());
-		case 1: return Variable(i_a->getData().get<dvec1>() - i_b->getData().get<dvec1>());
-		case 2: return Variable(i_a->getData().get<dvec1>() * i_b->getData().get<dvec1>());
-		case 3: return Variable(i_a->getData().get<dvec1>() / i_b->getData().get<dvec1>());
-	}
-	return Variable(0.0);
-}
-
-NODES::Trigonometry::Trigonometry() :
-	Node("Trigonometry")
-{
-	rect.setWidth(140);
-	rect.setHeight(60);
-
-	in = new PORT::Data_I(this, "I", VARIABLE::Type::FLOAT);
-	out = new PORT::Data_O(this, "O", VARIABLE::Type::FLOAT);
-
-	in->onConnRequested  = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-	out->onConnRequested = [this](Port* port, Connection* conn){ return call_connRequest(port, conn); };
-
-	enums = new GUI::Options(); // TODO verify delete
-	enums->setFixedSize(80, 20);
-	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
-
-	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
-	proxyWidget->setPos(30, 30);
-}
-
-bool NODES::Trigonometry::call_connRequest(Port* port, Connection* conn) {
-	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
-	if (incoming_type == VARIABLE::Type::FLOAT or incoming_type == VARIABLE::Type::NONE) {
-		return true;
-	}
-	return false;
-}
-
-Variable NODES::Trigonometry::getData(const Port* port) const {
-	const dvec1 x = in->getData().get<dvec1>();
-	switch (enums->currentIndex()) {
-		case  0: return sin(x);
-		case  1: return cos(x);
-		case  2: return tan(x);
-		case  3: return asin(x);
-		case  4: return acos(x);
-		case  5: return atan(x);
-		case  6: return sinh(x);
-		case  7: return cosh(x);
-		case  8: return tanh(x);
-		case  9: return 1.0 / tan(x);
-		case 10: return 1.0 / cos(x);
-		case 11: return 1.0 / sin(x);
-		case 12: return cosh(x) / sinh(x);
-		case 13: return 1.0 / cosh(x);
-		case 14: return 1.0 / sinh(x);
-	}
-	return Variable(x);
-}
-
 NODES::INPUT::Integer::Integer() :
 	Node("Integer")
 {
-	rect.setWidth(60);
+	rect.setWidth(80);
 	rect.setHeight(60);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::INT);
 	value = 0;
 
 	input = new GUI::Value_Input();
-	input->setFixedSize(40, 20);
+	input->setFixedSize(60, 20);
 	input->setText("0");
 	input->setValidator(new QIntValidator(input));
 
@@ -185,14 +30,14 @@ Variable NODES::INPUT::Integer::getData(const Port* port) const {
 NODES::INPUT::Double::Double() :
 	Node("Double")
 {
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(60);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
 	value = 0.0;
 
 	input = new GUI::Value_Input();
-	input->setFixedSize(60, 20);
+	input->setFixedSize(80, 20);
 	input->setText("0");
 	input->setValidator(new QDoubleValidator(input));
 
@@ -209,7 +54,7 @@ Variable NODES::INPUT::Double::getData(const Port* port) const {
 NODES::INPUT::Bool::Bool() :
 	Node("Bool")
 {
-	rect.setWidth(40);
+	rect.setWidth(60);
 	rect.setHeight(60);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::BOOL);
@@ -231,14 +76,14 @@ Variable NODES::INPUT::Bool::getData(const Port* port) const {
 NODES::INPUT::String::String() :
 	Node("String")
 {
-	rect.setWidth(140);
+	rect.setWidth(200);
 	rect.setHeight(60);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::STRING);
 	value = "";
 
 	input = new GUI::Value_Input();
-	input->setFixedSize(120, 20);
+	input->setFixedSize(180, 20);
 	input->setText("");
 
 	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
@@ -254,19 +99,19 @@ Variable NODES::INPUT::String::getData(const Port* port) const {
 NODES::INPUT::Vec2::Vec2() :
 	Node("Vec2")
 {
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(80);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
 	value = dvec2(0.0, 0.0);
 
 	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(60, 20);
+	input_x->setFixedSize(80, 20);
 	input_x->setText("0");
 	input_x->setValidator(new QDoubleValidator(input_x));
 
 	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(60, 20);
+	input_y->setFixedSize(80, 20);
 	input_y->setText("0");
 	input_y->setValidator(new QDoubleValidator(input_y));
 
@@ -287,24 +132,24 @@ Variable NODES::INPUT::Vec2::getData(const Port* port) const {
 NODES::INPUT::Vec3::Vec3() :
 	Node("Vec3")
 {
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(100);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
 	value = dvec3(0.0, 0.0, 0.0);
 
 	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(60, 20);
+	input_x->setFixedSize(80, 20);
 	input_x->setText("0");
 	input_x->setValidator(new QDoubleValidator(input_x));
 
 	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(60, 20);
+	input_y->setFixedSize(80, 20);
 	input_y->setText("0");
 	input_y->setValidator(new QDoubleValidator(input_y));
 	
 	input_z = new GUI::Value_Input();
-	input_z->setFixedSize(60, 20);
+	input_z->setFixedSize(80, 20);
 	input_z->setText("0");
 	input_z->setValidator(new QDoubleValidator(input_z));
 
@@ -329,29 +174,29 @@ Variable NODES::INPUT::Vec3::getData(const Port* port) const {
 NODES::INPUT::Vec4::Vec4() :
 	Node("Vec4")
 {
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(120);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
 	value = dvec4(0.0, 0.0, 0.0, 0.0);
 
 	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(60, 20);
+	input_x->setFixedSize(80, 20);
 	input_x->setText("0");
 	input_x->setValidator(new QDoubleValidator(input_x));
 
 	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(60, 20);
+	input_y->setFixedSize(80, 20);
 	input_y->setText("0");
 	input_y->setValidator(new QDoubleValidator(input_y));
 	
 	input_z = new GUI::Value_Input();
-	input_z->setFixedSize(60, 20);
+	input_z->setFixedSize(80, 20);
 	input_z->setText("0");
 	input_z->setValidator(new QDoubleValidator(input_z));
 	
 	input_w = new GUI::Value_Input();
-	input_w->setFixedSize(60, 20);
+	input_w->setFixedSize(80, 20);
 	input_w->setText("0");
 	input_w->setValidator(new QDoubleValidator(input_w));
 
@@ -377,14 +222,65 @@ Variable NODES::INPUT::Vec4::getData(const Port* port) const {
 	return Variable(value);
 }
 
+NODES::INPUT::Quat::Quat() :
+	Node("Quat")
+{
+	rect.setWidth(100);
+	rect.setHeight(120);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::QUAT);
+	value = dquat(1.0, 0.0, 0.0, 0.0);
+
+	input_w = new GUI::Value_Input();
+	input_w->setFixedSize(80, 20);
+	input_w->setText("1");
+	input_w->setValidator(new QDoubleValidator(input_w));
+
+	input_x = new GUI::Value_Input();
+	input_x->setFixedSize(80, 20);
+	input_x->setText("0");
+	input_x->setValidator(new QDoubleValidator(input_x));
+
+	input_y = new GUI::Value_Input();
+	input_y->setFixedSize(80, 20);
+	input_y->setText("0");
+	input_y->setValidator(new QDoubleValidator(input_y));
+	
+	input_z = new GUI::Value_Input();
+	input_z->setFixedSize(80, 20);
+	input_z->setText("0");
+	input_z->setValidator(new QDoubleValidator(input_z));
+	
+	auto* proxyWidgetW = new GUI::Graphics_Widget(input_w, this);
+	proxyWidgetW->setPos(10, 90);
+
+	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
+	proxyWidgetX->setPos(10, 30);
+
+	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
+	proxyWidgetY->setPos(10, 50);
+
+	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
+	proxyWidgetZ->setPos(10, 70);
+
+	QObject::connect(input_w, &GUI::Value_Input::textEdited, [this](const QString& val) { value.w = val.toDouble(); });
+	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
+	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
+	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
+}
+
+Variable NODES::INPUT::Quat::getData(const Port* port) const {
+	return Variable(value);
+}
+
 NODES::CAST::MAKE::Vec2::Vec2() :
 	Node("Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -409,9 +305,9 @@ NODES::CAST::MAKE::Vec3::Vec3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -437,10 +333,10 @@ NODES::CAST::MAKE::Vec4::Vec4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
-	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::FLOAT);
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
+	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::DOUBLE);
 	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -467,10 +363,10 @@ NODES::CAST::MAKE::Quat::Quat() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::FLOAT);
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::FLOAT);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::FLOAT);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::FLOAT);
+	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::DOUBLE);
+	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
+	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
+	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
 	out = new PORT::Data_O(this, "", VARIABLE::Type::QUAT);
 	i_w->rect.moveCenter(QPointF( 0, 10));
 	i_x->rect.moveCenter(QPointF( 0, 30));
@@ -575,15 +471,155 @@ Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
 	return Variable(dmat4(i_a->getData().get<dvec4>(), i_b->getData().get<dvec4>(), i_c->getData().get<dvec4>(), i_d->getData().get<dvec4>()));
 }
 
+NODES::Arithmetic::Arithmetic() :
+	Node("Arithmetic")
+{
+	rect.setWidth(120);
+	rect.setHeight(80);
+
+	i_a = new PORT::Data_I(this, "A", Variable(0.0));
+	i_b = new PORT::Data_I(this, "B", Variable(0.0));
+	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
+
+	enums = new GUI::Options(); // TODO verify delete
+	enums->setFixedSize(80, 20);
+	enums->addItems({ "A+B", "A-B", "A*B", "A/B" });
+
+	auto pw_enums = new GUI::Graphics_Widget(enums, this);
+	pw_enums->setPos(30, 50);
+}
+
+Variable NODES::Arithmetic::getData(const Port* port) const {
+	switch (enums->currentIndex()) {
+	case 0: return Variable(i_a->getData().get<dvec1>() + i_b->getData().get<dvec1>());
+	case 1: return Variable(i_a->getData().get<dvec1>() - i_b->getData().get<dvec1>());
+	case 2: return Variable(i_a->getData().get<dvec1>() * i_b->getData().get<dvec1>());
+	case 3: return Variable(i_a->getData().get<dvec1>() / i_b->getData().get<dvec1>());
+	}
+	return Variable(0.0);
+}
+
+NODES::Trigonometry::Trigonometry() :
+	Node("Trigonometry")
+{
+	rect.setWidth(140);
+	rect.setHeight(60);
+
+	in = new PORT::Data_I(this, "", VARIABLE::Type::DOUBLE);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
+
+	enums = new GUI::Options(); // TODO verify delete
+	enums->setFixedSize(100, 20);
+	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
+
+	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
+	proxyWidget->setPos(20, 30);
+}
+
+Variable NODES::Trigonometry::getData(const Port* port) const {
+	const dvec1 x = in->getData().get<dvec1>();
+	switch (enums->currentIndex()) {
+	case  0: return sin(x);
+	case  1: return cos(x);
+	case  2: return tan(x);
+	case  3: return asin(x);
+	case  4: return acos(x);
+	case  5: return atan(x);
+	case  6: return sinh(x);
+	case  7: return cosh(x);
+	case  8: return tanh(x);
+	case  9: return 1.0 / tan(x);
+	case 10: return 1.0 / cos(x);
+	case 11: return 1.0 / sin(x);
+	case 12: return cosh(x) / sinh(x);
+	case 13: return 1.0 / cosh(x);
+	case 14: return 1.0 / sinh(x);
+	}
+	return Variable(x);
+}
+
+NODES::BOOLEAN::If::If() :
+	Node("If")
+{
+	rect.setWidth(40);
+	rect.setHeight(80);
+
+	in = new PORT::Exec_I(this, "");
+	condition = new PORT::Data_I(this, "", Variable(false));
+	out = new PORT::Exec_O(this, "");
+}
+
+void NODES::BOOLEAN::If::exec(const Port* port) {
+	if (condition->getData().get<bool>()) {
+		out ->exec();
+	}
+}
+
+NODES::BOOLEAN::If_Else::If_Else() :
+	Node("If Else")
+{
+	rect.setWidth(100);
+	rect.setHeight(80);
+
+	in = new PORT::Exec_I(this, "");
+	condition = new PORT::Data_I(this, "", Variable(false));
+	out_a = new PORT::Exec_O(this, "True");
+	out_b = new PORT::Exec_O(this, "False");
+}
+
+void NODES::BOOLEAN::If_Else::exec(const Port* port) {
+	if (condition->getData().get<bool>()) {
+		out_a->exec();
+	}
+	else {
+		out_b->exec();
+	}
+}
+
+NODES::BOOLEAN::Select::Select() :
+	Node("Select")
+{
+	rect.setWidth(80);
+	rect.setHeight(100);
+
+	condition  = new PORT::Data_I(this, "", Variable(false));
+	i_true     = new PORT::Data_I(this, "True", VARIABLE::Type::NONE);
+	i_false    = new PORT::Data_I(this, "False", VARIABLE::Type::NONE);
+	out        = new PORT::Data_O(this, "", VARIABLE::Type::NONE);
+
+	i_true ->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	i_false->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	out    ->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	i_true ->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	i_false->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	out    ->onDisconnection = [this](Port* port){ onDisconnection(port); };
+}
+
+bool NODES::BOOLEAN::Select::onConnRequested(Port* port, Connection* conn) {
+	return false; // TODO set default var if no connection
+}
+
+void NODES::BOOLEAN::Select::onDisconnection(Port * port) {
+	// TODO unset defaults
+}
+
+Variable NODES::BOOLEAN::Select::getData(const Port* port) const {
+	if (condition->getData().get<bool>()) {
+		return i_true->getData();
+	}
+	return i_false->getData();
+}
+
 NODES::EXEC::Euler_Tick::Euler_Tick() :
 	Node("Tick")
 {
-	delta = 0.016;
-	rect.setWidth(60);
+	rect.setWidth(80);
 	rect.setHeight(80);
 
 	exec_out = new PORT::Exec_O(this, "Tick");
-	delta_out = new PORT::Data_O(this, "Delta", VARIABLE::Type::FLOAT);
+	delta_out = new PORT::Data_O(this, "Delta", VARIABLE::Type::DOUBLE);
+
+	delta = 0.016;
 }
 
 void NODES::EXEC::Euler_Tick::exec(const dvec1& delta) {
@@ -596,26 +632,21 @@ Variable NODES::EXEC::Euler_Tick::getData(const Port* port) const {
 }
 
 NODES::RENDERING::DIM_2D::Line::Line() :
-	Node("2D Line")
+	Node("Line")
 {
 	VAO, VBO, EBO = 0;
 
 	header_color = QColor(75, 25, 25);
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(140);
 
-	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_in  = new PORT::Exec_I(this, "");
 	exec_out = new PORT::Exec_O(this, "");
 
-	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
-	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
-	width  = new PORT::Data_I(this, "Width", VARIABLE::Type::FLOAT);
-	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
-
-	vert_a->variable = Variable(dvec2(-200, -200));
-	vert_b->variable = Variable(dvec2( 200,  200));
-	width->variable  = Variable(3.0);
-	color->variable  = Variable(dvec4(1, 1, 1, 1));
+	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(-200, -200)));
+	vert_b = new PORT::Data_I(this, "B", Variable(dvec2( 200,  200)));
+	width  = new PORT::Data_I(this, "Width", Variable(3.0));
+	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
 	init();
 }
 
@@ -690,26 +721,21 @@ void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
 }
 
 NODES::RENDERING::DIM_2D::Triangle::Triangle() :
-	Node("2D Tri")
+	Node("Tri")
 {
 	VAO, VBO = 0;
 
 	header_color = QColor(75, 25, 25);
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(140);
 
-	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_in  = new PORT::Exec_I(this, "");
 	exec_out = new PORT::Exec_O(this, "");
 
-	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
-	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
-	vert_c = new PORT::Data_I(this, "Pos C", VARIABLE::Type::VEC2);
-	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
-
-	vert_a->variable = Variable(dvec2(  0,  57.777));
-	vert_b->variable = Variable(dvec2(-50, -28.868));
-	vert_c->variable = Variable(dvec2( 50, -28.868));
-	color->variable  = Variable(dvec4(1, 1, 1, 1));
+	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(  0,  57.777)));
+	vert_b = new PORT::Data_I(this, "B", Variable(dvec2(-50, -28.868)));
+	vert_c = new PORT::Data_I(this, "C", Variable(dvec2( 50, -28.868)));
+	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
 	init();
 }
 
@@ -767,28 +793,23 @@ void NODES::RENDERING::DIM_2D::Triangle::exec(const Port* port) {
 }
 
 NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
-	Node("2D Rect")
+	Node("Rect")
 {
 	VAO, VBO, EBO = 0;
 
 	header_color = QColor(75, 25, 25);
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(160);
 
-	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_in  = new PORT::Exec_I(this, "");
 	exec_out = new PORT::Exec_O(this, "");
 
-	vert_a = new PORT::Data_I(this, "Pos A", VARIABLE::Type::VEC2);
-	vert_b = new PORT::Data_I(this, "Pos B", VARIABLE::Type::VEC2);
-	vert_c = new PORT::Data_I(this, "Pos C", VARIABLE::Type::VEC2);
-	vert_d = new PORT::Data_I(this, "Pos D", VARIABLE::Type::VEC2);
-	color  = new PORT::Data_I(this, "Color", VARIABLE::Type::VEC4);
+	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(-100, -100)));
+	vert_b = new PORT::Data_I(this, "B", Variable(dvec2(-100,  100)));
+	vert_c = new PORT::Data_I(this, "C", Variable(dvec2( 100,  100)));
+	vert_d = new PORT::Data_I(this, "D", Variable(dvec2( 100, -100)));
+	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
 
-	vert_a->variable = Variable(dvec2(-100, -100));
-	vert_b->variable = Variable(dvec2(-100,  100));
-	vert_c->variable = Variable(dvec2( 100,  100));
-	vert_d->variable = Variable(dvec2( 100, -100));
-	color->variable  = Variable(dvec4(1, 1, 1, 1));
 	init();
 }
 
@@ -856,24 +877,20 @@ void NODES::RENDERING::DIM_2D::Rectangle::exec(const Port* port) {
 }
 
 NODES::RENDERING::DIM_2D::Circle::Circle() :
-	Node("2D Circle")
+	Node("Circle")
 {
 	VAO, VBO, EBO = 0;
 
 	header_color = QColor(75, 25, 25);
-	rect.setWidth(80);
+	rect.setWidth(100);
 	rect.setHeight(120);
 
-	exec_in  = new PORT::Exec_I(this, "Draw");
+	exec_in  = new PORT::Exec_I(this, "");
 	exec_out = new PORT::Exec_O(this, "");
 
-	center = new PORT::Data_I(this, "Center", VARIABLE::Type::VEC2);
-	radius = new PORT::Data_I(this, "Radius", VARIABLE::Type::FLOAT);
-	color  = new PORT::Data_I(this, "Color" , VARIABLE::Type::VEC4);
-
-	center->variable = Variable(dvec2(0, 0));
-	radius->variable = Variable(50.0);
-	color->variable  = Variable(dvec4(1, 1, 1, 1));
+	center = new PORT::Data_I(this, "Center", Variable(dvec2(0, 0)));
+	radius = new PORT::Data_I(this, "Radius", Variable(50.0));
+	color  = new PORT::Data_I(this, "Color" , Variable(dvec4(1, 1, 1, 1)));
 	init();
 }
 

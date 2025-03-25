@@ -13,9 +13,9 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	setDragEnabled(true);
 	setDragDropMode(QAbstractItemView::DragDropMode::DragOnly);
 
-	auto tree_math      = new GUI::Tree_Item(this, "Math");
 	auto tree_inputs    = new GUI::Tree_Item(this, "Inputs");
 	auto tree_cast      = new GUI::Tree_Item(this, "Casting");
+	auto tree_math      = new GUI::Tree_Item(this, "Math");
 	auto tree_exec      = new GUI::Tree_Item(this, "Exec");
 	auto tree_render    = new GUI::Tree_Item(this, "Rendering");
 
@@ -25,9 +25,6 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	auto tree_render_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
 	auto tree_render_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
 
-	auto arithmetic     = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
-	auto trigonometry   = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
-
 	auto input_int      = new GUI::Tree_Item(tree_inputs, "Integer", 2, { { 1000, "INPUT INTEGER" } });
 	auto input_double   = new GUI::Tree_Item(tree_inputs, "Double" , 2, { { 1000, "INPUT DOUBLE"  } });
 	auto input_bool     = new GUI::Tree_Item(tree_inputs, "Bool"   , 2, { { 1000, "INPUT BOOL"    } });
@@ -35,6 +32,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	auto input_vec2     = new GUI::Tree_Item(tree_inputs, "Vec 2"  , 2, { { 1000, "INPUT VEC2"    } });
 	auto input_vec3     = new GUI::Tree_Item(tree_inputs, "Vec 3"  , 2, { { 1000, "INPUT VEC3"    } });
 	auto input_vec4     = new GUI::Tree_Item(tree_inputs, "Vec 4"  , 2, { { 1000, "INPUT VEC4"    } });
+	auto input_quat     = new GUI::Tree_Item(tree_inputs, "Quat"   , 2, { { 1000, "INPUT QUAT"    } });
 
 	auto make_vec2      = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
 	auto make_vec3      = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
@@ -44,7 +42,13 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	auto make_mat3      = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "MAKE MAT3" } });
 	auto make_mat4      = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "MAKE MAT4" } });
 
-	//auto euler_tick     = new GUI::Tree_Item(tree_exec, "Euler Tick", 2, { { 1000, "EULER TICK" } });
+	auto arithmetic     = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
+	auto trigonometry   = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+
+	//auto euler_tick          = new GUI::Tree_Item(tree_exec, "Euler Tick", 2, { { 1000, "EULER TICK" } });
+	auto boolean_if          = new GUI::Tree_Item(tree_exec, "If"     , 2, { { 1000, "BOOLEAN IF" } });
+	auto boolean_if_else     = new GUI::Tree_Item(tree_exec, "If Else", 2, { { 1000, "BOOLEAN IF ELSE" } });
+	auto boolean_select      = new GUI::Tree_Item(tree_exec, "Select" , 2, { { 1000, "BOOLEAN SELECT" } });
 
 	auto render_2d_line      = new GUI::Tree_Item(tree_render_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
 	auto render_2d_triangle  = new GUI::Tree_Item(tree_render_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });

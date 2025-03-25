@@ -114,6 +114,7 @@ namespace NODE {
 
 			Data_I(Node* parent, const QString& label);
 			Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type);
+			Data_I(Node* parent, const QString& label, const Variable& default_variable);
 			~Data_I();
 			bool connected() const;
 

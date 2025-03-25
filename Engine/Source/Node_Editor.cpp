@@ -176,6 +176,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 void Node_Editor::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
+			// TODO escape key cancel
 			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
 				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
 					if (!port_r->connection) {
@@ -187,7 +188,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						creating_connection = new NODE::Connection(port_l);
 					}
 				}
-				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
+				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) { // TODO Modify lift connection behavior
 					if (!port_l->connection) {
 						creating_connection = new NODE::Connection(port_l);
 					}
@@ -367,13 +368,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			QString type;
 			dataStreamType >> type;
 
-			if (type == "ARITHMETIC") {
-				node = new NODES::Arithmetic();
-			}
-			else if (type == "TRIGONOMETRY") {
-				node = new NODES::Trigonometry();
-			}
-			else if (type == "INPUT INTEGER") {
+			if (type == "INPUT INTEGER") {
 				node = new NODES::INPUT::Integer();
 			}
 			else if (type == "INPUT DOUBLE") {
@@ -393,6 +388,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "INPUT VEC4") {
 				node = new NODES::INPUT::Vec4();
+			}
+			else if (type == "INPUT QUAT") {
+				node = new NODES::INPUT::Quat();
 			}
 			else if (type == "MAKE VEC2") {
 				node = new NODES::CAST::MAKE::Vec2();
@@ -414,6 +412,21 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "MAKE MAT4") {
 				node = new NODES::CAST::MAKE::Mat4();
+			}
+			else if (type == "ARITHMETIC") {
+				node = new NODES::Arithmetic();
+			}
+			else if (type == "TRIGONOMETRY") {
+				node = new NODES::Trigonometry();
+			}
+			else if (type == "BOOLEAN IF") {
+				node = new NODES::BOOLEAN::If();
+			}
+			else if (type == "BOOLEAN IF ELSE") {
+				node = new NODES::BOOLEAN::If_Else();
+			}
+			else if (type == "BOOLEAN SELECT") {
+				node = new NODES::BOOLEAN::Select();
 			}
 			else if (type == "RENDER 2D LINE") {
 				node = new NODES::RENDERING::DIM_2D::Line();

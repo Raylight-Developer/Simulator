@@ -309,6 +309,19 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::T
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& default_variable) :
+	Port(parent),
+	label(label),
+	var_type(default_variable.type),
+	color(VARIABLE::toColor(default_variable.type)),
+	variable(default_variable),
+	onTypeChanged(nullptr),
+	connection(nullptr)
+{
+	parent->inputs.push_back(this);
+	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
+}
+
 NODE::PORT::Data_I::~Data_I() {
 	if (connection) {
 		if (Data_O* port = dynamic_cast<Data_O*>(connection->port_r)) {
