@@ -71,10 +71,11 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 	loadDLL(script_addr, dll_path);
 	FARPROC script_address = GetProcAddress(script_addr, "scriptInstance");
 	if (script_address) {
-		Script* (*getInstance)() = (Script* (*)())script_address;
-		script = getInstance();
+		Script* (*getInstance)(Session*) = (Script* (*)(Session*))script_address;
+		script = getInstance(&SESSION);
 
-		script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
+		//script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
+		//script->session = &SESSION;
 
 		SESSION.scripts.push(script);
 		SESSION.dlls[script] = script_addr;

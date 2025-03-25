@@ -1,6 +1,6 @@
 #include "Script.hpp"
 
-Script::Script() : SCRIPT("Test Script") {} // Warning: Only Modify Script Title. all initialization should be handled by onLoad()
+SCRIPT_INIT("Test Script")
 
 void Script::onLoad() {
 	PRINT(NL << "Loaded Test Script");

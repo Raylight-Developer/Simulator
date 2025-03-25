@@ -34,7 +34,8 @@ namespace NODES {
 		}
 
 		struct Script : Node {
-			SCRIPT_LAYER::SL_Session* session;
+			//SCRIPT_LAYER::SL_Session* session;
+			Session* session;
 
 			Script(const QString& id);
 			~Script();

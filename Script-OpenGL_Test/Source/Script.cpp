@@ -1,6 +1,6 @@
 #include "Script.hpp"
 
-Script::Script() : SCRIPT("OpenGL Script") {}
+SCRIPT_INIT("OpenGL Script")
 
 void Script::onLoad() {
 	PRINT(NL << "Loaded OpenGL Script");
@@ -72,9 +72,9 @@ void Script::render() {
 
 	// Render
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(session->viewportResolution()));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(session->viewport2DCenter())));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(session->viewport2DZoom()));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(session->viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(session->viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(session->viewport->zoom_2d));
 
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(u_color));
 	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(u_center));

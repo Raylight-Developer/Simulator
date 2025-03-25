@@ -3,7 +3,7 @@
 #include "Script_Include.hpp"
 
 struct Script : SCRIPT {
-	Script();
+	Script(Session* session);
 
 	void onLoad() override;
 	void onUnload() override;

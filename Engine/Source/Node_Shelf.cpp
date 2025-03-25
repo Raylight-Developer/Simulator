@@ -21,6 +21,14 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 			}
 		}
 	});
+
+#ifdef _DEBUG
+	auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script.dll"}});
+	auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script-OpenGL_Test.dll"}});
+#else
+	auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script.dll"}});
+	auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script-OpenGL_Test.dll"}});
+#endif
 }
 
 NODE_SHELF::Tree::Tree(Node_Shelf* parent) :

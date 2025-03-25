@@ -3,7 +3,7 @@
 #include "Script_Include.hpp"
 
 struct Script : SCRIPT {
-	Script();
+	Script(Session* session);
 	// Warning: Do not utilize. all cleanup should be handled by onUnload()
 	~Script() {}
 
