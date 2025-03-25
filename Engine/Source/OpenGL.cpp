@@ -214,14 +214,14 @@ void RENDER::Dim_2D::INIT::Circle() {
 	GL->glBindVertexArray(0);
 }
 
-void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, const vec4& color) {
+void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, const KL::color& color) {
 	vec2 lineDir = d_to_f(glm::normalize(v2 - v1));
 	vec2 perpDir = vec2(-lineDir.y, lineDir.x);
-
-	vec2 n1    = v1 + perpDir * width * 0.5f;
-	vec2 n2 = v1 - perpDir * width * 0.5f;
-	vec2 n4    = v2 + perpDir * width * 0.5f;
-	vec2 n3 = v2 - perpDir * width * 0.5f;
+	const vec1 halfWidth = width * 0.5f;
+	vec2 n1 = v1 + perpDir * halfWidth;
+	vec2 n2 = v1 - perpDir * halfWidth;
+	vec2 n4 = v2 + perpDir * halfWidth;
+	vec2 n3 = v2 - perpDir * halfWidth;
 
 	const GLfloat vertices[8] = {
 		n1.x, n1.y,
@@ -239,7 +239,7 @@ void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, con
 	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
 	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color));
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.fRgba()));
 
 	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Line VAO"]);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -248,20 +248,20 @@ void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, con
 	GL->glUseProgram(0);
 }
 
-void RENDER::Dim_2D::RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const vec4& color) {
+void RENDER::Dim_2D::RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const KL::color& color) {
 	Line(v1, v2, width, color);
 	Circle(v1, width * 0.5, color);
 	Circle(v2, width * 0.5, color);
 }
 
-void RENDER::Dim_2D::Circle(const vec2& center, const vec1& radius, const vec4& color) {
+void RENDER::Dim_2D::Circle(const vec2& center, const vec1& radius, const KL::color& color) {
 	const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
 	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
 	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color));
+	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.fRgba()));
 	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
 	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uRadius"), radius);
 

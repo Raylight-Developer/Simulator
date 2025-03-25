@@ -33,6 +33,10 @@ Variable::Variable(const dvec4 & data) :
 	type(VARIABLE::Type::VEC4),
 	data(data)
 {}
+Variable::Variable(const KL::color & data) :
+	type(VARIABLE::Type::COLOR),
+	data(data)
+{}
 Variable::Variable(const dquat & data) :
 	type(VARIABLE::Type::QUAT),
 	data(data)
@@ -60,6 +64,7 @@ Variable::Variable(const VARIABLE::Type & type) {
 		case VARIABLE::Type::VEC2  : data = dvec2(0)         ; break;
 		case VARIABLE::Type::VEC3  : data = dvec3(0)         ; break;
 		case VARIABLE::Type::VEC4  : data = dvec4(0)         ; break;
+		case VARIABLE::Type::COLOR : data = KL::color()          ; break;
 		case VARIABLE::Type::QUAT  : data = dquat(1, 0, 0, 0); break;
 		case VARIABLE::Type::MAT2  : data = dmat2(0)         ; break;
 		case VARIABLE::Type::MAT3  : data = dmat3(0)         ; break;
@@ -70,17 +75,18 @@ Variable::Variable(const VARIABLE::Type & type) {
 Variable Variable::operator+(const Variable & other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() + other.get<dvec1  >());
-			case VARIABLE::Type::INT   : return Variable(get<qint64 >() + other.get<qint64 >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1    >() + other.get<dvec1    >());
+			case VARIABLE::Type::INT   : return Variable(get<qint64   >() + other.get<qint64   >());
 			case VARIABLE::Type::BOOL  : return Variable(true);
-			case VARIABLE::Type::STRING: return Variable(get<QString>() + other.get<QString>());
-			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() + other.get<dvec2  >());
-			case VARIABLE::Type::VEC3  : return Variable(get<dvec3  >() + other.get<dvec3  >());
-			case VARIABLE::Type::VEC4  : return Variable(get<dvec4  >() + other.get<dvec4  >());
-			case VARIABLE::Type::QUAT  : return Variable(get<dquat  >() + other.get<dquat  >());
-			case VARIABLE::Type::MAT2  : return Variable(get<dmat2  >() + other.get<dmat2  >());
-			case VARIABLE::Type::MAT3  : return Variable(get<dmat3  >() + other.get<dmat3  >());
-			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() + other.get<dmat4  >());
+			case VARIABLE::Type::STRING: return Variable(get<QString  >() + other.get<QString  >());
+			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() + other.get<dvec2    >());
+			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() + other.get<dvec3    >());
+			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() + other.get<dvec4    >());
+			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() + other.get<KL::color>());
+			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() + other.get<dquat    >());
+			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() + other.get<dmat2    >());
+			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() + other.get<dmat3    >());
+			case VARIABLE::Type::MAT4  : return Variable(get<dmat4    >() + other.get<dmat4    >());
 		}
 	}
 	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
@@ -95,16 +101,17 @@ Variable Variable::operator+(const Variable & other) const {
 Variable Variable::operator-(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() - other.get<dvec1  >());
-			case VARIABLE::Type::INT   : return Variable(get<qint64 >() - other.get<qint64 >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1    >() - other.get<dvec1    >());
+			case VARIABLE::Type::INT   : return Variable(get<qint64   >() - other.get<qint64   >());
 			case VARIABLE::Type::BOOL  : return Variable(false);
-			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() - other.get<dvec2  >());
-			case VARIABLE::Type::VEC3  : return Variable(get<dvec3  >() - other.get<dvec3  >());
-			case VARIABLE::Type::VEC4  : return Variable(get<dvec4  >() - other.get<dvec4  >());
-			case VARIABLE::Type::QUAT  : return Variable(get<dquat  >() - other.get<dquat  >());
-			case VARIABLE::Type::MAT2  : return Variable(get<dmat2  >() - other.get<dmat2  >());
-			case VARIABLE::Type::MAT3  : return Variable(get<dmat3  >() - other.get<dmat3  >());
-			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() - other.get<dmat4  >());
+			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() - other.get<dvec2  >());
+			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() - other.get<dvec3  >());
+			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() - other.get<dvec4  >());
+			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() - other.get<KL::color>());
+			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() - other.get<dquat    >());
+			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() - other.get<dmat2    >());
+			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() - other.get<dmat3    >());
+			case VARIABLE::Type::MAT4  : return Variable(get<dmat4    >() - other.get<dmat4    >());
 		}
 	}
 	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
@@ -119,15 +126,16 @@ Variable Variable::operator-(const Variable& other) const {
 Variable Variable::operator*(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1  >() * other.get<dvec1  >());
-			case VARIABLE::Type::INT   : return Variable(get<qint64 >() * other.get<qint64 >());
-			case VARIABLE::Type::VEC2  : return Variable(get<dvec2  >() * other.get<dvec2  >());
-			case VARIABLE::Type::VEC3  : return Variable(get<dvec3  >() * other.get<dvec3  >());
-			case VARIABLE::Type::VEC4  : return Variable(get<dvec4  >() * other.get<dvec4  >());
-			case VARIABLE::Type::QUAT  : return Variable(get<dquat  >() * other.get<dquat  >());
-			case VARIABLE::Type::MAT2  : return Variable(get<dmat2  >() * other.get<dmat2  >());
-			case VARIABLE::Type::MAT3  : return Variable(get<dmat3  >() * other.get<dmat3  >());
-			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() * other.get<dmat4  >());
+			case VARIABLE::Type::DOUBLE: return Variable(get<dvec1    >() * other.get<dvec1    >());
+			case VARIABLE::Type::INT   : return Variable(get<qint64   >() * other.get<qint64   >());
+			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() * other.get<dvec2    >());
+			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() * other.get<dvec3    >());
+			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() * other.get<dvec4    >());
+			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() * other.get<KL::color>());
+			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() * other.get<dquat    >());
+			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() * other.get<dmat2    >());
+			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() * other.get<dmat3    >());
+			case VARIABLE::Type::MAT4  : return Variable(get<dmat4    >() * other.get<dmat4    >());
 		}
 	}
 	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
@@ -164,17 +172,18 @@ Variable Variable::operator/(const Variable& other) const {
 bool Variable::operator==(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE: return get<dvec1  >() == other.get<dvec1  >();
-			case VARIABLE::Type::INT   : return get<qint64 >() == other.get<qint64 >();
-			case VARIABLE::Type::BOOL  : return get<bool   >() == other.get<bool   >();
-			case VARIABLE::Type::STRING: return get<QString>() == other.get<QString>();
-			case VARIABLE::Type::VEC2  : return get<dvec2  >() == other.get<dvec2  >();
-			case VARIABLE::Type::VEC3  : return get<dvec3  >() == other.get<dvec3  >();
-			case VARIABLE::Type::VEC4  : return get<dvec4  >() == other.get<dvec4  >();
-			case VARIABLE::Type::QUAT  : return get<dquat  >() == other.get<dquat  >();
-			case VARIABLE::Type::MAT2  : return get<dmat2  >() == other.get<dmat2  >();
-			case VARIABLE::Type::MAT3  : return get<dmat3  >() == other.get<dmat3  >();
-			case VARIABLE::Type::MAT4  : return get<dmat4  >() == other.get<dmat4  >();
+			case VARIABLE::Type::DOUBLE: return get<dvec1    >() == other.get<dvec1    >();
+			case VARIABLE::Type::INT   : return get<qint64   >() == other.get<qint64   >();
+			case VARIABLE::Type::BOOL  : return get<bool     >() == other.get<bool     >();
+			case VARIABLE::Type::STRING: return get<QString  >() == other.get<QString  >();
+			case VARIABLE::Type::VEC2  : return get<dvec2    >() == other.get<dvec2    >();
+			case VARIABLE::Type::VEC3  : return get<dvec3    >() == other.get<dvec3    >();
+			case VARIABLE::Type::VEC4  : return get<dvec4    >() == other.get<dvec4    >();
+			case VARIABLE::Type::COLOR : return get<KL::color>() != other.get<KL::color>();
+			case VARIABLE::Type::QUAT  : return get<dquat    >() == other.get<dquat    >();
+			case VARIABLE::Type::MAT2  : return get<dmat2    >() == other.get<dmat2    >();
+			case VARIABLE::Type::MAT3  : return get<dmat3    >() == other.get<dmat3    >();
+			case VARIABLE::Type::MAT4  : return get<dmat4    >() == other.get<dmat4    >();
 		}
 	}
 	return false;
@@ -183,17 +192,18 @@ bool Variable::operator==(const Variable& other) const {
 bool Variable::operator!=(const Variable& other) const {
 	if (type == other.type) {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE: return get<dvec1  >() != other.get<dvec1  >();
-			case VARIABLE::Type::INT   : return get<qint64 >() != other.get<qint64 >();
-			case VARIABLE::Type::BOOL  : return get<bool   >() != other.get<bool   >();
-			case VARIABLE::Type::STRING: return get<QString>() != other.get<QString>();
-			case VARIABLE::Type::VEC2  : return get<dvec2  >() != other.get<dvec2  >();
-			case VARIABLE::Type::VEC3  : return get<dvec3  >() != other.get<dvec3  >();
-			case VARIABLE::Type::VEC4  : return get<dvec4  >() != other.get<dvec4  >();
-			case VARIABLE::Type::QUAT  : return get<dquat  >() != other.get<dquat  >();
-			case VARIABLE::Type::MAT2  : return get<dmat2  >() != other.get<dmat2  >();
-			case VARIABLE::Type::MAT3  : return get<dmat3  >() != other.get<dmat3  >();
-			case VARIABLE::Type::MAT4  : return get<dmat4  >() != other.get<dmat4  >();
+			case VARIABLE::Type::DOUBLE: return get<dvec1    >() != other.get<dvec1    >();
+			case VARIABLE::Type::INT   : return get<qint64   >() != other.get<qint64   >();
+			case VARIABLE::Type::BOOL  : return get<bool     >() != other.get<bool     >();
+			case VARIABLE::Type::STRING: return get<QString  >() != other.get<QString  >();
+			case VARIABLE::Type::VEC2  : return get<dvec2    >() != other.get<dvec2    >();
+			case VARIABLE::Type::VEC3  : return get<dvec3    >() != other.get<dvec3    >();
+			case VARIABLE::Type::VEC4  : return get<dvec4    >() != other.get<dvec4    >();
+			case VARIABLE::Type::COLOR : return get<KL::color>() != other.get<KL::color>();
+			case VARIABLE::Type::QUAT  : return get<dquat    >() != other.get<dquat    >();
+			case VARIABLE::Type::MAT2  : return get<dmat2    >() != other.get<dmat2    >();
+			case VARIABLE::Type::MAT3  : return get<dmat3    >() != other.get<dmat3    >();
+			case VARIABLE::Type::MAT4  : return get<dmat4    >() != other.get<dmat4    >();
 		}
 	}
 	return false;
@@ -244,14 +254,15 @@ QColor VARIABLE::toColor(const VARIABLE::Type& type) {
 		case VARIABLE::Type::DOUBLE : return QColor(  0, 255,   0);
 		case VARIABLE::Type::INT    : return QColor(  0, 150,   0);
 		case VARIABLE::Type::BOOL   : return QColor(255, 180, 240);
-		case VARIABLE::Type::STRING : return QColor(210, 145,  75);
-		case VARIABLE::Type::VEC2   : return QColor(160,  80, 255);
-		case VARIABLE::Type::VEC3   : return QColor(160,  80, 255);
-		case VARIABLE::Type::VEC4   : return QColor(160,  80, 255);
-		case VARIABLE::Type::QUAT   : return QColor(255,  80, 180);
-		case VARIABLE::Type::MAT2   : return QColor(255,  80, 255);
-		case VARIABLE::Type::MAT3   : return QColor(255,  80, 255);
-		case VARIABLE::Type::MAT4   : return QColor(255,  80, 255);
+		case VARIABLE::Type::STRING : return QColor(255, 150,  50);
+		case VARIABLE::Type::VEC2   : return QColor(150,  50, 255);
+		case VARIABLE::Type::VEC3   : return QColor(150,  50, 255);
+		case VARIABLE::Type::VEC4   : return QColor(150,  50, 255);
+		case VARIABLE::Type::COLOR  : return QColor(255, 255,  50);
+		case VARIABLE::Type::QUAT   : return QColor(255, 150, 200);
+		case VARIABLE::Type::MAT2   : return QColor(255, 100, 255);
+		case VARIABLE::Type::MAT3   : return QColor(255, 100, 255);
+		case VARIABLE::Type::MAT4   : return QColor(255, 100, 255);
 		//case VARIABLE::Type::TRANSFORM_2D : return QColor(255, 235, 0);
 		//case VARIABLE::Type::TRANSFORM_3D : return QColor(255, 235, 0);
 	}

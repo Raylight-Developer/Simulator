@@ -339,7 +339,14 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 		case Qt::Key_Delete: {
 			for (Node* node : selection) {
-				if (not dynamic_cast<NODES::DEFAULT::Euler_Tick*>(node)) {
+				if (
+					not dynamic_cast<NODES::DEFAULT::Euler_Tick*>(node) and
+					not dynamic_cast<NODES::DEFAULT::Background*>(node) and
+					not dynamic_cast<NODES::DEFAULT::Camera_2D*>(node) and
+					not dynamic_cast<NODES::DEFAULT::Camera_3D*>(node) and
+					not dynamic_cast<NODES::DEFAULT::Input_Key*>(node) and
+					not dynamic_cast<NODES::DEFAULT::Input_Mouse*>(node)
+				) {
 					scene->removeItem(node);
 					delete node;
 				}

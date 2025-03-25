@@ -102,6 +102,7 @@ namespace NODES {
 
 			KL::List<GUI::Graphics_Widget*> proxies;
 			GUI::Options* enums;
+			QRectF expanded;
 			Variable value;
 
 			Constant();
