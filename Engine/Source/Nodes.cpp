@@ -3,75 +3,107 @@
 #include "Session.hpp"
 #include "Viewport.hpp"
 
+//NODES::Arithmetic::Arithmetic() :
+//	Node("Arithmetic"),
+//	var_type(VARIABLE::Type::NONE),
+//	allowed_types({ VARIABLE::Type::NONE, VARIABLE_INTEGRALS })
+//{
+//	rect.setWidth(100);
+//	rect.setHeight(80);
+//
+//	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::NONE);
+//	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::NONE);
+//	out = new PORT::Data_O(this, "O", VARIABLE::Type::NONE);
+//
+//	i_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+//	i_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+//	out->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+//	i_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
+//	i_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
+//	out->onDisconnection = [this](Port* port){ onDisconnection(port); };
+//	i_a->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
+//	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
+//	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
+//
+//	i_a->variable = Variable(0LL);
+//	i_b->variable = Variable(0LL);
+//
+//	enums = new GUI::Options(); // TODO verify delete
+//	enums->setFixedSize(40, 20);
+//	enums->addItems({ "+", "-", "*", "/" });
+//
+//	auto pw_enums = new GUI::Graphics_Widget(enums, this);
+//	pw_enums->setPos(30, 30);
+//}
+//
+//void NODES::Arithmetic::setType(const VARIABLE::Type& type) {
+//	if (var_type != type) {
+//		var_type = type;
+//		i_a->setType(type);
+//		i_b->setType(type);
+//		out->setType(type);
+//	}
+//}
+//
+//bool NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
+//	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
+//	if (allowed_types.contains(incoming_type)) {
+//		if (var_type == VARIABLE::Type::NONE) {
+//			setType(incoming_type);
+//			conn->color = VARIABLE::toColor(incoming_type);
+//			return true;
+//		}
+//		else if (var_type == incoming_type or incoming_type == VARIABLE::Type::NONE) {
+//			return true;
+//		}
+//	}
+//	return false;
+//}
+//
+//void NODES::Arithmetic::onDisconnection(Port* port) {
+//	if (not i_a->connected() and not i_b->connected() and not out->connected()) {
+//		setType(VARIABLE::Type::NONE);
+//	}
+//}
+//
+//Variable NODES::Arithmetic::getData(const Port* port) const {
+//	switch (enums->currentIndex()) {
+//		case 0: return i_a->getData() + i_b->getData();
+//		case 1: return i_a->getData() - i_b->getData();
+//		case 2: return i_a->getData() * i_b->getData();
+//		case 3: return i_a->getData() / i_b->getData();
+//	}
+//	return Variable(0.0);
+//}
+
+
 NODES::Arithmetic::Arithmetic() :
-	Node("Arithmetic"),
-	var_type(VARIABLE::Type::NONE),
-	allowed_types({ VARIABLE::Type::NONE, VARIABLE_INTEGRALS })
+	Node("Arithmetic")
 {
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::NONE);
-	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::NONE);
-	out = new PORT::Data_O(this, "O", VARIABLE::Type::NONE);
+	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::FLOAT);
+	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::FLOAT);
+	out = new PORT::Data_O(this, "O", VARIABLE::Type::FLOAT);
 
-	i_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-	i_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-	out->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
-	i_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
-	i_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
-	out->onDisconnection = [this](Port* port){ onDisconnection(port); };
-	i_a->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-	i_b->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-	out->onTypeChanged = [this](Port* port, const VARIABLE::Type& var_type){ setType(var_type); };
-
-	i_a->variable = Variable(0LL);
-	i_b->variable = Variable(0LL);
+	i_a->variable = Variable(0.0);
+	i_b->variable = Variable(0.0);
 
 	enums = new GUI::Options(); // TODO verify delete
-	enums->setFixedSize(40, 20);
-	enums->addItems({ "+", "-", "*", "/" });
+	enums->setFixedSize(60, 20);
+	enums->addItems({ "A+B", "A-B", "A*B", "A/B" });
 
 	auto pw_enums = new GUI::Graphics_Widget(enums, this);
-	pw_enums->setPos(30, 30);
-}
-
-void NODES::Arithmetic::setType(const VARIABLE::Type& type) {
-	if (var_type != type) {
-		var_type = type;
-		i_a->setType(type);
-		i_b->setType(type);
-		out->setType(type);
-	}
-}
-
-bool NODES::Arithmetic::onConnRequested(Port* port, Connection* conn) {
-	const VARIABLE::Type& incoming_type = (port == out) ? conn->getDataI()->var_type : conn->getDataO()->var_type;
-	if (allowed_types.contains(incoming_type)) {
-		if (var_type == VARIABLE::Type::NONE) {
-			setType(incoming_type);
-			conn->color = VARIABLE::toColor(incoming_type);
-			return true;
-		}
-		else if (var_type == incoming_type or incoming_type == VARIABLE::Type::NONE) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void NODES::Arithmetic::onDisconnection(Port* port) {
-	if (not i_a->connected() and not i_b->connected() and not out->connected()) {
-		setType(VARIABLE::Type::NONE);
-	}
+	pw_enums->setPos(30, 50);
 }
 
 Variable NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
-		case 0: return i_a->getData() + i_b->getData();
-		case 1: return i_a->getData() - i_b->getData();
-		case 2: return i_a->getData() * i_b->getData();
-		case 3: return i_a->getData() / i_b->getData();
+		case 0: return Variable(i_a->getData().get<dvec1>() + i_b->getData().get<dvec1>());
+		case 1: return Variable(i_a->getData().get<dvec1>() - i_b->getData().get<dvec1>());
+		case 2: return Variable(i_a->getData().get<dvec1>() * i_b->getData().get<dvec1>());
+		case 3: return Variable(i_a->getData().get<dvec1>() / i_b->getData().get<dvec1>());
 	}
 	return Variable(0.0);
 }

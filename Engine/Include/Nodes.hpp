@@ -81,10 +81,26 @@ namespace NODES {
 }
 
 namespace NODES {
+//	struct Arithmetic : Node {
+//		const set<VARIABLE::Type> allowed_types;
+//		VARIABLE::Type var_type;
+//
+//		PORT::Data_I* i_a;
+//		PORT::Data_I* i_b;
+//		PORT::Data_O* out;
+//
+//		GUI::Options* enums;
+//
+//		Arithmetic();
+//
+//		void setType(const VARIABLE::Type& type);
+//
+//		bool onConnRequested(Port* port, Connection* conn);
+//		void onDisconnection(Port* port);
+//
+//		Variable getData(const Port* port) const override;
+//	};
 	struct Arithmetic : Node {
-		const set<VARIABLE::Type> allowed_types;
-		VARIABLE::Type var_type;
-
 		PORT::Data_I* i_a;
 		PORT::Data_I* i_b;
 		PORT::Data_O* out;
@@ -92,12 +108,6 @@ namespace NODES {
 		GUI::Options* enums;
 
 		Arithmetic();
-
-		void setType(const VARIABLE::Type& type);
-
-		bool onConnRequested(Port* port, Connection* conn);
-		void onDisconnection(Port* port);
-		//void onTypeChanged(Port* port, const VARIABLE::Type& var_type);
 
 		Variable getData(const Port* port) const override;
 	};

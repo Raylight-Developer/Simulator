@@ -66,6 +66,12 @@ Variable Variable::operator+(const Variable & other) const {
 			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() + other.get<dmat4  >());
 		}
 	}
+	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
+		return other;
+	}
+	else if (other.type == VARIABLE::Type::NONE and type != VARIABLE::Type::NONE) {
+		return this;
+	}
 	return Variable();
 }
 
@@ -84,6 +90,12 @@ Variable Variable::operator-(const Variable& other) const {
 			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() - other.get<dmat4  >());
 		}
 	}
+	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
+		return other;
+	}
+	else if (other.type == VARIABLE::Type::NONE and type != VARIABLE::Type::NONE) {
+		return this;
+	}
 	return Variable();
 }
 
@@ -101,6 +113,12 @@ Variable Variable::operator*(const Variable& other) const {
 			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() * other.get<dmat4  >());
 		}
 	}
+	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
+		return other;
+	}
+	else if (other.type == VARIABLE::Type::NONE and type != VARIABLE::Type::NONE) {
+		return this;
+	}
 	return Variable();
 }
 
@@ -116,6 +134,12 @@ Variable Variable::operator/(const Variable& other) const {
 			case VARIABLE::Type::MAT3  : return Variable(get<dmat3  >() / other.get<dmat3  >());
 			case VARIABLE::Type::MAT4  : return Variable(get<dmat4  >() / other.get<dmat4  >());
 		}
+	}
+	if (type == VARIABLE::Type::NONE and other.type != VARIABLE::Type::NONE) {
+		return other;
+	}
+	else if (other.type == VARIABLE::Type::NONE and type != VARIABLE::Type::NONE) {
+		return this;
 	}
 	return Variable();
 }
