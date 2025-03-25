@@ -20,6 +20,8 @@ public:
 namespace NODE_SHELF {
 	class Tree : public GUI::Tree {
 	public:
+		GUI::Tree_Item* user_scripts;
+
 		Tree(Node_Shelf* parent = nullptr);
 
 		void startDrag(Qt::DropActions actions) override;

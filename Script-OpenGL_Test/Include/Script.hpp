@@ -4,12 +4,21 @@
 
 struct Script : SCRIPT {
 	Script();
-	// Warning: Do not utilize. all cleanup should be handled by onUnload()
-	~Script() {}
 
 	void onLoad() override;
 	void onUnload() override;
 
 	void exec(const Port* port) override;
-	Variable getData(const Port* port) const override;
+
+	Exec_I* exec_in;
+	Exec_O* exec_out;
+
+	Data_I* center;
+	Data_I* radius;
+	Data_I* color;
+
+	GLuint VAO, VBO, EBO, Shader;
+
+	void init();
+	void render();
 };

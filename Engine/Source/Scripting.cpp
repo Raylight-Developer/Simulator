@@ -1,21 +1,34 @@
 #include "Scripting.hpp"
 
 #include "Session.hpp"
+#include "Viewport.hpp"
 
 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::SL_Session(Script* script, Session* session) :
 	session(session)
 {}
 
-KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() {
+KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() const {
 	return session->buffer;
 }
 
-KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() {
+KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() const {
 	return session->printer;
 }
 
-QOpenGLFunctions_4_5_Core* NODES::SCRIPT::SCRIPT_LAYER::SL_Session::gl() {
+QOpenGLFunctions_4_5_Core* NODES::SCRIPT::SCRIPT_LAYER::SL_Session::gl() const {
 	return session->gl;
+}
+
+uvec2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewportResolution() const {
+	return session->viewport->resolution;
+}
+
+dvec1 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DZoom() const {
+	return session->viewport->zoom_2d;
+}
+
+dvec2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DCenter() const {
+	return session->viewport->center_2d;
 }
 
 void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
@@ -51,7 +64,7 @@ void NODES::SCRIPT::unloadDLL(HINSTANCE& dynlib) {
 	}
 }
 
-void NODES::SCRIPT::loadScript(const QString& dll_path) {
+NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 	Script* script = nullptr;
 	HINSTANCE script_addr = nullptr;
 
@@ -63,21 +76,21 @@ void NODES::SCRIPT::loadScript(const QString& dll_path) {
 
 		script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
 
-		SESSION.scripts[dll_path] = script;
+		SESSION.scripts.push(script);
 		SESSION.dlls[script] = script_addr;
 		script->onLoad();
 	}
+	return script;
 }
 
-void NODES::SCRIPT::reloadScript(const QString& dll_path) {
+void NODES::SCRIPT::reloadScript(Script* script) {
 }
 
-void NODES::SCRIPT::unloadScript(const QString& dll_path) {
-	Script* script = SESSION.scripts[dll_path];
+void NODES::SCRIPT::unloadScript(Script* script) {
 	HINSTANCE script_addr = SESSION.dlls[script];
 
 	script->onUnload();
-	unloadDLL(script_addr);
 	SESSION.dlls.remove(script);
-	SESSION.scripts.remove(dll_path);
+	SESSION.scripts.removeDelete(script); // TEST if Delete
+	unloadDLL(script_addr);
 }

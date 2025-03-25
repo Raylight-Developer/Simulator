@@ -1,10 +1,26 @@
 #include "Node_Shelf.hpp"
 
+#include "Session.hpp"
+
 Node_Shelf::Node_Shelf(QWidget* parent) :
 	GUI::Linear_Contents(parent, QBoxLayout::Direction::TopToBottom)
 {
+	auto add_script = new GUI::Button(this);
+	add_script->setText("Load C++ Script");
+	addWidget(add_script);
+
 	tree = new NODE_SHELF::Tree(this);
 	addWidget(tree);
+
+	connect(add_script, &GUI::Button::pressed, [this]() {
+		const QString script_id = QInputDialog::getText(nullptr, "Input Dialog", "Enter Script ID:");
+		if (!script_id.isEmpty()) {
+			const QString script_path = QFileDialog::getOpenFileName(nullptr, "Open Script DLL File", "", "Dll Files (*.dll)");
+			if (!script_path.isEmpty()) {
+				auto item = new GUI::Tree_Item(tree->user_scripts, script_id, 1, { { 1000, "SCRIPT" }, { 1001, script_path } });
+			}
+		}
+	});
 }
 
 NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
@@ -12,6 +28,8 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 {
 	setDragEnabled(true);
 	setDragDropMode(QAbstractItemView::DragDropMode::DragOnly);
+
+	user_scripts = new GUI::Tree_Item(this, "Scripts");
 
 	auto tree_inputs    = new GUI::Tree_Item(this, "Inputs");
 	auto tree_cast      = new GUI::Tree_Item(this, "Casting");
@@ -68,6 +86,13 @@ void NODE_SHELF::Tree::startDrag(Qt::DropActions actions) {
 		QDataStream dataStreamType(&type, QIODevice::WriteOnly);
 		dataStreamType << temp->data(0, 1000).toString();
 		mimeData->setData("Type", type);
+
+		if (temp->data(0, 1000).toString() == "SCRIPT") {
+			QByteArray script_path;
+			QDataStream dataStreamPath(&script_path, QIODevice::WriteOnly);
+			dataStreamPath << temp->data(0, 1001).toString();
+			mimeData->setData("Path", script_path);
+		}
 
 		QDrag* drag = new QDrag(this);
 		drag->setMimeData(mimeData);

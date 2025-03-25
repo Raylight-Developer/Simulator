@@ -440,6 +440,13 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "RENDER 2D CIRCLE") {
 				node = new NODES::RENDERING::DIM_2D::Circle();
 			}
+			else if (type == "SCRIPT") {
+				QByteArray itemDataPath = event->mimeData()->data("Path");
+				QDataStream dataStreamPath(&itemDataPath, QIODevice::ReadOnly);
+				QString script_path;
+				dataStreamPath >> script_path;
+				node = NODES::SCRIPT::loadScript(script_path);
+			}
 		}
 		if (node) {
 			scene->addItem(node);

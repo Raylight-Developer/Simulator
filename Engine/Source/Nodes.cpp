@@ -647,6 +647,7 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	vert_b = new PORT::Data_I(this, "B", Variable(dvec2( 200,  200)));
 	width  = new PORT::Data_I(this, "Width", Variable(3.0));
 	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
+
 	init();
 }
 
@@ -736,6 +737,7 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 	vert_b = new PORT::Data_I(this, "B", Variable(dvec2(-50, -28.868)));
 	vert_c = new PORT::Data_I(this, "C", Variable(dvec2( 50, -28.868)));
 	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
+
 	init();
 }
 
@@ -891,6 +893,7 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	center = new PORT::Data_I(this, "Center", Variable(dvec2(0, 0)));
 	radius = new PORT::Data_I(this, "Radius", Variable(50.0));
 	color  = new PORT::Data_I(this, "Color" , Variable(dvec4(1, 1, 1, 1)));
+
 	init();
 }
 

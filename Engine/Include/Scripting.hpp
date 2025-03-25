@@ -20,9 +20,14 @@ namespace NODES {
 			public:
 				SL_Session(Script* script = nullptr, Session* session = nullptr);
 
-				KL::Lace& log();
-				KL::Lace& printer();
-				QOpenGLFunctions_4_5_Core* gl();
+				KL::Lace& log() const;
+				KL::Lace& printer() const;
+				QOpenGLFunctions_4_5_Core* gl() const;
+
+				uvec2 viewportResolution() const;
+
+				dvec1 viewport2DZoom() const;
+				dvec2 viewport2DCenter() const;
 
 				void flush();
 			};
@@ -41,8 +46,8 @@ namespace NODES {
 		void loadDLL(HINSTANCE& dynlib, const QString& dll_path);
 		void unloadDLL(HINSTANCE& dynlib);
 
-		void loadScript  (const QString& dll_path);
-		void reloadScript(const QString& dll_path);
-		void unloadScript(const QString& dll_path);
+		Script* loadScript(const QString& dll_path);
+		void reloadScript(Script* script);
+		void unloadScript(Script* script);
 	}
 }

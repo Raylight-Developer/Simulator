@@ -17,8 +17,8 @@ struct Session : KL::Session {
 
 	File file;
 
-	QMap<QString, NODES::SCRIPT::Script*> scripts;
-	QMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
+	KL::List<NODES::SCRIPT::Script*> scripts;
+	KL::Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	Session();
 	~Session() = default;
