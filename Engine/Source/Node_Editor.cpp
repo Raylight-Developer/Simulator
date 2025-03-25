@@ -18,8 +18,23 @@ Node_Editor::Node_Editor(QWidget* parent) :
 
 	scene->addItem(selection_rect);
 
-	scene->addItem(FILE.tick.pointer);
-	FILE.tick.pointer->setPos(QPointF(0,0));
+	scene->addItem(FILE.euler_tick);
+	FILE.euler_tick->setPos(QPointF(0,0));
+
+	scene->addItem(FILE.background);
+	FILE.background->setPos(QPointF(200,0));
+
+	scene->addItem(FILE.camera_2d);
+	FILE.camera_2d->setPos(QPointF(200,200));
+
+	scene->addItem(FILE.camera_3d);
+	FILE.camera_3d->setPos(QPointF(600,200));
+
+	scene->addItem(FILE.input_key);
+	FILE.input_key->setPos(QPointF(0,200));
+
+	scene->addItem(FILE.input_mouse);
+	FILE.input_mouse->setPos(QPointF(0,400));
 }
 
 Node_Editor::~Node_Editor() {
@@ -179,13 +194,15 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			// TODO escape key cancel
 			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
 				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
-					if (!port_r->connection) {
-						creating_connection = new NODE::Connection(port_r);
-					}
-					else {
-						auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
-						delete port_r->connection;
-						creating_connection = new NODE::Connection(port_l);
+					if (port_r->var_type != VARIABLE::Type::BLOCKED) {
+						if (!port_r->connection) {
+							creating_connection = new NODE::Connection(port_r);
+						}
+						else {
+							auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
+							delete port_r->connection;
+							creating_connection = new NODE::Connection(port_l);
+						}
 					}
 				}
 				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) { // TODO Modify lift connection behavior
@@ -196,6 +213,11 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
 						delete port_l->connection;
 						creating_connection = new NODE::Connection(port_r);
+					}
+				}
+				else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
+					if (port_l->var_type != VARIABLE::Type::BLOCKED) {
+						creating_connection = new NODE::Connection(port);
 					}
 				}
 				else {
@@ -317,7 +339,7 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 		case Qt::Key_Delete: {
 			for (Node* node : selection) {
-				if (not dynamic_cast<NODES::EXEC::Euler_Tick*>(node)) {
+				if (not dynamic_cast<NODES::DEFAULT::Euler_Tick*>(node)) {
 					scene->removeItem(node);
 					delete node;
 				}
@@ -368,29 +390,14 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			QString type;
 			dataStreamType >> type;
 
-			if (type == "INPUT INTEGER") {
-				node = new NODES::INPUT::Integer();
+			if (type == "CONSTANT") {
+				node = new NODES::VARIABLES::Constant();
 			}
-			else if (type == "INPUT DOUBLE") {
-				node = new NODES::INPUT::Double();
+			else if (type == "VARIABLE SET") {
+				node = new NODES::VARIABLES::Set();
 			}
-			else if (type == "INPUT BOOL") {
-				node = new NODES::INPUT::Bool();
-			}
-			else if (type == "INPUT STRING") {
-				node = new NODES::INPUT::String();
-			}
-			else if (type == "INPUT VEC2") {
-				node = new NODES::INPUT::Vec2();
-			}
-			else if (type == "INPUT VEC3") {
-				node = new NODES::INPUT::Vec3();
-			}
-			else if (type == "INPUT VEC4") {
-				node = new NODES::INPUT::Vec4();
-			}
-			else if (type == "INPUT QUAT") {
-				node = new NODES::INPUT::Quat();
+			else if (type == "VARIABLE GET") {
+				node = new NODES::VARIABLES::Get();
 			}
 			else if (type == "MAKE VEC2") {
 				node = new NODES::CAST::MAKE::Vec2();
@@ -418,6 +425,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "TRIGONOMETRY") {
 				node = new NODES::Trigonometry();
+			}
+			else if (type == "BOOLEAN COMPARISON") {
+				node = new NODES::BOOLEAN::Compare();
 			}
 			else if (type == "BOOLEAN IF") {
 				node = new NODES::BOOLEAN::If();

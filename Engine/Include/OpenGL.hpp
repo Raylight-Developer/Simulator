@@ -19,6 +19,7 @@ namespace RENDER {
 			void Circle();
 		}
 		void Line(const vec2& v1, const vec2& v2, const vec1& width, const vec4& color = vec4(1.0f));
+		void RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const vec4& color = vec4(1.0f));
 		void Circle(const vec2& center, const vec1& radius, const vec4& color = vec4(1.0f));
 	}
 }

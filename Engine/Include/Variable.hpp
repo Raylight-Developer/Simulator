@@ -9,11 +9,11 @@ struct Variable;
 
 namespace VARIABLE {
 	enum struct Type {
-		NONE,
+		NONE, BLOCKED,
 		DOUBLE, INT,
 		BOOL, STRING,
-		VEC2, VEC3, VEC4, QUAT, MAT2, MAT3, MAT4,
-		TRANSFORM_2D, TRANSFORM_3D
+		VEC2, VEC3, VEC4, QUAT, MAT2, MAT3, MAT4
+		//TRANSFORM_2D, TRANSFORM_3D
 	};
 	QColor toColor(const VARIABLE::Type& type);
 }
@@ -41,6 +41,7 @@ struct Variable {
 	Variable(const dmat2&   data);
 	Variable(const dmat3&   data);
 	Variable(const dmat4&   data);
+	Variable(const VARIABLE::Type& type);
 
 	Variable operator+(const Variable& other) const;
 	Variable operator-(const Variable& other) const;
@@ -49,6 +50,10 @@ struct Variable {
 
 	bool operator==(const Variable& other) const;
 	bool operator!=(const Variable& other) const;
+	bool operator> (const Variable& other) const;
+	bool operator< (const Variable& other) const;
+	bool operator>=(const Variable& other) const;
+	bool operator<=(const Variable& other) const;
 
 	QString to_string() const;
 

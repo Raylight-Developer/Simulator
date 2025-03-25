@@ -248,6 +248,12 @@ void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, con
 	GL->glUseProgram(0);
 }
 
+void RENDER::Dim_2D::RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const vec4& color) {
+	Line(v1, v2, width, color);
+	Circle(v1, width * 0.5, color);
+	Circle(v2, width * 0.5, color);
+}
+
 void RENDER::Dim_2D::Circle(const vec2& center, const vec1& radius, const vec4& color) {
 	const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
 	GL->glUseProgram(Shader);

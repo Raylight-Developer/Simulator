@@ -338,6 +338,7 @@ bool NODE::PORT::Data_I::connected() const {
 
 void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
 	var_type = type;
+	variable = Variable(var_type);
 	color = VARIABLE::toColor(type);
 	if (connection) {
 		connection->color = toColor(var_type);
@@ -359,6 +360,9 @@ Variable NODE::PORT::Data_I::getData() const {
 }
 
 bool NODE::PORT::Data_I::requestConnection(Connection* connection) {
+	if (var_type == VARIABLE::Type::BLOCKED) {
+		return false;
+	}
 	if (onConnRequested) {
 		return onConnRequested(this, connection);
 	}
@@ -452,6 +456,9 @@ Variable NODE::PORT::Data_O::getData() const {
 }
 
 bool NODE::PORT::Data_O::requestConnection(Connection* connection) {
+	if (var_type == VARIABLE::Type::BLOCKED) {
+		return false;
+	}
 	if (onConnRequested) {
 		return onConnRequested(this, connection);
 	}

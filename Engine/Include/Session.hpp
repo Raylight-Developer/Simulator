@@ -5,6 +5,7 @@
 #include "File.hpp"
 #include "Node.hpp"
 #include "Nodes.hpp"
+#include "Variable.hpp"
 #include "Scripting.hpp"
 
 struct Viewport;
@@ -20,9 +21,10 @@ struct Session : KL::Session {
 	Viewport* viewport;
 
 	File file;
+	KL::U_Map<QString, Variable> variables;
 
 	KL::List<NODES::SCRIPT::Script*> scripts;
-	KL::Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
+	KL::U_Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	Session();
 	~Session() = default;

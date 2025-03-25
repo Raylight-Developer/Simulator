@@ -4,274 +4,664 @@
 #include "OpenGL.hpp"
 #include "Viewport.hpp"
 
-NODES::INPUT::Integer::Integer() :
-	Node("Integer")
+NODES::VARIABLES::Constant::Constant() :
+	Node("Constant")
 {
-	rect.setWidth(80);
+	rect.setWidth(140);
+	rect.setHeight(60);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::BLOCKED);
+	value = Variable();
+
+	enums = new GUI::Options();
+	enums->setFixedSize(100, 20);
+	enums->addItems({ "", "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Quat", "Mat2", "Mat3", "Mat4" });
+
+	auto* proxy_enums = new GUI::Graphics_Widget(enums, this);
+	proxy_enums->setPos(20, 30);
+
+	out->onConnRequested = [this, proxy_enums](Port* port, Connection* conn) {
+		rect.setHeight(rect.height() - 20);
+		proxy_enums->setVisible(false);
+		return true;
+	};
+	out->onDisconnection = [this, proxy_enums](Port* port) {
+		rect.setHeight(rect.height() + 20);
+		proxy_enums->setVisible(true);
+	};
+
+	QObject::connect(enums, &GUI::Options::currentIndexChanged, [this, proxy_enums](int index) {
+		proxies.clearDelete();
+		if (index == 0) {
+			rect.setHeight(60);
+			proxy_enums->setPos(20, 30);
+		}
+		else {
+			rect.setHeight(80);
+			proxy_enums->setPos(20, 50);
+		}
+		rect.setWidth(140);
+		out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+
+		switch (index) {
+			case 0: {
+				out->setType(VARIABLE::Type::BLOCKED);
+				value = Variable();
+				break;
+			}
+			case 1: {
+				out->setType(VARIABLE::Type::INT);
+				value = Variable(0LL);
+
+				auto input = new GUI::Value_Input();
+				input->setValidator(new QIntValidator(input));
+				input->setFixedSize(100, 20);
+				input->setText("0");
+				QObject::connect(input, &GUI::Value_Input::textChanged, [this](const QString val) { value = Variable(i_to_il(val.toInt())); });
+
+				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				proxy_input->setPos(20, 30);
+
+				proxies.push(proxy_input);
+				break;
+			}
+			case 2: {
+				out->setType(VARIABLE::Type::DOUBLE);
+				value = Variable(0.0);
+
+				auto input = new GUI::Value_Input();
+				input->setValidator(new QDoubleValidator(input));
+				input->setFixedSize(100, 20);
+				input->setText("0");
+				QObject::connect(input, &GUI::Value_Input::textChanged, [this](const QString val) { value = Variable(val.toDouble()); });
+
+				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				proxy_input->setPos(20, 30);
+
+				proxies.push(proxy_input);
+				break;
+			}
+			case 3: {
+				out->setType(VARIABLE::Type::BOOL);
+				value = Variable(false);
+
+				auto input = new GUI::Toggle();
+				input->setFixedSize(20, 20);
+
+				QObject::connect(input, &GUI::Toggle::toggled, [this](bool checked) { value = Variable(checked); });
+
+				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				proxy_input->setPos(20, 30);
+
+				proxies.push(proxy_input);
+				break;
+			}
+			case 4: {
+				rect.setWidth(200);
+				out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+
+				out->setType(VARIABLE::Type::STRING);
+				value = Variable(0.0);
+
+				auto input = new GUI::Value_Input();
+				input->setFixedSize(160, 20);
+				input->setPlaceholderText("String");
+				input->setText("");
+				QObject::connect(input, &GUI::Value_Input::textChanged, [this](const QString val) { value = Variable(val); });
+
+				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				proxy_input->setPos(20, 30);
+
+				proxies.push(proxy_input);
+				break;
+			}
+			case 5: {
+				rect.setHeight(100);
+				proxy_enums->setPos(20, 70);
+
+				out->setType(VARIABLE::Type::VEC2);
+				value = Variable(dvec2(0.0));
+
+				auto input_x = new GUI::Value_Input();
+				input_x->setValidator(new QDoubleValidator(input_x));
+				input_x->setFixedSize(100, 20);
+				input_x->setText("0");
+				QObject::connect(input_x, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(val.toDouble(), original.y)); });
+
+				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				proxy_input_x->setPos(20, 30);
+
+				auto input_y = new GUI::Value_Input();
+				input_y->setValidator(new QDoubleValidator(input_y));
+				input_y->setFixedSize(100, 20);
+				input_y->setText("0");
+				QObject::connect(input_y, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(original.x, val.toDouble())); });
+
+				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				proxy_input_y->setPos(20, 50);
+
+				proxies.push(proxy_input_x);
+				proxies.push(proxy_input_y);
+				break;
+			}
+			case 6: {
+				rect.setHeight(120);
+				proxy_enums->setPos(20, 90);
+
+				out->setType(VARIABLE::Type::VEC3);
+				value = Variable(dvec3(0.0));
+
+				auto input_x = new GUI::Value_Input();
+				input_x->setValidator(new QDoubleValidator(input_x));
+				input_x->setFixedSize(100, 20);
+				input_x->setText("0");
+				QObject::connect(input_x, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(val.toDouble(), original.y, original.z)); });
+
+				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				proxy_input_x->setPos(20, 30);
+
+				auto input_y = new GUI::Value_Input();
+				input_y->setValidator(new QDoubleValidator(input_y));
+				input_y->setFixedSize(100, 20);
+				input_y->setText("0");
+				QObject::connect(input_y, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, val.toDouble(), original.z)); });
+
+				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				proxy_input_y->setPos(20, 50);
+
+				auto input_z = new GUI::Value_Input();
+				input_z->setValidator(new QDoubleValidator(input_z));
+				input_z->setFixedSize(100, 20);
+				input_z->setText("0");
+				QObject::connect(input_z, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, original.y, val.toDouble())); });
+
+				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				proxy_input_z->setPos(20, 70);
+
+				proxies.push(proxy_input_x);
+				proxies.push(proxy_input_y);
+				proxies.push(proxy_input_z);
+				break;
+			}
+			case 7: {
+				rect.setHeight(140);
+				proxy_enums->setPos(20, 110);
+
+				out->setType(VARIABLE::Type::VEC4);
+				value = Variable(dvec4(0.0));
+
+				auto input_x = new GUI::Value_Input();
+				input_x->setValidator(new QDoubleValidator(input_x));
+				input_x->setFixedSize(100, 20);
+				input_x->setText("0");
+				QObject::connect(input_x, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(val.toDouble(), original.y, original.z, original.w)); });
+
+				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				proxy_input_x->setPos(20, 30);
+
+				auto input_y = new GUI::Value_Input();
+				input_y->setValidator(new QDoubleValidator(input_y));
+				input_y->setFixedSize(100, 20);
+				input_y->setText("0");
+				QObject::connect(input_y, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, val.toDouble(), original.z, original.w)); });
+
+				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				proxy_input_y->setPos(20, 50);
+
+				auto input_z = new GUI::Value_Input();
+				input_z->setValidator(new QDoubleValidator(input_z));
+				input_z->setFixedSize(100, 20);
+				input_z->setText("0");
+				QObject::connect(input_z, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, val.toDouble(), original.z)); });
+
+				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				proxy_input_z->setPos(20, 70);
+
+				auto input_w = new GUI::Value_Input();
+				input_w->setValidator(new QDoubleValidator(input_w));
+				input_w->setFixedSize(100, 20);
+				input_w->setText("0");
+				QObject::connect(input_w, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, original.z, val.toDouble())); });
+
+				auto* proxy_input_w = new GUI::Graphics_Widget(input_w, this);
+				proxy_input_w->setPos(20, 90);
+
+				proxies.push(proxy_input_x);
+				proxies.push(proxy_input_y);
+				proxies.push(proxy_input_z);
+				proxies.push(proxy_input_w);
+				break;
+			}
+			case 8: {
+				rect.setHeight(140);
+				proxy_enums->setPos(20, 110);
+
+				out->setType(VARIABLE::Type::QUAT);
+				value = Variable(dquat(1, 0, 0, 0));
+
+				auto input_w = new GUI::Value_Input();
+				input_w->setValidator(new QDoubleValidator(input_w));
+				input_w->setFixedSize(100, 20);
+				input_w->setText("1");
+				QObject::connect(input_w, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(val.toDouble(), original.x, original.y, original.z)); });
+
+				auto* proxy_input_w = new GUI::Graphics_Widget(input_w, this);
+				proxy_input_w->setPos(20, 30);
+
+				auto input_x = new GUI::Value_Input();
+				input_x->setValidator(new QDoubleValidator(input_x));
+				input_x->setFixedSize(100, 20);
+				input_x->setText("0");
+				QObject::connect(input_x, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, val.toDouble(), original.y, original.z)); });
+
+				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				proxy_input_x->setPos(20, 50);
+
+				auto input_y = new GUI::Value_Input();
+				input_y->setValidator(new QDoubleValidator(input_y));
+				input_y->setFixedSize(100, 20);
+				input_y->setText("0");
+				QObject::connect(input_y, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, val.toDouble(), original.z)); });
+
+				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				proxy_input_y->setPos(20, 70);
+
+				auto input_z = new GUI::Value_Input();
+				input_z->setValidator(new QDoubleValidator(input_z));
+				input_z->setFixedSize(100, 20);
+				input_z->setText("0");
+				QObject::connect(input_z, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, original.y, val.toDouble())); });
+
+				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				proxy_input_z->setPos(20, 90);
+
+				proxies.push(proxy_input_w);
+				proxies.push(proxy_input_x);
+				proxies.push(proxy_input_y);
+				proxies.push(proxy_input_z);
+				break;
+			}
+			case 9: {
+				rect.setWidth(140);
+				out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+				rect.setHeight(100);
+				proxy_enums->setPos(20, 70);
+
+				out->setType(VARIABLE::Type::MAT2);
+				value = Variable(dmat2(1.0));
+
+				{
+					auto input_xx = new GUI::Value_Input();
+					input_xx->setValidator(new QDoubleValidator(input_xx));
+					input_xx->setFixedSize(50, 20);
+					input_xx->setText("1");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(val.toDouble(), original[0][1]), original[1])); });
+
+					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					proxy_input_xx->setPos(20, 30);
+
+					auto input_xy = new GUI::Value_Input();
+					input_xy->setValidator(new QDoubleValidator(input_xy));
+					input_xy->setFixedSize(50, 20);
+					input_xy->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(original[0][0], val.toDouble()), original[1])); });
+
+					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					proxy_input_xy->setPos(20, 50);
+
+					proxies.push(proxy_input_xx);
+					proxies.push(proxy_input_xy);
+				}
+				{
+					auto input_yx = new GUI::Value_Input();
+					input_yx->setValidator(new QDoubleValidator(input_yx));
+					input_yx->setFixedSize(50, 20);
+					input_yx->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(val.toDouble(), original[0][1]))); });
+
+					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					proxy_input_yx->setPos(70, 30);
+
+					auto input_yy = new GUI::Value_Input();
+					input_yy->setValidator(new QDoubleValidator(input_yy));
+					input_yy->setFixedSize(50, 20);
+					input_yy->setText("1");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(original[0][0], val.toDouble()))); });
+
+					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					proxy_input_yy->setPos(70, 50);
+
+					proxies.push(proxy_input_yx);
+					proxies.push(proxy_input_yy);
+				}
+				break;
+			}
+			case 10: {
+				rect.setWidth(160);
+				out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+				rect.setHeight(120);
+				proxy_enums->setPos(20, 90);
+
+				out->setType(VARIABLE::Type::MAT3);
+				value = Variable(dmat3(1.0));
+
+				{
+					auto input_xx = new GUI::Value_Input();
+					input_xx->setValidator(new QDoubleValidator(input_xx));
+					input_xx->setFixedSize(40, 20);
+					input_xx->setText("1");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2])); });
+
+					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					proxy_input_xx->setPos(20, 30);
+
+					auto input_xy = new GUI::Value_Input();
+					input_xy->setValidator(new QDoubleValidator(input_xy));
+					input_xy->setFixedSize(40, 20);
+					input_xy->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2])); });
+
+					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					proxy_input_xy->setPos(20, 50);
+
+					auto input_xz = new GUI::Value_Input();
+					input_xz->setValidator(new QDoubleValidator(input_xz));
+					input_xz->setFixedSize(40, 20);
+					input_xz->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], original[0][1], val.toDouble()), original[1], original[2])); });
+
+					auto* proxy_input_xz = new GUI::Graphics_Widget(input_xz, this);
+					proxy_input_xz->setPos(20, 70);
+
+					proxies.push(proxy_input_xx);
+					proxies.push(proxy_input_xy);
+					proxies.push(proxy_input_xz);
+				}
+				{
+					auto input_yx = new GUI::Value_Input();
+					input_yx->setValidator(new QDoubleValidator(input_yx));
+					input_yx->setFixedSize(40, 20);
+					input_yx->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(val.toDouble(), original[0][1], original[0][2]), original[2])); });
+
+					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					proxy_input_yx->setPos(60, 30);
+
+					auto input_yy = new GUI::Value_Input();
+					input_yy->setValidator(new QDoubleValidator(input_yy));
+					input_yy->setFixedSize(40, 20);
+					input_yy->setText("1");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], val.toDouble(), original[0][2]), original[2])); });
+
+					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					proxy_input_yy->setPos(60, 50);
+
+					auto input_yz = new GUI::Value_Input();
+					input_yz->setValidator(new QDoubleValidator(input_yz));
+					input_yz->setFixedSize(40, 20);
+					input_yz->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], original[0][1], val.toDouble()), original[2])); });
+
+					auto* proxy_input_yz = new GUI::Graphics_Widget(input_yz, this);
+					proxy_input_yz->setPos(60, 70);
+
+					proxies.push(proxy_input_yx);
+					proxies.push(proxy_input_yy);
+					proxies.push(proxy_input_yz);
+				}
+				{
+					auto input_zx = new GUI::Value_Input();
+					input_zx->setValidator(new QDoubleValidator(input_zx));
+					input_zx->setFixedSize(40, 20);
+					input_zx->setText("0");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(val.toDouble(), original[0][1], original[0][2]))); });
+
+					auto* proxy_input_zx = new GUI::Graphics_Widget(input_zx, this);
+					proxy_input_zx->setPos(100, 30);
+
+					auto input_zy = new GUI::Value_Input();
+					input_zy->setValidator(new QDoubleValidator(input_zy));
+					input_zy->setFixedSize(40, 20);
+					input_zy->setText("0");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], val.toDouble(), original[0][2]))); });
+
+					auto* proxy_input_zy = new GUI::Graphics_Widget(input_zy, this);
+					proxy_input_zy->setPos(100, 50);
+
+					auto input_zz = new GUI::Value_Input();
+					input_zz->setValidator(new QDoubleValidator(input_zz));
+					input_zz->setFixedSize(40, 20);
+					input_zz->setText("1");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], original[0][1], val.toDouble()))); });
+
+					auto* proxy_input_zz = new GUI::Graphics_Widget(input_zz, this);
+					proxy_input_zz->setPos(100, 70);
+
+					proxies.push(proxy_input_zx);
+					proxies.push(proxy_input_zy);
+					proxies.push(proxy_input_zz);
+				}
+				break;
+			}
+			case 11: {
+				rect.setWidth(200);
+				out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+				rect.setHeight(140);
+				proxy_enums->setPos(20, 110);
+
+				out->setType(VARIABLE::Type::MAT4);
+				value = Variable(dmat4(1.0));
+
+				{
+					auto input_xx = new GUI::Value_Input();
+					input_xx->setValidator(new QDoubleValidator(input_xx));
+					input_xx->setFixedSize(40, 20);
+					input_xx->setText("1");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3])); });
+
+					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					proxy_input_xx->setPos(20, 30);
+
+					auto input_xy = new GUI::Value_Input();
+					input_xy->setValidator(new QDoubleValidator(input_xy));
+					input_xy->setFixedSize(40, 20);
+					input_xy->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3])); });
+
+					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					proxy_input_xy->setPos(20, 50);
+
+					auto input_xz = new GUI::Value_Input();
+					input_xz->setValidator(new QDoubleValidator(input_xz));
+					input_xz->setFixedSize(40, 20);
+					input_xz->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3])); });
+
+					auto* proxy_input_xz = new GUI::Graphics_Widget(input_xz, this);
+					proxy_input_xz->setPos(20, 70);
+
+					auto input_xw = new GUI::Value_Input();
+					input_xw->setValidator(new QDoubleValidator(input_xw));
+					input_xw->setFixedSize(40, 20);
+					input_xw->setText("0");
+					QObject::connect(input_xx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3])); });
+
+					auto* proxy_input_xw = new GUI::Graphics_Widget(input_xw, this);
+					proxy_input_xw->setPos(20, 90);
+
+					proxies.push(proxy_input_xx);
+					proxies.push(proxy_input_xy);
+					proxies.push(proxy_input_xz);
+					proxies.push(proxy_input_xw);
+				}
+				{
+					auto input_yx = new GUI::Value_Input();
+					input_yx->setValidator(new QDoubleValidator(input_yx));
+					input_yx->setFixedSize(40, 20);
+					input_yx->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3])); });
+
+					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					proxy_input_yx->setPos(60, 30);
+
+					auto input_yy = new GUI::Value_Input();
+					input_yy->setValidator(new QDoubleValidator(input_yy));
+					input_yy->setFixedSize(40, 20);
+					input_yy->setText("1");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3])); });
+
+					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					proxy_input_yy->setPos(60, 50);
+
+					auto input_yz = new GUI::Value_Input();
+					input_yz->setValidator(new QDoubleValidator(input_yz));
+					input_yz->setFixedSize(40, 20);
+					input_yz->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3])); });
+
+					auto* proxy_input_yz = new GUI::Graphics_Widget(input_yz, this);
+					proxy_input_yz->setPos(60, 70);
+
+					auto input_yw = new GUI::Value_Input();
+					input_yw->setValidator(new QDoubleValidator(input_yw));
+					input_yw->setFixedSize(40, 20);
+					input_yw->setText("0");
+					QObject::connect(input_yx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3])); });
+
+					auto* proxy_input_yw = new GUI::Graphics_Widget(input_yw, this);
+					proxy_input_yw->setPos(60, 90);
+
+					proxies.push(proxy_input_yx);
+					proxies.push(proxy_input_yy);
+					proxies.push(proxy_input_yz);
+					proxies.push(proxy_input_yw);
+				}
+				{
+					auto input_zx = new GUI::Value_Input();
+					input_zx->setValidator(new QDoubleValidator(input_zx));
+					input_zx->setFixedSize(40, 20);
+					input_zx->setText("0");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3])); });
+
+					auto* proxy_input_zx = new GUI::Graphics_Widget(input_zx, this);
+					proxy_input_zx->setPos(100, 30);
+
+					auto input_zy = new GUI::Value_Input();
+					input_zy->setValidator(new QDoubleValidator(input_zy));
+					input_zy->setFixedSize(40, 20);
+					input_zy->setText("0");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3])); });
+
+					auto* proxy_input_zy = new GUI::Graphics_Widget(input_zy, this);
+					proxy_input_zy->setPos(100, 50);
+
+					auto input_zz = new GUI::Value_Input();
+					input_zz->setValidator(new QDoubleValidator(input_zz));
+					input_zz->setFixedSize(40, 20);
+					input_zz->setText("1");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3])); });
+
+					auto* proxy_input_zz = new GUI::Graphics_Widget(input_zz, this);
+					proxy_input_zz->setPos(100, 70);
+
+					auto input_zw = new GUI::Value_Input();
+					input_zw->setValidator(new QDoubleValidator(input_zw));
+					input_zw->setFixedSize(40, 20);
+					input_zw->setText("0");
+					QObject::connect(input_zx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3])); });
+
+					auto* proxy_input_zw = new GUI::Graphics_Widget(input_zw, this);
+					proxy_input_zw->setPos(100, 90);
+
+					proxies.push(proxy_input_zx);
+					proxies.push(proxy_input_zy);
+					proxies.push(proxy_input_zz);
+					proxies.push(proxy_input_zw);
+				}
+				{
+					auto input_wx = new GUI::Value_Input();
+					input_wx->setValidator(new QDoubleValidator(input_wx));
+					input_wx->setFixedSize(40, 20);
+					input_wx->setText("0");
+					QObject::connect(input_wx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]))); });
+
+					auto* proxy_input_wx = new GUI::Graphics_Widget(input_wx, this);
+					proxy_input_wx->setPos(140, 30);
+
+					auto input_wy = new GUI::Value_Input();
+					input_wy->setValidator(new QDoubleValidator(input_wy));
+					input_wy->setFixedSize(40, 20);
+					input_wy->setText("0");
+					QObject::connect(input_wx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]))); });
+
+					auto* proxy_input_wy = new GUI::Graphics_Widget(input_wy, this);
+					proxy_input_wy->setPos(140, 50);
+
+					auto input_wz = new GUI::Value_Input();
+					input_wz->setValidator(new QDoubleValidator(input_wz));
+					input_wz->setFixedSize(40, 20);
+					input_wz->setText("0");
+					QObject::connect(input_wx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]))); });
+
+					auto* proxy_input_wz = new GUI::Graphics_Widget(input_wz, this);
+					proxy_input_wz->setPos(140, 70);
+
+					auto input_ww = new GUI::Value_Input();
+					input_ww->setValidator(new QDoubleValidator(input_ww));
+					input_ww->setFixedSize(40, 20);
+					input_ww->setText("1");
+					QObject::connect(input_wx, &GUI::Value_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()))); });
+
+					auto* proxy_input_ww = new GUI::Graphics_Widget(input_ww, this);
+					proxy_input_ww->setPos(140, 90);
+
+					proxies.push(proxy_input_wx);
+					proxies.push(proxy_input_wy);
+					proxies.push(proxy_input_wz);
+					proxies.push(proxy_input_ww);
+				}
+				break;
+			}
+		}
+	});
+}
+
+Variable NODES::VARIABLES::Constant::getData(const Port* port) const {
+	return value;
+}
+
+NODES::VARIABLES::Get::Get() :
+	Node("Get Var")
+{
+	rect.setWidth(100);
 	rect.setHeight(60);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::INT);
-	value = 0;
-
-	input = new GUI::Value_Input();
-	input->setFixedSize(60, 20);
-	input->setText("0");
-	input->setValidator(new QIntValidator(input));
-
-	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
-	proxyWidget->setPos(10, 30);
-
-	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val.toInt(); });
 }
 
-Variable NODES::INPUT::Integer::getData(const Port* port) const {
-	return Variable(value);
+Variable NODES::VARIABLES::Get::getData(const Port* port) const {
+	return SESSION->variables[var];
 }
 
-NODES::INPUT::Double::Double() :
-	Node("Double")
+NODES::VARIABLES::Set::Set() :
+	Node("Set Var")
 {
 	rect.setWidth(100);
 	rect.setHeight(60);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
-	value = 0.0;
-
-	input = new GUI::Value_Input();
-	input->setFixedSize(80, 20);
-	input->setText("0");
-	input->setValidator(new QDoubleValidator(input));
-
-	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
-	proxyWidget->setPos(10, 30);
-
-	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val.toDouble(); });
+	exec_in  = new PORT::Exec_I(this, "");
+	exec_out = new PORT::Exec_O(this, "");
+	in  = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::NONE);
 }
 
-Variable NODES::INPUT::Double::getData(const Port* port) const {
-	return Variable(value);
+void NODES::VARIABLES::Set::exec(const Port* port) {
+	SESSION->variables[var] = in->getData();
+	exec_out->exec();
 }
 
-NODES::INPUT::Bool::Bool() :
-	Node("Bool")
-{
-	rect.setWidth(60);
-	rect.setHeight(60);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::BOOL);
-	value = false;
-
-	input = new GUI::Toggle();
-	input->setFixedSize(20, 20);
-
-	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
-	proxyWidget->setPos(10, 30);
-
-	QObject::connect(input, &GUI::Toggle::toggled, [this](bool checked) { value = checked; });
-}
-
-Variable NODES::INPUT::Bool::getData(const Port* port) const {
-	return Variable(value);
-}
-
-NODES::INPUT::String::String() :
-	Node("String")
-{
-	rect.setWidth(200);
-	rect.setHeight(60);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::STRING);
-	value = "";
-
-	input = new GUI::Value_Input();
-	input->setFixedSize(180, 20);
-	input->setText("");
-
-	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
-	proxyWidget->setPos(10, 30);
-
-	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val; });
-}
-
-Variable NODES::INPUT::String::getData(const Port* port) const {
-	return Variable(value);
-}
-
-NODES::INPUT::Vec2::Vec2() :
-	Node("Vec2")
-{
-	rect.setWidth(100);
-	rect.setHeight(80);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
-	value = dvec2(0.0, 0.0);
-
-	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(80, 20);
-	input_x->setText("0");
-	input_x->setValidator(new QDoubleValidator(input_x));
-
-	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(80, 20);
-	input_y->setText("0");
-	input_y->setValidator(new QDoubleValidator(input_y));
-
-	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
-	proxyWidgetX->setPos(10, 30);
-
-	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
-	proxyWidgetY->setPos(10, 50);
-
-	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
-	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
-}
-
-Variable NODES::INPUT::Vec2::getData(const Port* port) const {
-	return Variable(value);
-}
-
-NODES::INPUT::Vec3::Vec3() :
-	Node("Vec3")
-{
-	rect.setWidth(100);
-	rect.setHeight(100);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
-	value = dvec3(0.0, 0.0, 0.0);
-
-	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(80, 20);
-	input_x->setText("0");
-	input_x->setValidator(new QDoubleValidator(input_x));
-
-	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(80, 20);
-	input_y->setText("0");
-	input_y->setValidator(new QDoubleValidator(input_y));
-	
-	input_z = new GUI::Value_Input();
-	input_z->setFixedSize(80, 20);
-	input_z->setText("0");
-	input_z->setValidator(new QDoubleValidator(input_z));
-
-	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
-	proxyWidgetX->setPos(10, 30);
-
-	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
-	proxyWidgetY->setPos(10, 50);
-	
-	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
-	proxyWidgetZ->setPos(10, 70);
-
-	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
-	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
-	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
-}
-
-Variable NODES::INPUT::Vec3::getData(const Port* port) const {
-	return Variable(value);
-}
-
-NODES::INPUT::Vec4::Vec4() :
-	Node("Vec4")
-{
-	rect.setWidth(100);
-	rect.setHeight(120);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
-	value = dvec4(0.0, 0.0, 0.0, 0.0);
-
-	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(80, 20);
-	input_x->setText("0");
-	input_x->setValidator(new QDoubleValidator(input_x));
-
-	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(80, 20);
-	input_y->setText("0");
-	input_y->setValidator(new QDoubleValidator(input_y));
-	
-	input_z = new GUI::Value_Input();
-	input_z->setFixedSize(80, 20);
-	input_z->setText("0");
-	input_z->setValidator(new QDoubleValidator(input_z));
-	
-	input_w = new GUI::Value_Input();
-	input_w->setFixedSize(80, 20);
-	input_w->setText("0");
-	input_w->setValidator(new QDoubleValidator(input_w));
-
-	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
-	proxyWidgetX->setPos(10, 30);
-
-	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
-	proxyWidgetY->setPos(10, 50);
-
-	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
-	proxyWidgetZ->setPos(10, 70);
-
-	auto* proxyWidgetW = new GUI::Graphics_Widget(input_w, this);
-	proxyWidgetW->setPos(10, 90);
-
-	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
-	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
-	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
-	QObject::connect(input_w, &GUI::Value_Input::textEdited, [this](const QString& val) { value.w = val.toDouble(); });
-}
-
-Variable NODES::INPUT::Vec4::getData(const Port* port) const {
-	return Variable(value);
-}
-
-NODES::INPUT::Quat::Quat() :
-	Node("Quat")
-{
-	rect.setWidth(100);
-	rect.setHeight(120);
-
-	out = new PORT::Data_O(this, "", VARIABLE::Type::QUAT);
-	value = dquat(1.0, 0.0, 0.0, 0.0);
-
-	input_w = new GUI::Value_Input();
-	input_w->setFixedSize(80, 20);
-	input_w->setText("1");
-	input_w->setValidator(new QDoubleValidator(input_w));
-
-	input_x = new GUI::Value_Input();
-	input_x->setFixedSize(80, 20);
-	input_x->setText("0");
-	input_x->setValidator(new QDoubleValidator(input_x));
-
-	input_y = new GUI::Value_Input();
-	input_y->setFixedSize(80, 20);
-	input_y->setText("0");
-	input_y->setValidator(new QDoubleValidator(input_y));
-	
-	input_z = new GUI::Value_Input();
-	input_z->setFixedSize(80, 20);
-	input_z->setText("0");
-	input_z->setValidator(new QDoubleValidator(input_z));
-	
-	auto* proxyWidgetW = new GUI::Graphics_Widget(input_w, this);
-	proxyWidgetW->setPos(10, 90);
-
-	auto* proxyWidgetX = new GUI::Graphics_Widget(input_x, this);
-	proxyWidgetX->setPos(10, 30);
-
-	auto* proxyWidgetY = new GUI::Graphics_Widget(input_y, this);
-	proxyWidgetY->setPos(10, 50);
-
-	auto* proxyWidgetZ = new GUI::Graphics_Widget(input_z, this);
-	proxyWidgetZ->setPos(10, 70);
-
-	QObject::connect(input_w, &GUI::Value_Input::textEdited, [this](const QString& val) { value.w = val.toDouble(); });
-	QObject::connect(input_x, &GUI::Value_Input::textEdited, [this](const QString& val) { value.x = val.toDouble(); });
-	QObject::connect(input_y, &GUI::Value_Input::textEdited, [this](const QString& val) { value.y = val.toDouble(); });
-	QObject::connect(input_z, &GUI::Value_Input::textEdited, [this](const QString& val) { value.z = val.toDouble(); });
-}
-
-Variable NODES::INPUT::Quat::getData(const Port* port) const {
-	return Variable(value);
+Variable NODES::VARIABLES::Set::getData(const Port* port) const {
+	return SESSION->variables[var];
 }
 
 NODES::CAST::MAKE::Vec2::Vec2() :
@@ -520,23 +910,101 @@ NODES::Trigonometry::Trigonometry() :
 Variable NODES::Trigonometry::getData(const Port* port) const {
 	const dvec1 x = in->getData().get<dvec1>();
 	switch (enums->currentIndex()) {
-	case  0: return sin(x);
-	case  1: return cos(x);
-	case  2: return tan(x);
-	case  3: return asin(x);
-	case  4: return acos(x);
-	case  5: return atan(x);
-	case  6: return sinh(x);
-	case  7: return cosh(x);
-	case  8: return tanh(x);
-	case  9: return 1.0 / tan(x);
-	case 10: return 1.0 / cos(x);
-	case 11: return 1.0 / sin(x);
-	case 12: return cosh(x) / sinh(x);
-	case 13: return 1.0 / cosh(x);
-	case 14: return 1.0 / sinh(x);
+		case  0: return sin(x);
+		case  1: return cos(x);
+		case  2: return tan(x);
+		case  3: return asin(x);
+		case  4: return acos(x);
+		case  5: return atan(x);
+		case  6: return sinh(x);
+		case  7: return cosh(x);
+		case  8: return tanh(x);
+		case  9: return 1.0 / tan(x);
+		case 10: return 1.0 / cos(x);
+		case 11: return 1.0 / sin(x);
+		case 12: return cosh(x) / sinh(x);
+		case 13: return 1.0 / cosh(x);
+		case 14: return 1.0 / sinh(x);
 	}
 	return Variable(x);
+}
+
+NODES::BOOLEAN::Compare::Compare() :
+	Node("Compare")
+{
+	rect.setWidth(120);
+	rect.setHeight(80);
+
+	in_a = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
+	in_b = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
+	out  = new PORT::Data_O(this, "", VARIABLE::Type::BOOL);
+
+	in_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	in_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
+	in_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	in_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
+	in_a->onTypeChanged   = [this](Port* port, const VARIABLE::Type& var_type) { cascade(port, var_type); };
+	in_b->onTypeChanged   = [this](Port* port, const VARIABLE::Type& var_type) { cascade(port, var_type); };
+
+	enums = new GUI::Options();
+	enums->setFixedSize(80, 20);
+	enums->addItems({ "==", "!=", ">", "<", ">=", "<=", "Sign"});
+
+	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
+	proxyWidget->setPos(30, 50);
+}
+
+bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
+	if (port == out) {
+		return true;
+	}
+
+	const VARIABLE::Type incoming_type = conn->getDataO()->var_type;
+	if (port == in_a) {
+		if (!in_b->connected()) {
+			in_a->setType(incoming_type);
+			in_b->setType(incoming_type);
+			return true;
+		}
+		else if (in_b->var_type == incoming_type) {
+			in_a->setType(incoming_type);
+			return true;
+		}
+	}
+	if (port == in_b) {
+		if (!in_a->connected()) {
+			in_a->setType(incoming_type);
+			in_b->setType(incoming_type);
+			return true;
+		}
+		else if (in_a->var_type == incoming_type) {
+			in_b->setType(incoming_type);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void NODES::BOOLEAN::Compare::onDisconnection(Port* port) {
+	if (!in_a->connected() and !in_b->connected()) {
+		in_a->setType(VARIABLE::Type::NONE);
+		in_b->setType(VARIABLE::Type::NONE);
+	}
+}
+
+void NODES::BOOLEAN::Compare::cascade(Port* port, const VARIABLE::Type& var_type) {}
+
+Variable NODES::BOOLEAN::Compare::getData(const Port* port) const {
+	switch (enums->currentIndex()) {
+		case 0: return Variable(in_a->getData() == in_b->getData());
+		case 1: return Variable(in_a->getData() != in_b->getData());
+		case 2: return Variable(in_a->getData()  > in_b->getData());
+		case 3: return Variable(in_a->getData()  < in_b->getData());
+		case 4: return Variable(in_a->getData() >= in_b->getData());
+		case 5: return Variable(in_a->getData() <= in_b->getData());
+	}
+	return Variable(false);
 }
 
 NODES::BOOLEAN::If::If() :
@@ -611,7 +1079,7 @@ Variable NODES::BOOLEAN::Select::getData(const Port* port) const {
 	return i_false->getData();
 }
 
-NODES::EXEC::Euler_Tick::Euler_Tick() :
+NODES::DEFAULT::Euler_Tick::Euler_Tick() :
 	Node("Tick")
 {
 	rect.setWidth(80);
@@ -623,13 +1091,99 @@ NODES::EXEC::Euler_Tick::Euler_Tick() :
 	delta = 0.016;
 }
 
-void NODES::EXEC::Euler_Tick::exec(const dvec1& delta) {
+void NODES::DEFAULT::Euler_Tick::exec(const dvec1& delta) {
 	this->delta = delta;
 	exec_out->exec();
 }
 
-Variable NODES::EXEC::Euler_Tick::getData(const Port* port) const {
+Variable NODES::DEFAULT::Euler_Tick::getData(const Port* port) const {
 	return Variable(delta);
+}
+
+NODES::DEFAULT::Background::Background() :
+	Node("Background")
+{
+	rect.setWidth(100);
+	rect.setHeight(80);
+
+	exec_in  = new PORT:: Exec_I(this, "");
+	exec_out = new PORT:: Exec_O(this, "");
+
+	color_in = new PORT:: Data_I(this, "Color", Variable(dvec4(0,0,0,1)));
+}
+
+void NODES::DEFAULT::Background::exec(const Port* port) {
+	const vec4 u_color = d_to_f(color_in->getData().get<dvec4>());
+	GL->glClearColor(u_color.r, u_color.g, u_color.b, u_color.a);
+	GL->glClear(GL_COLOR_BUFFER_BIT);
+	exec_out->exec();
+}
+
+NODES::DEFAULT::Camera_2D::Camera_2D() :
+	Node("2D Camera")
+{
+	header_color = QColor(75, 25, 25);
+	rect.setWidth(100);
+	rect.setHeight(100);
+
+	exec_in  = new PORT:: Exec_I(this, "");
+	exec_out = new PORT:: Exec_O(this, "");
+
+	center = new PORT:: Data_I(this, "Color", Variable(dvec2(0,0)));
+	zoom = new PORT:: Data_I(this, "Color", Variable(1.0));
+}
+
+void NODES::DEFAULT::Camera_2D::exec(const Port* port) {
+	SESSION->viewport->center_2d = center->getData().get<dvec2>();
+	SESSION->viewport->zoom_2d = zoom->getData().get<dvec1>();
+	exec_out->exec();
+}
+
+NODES::DEFAULT::Camera_3D::Camera_3D() :
+	Node("3D Camera")
+{
+	header_color = QColor(25, 25, 75);
+	rect.setWidth(100);
+	rect.setHeight(60);
+
+	exec_in  = new PORT:: Exec_I(this, "");
+	exec_out = new PORT:: Exec_O(this, "");
+}
+
+void NODES::DEFAULT::Camera_3D::exec(const Port* port) {
+	exec_out->exec();
+}
+
+NODES::DEFAULT::Input_Key::Input_Key() :
+	Node("Input Key")
+{
+	header_color = QColor(25, 25, 75);
+	rect.setWidth(120);
+	rect.setHeight(100);
+
+	exec_press   = new PORT:: Exec_O(this, "Pressed");
+	exec_release = new PORT:: Exec_O(this, "Released");
+	key = new PORT::Data_O(this, "Key", VARIABLE::Type::STRING);
+}
+
+Variable NODES::DEFAULT::Input_Key::getData(const Port* port) const {
+	return Variable("");
+}
+
+NODES::DEFAULT::Input_Mouse::Input_Mouse() :
+	Node("Input Mouse")
+{
+	header_color = QColor(25, 25, 75);
+	rect.setWidth(120);
+	rect.setHeight(100);
+
+	exec_press   = new PORT:: Exec_O(this, "Pressed");
+	exec_release = new PORT:: Exec_O(this, "Released");
+	button = new PORT::Data_O(this, "Button", VARIABLE::Type::STRING);
+}
+
+Variable NODES::DEFAULT::Input_Mouse::getData(const Port* port) const {
+	return Variable("");
 }
 
 NODES::RENDERING::DIM_2D::Line::Line() :

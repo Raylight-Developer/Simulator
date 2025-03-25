@@ -26,15 +26,21 @@ void Script::exec(const Port* port) {
 }
 
 void Script::render() {
-	const vec4 u_color  = vec4(1,1,1,1);
+	const vec4 u_color  = vec4(1,0.4,0,1);
 
 	RENDER::Dim_2D::Line(vec2(  60, 60), vec2( -60, 60), 4, u_color);
 
-	RENDER::Dim_2D::Line(vec2(  60, 60), vec2( 100, 20), 4, u_color);
-	RENDER::Dim_2D::Line(vec2( -60, 60), vec2(-100, 20), 4, u_color);
+	RENDER::Dim_2D::RoundedLine(vec2(  60, 60), vec2( 100, 20), 4, u_color);
+	RENDER::Dim_2D::RoundedLine(vec2( -60, 60), vec2(-100, 20), 4, u_color);
 
 	RENDER::Dim_2D::Line(vec2( 100, 20), vec2( 160, 10), 4, u_color);
 	RENDER::Dim_2D::Line(vec2(-100, 20), vec2(-160, 10), 4, u_color);
+
+	RENDER::Dim_2D::RoundedLine(vec2( 160, 10), vec2( 170, -40), 4, u_color);
+	RENDER::Dim_2D::RoundedLine(vec2(-160, 10), vec2(-170, -40), 4, u_color);
+
+	RENDER::Dim_2D::Line(vec2( 170, -40), vec2( 130, -40), 4, u_color);
+	RENDER::Dim_2D::Line(vec2(-170, -40), vec2(-130, -40), 4, u_color);
 
 	RENDER::Dim_2D::Line(vec2(30, -40), vec2(-30, -40), 4, u_color);
 

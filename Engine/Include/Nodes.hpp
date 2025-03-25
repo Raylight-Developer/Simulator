@@ -7,15 +7,10 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace INPUT {
-		struct Integer;
-		struct Double;
-		struct Bool;
-		struct String;
-		struct Vec2;
-		struct Vec3;
-		struct Vec4;
-		struct Quat;
+	namespace VARIABLES {
+		struct Constant;
+		struct Get;
+		struct Set;
 	}
 	namespace CAST {
 		namespace MAKE {
@@ -65,20 +60,23 @@ namespace NODES {
 		}
 	}
 
-	namespace BOOLEAN_COMPARISON {
-		enum struct Type { EQUAL, GT, LT, GEQ, LEQ, SIGN, COMPARE };
-	}
 	namespace BOOLEAN {
 		enum struct Type { IF, IF_ELSE, SWITCH, AND, OR, NOT };
+		struct Compare;
 		struct If;
 		struct If_Else;
 		struct Select;
 	}
-	namespace SCRIPT {
-	}
-
 	namespace EXEC {
 		enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
+	}
+	namespace DEFAULT {
+		struct Euler_Tick;
+		struct Background;
+		struct Camera_2D;
+		struct Camera_3D;
+		struct Input_Key;
+		struct Input_Mouse;
 	}
 	namespace RENDERING {
 		namespace DIM_2D {
@@ -98,86 +96,36 @@ namespace NODES {
 }
 
 namespace NODES {
-	namespace INPUT {
-		struct Integer : Node {
+	namespace VARIABLES {
+		struct Constant : Node {
 			PORT::Data_O* out;
-			GUI::Value_Input* input;
-			int64 value;
 
-			Integer();
+			KL::List<GUI::Graphics_Widget*> proxies;
+			GUI::Options* enums;
+			Variable value;
+
+			Constant();
 
 			Variable getData(const Port* port) const override;
 		};
-		struct Double : Node {
+		struct Get : Node {
 			PORT::Data_O* out;
-			GUI::Value_Input* input;
-			dvec1 value;
+			QString var;
 
-			Double();
+			Get();
 
 			Variable getData(const Port* port) const override;
 		};
-		struct Bool : Node {
+		struct Set : Node {
+			PORT::Exec_I* exec_in;
+			PORT::Exec_O* exec_out;
+			PORT::Data_I* in;
 			PORT::Data_O* out;
-			GUI::Toggle* input;
-			bool value;
+			QString var;
 
-			Bool();
+			Set();
 
-			Variable getData(const Port* port) const override;
-		};
-		struct String : Node {
-			PORT::Data_O* out;
-			GUI::Value_Input* input;
-			QString value;
-
-			String();
-
-			Variable getData(const Port* port) const override;
-		};
-		struct Vec2 : Node {
-			PORT::Data_O* out;
-			GUI::Value_Input* input_x;
-			GUI::Value_Input* input_y;
-			dvec2 value;
-
-			Vec2();
-
-			Variable getData(const Port* port) const override;
-		};
-		struct Vec3 : Node {
-			PORT::Data_O* out;
-			GUI::Value_Input* input_x;
-			GUI::Value_Input* input_y;
-			GUI::Value_Input* input_z;
-			dvec3 value;
-
-			Vec3();
-
-			Variable getData(const Port* port) const override;
-		};
-		struct Vec4 : Node {
-			PORT::Data_O* out;
-			GUI::Value_Input* input_x;
-			GUI::Value_Input* input_y;
-			GUI::Value_Input* input_z;
-			GUI::Value_Input* input_w;
-			dvec4 value;
-
-			Vec4();
-
-			Variable getData(const Port* port) const override;
-		};
-		struct Quat : Node {
-			PORT::Data_O* out;
-			GUI::Value_Input* input_w;
-			GUI::Value_Input* input_x;
-			GUI::Value_Input* input_y;
-			GUI::Value_Input* input_z;
-			dquat value;
-
-			Quat();
-
+			void exec(const Port* port) override;
 			Variable getData(const Port* port) const override;
 		};
 	}
@@ -286,10 +234,22 @@ namespace NODES {
 		Variable getData(const Port* port) const override;
 	};
 
-	namespace BOOLEAN_COMPARISON {
-	}
-
 	namespace BOOLEAN {
+		struct Compare : Node {
+			PORT::Data_I* in_a;
+			PORT::Data_I* in_b;
+			PORT::Data_O* out;
+
+			GUI::Options* enums;
+
+			Compare();
+
+			bool onConnRequested(Port* port, Connection* conn);
+			void onDisconnection(Port* port);
+			void cascade(Port* port, const VARIABLE::Type& var_type);
+
+			Variable getData(const Port* port) const override;
+		};
 		struct If : Node {
 			PORT::Exec_I* in;
 			PORT::Data_I* condition;
@@ -324,10 +284,10 @@ namespace NODES {
 		};
 	}
 
-	namespace SCRIPT {
+	namespace EXEC {
 	}
 
-	namespace EXEC {
+	namespace DEFAULT {
 		struct Euler_Tick : Node {
 			dvec1 delta;
 			PORT:: Exec_O* exec_out;
@@ -336,6 +296,53 @@ namespace NODES {
 			Euler_Tick();
 
 			void exec(const dvec1& delta);
+			Variable getData(const Port* port) const override;
+		};
+		struct Background : Node {
+			PORT:: Exec_I* exec_in;
+			PORT:: Exec_O* exec_out;
+
+			PORT:: Data_I* color_in;
+
+			Background();
+
+			void exec(const Port* port) override;
+		};
+		struct Camera_2D : Node {
+			PORT:: Exec_I* exec_in;
+			PORT:: Exec_O* exec_out;
+
+			PORT:: Data_I* center;
+			PORT:: Data_I* zoom;
+
+			Camera_2D();
+
+			void exec(const Port* port) override;
+		};
+		struct Camera_3D : Node {
+			PORT:: Exec_I* exec_in;
+			PORT:: Exec_O* exec_out;
+
+			Camera_3D();
+
+			void exec(const Port* port) override;
+		};
+		struct Input_Key : Node {
+			PORT:: Exec_O* exec_press;
+			PORT:: Exec_O* exec_release;
+			PORT:: Data_O* key;
+
+			Input_Key();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Input_Mouse : Node {
+			PORT:: Exec_O* exec_press;
+			PORT:: Exec_O* exec_release;
+			PORT:: Data_O* button;
+
+			Input_Mouse();
+
 			Variable getData(const Port* port) const override;
 		};
 	}

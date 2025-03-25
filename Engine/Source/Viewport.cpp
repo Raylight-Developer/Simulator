@@ -31,7 +31,7 @@ Viewport::~Viewport() {
 void Viewport::f_tickUpdate() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	FILE.tick.pointer->exec(delta_time);
+	FILE.euler_tick->exec(delta_time);
 }
 
 void Viewport::f_compile() {
