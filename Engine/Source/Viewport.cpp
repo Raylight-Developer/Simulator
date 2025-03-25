@@ -38,17 +38,12 @@ void Viewport::f_compile() {
 	{
 		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Template.vert", "./Shaders/2D/Template.frag");
 		if (confirm) {
-			SP_2D_Line      = confirm.data;
 			SP_2D_Triangle  = confirm.data;
 			SP_2D_Rectangle = confirm.data;
 		}
 	}
-	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Circle.vert", "./Shaders/2D/Circle.frag");
-		if (confirm) {
-			SP_2D_Circle = confirm.data;
-		}
-	}
+	RENDER::Dim_2D::INIT::Line();
+	RENDER::Dim_2D::INIT::Circle();
 }
 
 void Viewport::f_pipeline() {

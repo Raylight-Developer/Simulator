@@ -37,7 +37,7 @@ namespace NODES {
 			//SCRIPT_LAYER::SL_Session* session;
 			Session* session;
 
-			Script(const QString& id);
+			Script(const QString& id, Session* session);
 			~Script();
 
 			virtual void onLoad() {}

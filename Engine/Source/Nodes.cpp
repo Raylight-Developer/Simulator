@@ -1,6 +1,7 @@
 #include "Nodes.hpp"
 
 #include "Session.hpp"
+#include "OpenGL.hpp"
 #include "Viewport.hpp"
 
 NODES::INPUT::Integer::Integer() :
@@ -634,8 +635,6 @@ Variable NODES::EXEC::Euler_Tick::getData(const Port* port) const {
 NODES::RENDERING::DIM_2D::Line::Line() :
 	Node("Line")
 {
-	VAO, VBO, EBO = 0;
-
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);
 	rect.setHeight(140);
@@ -647,33 +646,6 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	vert_b = new PORT::Data_I(this, "B", Variable(dvec2( 200,  200)));
 	width  = new PORT::Data_I(this, "Width", Variable(3.0));
 	color  = new PORT::Data_I(this, "Color", Variable(dvec4(1, 1, 1, 1)));
-
-	init();
-}
-
-void NODES::RENDERING::DIM_2D::Line::init() {
-	const GLfloat vertices[8] = { 0 };
-	const GLuint indices[6] = {
-		0, 1, 2,
-		0, 2, 3
-	};
-	GL->glGenVertexArrays(1, &VAO);
-	GL->glGenBuffers(1, &VBO);
-	GL->glGenBuffers(1, &EBO);
-
-	GL->glBindVertexArray(VAO);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-	GL->glEnableVertexAttribArray(0);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	GL->glBindVertexArray(0);
 }
 
 void NODES::RENDERING::DIM_2D::Line::render() {
@@ -683,37 +655,7 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	const vec1 radius  = d_to_f(width ->getData().get<dvec1>());
 	const vec4 u_color = d_to_f(color ->getData().get<dvec4>());
 
-	vec2 lineDir = d_to_f(glm::normalize(v2 - v1));
-	vec2 perpDir = vec2(-lineDir.y, lineDir.x);
-
-	vec2 np1_top    = v1 + perpDir * radius * 0.5f;
-	vec2 np1_bottom = v1 - perpDir * radius * 0.5f;
-	vec2 np2_top    = v2 + perpDir * radius * 0.5f;
-	vec2 np2_bottom = v2 - perpDir * radius * 0.5f;
-
-	const GLfloat vertices[] = {
-		np1_top.x, np1_top.y,
-		np1_bottom.x, np1_bottom.y,
-		np2_bottom.x, np2_bottom.y,
-		np2_top.x, np2_top.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-	// Render
-	const GLuint Shader = SESSION->viewport->SP_2D_Line;
-	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
-
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-
-	GL->glBindVertexArray(VAO);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	RENDER::Dim_2D::Line(v1, v2, radius, u_color);
 }
 
 void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
@@ -881,8 +823,6 @@ void NODES::RENDERING::DIM_2D::Rectangle::exec(const Port* port) {
 NODES::RENDERING::DIM_2D::Circle::Circle() :
 	Node("Circle")
 {
-	VAO, VBO, EBO = 0;
-
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);
 	rect.setHeight(120);
@@ -893,38 +833,6 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	center = new PORT::Data_I(this, "Center", Variable(dvec2(0, 0)));
 	radius = new PORT::Data_I(this, "Radius", Variable(50.0));
 	color  = new PORT::Data_I(this, "Color" , Variable(dvec4(1, 1, 1, 1)));
-
-	init();
-}
-
-void NODES::RENDERING::DIM_2D::Circle::init() {
-	const GLfloat vertices[8] = {
-		-1, -1,
-		-1,  1,
-		 1,  1,
-		 1, -1
-	};
-	const GLuint indices[6] = {
-		0, 1, 2,
-		0, 2, 3
-	};
-	GL->glGenVertexArrays(1, &VAO);
-	GL->glGenBuffers(1, &VBO);
-	GL->glGenBuffers(1, &EBO);
-
-	GL->glBindVertexArray(VAO);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-	GL->glEnableVertexAttribArray(0);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	GL->glBindVertexArray(0);
 }
 
 void NODES::RENDERING::DIM_2D::Circle::render() {
@@ -932,22 +840,7 @@ void NODES::RENDERING::DIM_2D::Circle::render() {
 	const vec2 u_center = d_to_f(center->getData().get<dvec2>());
 	const vec1 u_radius = d_to_f(radius->getData().get<dvec1>());
 
-	// Render
-	const GLuint Shader = SESSION->viewport->SP_2D_Circle;
-	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
-
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(u_color));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(u_center));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uRadius"), u_radius);
-
-	GL->glBindVertexArray(VAO);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	RENDER::Dim_2D::Circle(u_center, u_radius, u_color);
 }
 
 void NODES::RENDERING::DIM_2D::Circle::exec(const Port* port) {

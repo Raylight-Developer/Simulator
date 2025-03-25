@@ -1,6 +1,8 @@
 #include "Script.hpp"
 
-SCRIPT_INIT("Test Script")
+Script::Script(Session* session) : SCRIPT("Test Script", session) {
+	SCRIPT_INIT;
+}
 
 void Script::onLoad() {
 	PRINT(NL << "Loaded Test Script");

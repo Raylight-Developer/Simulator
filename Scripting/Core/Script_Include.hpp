@@ -16,10 +16,7 @@
 #undef SESSION
 
 #define SCRIPT NODES::SCRIPT::Script
-#define SCRIPT_INIT(name) Script::Script(Session* session) : SCRIPT(name) {\
-	this->session = session;\
-	Session::initialize(this->session);\
-}
+#define SCRIPT_INIT Session::initialize(this->session);
 
 #define EXPORT(cls_name) extern "C" __declspec(dllexport) cls_name* scriptInstance(Session* session) { return new cls_name(session); }
 

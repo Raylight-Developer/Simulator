@@ -22,6 +22,8 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	dvec2 current_mouse;
 	dvec2 last_mouse;
 
+	unordered_map<string, GLuint> gl_data;
+
 	Viewport();
 	~Viewport();
 
@@ -45,5 +47,5 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	void keyPressEvent(QKeyEvent* event) override;
 	void wheelEvent(QWheelEvent* event) override;
 
-	GLuint SP_2D_Line, SP_2D_Triangle, SP_2D_Rectangle, SP_2D_Circle;
+	GLuint SP_2D_Triangle, SP_2D_Rectangle;
 };

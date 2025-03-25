@@ -13,12 +13,5 @@ struct Script : SCRIPT {
 	Exec_I* exec_in;
 	Exec_O* exec_out;
 
-	Data_I* center;
-	Data_I* radius;
-	Data_I* color;
-
-	GLuint VAO, VBO, EBO, Shader;
-
-	void init();
 	void render();
 };

@@ -35,13 +35,12 @@ void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
 	session->flushLog();
 }
 
-NODES::SCRIPT::Script::Script(const QString& id) :
+NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
 	Node(id),
-	session(nullptr)
+	session(session)
 {}
 
 NODES::SCRIPT::Script::~Script() {
-	delete session;
 }
 
 void NODES::SCRIPT::loadDLL(HINSTANCE& dynlib, const QString& dll_path) {

@@ -353,8 +353,6 @@ namespace NODES {
 
 				Line();
 
-				GLuint VAO, VBO, EBO;
-				void init();
 				void render();
 
 				void exec(const Port* port) override;
@@ -404,8 +402,6 @@ namespace NODES {
 
 				Circle();
 
-				GLuint VAO, VBO, EBO;
-				void init();
 				void render();
 
 				void exec(const Port* port) override;
