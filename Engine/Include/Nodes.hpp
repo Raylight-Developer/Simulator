@@ -131,6 +131,24 @@ namespace NODES {
 
 			Variable getData(const Port* port) const override;
 		};
+		struct Bool : Node {
+			PORT::Data_O* out;
+			GUI::Toggle* input;
+			bool value;
+
+			Bool();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct String : Node {
+			PORT::Data_O* out;
+			GUI::Value_Input* input;
+			QString value;
+
+			String();
+
+			Variable getData(const Port* port) const override;
+		};
 		struct Vec2 : Node {
 			PORT::Data_O* out;
 			GUI::Value_Input* input_x;

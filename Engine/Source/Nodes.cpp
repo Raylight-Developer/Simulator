@@ -129,14 +129,14 @@ Variable NODES::Trigonometry::getData(const Port* port) const {
 NODES::INPUT::Integer::Integer() :
 	Node("Integer")
 {
-	rect.setWidth(80);
+	rect.setWidth(60);
 	rect.setHeight(60);
 
 	out = new PORT::Data_O(this, "", VARIABLE::Type::INT);
 	value = 0;
 
 	input = new GUI::Value_Input();
-	input->setFixedSize(60, 20);
+	input->setFixedSize(40, 20);
 	input->setText("0");
 	input->setValidator(new QIntValidator(input));
 
@@ -171,6 +171,51 @@ NODES::INPUT::Double::Double() :
 }
 
 Variable NODES::INPUT::Double::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::Bool::Bool() :
+	Node("Bool")
+{
+	rect.setWidth(40);
+	rect.setHeight(60);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::BOOL);
+	value = false;
+
+	input = new GUI::Toggle();
+	input->setFixedSize(20, 20);
+
+	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
+	proxyWidget->setPos(10, 30);
+
+	QObject::connect(input, &GUI::Toggle::toggled, [this](bool checked) { value = checked; });
+}
+
+Variable NODES::INPUT::Bool::getData(const Port* port) const {
+	return Variable(value);
+}
+
+NODES::INPUT::String::String() :
+	Node("String")
+{
+	rect.setWidth(140);
+	rect.setHeight(60);
+
+	out = new PORT::Data_O(this, "", VARIABLE::Type::STRING);
+	value = "";
+
+	input = new GUI::Value_Input();
+	input->setFixedSize(120, 20);
+	input->setText("");
+
+	auto* proxyWidget = new GUI::Graphics_Widget(input, this);
+	proxyWidget->setPos(10, 30);
+
+	QObject::connect(input, &GUI::Value_Input::textEdited, [this](const QString& val) { value = val; });
+}
+
+Variable NODES::INPUT::String::getData(const Port* port) const {
 	return Variable(value);
 }
 
@@ -213,7 +258,7 @@ NODES::INPUT::Vec3::Vec3() :
 	rect.setWidth(80);
 	rect.setHeight(100);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
 	value = dvec3(0.0, 0.0, 0.0);
 
 	input_x = new GUI::Value_Input();
@@ -255,7 +300,7 @@ NODES::INPUT::Vec4::Vec4() :
 	rect.setWidth(80);
 	rect.setHeight(120);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
 	value = dvec4(0.0, 0.0, 0.0, 0.0);
 
 	input_x = new GUI::Value_Input();

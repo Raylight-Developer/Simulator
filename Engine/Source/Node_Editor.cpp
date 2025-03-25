@@ -322,10 +322,7 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 				}
 			}
 			selection.clear();
-			return;
-		}
-		case Qt::Key_R: {
-			return;
+			break;
 		}
 	}
 	for (QWidget* widget : QApplication::topLevelWidgets()) {
@@ -333,7 +330,6 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 			QApplication::sendEvent(widget, event);
 		}
 	}
-	GUI::Graphics_View::keyPressEvent(event);
 }
 
 void Node_Editor::wheelEvent(QWheelEvent* event) {
@@ -382,6 +378,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "INPUT DOUBLE") {
 				node = new NODES::INPUT::Double();
+			}
+			else if (type == "INPUT BOOL") {
+				node = new NODES::INPUT::Bool();
+			}
+			else if (type == "INPUT STRING") {
+				node = new NODES::INPUT::String();
 			}
 			else if (type == "INPUT VEC2") {
 				node = new NODES::INPUT::Vec2();

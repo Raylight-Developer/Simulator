@@ -13,7 +13,7 @@ uniform float uRadius;
 out vec2 vFragCoord;
 
 void main() {
-	vec2 ndc = ((uPosition + uCenter * uZoom + (aPos * uZoom * uRadius)) / vec2(uResolution)) * 2.0;
-	vFragCoord = aPos;
+	vec2 ndc = ((uCenter * uZoom + ((aPos * uRadius + uPosition) * uZoom)) / vec2(uResolution)) * 2.0;
+	vFragCoord = aPos + uPosition;
 	gl_Position = vec4(ndc, 0.0, 1.0);
 }
