@@ -10,7 +10,11 @@
 struct Viewport;
 
 struct Session : KL::Session {
-	static Session& getInstance();
+	static Session* session_ptr;
+
+	static void initialize(Session* session);
+
+	static void destroy();
 
 	QOpenGLFunctions_4_5_Core* gl;
 	Viewport* viewport;
@@ -26,7 +30,7 @@ struct Session : KL::Session {
 	Session& operator=(const Session&) = delete;
 };
 
-#define SESSION Session::getInstance()
-#define PRINT(msg) SESSION.printer msg; printf(SESSION.printer.str().c_str()); SESSION.printer.clear()
-#define FILE SESSION.file
-#define GL SESSION.gl
+#define SESSION Session::session_ptr
+#define PRINT(msg) SESSION->printer msg; printf(SESSION->printer.str().c_str()); SESSION->printer.clear()
+#define FILE SESSION->file
+#define GL SESSION->gl

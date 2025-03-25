@@ -72,13 +72,13 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 	FARPROC script_address = GetProcAddress(script_addr, "scriptInstance");
 	if (script_address) {
 		Script* (*getInstance)(Session*) = (Script* (*)(Session*))script_address;
-		script = getInstance(&SESSION);
+		script = getInstance(SESSION);
 
 		//script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
 		//script->session = &SESSION;
 
-		SESSION.scripts.push(script);
-		SESSION.dlls[script] = script_addr;
+		SESSION->scripts.push(script);
+		SESSION->dlls[script] = script_addr;
 		script->onLoad();
 	}
 	return script;
@@ -88,10 +88,10 @@ void NODES::SCRIPT::reloadScript(Script* script) {
 }
 
 void NODES::SCRIPT::unloadScript(Script* script) {
-	HINSTANCE script_addr = SESSION.dlls[script];
+	HINSTANCE script_addr = SESSION->dlls[script];
 
 	script->onUnload();
-	SESSION.dlls.remove(script);
-	SESSION.scripts.removeDelete(script); // TEST if Delete
+	SESSION->dlls.remove(script);
+	SESSION->scripts.removeDelete(script); // TEST if Delete
 	unloadDLL(script_addr);
 }

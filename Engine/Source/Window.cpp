@@ -3,6 +3,9 @@
 #include "Session.hpp"
 
 Window::Window() {
+	session = new Session();
+	Session::initialize(session);
+
 	Node_Shelf* shelf = new Node_Shelf(this);
 	Node_Editor* node_editor = new Node_Editor(this);
 
@@ -20,6 +23,7 @@ Window::Window() {
 	
 	setCentralWidget(main_splitter);
 	showMaximized();
+
 	PRINT(NL << "Loaded");
 }
 

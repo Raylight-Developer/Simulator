@@ -18,8 +18,7 @@
 #define SCRIPT NODES::SCRIPT::Script
 #define SCRIPT_INIT(name) Script::Script(Session* session) : SCRIPT(name) {\
 	this->session = session;\
-	Session::getInstance().gl = this->session->gl;\
-	Session::getInstance().viewport = this->session->viewport;\
+	Session::initialize(this->session);\
 }
 
 #define EXPORT(cls_name) extern "C" __declspec(dllexport) cls_name* scriptInstance(Session* session) { return new cls_name(session); }

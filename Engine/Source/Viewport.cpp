@@ -22,7 +22,7 @@ Viewport::Viewport() :
 	window_time(0.0),
 	delta_time(0.01666666)
 {
-	SESSION.viewport = this;
+	SESSION->viewport = this;
 }
 
 Viewport::~Viewport() {

@@ -8,7 +8,7 @@
 
 class Window : public GUI::Window {
 public:
-	//Node_Editor* node_editor;
+	Session* session;
 
 	Window();
 	~Window();

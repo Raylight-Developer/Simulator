@@ -4,12 +4,20 @@
 #include "Viewport.hpp"
 #include "Scripting.hpp"
 
+Session* Session::session_ptr = nullptr;
+
+void Session::initialize(Session* session) {
+	if (!session_ptr) {
+		session_ptr = session;
+	}
+}
+
+void Session::destroy() {
+	delete session_ptr;
+	session_ptr = nullptr;
+}
+
 Session::Session() :
 	KL::Session(),
 	file(File())
 {}
-
-Session& Session::getInstance() {
-	static Session instance;
-	return instance;
-}

@@ -701,11 +701,11 @@ void NODES::RENDERING::DIM_2D::Line::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_2D_Line;
+	const GLuint Shader = SESSION->viewport->SP_2D_Line;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
 
@@ -774,11 +774,11 @@ void NODES::RENDERING::DIM_2D::Triangle::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_2D_Triangle;
+	const GLuint Shader = SESSION->viewport->SP_2D_Triangle;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
 
@@ -858,11 +858,11 @@ void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_2D_Rectangle;
+	const GLuint Shader = SESSION->viewport->SP_2D_Rectangle;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
 
@@ -933,11 +933,11 @@ void NODES::RENDERING::DIM_2D::Circle::render() {
 	const vec1 u_radius = d_to_f(radius->getData().get<dvec1>());
 
 	// Render
-	const GLuint Shader = SESSION.viewport->SP_2D_Circle;
+	const GLuint Shader = SESSION->viewport->SP_2D_Circle;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION.viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION.viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION.viewport->zoom_2d));
+	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
+	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
+	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
 
 	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(u_color));
 	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(u_center));
