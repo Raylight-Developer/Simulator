@@ -4,20 +4,28 @@
 #include "OpenGL.hpp"
 #include "Viewport.hpp"
 
+#define DATA_I(label, type) new PORT::Data_I(this, label, type);
+#define DATA_O(label, type) new PORT::Data_O(this, label, type);
+#define EXEC_I(label) new PORT::Exec_I(this, label);
+#define EXEC_O(label) new PORT::Exec_O(this, label);
+
+#define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
+#define GET_DATA(type) getData().get<type>()
+
 NODES::VARIABLES::Constant::Constant() :
 	Node("Constant")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::BLOCKED);
+	out = DATA_O("", VAR_TYPE::BLOCKED);
 	value = Variable();
 
 	enums = new GUI::Options();
 	enums->setFixedSize(100, 20);
 	enums->addItems({ "", "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
 
-	auto* proxy_enums = new GUI::Graphics_Widget(enums, this);
+	PROXY(enums);
 	proxy_enums->setPos(20, 30);
 
 	expanded = rect;
@@ -47,12 +55,12 @@ NODES::VARIABLES::Constant::Constant() :
 
 		switch (index) {
 			case 0: {
-				out->setType(VARIABLE::Type::BLOCKED);
+				out->setType(VAR_TYPE::BLOCKED);
 				value = Variable();
 				break;
 			}
 			case 1: {
-				out->setType(VARIABLE::Type::INT);
+				out->setType(VAR_TYPE::INT);
 				value = Variable(0LL);
 
 				auto input = new GUI::Int_Input();
@@ -60,14 +68,14 @@ NODES::VARIABLES::Constant::Constant() :
 				input->setText("0");
 				QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { value = Variable(i_to_il(val.toInt())); });
 
-				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				PROXY(input);
 				proxy_input->setPos(20, 30);
 
 				proxies.push(proxy_input);
 				break;
 			}
 			case 2: {
-				out->setType(VARIABLE::Type::DOUBLE);
+				out->setType(VAR_TYPE::DOUBLE);
 				value = Variable(0.0);
 
 				auto input = new GUI::Double_Input();
@@ -75,14 +83,14 @@ NODES::VARIABLES::Constant::Constant() :
 				input->setText("0");
 				QObject::connect(input, &GUI::Double_Input::textChanged, [this](const QString val) { value = Variable(val.toDouble()); });
 
-				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				PROXY(input);
 				proxy_input->setPos(20, 30);
 
 				proxies.push(proxy_input);
 				break;
 			}
 			case 3: {
-				out->setType(VARIABLE::Type::BOOL);
+				out->setType(VAR_TYPE::BOOL);
 				value = Variable(false);
 
 				auto input = new GUI::Toggle();
@@ -90,7 +98,7 @@ NODES::VARIABLES::Constant::Constant() :
 
 				QObject::connect(input, &GUI::Toggle::toggled, [this](bool checked) { value = Variable(checked); });
 
-				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				PROXY(input);
 				proxy_input->setPos(20, 30);
 
 				proxies.push(proxy_input);
@@ -100,7 +108,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setWidth(200);
 				out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
 
-				out->setType(VARIABLE::Type::STRING);
+				out->setType(VAR_TYPE::STRING);
 				value = Variable(0.0);
 
 				auto input = new GUI::Value_Input();
@@ -109,7 +117,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input->setText("");
 				QObject::connect(input, &GUI::Value_Input::textChanged, [this](const QString val) { value = Variable(val); });
 
-				auto* proxy_input = new GUI::Graphics_Widget(input, this);
+				PROXY(input);
 				proxy_input->setPos(20, 30);
 
 				proxies.push(proxy_input);
@@ -119,7 +127,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(100);
 				proxy_enums->setPos(20, 70);
 
-				out->setType(VARIABLE::Type::VEC2);
+				out->setType(VAR_TYPE::VEC2);
 				value = Variable(dvec2(0.0));
 
 				auto input_x = new GUI::Double_Input();
@@ -127,7 +135,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_x->setText("0");
 				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(val.toDouble(), original.y)); });
 
-				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
 
 				auto input_y = new GUI::Double_Input();
@@ -135,7 +143,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_y->setText("0");
 				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(original.x, val.toDouble())); });
 
-				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
 
 				proxies.push(proxy_input_x);
@@ -146,7 +154,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(120);
 				proxy_enums->setPos(20, 90);
 
-				out->setType(VARIABLE::Type::VEC3);
+				out->setType(VAR_TYPE::VEC3);
 				value = Variable(dvec3(0.0));
 
 				auto input_x = new GUI::Double_Input();
@@ -154,7 +162,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_x->setText("0");
 				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(val.toDouble(), original.y, original.z)); });
 
-				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
 
 				auto input_y = new GUI::Double_Input();
@@ -162,7 +170,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_y->setText("0");
 				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, val.toDouble(), original.z)); });
 
-				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
 
 				auto input_z = new GUI::Double_Input();
@@ -170,7 +178,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_z->setText("0");
 				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, original.y, val.toDouble())); });
 
-				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				PROXY(input_z);
 				proxy_input_z->setPos(20, 70);
 
 				proxies.push(proxy_input_x);
@@ -182,7 +190,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(140);
 				proxy_enums->setPos(20, 110);
 
-				out->setType(VARIABLE::Type::VEC4);
+				out->setType(VAR_TYPE::VEC4);
 				value = Variable(dvec4(0.0));
 
 				auto input_x = new GUI::Double_Input();
@@ -190,7 +198,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_x->setText("0");
 				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(val.toDouble(), original.y, original.z, original.w)); });
 
-				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
 
 				auto input_y = new GUI::Double_Input();
@@ -198,7 +206,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_y->setText("0");
 				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, val.toDouble(), original.z, original.w)); });
 
-				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
 
 				auto input_z = new GUI::Double_Input();
@@ -206,7 +214,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_z->setText("0");
 				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, val.toDouble(), original.z)); });
 
-				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				PROXY(input_z);
 				proxy_input_z->setPos(20, 70);
 
 				auto input_w = new GUI::Double_Input();
@@ -214,7 +222,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_w->setText("0");
 				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, original.z, val.toDouble())); });
 
-				auto* proxy_input_w = new GUI::Graphics_Widget(input_w, this);
+				PROXY(input_w);
 				proxy_input_w->setPos(20, 90);
 
 				proxies.push(proxy_input_x);
@@ -227,39 +235,39 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(140);
 				proxy_enums->setPos(20, 110);
 
-				out->setType(VARIABLE::Type::COLOR);
-				value = Variable(KL::color(1, 0, 1, 1));
+				out->setType(VAR_TYPE::COLOR);
+				value = Variable(Color(1, 0, 1, 1));
 
 				auto input_x = new GUI::Double_Input(0.0, 1.0, 5);
 				input_x->setFixedSize(100, 20);
 				input_x->setText("1");
-				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<KL::color>(); value = Variable(KL::color(val.toDouble(), original.g(), original.b(), original.a())); });
+				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); value = Variable(Color(val.toDouble(), original.g(), original.b(), original.a())); });
 
-				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
 
 				auto input_y = new GUI::Double_Input(0.0, 1.0, 5);
 				input_y->setFixedSize(100, 20);
 				input_y->setText("0");
-				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<KL::color>(); value = Variable(KL::color(original.r(), val.toDouble(), original.b(), original.a())); });
+				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); value = Variable(Color(original.r(), val.toDouble(), original.b(), original.a())); });
 
-				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
 
 				auto input_z = new GUI::Double_Input(0.0, 1.0, 5);
 				input_z->setFixedSize(100, 20);
 				input_z->setText("1");
-				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<KL::color>(); value = Variable(KL::color(original.r(), original.g(), val.toDouble(), original.a())); });
+				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); value = Variable(Color(original.r(), original.g(), val.toDouble(), original.a())); });
 
-				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				PROXY(input_z);
 				proxy_input_z->setPos(20, 70);
 
 				auto input_w = new GUI::Double_Input(0.0, 1.0, 5);
 				input_w->setFixedSize(100, 20);
 				input_w->setText("1");
-				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<KL::color>(); value = Variable(KL::color(original.r(), original.g(), original.b(), val.toDouble())); });
+				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); value = Variable(Color(original.r(), original.g(), original.b(), val.toDouble())); });
 
-				auto* proxy_input_w = new GUI::Graphics_Widget(input_w, this);
+				PROXY(input_w);
 				proxy_input_w->setPos(20, 90);
 
 				proxies.push(proxy_input_x);
@@ -272,7 +280,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(140);
 				proxy_enums->setPos(20, 110);
 
-				out->setType(VARIABLE::Type::QUAT);
+				out->setType(VAR_TYPE::QUAT);
 				value = Variable(dquat(1, 0, 0, 0));
 
 				auto input_w = new GUI::Double_Input();
@@ -280,7 +288,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_w->setText("1");
 				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(val.toDouble(), original.x, original.y, original.z)); });
 
-				auto* proxy_input_w = new GUI::Graphics_Widget(input_w, this);
+				PROXY(input_w);
 				proxy_input_w->setPos(20, 30);
 
 				auto input_x = new GUI::Double_Input();
@@ -288,7 +296,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_x->setText("0");
 				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, val.toDouble(), original.y, original.z)); });
 
-				auto* proxy_input_x = new GUI::Graphics_Widget(input_x, this);
+				PROXY(input_x);
 				proxy_input_x->setPos(20, 50);
 
 				auto input_y = new GUI::Double_Input();
@@ -296,7 +304,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_y->setText("0");
 				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, val.toDouble(), original.z)); });
 
-				auto* proxy_input_y = new GUI::Graphics_Widget(input_y, this);
+				PROXY(input_y);
 				proxy_input_y->setPos(20, 70);
 
 				auto input_z = new GUI::Double_Input();
@@ -304,7 +312,7 @@ NODES::VARIABLES::Constant::Constant() :
 				input_z->setText("0");
 				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, original.y, val.toDouble())); });
 
-				auto* proxy_input_z = new GUI::Graphics_Widget(input_z, this);
+				PROXY(input_z);
 				proxy_input_z->setPos(20, 90);
 
 				proxies.push(proxy_input_w);
@@ -317,7 +325,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(100);
 				proxy_enums->setPos(20, 70);
 
-				out->setType(VARIABLE::Type::MAT2);
+				out->setType(VAR_TYPE::MAT2);
 				value = Variable(dmat2(1.0));
 
 				{
@@ -326,7 +334,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xx->setText("1");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(val.toDouble(), original[0][1]), original[1])); });
 
-					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
 
 					auto input_xy = new GUI::Double_Input();
@@ -334,7 +342,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xy->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(original[0][0], val.toDouble()), original[1])); });
 
-					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
 
 					proxies.push(proxy_input_xx);
@@ -346,7 +354,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yx->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(val.toDouble(), original[0][1]))); });
 
-					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					PROXY(input_yx);
 					proxy_input_yx->setPos(70, 30);
 
 					auto input_yy = new GUI::Double_Input();
@@ -354,7 +362,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yy->setText("1");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(original[0][0], val.toDouble()))); });
 
-					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					PROXY(input_yy);
 					proxy_input_yy->setPos(70, 50);
 
 					proxies.push(proxy_input_yx);
@@ -368,7 +376,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(120);
 				proxy_enums->setPos(20, 90);
 
-				out->setType(VARIABLE::Type::MAT3);
+				out->setType(VAR_TYPE::MAT3);
 				value = Variable(dmat3(1.0));
 
 				{
@@ -377,7 +385,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xx->setText("1");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2])); });
 
-					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
 
 					auto input_xy = new GUI::Double_Input();
@@ -385,7 +393,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xy->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2])); });
 
-					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
 
 					auto input_xz = new GUI::Double_Input();
@@ -393,7 +401,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xz->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], original[0][1], val.toDouble()), original[1], original[2])); });
 
-					auto* proxy_input_xz = new GUI::Graphics_Widget(input_xz, this);
+					PROXY(input_xz);
 					proxy_input_xz->setPos(20, 70);
 
 					proxies.push(proxy_input_xx);
@@ -406,7 +414,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yx->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(val.toDouble(), original[0][1], original[0][2]), original[2])); });
 
-					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					PROXY(input_yx);
 					proxy_input_yx->setPos(60, 30);
 
 					auto input_yy = new GUI::Double_Input();
@@ -414,7 +422,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yy->setText("1");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], val.toDouble(), original[0][2]), original[2])); });
 
-					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					PROXY(input_yy);
 					proxy_input_yy->setPos(60, 50);
 
 					auto input_yz = new GUI::Double_Input();
@@ -422,7 +430,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yz->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], original[0][1], val.toDouble()), original[2])); });
 
-					auto* proxy_input_yz = new GUI::Graphics_Widget(input_yz, this);
+					PROXY(input_yz);
 					proxy_input_yz->setPos(60, 70);
 
 					proxies.push(proxy_input_yx);
@@ -435,7 +443,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zx->setText("0");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(val.toDouble(), original[0][1], original[0][2]))); });
 
-					auto* proxy_input_zx = new GUI::Graphics_Widget(input_zx, this);
+					PROXY(input_zx);
 					proxy_input_zx->setPos(100, 30);
 
 					auto input_zy = new GUI::Double_Input();
@@ -443,7 +451,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zy->setText("0");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], val.toDouble(), original[0][2]))); });
 
-					auto* proxy_input_zy = new GUI::Graphics_Widget(input_zy, this);
+					PROXY(input_zy);
 					proxy_input_zy->setPos(100, 50);
 
 					auto input_zz = new GUI::Double_Input();
@@ -451,7 +459,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zz->setText("1");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], original[0][1], val.toDouble()))); });
 
-					auto* proxy_input_zz = new GUI::Graphics_Widget(input_zz, this);
+					PROXY(input_zz);
 					proxy_input_zz->setPos(100, 70);
 
 					proxies.push(proxy_input_zx);
@@ -466,7 +474,7 @@ NODES::VARIABLES::Constant::Constant() :
 				rect.setHeight(140);
 				proxy_enums->setPos(20, 110);
 
-				out->setType(VARIABLE::Type::MAT4);
+				out->setType(VAR_TYPE::MAT4);
 				value = Variable(dmat4(1.0));
 
 				{
@@ -475,7 +483,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xx->setText("1");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3])); });
 
-					auto* proxy_input_xx = new GUI::Graphics_Widget(input_xx, this);
+					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
 
 					auto input_xy = new GUI::Double_Input();
@@ -483,7 +491,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xy->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3])); });
 
-					auto* proxy_input_xy = new GUI::Graphics_Widget(input_xy, this);
+					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
 
 					auto input_xz = new GUI::Double_Input();
@@ -491,7 +499,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xz->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3])); });
 
-					auto* proxy_input_xz = new GUI::Graphics_Widget(input_xz, this);
+					PROXY(input_xz);
 					proxy_input_xz->setPos(20, 70);
 
 					auto input_xw = new GUI::Double_Input();
@@ -499,7 +507,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_xw->setText("0");
 					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3])); });
 
-					auto* proxy_input_xw = new GUI::Graphics_Widget(input_xw, this);
+					PROXY(input_xw);
 					proxy_input_xw->setPos(20, 90);
 
 					proxies.push(proxy_input_xx);
@@ -513,7 +521,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yx->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3])); });
 
-					auto* proxy_input_yx = new GUI::Graphics_Widget(input_yx, this);
+					PROXY(input_yx);
 					proxy_input_yx->setPos(60, 30);
 
 					auto input_yy = new GUI::Double_Input();
@@ -521,7 +529,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yy->setText("1");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3])); });
 
-					auto* proxy_input_yy = new GUI::Graphics_Widget(input_yy, this);
+					PROXY(input_yy);
 					proxy_input_yy->setPos(60, 50);
 
 					auto input_yz = new GUI::Double_Input();
@@ -529,7 +537,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yz->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3])); });
 
-					auto* proxy_input_yz = new GUI::Graphics_Widget(input_yz, this);
+					PROXY(input_yz);
 					proxy_input_yz->setPos(60, 70);
 
 					auto input_yw = new GUI::Double_Input();
@@ -537,7 +545,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_yw->setText("0");
 					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3])); });
 
-					auto* proxy_input_yw = new GUI::Graphics_Widget(input_yw, this);
+					PROXY(input_yw);
 					proxy_input_yw->setPos(60, 90);
 
 					proxies.push(proxy_input_yx);
@@ -551,7 +559,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zx->setText("0");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3])); });
 
-					auto* proxy_input_zx = new GUI::Graphics_Widget(input_zx, this);
+					PROXY(input_zx);
 					proxy_input_zx->setPos(100, 30);
 
 					auto input_zy = new GUI::Double_Input();
@@ -559,7 +567,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zy->setText("0");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3])); });
 
-					auto* proxy_input_zy = new GUI::Graphics_Widget(input_zy, this);
+					PROXY(input_zy);
 					proxy_input_zy->setPos(100, 50);
 
 					auto input_zz = new GUI::Double_Input();
@@ -567,7 +575,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zz->setText("1");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3])); });
 
-					auto* proxy_input_zz = new GUI::Graphics_Widget(input_zz, this);
+					PROXY(input_zz);
 					proxy_input_zz->setPos(100, 70);
 
 					auto input_zw = new GUI::Double_Input();
@@ -575,7 +583,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_zw->setText("0");
 					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3])); });
 
-					auto* proxy_input_zw = new GUI::Graphics_Widget(input_zw, this);
+					PROXY(input_zw);
 					proxy_input_zw->setPos(100, 90);
 
 					proxies.push(proxy_input_zx);
@@ -589,7 +597,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_wx->setText("0");
 					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]))); });
 
-					auto* proxy_input_wx = new GUI::Graphics_Widget(input_wx, this);
+					PROXY(input_wx);
 					proxy_input_wx->setPos(140, 30);
 
 					auto input_wy = new GUI::Double_Input();
@@ -597,7 +605,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_wy->setText("0");
 					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]))); });
 
-					auto* proxy_input_wy = new GUI::Graphics_Widget(input_wy, this);
+					PROXY(input_wy);
 					proxy_input_wy->setPos(140, 50);
 
 					auto input_wz = new GUI::Double_Input();
@@ -605,7 +613,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_wz->setText("0");
 					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]))); });
 
-					auto* proxy_input_wz = new GUI::Graphics_Widget(input_wz, this);
+					PROXY(input_wz);
 					proxy_input_wz->setPos(140, 70);
 
 					auto input_ww = new GUI::Double_Input();
@@ -613,7 +621,7 @@ NODES::VARIABLES::Constant::Constant() :
 					input_ww->setText("1");
 					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()))); });
 
-					auto* proxy_input_ww = new GUI::Graphics_Widget(input_ww, this);
+					PROXY(input_ww);
 					proxy_input_ww->setPos(140, 90);
 
 					proxies.push(proxy_input_wx);
@@ -638,7 +646,7 @@ NODES::VARIABLES::Get::Get() :
 	rect.setWidth(100);
 	rect.setHeight(60);
 
-	out = new PORT::Data_O(this, "", VARIABLE::Type::INT);
+	out = DATA_O("", VAR_TYPE::INT);
 }
 
 Variable NODES::VARIABLES::Get::getData(const Port* port) const {
@@ -651,10 +659,10 @@ NODES::VARIABLES::Set::Set() :
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	exec_in  = new PORT::Exec_I(this, "");
-	exec_out = new PORT::Exec_O(this, "");
-	in  = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::NONE);
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
+	in  = DATA_I("", VAR_TYPE::NONE);
+	out = DATA_O("", VAR_TYPE::NONE);
 }
 
 void NODES::VARIABLES::Set::exec(const Port* port) {
@@ -672,9 +680,9 @@ NODES::CAST::MAKE::Vec2::Vec2() :
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC2);
+	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
+	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
+	out = DATA_O("", VAR_TYPE::VEC2);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
 	out->rect.moveCenter(QPointF(30, 20));
@@ -689,7 +697,7 @@ void NODES::CAST::MAKE::Vec2::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
-	return Variable(dvec2(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>()));
+	return Variable(dvec2(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1)));
 }
 
 NODES::CAST::MAKE::Vec3::Vec3() :
@@ -698,10 +706,10 @@ NODES::CAST::MAKE::Vec3::Vec3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC3);
+	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
+	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
+	i_z = DATA_I("Z", VAR_TYPE::DOUBLE);
+	out = DATA_O("", VAR_TYPE::VEC3);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
 	i_z->rect.moveCenter(QPointF( 0, 50));
@@ -717,7 +725,7 @@ void NODES::CAST::MAKE::Vec3::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
-	return Variable(dvec3(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>()));
+	return Variable(dvec3(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1)));
 }
 
 NODES::CAST::MAKE::Vec4::Vec4() :
@@ -726,11 +734,11 @@ NODES::CAST::MAKE::Vec4::Vec4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
-	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::DOUBLE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::VEC4);
+	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
+	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
+	i_z = DATA_I("Z", VAR_TYPE::DOUBLE);
+	i_w = DATA_I("W", VAR_TYPE::DOUBLE);
+	out = DATA_O("", VAR_TYPE::VEC4);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
 	i_z->rect.moveCenter(QPointF( 0, 50));
@@ -747,7 +755,7 @@ void NODES::CAST::MAKE::Vec4::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
-	return Variable(dvec4(i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>(), i_w->getData().get<dvec1>()));
+	return Variable(dvec4(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1), i_w->GET_DATA(dvec1)));
 }
 
 NODES::CAST::MAKE::Quat::Quat() :
@@ -756,11 +764,11 @@ NODES::CAST::MAKE::Quat::Quat() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_w = new PORT::Data_I(this, "W", VARIABLE::Type::DOUBLE);
-	i_x = new PORT::Data_I(this, "X", VARIABLE::Type::DOUBLE);
-	i_y = new PORT::Data_I(this, "Y", VARIABLE::Type::DOUBLE);
-	i_z = new PORT::Data_I(this, "Z", VARIABLE::Type::DOUBLE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::QUAT);
+	i_w = DATA_I("W", VAR_TYPE::DOUBLE);
+	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
+	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
+	i_z = DATA_I("Z", VAR_TYPE::DOUBLE);
+	out = DATA_O("", VAR_TYPE::QUAT);
 	i_w->rect.moveCenter(QPointF( 0, 10));
 	i_x->rect.moveCenter(QPointF( 0, 30));
 	i_y->rect.moveCenter(QPointF( 0, 50));
@@ -777,7 +785,7 @@ void NODES::CAST::MAKE::Quat::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Quat::getData(const Port* port) const {
-	return Variable(dquat(i_w->getData().get<dvec1>(), i_x->getData().get<dvec1>(), i_y->getData().get<dvec1>(), i_z->getData().get<dvec1>()));
+	return Variable(dquat(i_w->GET_DATA(dvec1), i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1)));
 }
 
 NODES::CAST::MAKE::Mat2::Mat2() :
@@ -786,9 +794,9 @@ NODES::CAST::MAKE::Mat2::Mat2() :
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC2);
-	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC2);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT2);
+	i_a = DATA_I("A", VAR_TYPE::VEC2);
+	i_b = DATA_I("B", VAR_TYPE::VEC2);
+	out = DATA_O("", VAR_TYPE::MAT2);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
 	out->rect.moveCenter(QPointF(30, 20));
@@ -803,7 +811,7 @@ void NODES::CAST::MAKE::Mat2::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
-	return Variable(dmat2(i_a->getData().get<dvec2>(), i_b->getData().get<dvec2>()));
+	return Variable(dmat2(i_a->GET_DATA(dvec2), i_b->GET_DATA(dvec2)));
 }
 
 NODES::CAST::MAKE::Mat3::Mat3() :
@@ -812,10 +820,10 @@ NODES::CAST::MAKE::Mat3::Mat3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC3);
-	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC3);
-	i_c = new PORT::Data_I(this, "C", VARIABLE::Type::VEC3);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT3);
+	i_a = DATA_I("A", VAR_TYPE::VEC3);
+	i_b = DATA_I("B", VAR_TYPE::VEC3);
+	i_c = DATA_I("C", VAR_TYPE::VEC3);
+	out = DATA_O("", VAR_TYPE::MAT3);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
 	i_c->rect.moveCenter(QPointF( 0, 50));
@@ -831,7 +839,7 @@ void NODES::CAST::MAKE::Mat3::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
-	return Variable(dmat3(i_a->getData().get<dvec3>(), i_b->getData().get<dvec3>(), i_c->getData().get<dvec3>()));
+	return Variable(dmat3(i_a->GET_DATA(dvec3), i_b->GET_DATA(dvec3), i_c->GET_DATA(dvec3)));
 }
 
 NODES::CAST::MAKE::Mat4::Mat4() :
@@ -840,11 +848,11 @@ NODES::CAST::MAKE::Mat4::Mat4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_a = new PORT::Data_I(this, "A", VARIABLE::Type::VEC4);
-	i_b = new PORT::Data_I(this, "B", VARIABLE::Type::VEC4);
-	i_c = new PORT::Data_I(this, "C", VARIABLE::Type::VEC4);
-	i_d = new PORT::Data_I(this, "D", VARIABLE::Type::VEC4);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::MAT4);
+	i_a = DATA_I("A", VAR_TYPE::VEC4);
+	i_b = DATA_I("B", VAR_TYPE::VEC4);
+	i_c = DATA_I("C", VAR_TYPE::VEC4);
+	i_d = DATA_I("D", VAR_TYPE::VEC4);
+	out = DATA_O("", VAR_TYPE::MAT4);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
 	i_c->rect.moveCenter(QPointF( 0, 50));
@@ -861,7 +869,7 @@ void NODES::CAST::MAKE::Mat4::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
-	return Variable(dmat4(i_a->getData().get<dvec4>(), i_b->getData().get<dvec4>(), i_c->getData().get<dvec4>(), i_d->getData().get<dvec4>()));
+	return Variable(dmat4(i_a->GET_DATA(dvec4), i_b->GET_DATA(dvec4), i_c->GET_DATA(dvec4), i_d->GET_DATA(dvec4)));
 }
 
 NODES::Arithmetic::Arithmetic() :
@@ -870,24 +878,24 @@ NODES::Arithmetic::Arithmetic() :
 	rect.setWidth(120);
 	rect.setHeight(80);
 
-	i_a = new PORT::Data_I(this, "A", Variable(0.0));
-	i_b = new PORT::Data_I(this, "B", Variable(0.0));
-	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
+	i_a = DATA_I("A", Variable(0.0));
+	i_b = DATA_I("B", Variable(0.0));
+	out = DATA_O("", VAR_TYPE::DOUBLE);
 
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(80, 20);
 	enums->addItems({ "A+B", "A-B", "A*B", "A/B" });
 
-	auto pw_enums = new GUI::Graphics_Widget(enums, this);
-	pw_enums->setPos(30, 50);
+	PROXY(enums);
+	proxy_enums->setPos(30, 50);
 }
 
 Variable NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
-	case 0: return Variable(i_a->getData().get<dvec1>() + i_b->getData().get<dvec1>());
-	case 1: return Variable(i_a->getData().get<dvec1>() - i_b->getData().get<dvec1>());
-	case 2: return Variable(i_a->getData().get<dvec1>() * i_b->getData().get<dvec1>());
-	case 3: return Variable(i_a->getData().get<dvec1>() / i_b->getData().get<dvec1>());
+	case 0: return Variable(i_a->GET_DATA(dvec1) + i_b->GET_DATA(dvec1));
+	case 1: return Variable(i_a->GET_DATA(dvec1) - i_b->GET_DATA(dvec1));
+	case 2: return Variable(i_a->GET_DATA(dvec1) * i_b->GET_DATA(dvec1));
+	case 3: return Variable(i_a->GET_DATA(dvec1) / i_b->GET_DATA(dvec1));
 	}
 	return Variable(0.0);
 }
@@ -898,19 +906,19 @@ NODES::Trigonometry::Trigonometry() :
 	rect.setWidth(140);
 	rect.setHeight(60);
 
-	in = new PORT::Data_I(this, "", VARIABLE::Type::DOUBLE);
-	out = new PORT::Data_O(this, "", VARIABLE::Type::DOUBLE);
+	in = DATA_I("", VAR_TYPE::DOUBLE);
+	out = DATA_O("", VAR_TYPE::DOUBLE);
 
 	enums = new GUI::Options(); // TODO verify delete
 	enums->setFixedSize(100, 20);
 	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
 
-	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
-	proxyWidget->setPos(20, 30);
+	PROXY(enums);
+	proxy_enums->setPos(20, 30);
 }
 
 Variable NODES::Trigonometry::getData(const Port* port) const {
-	const dvec1 x = in->getData().get<dvec1>();
+	const dvec1 x = in->GET_DATA(dvec1);
 	switch (enums->currentIndex()) {
 		case  0: return sin(x);
 		case  1: return cos(x);
@@ -937,23 +945,23 @@ NODES::BOOLEAN::Compare::Compare() :
 	rect.setWidth(120);
 	rect.setHeight(80);
 
-	in_a = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
-	in_b = new PORT::Data_I(this, "", VARIABLE::Type::NONE);
-	out  = new PORT::Data_O(this, "", VARIABLE::Type::BOOL);
+	in_a = DATA_I("", VAR_TYPE::NONE);
+	in_b = DATA_I("", VAR_TYPE::NONE);
+	out  = DATA_O("", VAR_TYPE::BOOL);
 
 	in_a->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
 	in_b->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
 	in_a->onDisconnection = [this](Port* port){ onDisconnection(port); };
 	in_b->onDisconnection = [this](Port* port){ onDisconnection(port); };
-	in_a->onTypeChanged   = [this](Port* port, const VARIABLE::Type& var_type) { cascade(port, var_type); };
-	in_b->onTypeChanged   = [this](Port* port, const VARIABLE::Type& var_type) { cascade(port, var_type); };
+	in_a->onTypeChanged   = [this](Port* port, const VAR_TYPE& var_type) { cascade(port, var_type); };
+	in_b->onTypeChanged   = [this](Port* port, const VAR_TYPE& var_type) { cascade(port, var_type); };
 
 	enums = new GUI::Options();
 	enums->setFixedSize(80, 20);
 	enums->addItems({ "==", "!=", ">", "<", ">=", "<=", "Sign"});
 
-	auto* proxyWidget = new GUI::Graphics_Widget(enums, this);
-	proxyWidget->setPos(30, 50);
+	PROXY(enums);
+	proxy_enums->setPos(30, 50);
 }
 
 bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
@@ -961,7 +969,7 @@ bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
 		return true;
 	}
 
-	const VARIABLE::Type incoming_type = conn->getDataO()->var_type;
+	const VAR_TYPE incoming_type = conn->getDataO()->var_type;
 	if (port == in_a) {
 		if (!in_b->connected()) {
 			in_a->setType(incoming_type);
@@ -990,12 +998,12 @@ bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
 
 void NODES::BOOLEAN::Compare::onDisconnection(Port* port) {
 	if (!in_a->connected() and !in_b->connected()) {
-		in_a->setType(VARIABLE::Type::NONE);
-		in_b->setType(VARIABLE::Type::NONE);
+		in_a->setType(VAR_TYPE::NONE);
+		in_b->setType(VAR_TYPE::NONE);
 	}
 }
 
-void NODES::BOOLEAN::Compare::cascade(Port* port, const VARIABLE::Type& var_type) {}
+void NODES::BOOLEAN::Compare::cascade(Port* port, const VAR_TYPE& var_type) {}
 
 Variable NODES::BOOLEAN::Compare::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
@@ -1015,13 +1023,13 @@ NODES::BOOLEAN::If::If() :
 	rect.setWidth(40);
 	rect.setHeight(80);
 
-	in = new PORT::Exec_I(this, "");
-	condition = new PORT::Data_I(this, "", Variable(false));
-	out = new PORT::Exec_O(this, "");
+	in = EXEC_I("");
+	condition = DATA_I("", Variable(false));
+	out = EXEC_O("");
 }
 
 void NODES::BOOLEAN::If::exec(const Port* port) {
-	if (condition->getData().get<bool>()) {
+	if (condition->GET_DATA(bool)) {
 		out ->exec();
 	}
 }
@@ -1032,14 +1040,14 @@ NODES::BOOLEAN::If_Else::If_Else() :
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	in = new PORT::Exec_I(this, "");
-	condition = new PORT::Data_I(this, "", Variable(false));
-	out_a = new PORT::Exec_O(this, "True");
-	out_b = new PORT::Exec_O(this, "False");
+	in = EXEC_I("");
+	condition = DATA_I("", Variable(false));
+	out_a = EXEC_O("True");
+	out_b = EXEC_O("False");
 }
 
 void NODES::BOOLEAN::If_Else::exec(const Port* port) {
-	if (condition->getData().get<bool>()) {
+	if (condition->GET_DATA(bool)) {
 		out_a->exec();
 	}
 	else {
@@ -1053,10 +1061,10 @@ NODES::BOOLEAN::Select::Select() :
 	rect.setWidth(80);
 	rect.setHeight(100);
 
-	condition  = new PORT::Data_I(this, "", Variable(false));
-	i_true     = new PORT::Data_I(this, "True", VARIABLE::Type::NONE);
-	i_false    = new PORT::Data_I(this, "False", VARIABLE::Type::NONE);
-	out        = new PORT::Data_O(this, "", VARIABLE::Type::NONE);
+	condition  = DATA_I("", Variable(false));
+	i_true     = DATA_I("True", VAR_TYPE::NONE);
+	i_false    = DATA_I("False", VAR_TYPE::NONE);
+	out        = DATA_O("", VAR_TYPE::NONE);
 
 	i_true ->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
 	i_false->onConnRequested = [this](Port* port, Connection* conn){ return onConnRequested(port, conn); };
@@ -1075,7 +1083,7 @@ void NODES::BOOLEAN::Select::onDisconnection(Port * port) {
 }
 
 Variable NODES::BOOLEAN::Select::getData(const Port* port) const {
-	if (condition->getData().get<bool>()) {
+	if (condition->GET_DATA(bool)) {
 		return i_true->getData();
 	}
 	return i_false->getData();
@@ -1087,8 +1095,8 @@ NODES::DEFAULT::Euler_Tick::Euler_Tick() :
 	rect.setWidth(80);
 	rect.setHeight(80);
 
-	exec_out = new PORT::Exec_O(this, "Tick");
-	delta_out = new PORT::Data_O(this, "Delta", VARIABLE::Type::DOUBLE);
+	exec_out = EXEC_O("Tick");
+	delta_out = DATA_O("Delta", VAR_TYPE::DOUBLE);
 
 	delta = 0.016;
 }
@@ -1105,17 +1113,17 @@ Variable NODES::DEFAULT::Euler_Tick::getData(const Port* port) const {
 NODES::DEFAULT::Background::Background() :
 	Node("Background")
 {
-	rect.setWidth(100);
+	rect.setWidth(120);
 	rect.setHeight(80);
 
-	exec_in  = new PORT:: Exec_I(this, "");
-	exec_out = new PORT:: Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	color_in = new PORT:: Data_I(this, "Color", Variable(KL::color()));
+	color_in = DATA_I("Color", Variable(Color()));
 }
 
 void NODES::DEFAULT::Background::exec(const Port* port) {
-	const vec4 u_color = d_to_f(color_in->getData().get<KL::color>().rgba());
+	const vec4 u_color = d_to_f(color_in->GET_DATA(Color).rgba());
 	GL->glClearColor(u_color.r, u_color.g, u_color.b, u_color.a);
 	GL->glClear(GL_COLOR_BUFFER_BIT);
 	exec_out->exec();
@@ -1128,16 +1136,16 @@ NODES::DEFAULT::Camera_2D::Camera_2D() :
 	rect.setWidth(100);
 	rect.setHeight(100);
 
-	exec_in  = new PORT:: Exec_I(this, "");
-	exec_out = new PORT:: Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	center = new PORT:: Data_I(this, "Color", Variable(dvec2(0,0)));
-	zoom = new PORT:: Data_I(this, "Color", Variable(1.0));
+	center = DATA_I("Color", Variable(dvec2(0,0)));
+	zoom = DATA_I("Color", Variable(1.0));
 }
 
 void NODES::DEFAULT::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = center->getData().get<dvec2>();
-	SESSION->viewport->zoom_2d = zoom->getData().get<dvec1>();
+	SESSION->viewport->center_2d = center->GET_DATA(dvec2);
+	SESSION->viewport->zoom_2d = zoom->GET_DATA(dvec1);
 	exec_out->exec();
 }
 
@@ -1148,8 +1156,8 @@ NODES::DEFAULT::Camera_3D::Camera_3D() :
 	rect.setWidth(100);
 	rect.setHeight(60);
 
-	exec_in  = new PORT:: Exec_I(this, "");
-	exec_out = new PORT:: Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 }
 
 void NODES::DEFAULT::Camera_3D::exec(const Port* port) {
@@ -1162,9 +1170,9 @@ NODES::DEFAULT::Input_Key::Input_Key() :
 	rect.setWidth(120);
 	rect.setHeight(100);
 
-	exec_press   = new PORT:: Exec_O(this, "Pressed");
-	exec_release = new PORT:: Exec_O(this, "Released");
-	key = new PORT::Data_O(this, "Key", VARIABLE::Type::STRING);
+	exec_press   = EXEC_O("Pressed");
+	exec_release = EXEC_O("Released");
+	key = DATA_O("Key", VAR_TYPE::STRING);
 }
 
 Variable NODES::DEFAULT::Input_Key::getData(const Port* port) const {
@@ -1177,9 +1185,9 @@ NODES::DEFAULT::Input_Mouse::Input_Mouse() :
 	rect.setWidth(120);
 	rect.setHeight(100);
 
-	exec_press   = new PORT:: Exec_O(this, "Pressed");
-	exec_release = new PORT:: Exec_O(this, "Released");
-	button = new PORT::Data_O(this, "Button", VARIABLE::Type::STRING);
+	exec_press   = EXEC_O("Pressed");
+	exec_release = EXEC_O("Released");
+	button = DATA_O("Button", VAR_TYPE::STRING);
 }
 
 Variable NODES::DEFAULT::Input_Mouse::getData(const Port* port) const {
@@ -1193,21 +1201,21 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	rect.setWidth(100);
 	rect.setHeight(140);
 
-	exec_in  = new PORT::Exec_I(this, "");
-	exec_out = new PORT::Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(-200, -200)));
-	vert_b = new PORT::Data_I(this, "B", Variable(dvec2( 200,  200)));
-	width  = new PORT::Data_I(this, "Width", Variable(3.0));
-	color  = new PORT::Data_I(this, "Color", Variable(KL::color(1, 1, 1, 1)));
+	vert_a = DATA_I("A", Variable(dvec2(-200, -200)));
+	vert_b = DATA_I("B", Variable(dvec2( 200,  200)));
+	width  = DATA_I("Width", Variable(3.0));
+	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 }
 
 void NODES::RENDERING::DIM_2D::Line::render() {
 	// Update vertices
-	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
-	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
-	const vec1 radius  = d_to_f(width ->getData().get<dvec1>());
-	const KL::color u_color = color->getData().get<KL::color>();
+	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
+	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
+	const auto radius  = d_to_f(width ->GET_DATA(dvec1));
+	const auto u_color = color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Line(v1, v2, radius, u_color);
 }
@@ -1226,13 +1234,13 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 	rect.setWidth(100);
 	rect.setHeight(140);
 
-	exec_in  = new PORT::Exec_I(this, "");
-	exec_out = new PORT::Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(  0,  57.777)));
-	vert_b = new PORT::Data_I(this, "B", Variable(dvec2(-50, -28.868)));
-	vert_c = new PORT::Data_I(this, "C", Variable(dvec2( 50, -28.868)));
-	color  = new PORT::Data_I(this, "Color", Variable(KL::color(1, 1, 1, 1)));
+	vert_a = DATA_I("A", Variable(dvec2(  0,  57.777)));
+	vert_b = DATA_I("B", Variable(dvec2(-50, -28.868)));
+	vert_c = DATA_I("C", Variable(dvec2( 50, -28.868)));
+	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 
 	init();
 }
@@ -1256,10 +1264,10 @@ void NODES::RENDERING::DIM_2D::Triangle::init() {
 
 void NODES::RENDERING::DIM_2D::Triangle::render() {
 	// Update vertices
-	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
-	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
-	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
-	const vec4 u_color = color ->getData().get<KL::color>().fRgba();
+	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
+	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
+	const auto v3      = d_to_f(vert_c->GET_DATA(dvec2));
+	const auto u_color = color ->GET_DATA(Color).fRgba();
 
 	const GLfloat vertices[6] = {
 		v1.x, v1.y,
@@ -1299,14 +1307,14 @@ NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 	rect.setWidth(100);
 	rect.setHeight(160);
 
-	exec_in  = new PORT::Exec_I(this, "");
-	exec_out = new PORT::Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	vert_a = new PORT::Data_I(this, "A", Variable(dvec2(-100, -100)));
-	vert_b = new PORT::Data_I(this, "B", Variable(dvec2(-100,  100)));
-	vert_c = new PORT::Data_I(this, "C", Variable(dvec2( 100,  100)));
-	vert_d = new PORT::Data_I(this, "D", Variable(dvec2( 100, -100)));
-	color  = new PORT::Data_I(this, "Color", Variable(KL::color(1, 1, 1, 1)));
+	vert_a = DATA_I("A", Variable(dvec2(-100, -100)));
+	vert_b = DATA_I("B", Variable(dvec2(-100,  100)));
+	vert_c = DATA_I("C", Variable(dvec2( 100,  100)));
+	vert_d = DATA_I("D", Variable(dvec2( 100, -100)));
+	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 
 	init();
 }
@@ -1338,11 +1346,11 @@ void NODES::RENDERING::DIM_2D::Rectangle::init() {
 
 void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	// Update vertices
-	const vec2 v1      = d_to_f(vert_a->getData().get<dvec2>());
-	const vec2 v2      = d_to_f(vert_b->getData().get<dvec2>());
-	const vec2 v3      = d_to_f(vert_c->getData().get<dvec2>());
-	const vec2 v4      = d_to_f(vert_d->getData().get<dvec2>());
-	const vec4 u_color = color ->getData().get<KL::color>().fRgba();
+	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
+	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
+	const auto v3      = d_to_f(vert_c->GET_DATA(dvec2));
+	const auto v4      = d_to_f(vert_d->GET_DATA(dvec2));
+	const auto u_color = color ->GET_DATA(Color).fRgba();
 
 	const GLfloat vertices[8] = {
 		v1.x, v1.y,
@@ -1381,18 +1389,18 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	rect.setWidth(100);
 	rect.setHeight(120);
 
-	exec_in  = new PORT::Exec_I(this, "");
-	exec_out = new PORT::Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 
-	center = new PORT::Data_I(this, "Center", Variable(dvec2(0, 0)));
-	radius = new PORT::Data_I(this, "Radius", Variable(50.0));
-	color  = new PORT::Data_I(this, "Color" , Variable(KL::color(1, 1, 1, 1)));
+	center = DATA_I("Center", Variable(dvec2(0, 0)));
+	radius = DATA_I("Radius", Variable(50.0));
+	color  = DATA_I("Color" , Variable(Color(1, 1, 1, 1)));
 }
 
 void NODES::RENDERING::DIM_2D::Circle::render() {
-	const KL::color u_color  = color ->getData().get<KL::color>();
-	const vec2 u_center = d_to_f(center->getData().get<dvec2>());
-	const vec1 u_radius = d_to_f(radius->getData().get<dvec1>());
+	const auto u_center = d_to_f(center->GET_DATA(dvec2));
+	const auto u_radius = d_to_f(radius->GET_DATA(dvec1));
+	const auto u_color  = color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Circle(u_center, u_radius, u_color);
 }

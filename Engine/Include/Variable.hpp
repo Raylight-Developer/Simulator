@@ -24,24 +24,26 @@ namespace VARIABLE {
 #define VARIABLE_INTEGRALS VARIABLE::Type::INT, VARIABLE::Type::DOUBLE
 #define VARIABLE_FULL_INTEGRALS VARIABLE_INTEGRALS, VARIABLE_VECS, VARIABLE_MATS, VARIABLE::Type::COLOR
 
+#define VAR_TYPE VARIABLE::Type
+
 struct Variable {
 	any data;
 	VARIABLE::Type type;
 
 	Variable();
 
-	Variable(const dvec1&     data);
-	Variable(const int64&     data);
-	Variable(const bool&      data);
-	Variable(const QString&   data);
-	Variable(const dvec2&     data);
-	Variable(const dvec3&     data);
-	Variable(const dvec4&     data);
-	Variable(const KL::color& data);
-	Variable(const dquat&     data);
-	Variable(const dmat2&     data);
-	Variable(const dmat3&     data);
-	Variable(const dmat4&     data);
+	Variable(const dvec1&   data);
+	Variable(const int64&   data);
+	Variable(const bool&    data);
+	Variable(const QString& data);
+	Variable(const dvec2&   data);
+	Variable(const dvec3&   data);
+	Variable(const dvec4&   data);
+	Variable(const Color&   data);
+	Variable(const dquat&   data);
+	Variable(const dmat2&   data);
+	Variable(const dmat3&   data);
+	Variable(const dmat4&   data);
 	Variable(const VARIABLE::Type& type);
 
 	Variable operator+(const Variable& other) const;
@@ -71,18 +73,18 @@ struct Variable {
 	template <typename T>
 	inline T getInfer() const {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE : return static_cast<T>(any_cast<dvec1    >(data));
-			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<qint64   >(data));
-			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool     >(data));
-			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString  >(data));
-			case VARIABLE::Type::VEC2   : return static_cast<T>(any_cast<dvec2    >(data));
-			case VARIABLE::Type::VEC3   : return static_cast<T>(any_cast<dvec3    >(data));
-			case VARIABLE::Type::VEC4   : return static_cast<T>(any_cast<dvec4    >(data));
-			case VARIABLE::Type::COLOR  : return static_cast<T>(any_cast<KL::color>(data));
-			case VARIABLE::Type::QUAT   : return static_cast<T>(any_cast<dquat    >(data));
-			case VARIABLE::Type::MAT2   : return static_cast<T>(any_cast<dmat2    >(data));
-			case VARIABLE::Type::MAT3   : return static_cast<T>(any_cast<dmat3    >(data));
-			case VARIABLE::Type::MAT4   : return static_cast<T>(any_cast<dmat4    >(data));
+			case VARIABLE::Type::DOUBLE : return static_cast<T>(any_cast<dvec1  >(data));
+			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<qint64 >(data));
+			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool   >(data));
+			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString>(data));
+			case VARIABLE::Type::VEC2   : return static_cast<T>(any_cast<dvec2  >(data));
+			case VARIABLE::Type::VEC3   : return static_cast<T>(any_cast<dvec3  >(data));
+			case VARIABLE::Type::VEC4   : return static_cast<T>(any_cast<dvec4  >(data));
+			case VARIABLE::Type::COLOR  : return static_cast<T>(any_cast<Color  >(data));
+			case VARIABLE::Type::QUAT   : return static_cast<T>(any_cast<dquat  >(data));
+			case VARIABLE::Type::MAT2   : return static_cast<T>(any_cast<dmat2  >(data));
+			case VARIABLE::Type::MAT3   : return static_cast<T>(any_cast<dmat3  >(data));
+			case VARIABLE::Type::MAT4   : return static_cast<T>(any_cast<dmat4  >(data));
 		}
 	}
 };

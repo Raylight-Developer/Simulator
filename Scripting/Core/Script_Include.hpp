@@ -30,3 +30,8 @@ using Data_I = NODE::PORT::Data_I;
 using Data_O = NODE::PORT::Data_O;
 using Exec_I = NODE::PORT::Exec_I;
 using Exec_O = NODE::PORT::Exec_O;
+
+#define DATA_I(label, type) new Data_I(this, label, type);
+#define DATA_O(label, type) new Data_O(this, label, type);
+#define EXEC_I(label) new Exec_I(this, label);
+#define EXEC_O(label) new Exec_O(this, label);

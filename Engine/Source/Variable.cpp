@@ -33,7 +33,7 @@ Variable::Variable(const dvec4 & data) :
 	type(VARIABLE::Type::VEC4),
 	data(data)
 {}
-Variable::Variable(const KL::color & data) :
+Variable::Variable(const Color & data) :
 	type(VARIABLE::Type::COLOR),
 	data(data)
 {}
@@ -64,7 +64,7 @@ Variable::Variable(const VARIABLE::Type & type) {
 		case VARIABLE::Type::VEC2  : data = dvec2(0)         ; break;
 		case VARIABLE::Type::VEC3  : data = dvec3(0)         ; break;
 		case VARIABLE::Type::VEC4  : data = dvec4(0)         ; break;
-		case VARIABLE::Type::COLOR : data = KL::color()          ; break;
+		case VARIABLE::Type::COLOR : data = Color()          ; break;
 		case VARIABLE::Type::QUAT  : data = dquat(1, 0, 0, 0); break;
 		case VARIABLE::Type::MAT2  : data = dmat2(0)         ; break;
 		case VARIABLE::Type::MAT3  : data = dmat3(0)         ; break;
@@ -82,7 +82,7 @@ Variable Variable::operator+(const Variable & other) const {
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() + other.get<dvec2    >());
 			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() + other.get<dvec3    >());
 			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() + other.get<dvec4    >());
-			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() + other.get<KL::color>());
+			case VARIABLE::Type::COLOR : return Variable(get<Color    >() + other.get<Color    >());
 			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() + other.get<dquat    >());
 			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() + other.get<dmat2    >());
 			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() + other.get<dmat3    >());
@@ -107,7 +107,7 @@ Variable Variable::operator-(const Variable& other) const {
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() - other.get<dvec2  >());
 			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() - other.get<dvec3  >());
 			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() - other.get<dvec4  >());
-			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() - other.get<KL::color>());
+			case VARIABLE::Type::COLOR : return Variable(get<Color    >() - other.get<Color    >());
 			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() - other.get<dquat    >());
 			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() - other.get<dmat2    >());
 			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() - other.get<dmat3    >());
@@ -131,7 +131,7 @@ Variable Variable::operator*(const Variable& other) const {
 			case VARIABLE::Type::VEC2  : return Variable(get<dvec2    >() * other.get<dvec2    >());
 			case VARIABLE::Type::VEC3  : return Variable(get<dvec3    >() * other.get<dvec3    >());
 			case VARIABLE::Type::VEC4  : return Variable(get<dvec4    >() * other.get<dvec4    >());
-			case VARIABLE::Type::COLOR : return Variable(get<KL::color>() * other.get<KL::color>());
+			case VARIABLE::Type::COLOR : return Variable(get<Color    >() * other.get<Color    >());
 			case VARIABLE::Type::QUAT  : return Variable(get<dquat    >() * other.get<dquat    >());
 			case VARIABLE::Type::MAT2  : return Variable(get<dmat2    >() * other.get<dmat2    >());
 			case VARIABLE::Type::MAT3  : return Variable(get<dmat3    >() * other.get<dmat3    >());
@@ -179,7 +179,7 @@ bool Variable::operator==(const Variable& other) const {
 			case VARIABLE::Type::VEC2  : return get<dvec2    >() == other.get<dvec2    >();
 			case VARIABLE::Type::VEC3  : return get<dvec3    >() == other.get<dvec3    >();
 			case VARIABLE::Type::VEC4  : return get<dvec4    >() == other.get<dvec4    >();
-			case VARIABLE::Type::COLOR : return get<KL::color>() != other.get<KL::color>();
+			case VARIABLE::Type::COLOR : return get<Color    >() != other.get<Color    >();
 			case VARIABLE::Type::QUAT  : return get<dquat    >() == other.get<dquat    >();
 			case VARIABLE::Type::MAT2  : return get<dmat2    >() == other.get<dmat2    >();
 			case VARIABLE::Type::MAT3  : return get<dmat3    >() == other.get<dmat3    >();
@@ -199,7 +199,7 @@ bool Variable::operator!=(const Variable& other) const {
 			case VARIABLE::Type::VEC2  : return get<dvec2    >() != other.get<dvec2    >();
 			case VARIABLE::Type::VEC3  : return get<dvec3    >() != other.get<dvec3    >();
 			case VARIABLE::Type::VEC4  : return get<dvec4    >() != other.get<dvec4    >();
-			case VARIABLE::Type::COLOR : return get<KL::color>() != other.get<KL::color>();
+			case VARIABLE::Type::COLOR : return get<Color    >() != other.get<Color    >();
 			case VARIABLE::Type::QUAT  : return get<dquat    >() != other.get<dquat    >();
 			case VARIABLE::Type::MAT2  : return get<dmat2    >() != other.get<dmat2    >();
 			case VARIABLE::Type::MAT3  : return get<dmat3    >() != other.get<dmat3    >();

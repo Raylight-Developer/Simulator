@@ -11,8 +11,8 @@ void Script::onLoad() {
 	rect.setWidth(140);
 	rect.setHeight(60);
 
-	exec_in  = new Exec_I(this, "");
-	exec_out = new Exec_O(this, "");
+	exec_in  = EXEC_I("");
+	exec_out = EXEC_O("");
 }
 
 void Script::onUnload() {
@@ -26,7 +26,7 @@ void Script::exec(const Port* port) {
 }
 
 void Script::render() {
-	const KL::color u_color  = KL::color(1, 0.4, 0, 1);
+	const Color u_color  = Color(1, 0.4, 0, 1);
 
 	RENDER::Dim_2D::Line(vec2(60, 60), vec2(-60, 60), 4, u_color);
 

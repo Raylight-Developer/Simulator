@@ -18,8 +18,8 @@ namespace RENDER {
 			void Line();
 			void Circle();
 		}
-		void Line(const vec2& v1, const vec2& v2, const vec1& width, const KL::color& color = KL::color(1,1,1,1));
-		void RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const KL::color& color = KL::color(1,1,1,1));
-		void Circle(const vec2& center, const vec1& radius, const KL::color& color = KL::color(1,1,1,1));
+		void Line(const vec2& v1, const vec2& v2, const vec1& width, const Color& color = Color(1,1,1,1));
+		void RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const Color& color = Color(1,1,1,1));
+		void Circle(const vec2& center, const vec1& radius, const Color& color = Color(1,1,1,1));
 	}
 }
