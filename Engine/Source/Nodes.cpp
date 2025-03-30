@@ -680,8 +680,8 @@ NODES::CAST::MAKE::Vec2::Vec2() :
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
-	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
+	i_x = DATA_I("X", Variable(0.0));
+	i_y = DATA_I("Y", Variable(0.0));
 	out = DATA_O("", VAR_TYPE::VEC2);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -706,9 +706,9 @@ NODES::CAST::MAKE::Vec3::Vec3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
-	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
-	i_z = DATA_I("Z", VAR_TYPE::DOUBLE);
+	i_x = DATA_I("X", Variable(0.0));
+	i_y = DATA_I("Y", Variable(0.0));
+	i_z = DATA_I("Z", Variable(0.0));
 	out = DATA_O("", VAR_TYPE::VEC3);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -734,10 +734,10 @@ NODES::CAST::MAKE::Vec4::Vec4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_x = DATA_I("X", VAR_TYPE::DOUBLE);
-	i_y = DATA_I("Y", VAR_TYPE::DOUBLE);
-	i_z = DATA_I("Z", VAR_TYPE::DOUBLE);
-	i_w = DATA_I("W", VAR_TYPE::DOUBLE);
+	i_x = DATA_I("X", Variable(0.0));
+	i_y = DATA_I("Y", Variable(0.0));
+	i_z = DATA_I("Z", Variable(0.0));
+	i_w = DATA_I("W", Variable(0.0));
 	out = DATA_O("", VAR_TYPE::VEC4);
 	i_x->rect.moveCenter(QPointF( 0, 10));
 	i_y->rect.moveCenter(QPointF( 0, 30));
@@ -794,8 +794,8 @@ NODES::CAST::MAKE::Mat2::Mat2() :
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_a = DATA_I("A", VAR_TYPE::VEC2);
-	i_b = DATA_I("B", VAR_TYPE::VEC2);
+	i_a = DATA_I("A", Variable(dvec2(0.0)));
+	i_b = DATA_I("B", Variable(dvec2(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT2);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -820,9 +820,9 @@ NODES::CAST::MAKE::Mat3::Mat3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_a = DATA_I("A", VAR_TYPE::VEC3);
-	i_b = DATA_I("B", VAR_TYPE::VEC3);
-	i_c = DATA_I("C", VAR_TYPE::VEC3);
+	i_a = DATA_I("A", Variable(dvec3(0.0)));
+	i_b = DATA_I("B", Variable(dvec3(0.0)));
+	i_c = DATA_I("C", Variable(dvec3(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT3);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -848,10 +848,10 @@ NODES::CAST::MAKE::Mat4::Mat4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_a = DATA_I("A", VAR_TYPE::VEC4);
-	i_b = DATA_I("B", VAR_TYPE::VEC4);
-	i_c = DATA_I("C", VAR_TYPE::VEC4);
-	i_d = DATA_I("D", VAR_TYPE::VEC4);
+	i_a = DATA_I("A", Variable(dvec4(0.0)));
+	i_b = DATA_I("B", Variable(dvec4(0.0)));
+	i_c = DATA_I("C", Variable(dvec4(0.0)));
+	i_d = DATA_I("D", Variable(dvec4(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT4);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -1089,28 +1089,65 @@ Variable NODES::BOOLEAN::Select::getData(const Port* port) const {
 	return i_false->getData();
 }
 
-NODES::DEFAULT::Euler_Tick::Euler_Tick() :
-	Node("Tick")
+NODES::EXEC::Input_Key::Input_Key() :
+	Node("Input Key")
 {
-	rect.setWidth(80);
-	rect.setHeight(80);
+	rect.setWidth(120);
+	rect.setHeight(100);
 
-	exec_out = EXEC_O("Tick");
-	delta_out = DATA_O("Delta", VAR_TYPE::DOUBLE);
-
-	delta = 0.016;
+	exec_press   = EXEC_O("Pressed");
+	exec_release = EXEC_O("Released");
+	key = DATA_O("Key", VAR_TYPE::STRING);
 }
 
-void NODES::DEFAULT::Euler_Tick::exec(const dvec1& delta) {
-	this->delta = delta;
+Variable NODES::EXEC::Input_Key::getData(const Port* port) const {
+	return Variable("");
+}
+
+NODES::EXEC::Input_Mouse::Input_Mouse() :
+	Node("Input Mouse")
+{
+	rect.setWidth(120);
+	rect.setHeight(100);
+
+	exec_press   = EXEC_O("Pressed");
+	exec_release = EXEC_O("Released");
+	button = DATA_O("Button", VAR_TYPE::STRING);
+}
+
+Variable NODES::EXEC::Input_Mouse::getData(const Port* port) const {
+	return Variable("");
+}
+
+NODES::SINGLETON::Euler_Tick::Euler_Tick() :
+	Node("Tick")
+{
+	rect.setWidth(100);
+	rect.setHeight(120);
+
+	exec_out  = EXEC_O("Tick");
+	o_delta   = DATA_O("Delta", VAR_TYPE::DOUBLE);
+	o_calls   = DATA_O("Calls", VAR_TYPE::INT);
+	o_runtime = DATA_O("Runtime", VAR_TYPE::DOUBLE);
+
+	delta = 0;
+}
+
+void NODES::SINGLETON::Euler_Tick::exec(const dvec1& _delta) {
+	delta = _delta;
 	exec_out->exec();
 }
 
-Variable NODES::DEFAULT::Euler_Tick::getData(const Port* port) const {
-	return Variable(delta);
+Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
+	if (port == o_delta)
+		return Variable(delta);
+	if (port == o_calls)
+		return Variable(SESSION->current_frame);
+	if (port == o_runtime)
+		return Variable(chrono::duration<double>(NOW - SESSION->start).count());
 }
 
-NODES::DEFAULT::Background::Background() :
+NODES::SINGLETON::Background::Background() :
 	Node("Background")
 {
 	rect.setWidth(120);
@@ -1122,14 +1159,14 @@ NODES::DEFAULT::Background::Background() :
 	color_in = DATA_I("Color", Variable(Color()));
 }
 
-void NODES::DEFAULT::Background::exec(const Port* port) {
+void NODES::SINGLETON::Background::exec(const Port* port) {
 	const vec4 u_color = d_to_f(color_in->GET_DATA(Color).rgba());
 	GL->glClearColor(u_color.r, u_color.g, u_color.b, u_color.a);
 	GL->glClear(GL_COLOR_BUFFER_BIT);
 	exec_out->exec();
 }
 
-NODES::DEFAULT::Camera_2D::Camera_2D() :
+NODES::SINGLETON::Camera_2D::Camera_2D() :
 	Node("2D Camera")
 {
 	header_color = QColor(75, 25, 25);
@@ -1143,13 +1180,13 @@ NODES::DEFAULT::Camera_2D::Camera_2D() :
 	zoom = DATA_I("Color", Variable(1.0));
 }
 
-void NODES::DEFAULT::Camera_2D::exec(const Port* port) {
+void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
 	SESSION->viewport->center_2d = center->GET_DATA(dvec2);
 	SESSION->viewport->zoom_2d = zoom->GET_DATA(dvec1);
 	exec_out->exec();
 }
 
-NODES::DEFAULT::Camera_3D::Camera_3D() :
+NODES::SINGLETON::Camera_3D::Camera_3D() :
 	Node("3D Camera")
 {
 	header_color = QColor(25, 25, 75);
@@ -1160,38 +1197,8 @@ NODES::DEFAULT::Camera_3D::Camera_3D() :
 	exec_out = EXEC_O("");
 }
 
-void NODES::DEFAULT::Camera_3D::exec(const Port* port) {
+void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
 	exec_out->exec();
-}
-
-NODES::DEFAULT::Input_Key::Input_Key() :
-	Node("Input Key")
-{
-	rect.setWidth(120);
-	rect.setHeight(100);
-
-	exec_press   = EXEC_O("Pressed");
-	exec_release = EXEC_O("Released");
-	key = DATA_O("Key", VAR_TYPE::STRING);
-}
-
-Variable NODES::DEFAULT::Input_Key::getData(const Port* port) const {
-	return Variable("");
-}
-
-NODES::DEFAULT::Input_Mouse::Input_Mouse() :
-	Node("Input Mouse")
-{
-	rect.setWidth(120);
-	rect.setHeight(100);
-
-	exec_press   = EXEC_O("Pressed");
-	exec_release = EXEC_O("Released");
-	button = DATA_O("Button", VAR_TYPE::STRING);
-}
-
-Variable NODES::DEFAULT::Input_Mouse::getData(const Port* port) const {
-	return Variable("");
 }
 
 NODES::RENDERING::DIM_2D::Line::Line() :

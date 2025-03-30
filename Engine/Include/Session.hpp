@@ -20,6 +20,12 @@ struct Session : KL::Session {
 	QOpenGLFunctions_4_5_Core* gl;
 	Viewport* viewport;
 
+	int64 current_frame;
+	int64 samples;
+	Timestamp start;
+	bool active;
+	bool realtime;
+
 	File file;
 	KL::U_Map<QString, Variable> variables;
 

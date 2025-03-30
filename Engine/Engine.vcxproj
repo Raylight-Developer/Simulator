@@ -23,6 +23,7 @@
     <ClCompile Include="Source\Variable.cpp" />
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Viewport.cpp" />
+    <ClCompile Include="Source\Timeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\File.hpp" />
@@ -46,6 +47,10 @@
     <ClInclude Include="Include\Scripting.hpp" />
     <ClInclude Include="Include\Viewport.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
+    <ClInclude Include="Include\Timeline.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Style.css" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>
@@ -73,11 +78,11 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtModules>core;gui;network;widgets;opengl;openglwidgets</QtModules>
+    <QtModules>core;gui;widgets;opengl;openglwidgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtModules>core;gui;network;widgets;opengl;openglwidgets</QtModules>
+    <QtModules>core;gui;widgets;opengl;openglwidgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />

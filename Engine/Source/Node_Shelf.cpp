@@ -22,13 +22,13 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 		}
 	});
 
-#ifdef _DEBUG
-	auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script.dll"}});
-	auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script-OpenGL_Test.dll"}});
-#else
-	auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script.dll"}});
-	auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script-OpenGL_Test.dll"}});
-#endif
+	#ifdef _DEBUG
+		auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script.dll"}});
+		auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script-OpenGL_Test.dll"}});
+	#else
+		auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script.dll"}});
+		auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script-OpenGL_Test.dll"}});
+	#endif
 }
 
 NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
@@ -39,42 +39,58 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	user_scripts = new GUI::Tree_Item(this, "Scripts");
 
-	auto tree_variables  = new GUI::Tree_Item(this, "Variables");
-	auto tree_cast       = new GUI::Tree_Item(this, "Casting");
-	auto tree_math       = new GUI::Tree_Item(this, "Math");
-	auto tree_boolean    = new GUI::Tree_Item(this, "Boolean");
-	auto tree_render     = new GUI::Tree_Item(this, "Rendering");
+	auto tree_variables = new GUI::Tree_Item(this, "Variables");
+	{
+		auto constant_set = new GUI::Tree_Item(tree_variables, "Constant", 1, { { 1000, "CONSTANT"     } });
+		auto variable_set = new GUI::Tree_Item(tree_variables, "Set"     , 1, { { 1000, "VARIABLE SET" } });
+		auto variable_get = new GUI::Tree_Item(tree_variables, "Get"     , 1, { { 1000, "VARIABLE GET" } });
+	}
 
-	auto tree_make       = new GUI::Tree_Item(tree_cast, "Make", 1);
-	auto tree_break      = new GUI::Tree_Item(tree_cast, "Break", 1);
+	auto tree_cast = new GUI::Tree_Item(this, "Casting");
+	{
+		auto tree_make = new GUI::Tree_Item(tree_cast, "Make", 1);
+		{
+			auto make_vec2 = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
+			auto make_vec3 = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
+			auto make_vec4 = new GUI::Tree_Item(tree_make, "Vec 4", 2, { { 1000, "MAKE VEC4" } });
+			auto make_quat = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "MAKE QUAT" } });
+			auto make_mat2 = new GUI::Tree_Item(tree_make, "Mat 2", 2, { { 1000, "MAKE MAT2" } });
+			auto make_mat3 = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "MAKE MAT3" } });
+			auto make_mat4 = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "MAKE MAT4" } });
+		}
+		auto tree_break = new GUI::Tree_Item(tree_cast, "Break", 1);
+	}
 
-	auto tree_render_2d  = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
-	auto tree_render_3d  = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
+	auto tree_math = new GUI::Tree_Item(this, "Math");
+	{
+		auto arithmetic   = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
+		auto trigonometry = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+	}
 
-	auto constant_set    = new GUI::Tree_Item(tree_variables, "Constant", 2, { { 1000, "CONSTANT" } });
-	auto variable_set    = new GUI::Tree_Item(tree_variables, "Set", 2, { { 1000, "VARIABLE SET" } });
-	auto variable_get    = new GUI::Tree_Item(tree_variables, "Get", 2, { { 1000, "VARIABLE GET"  } });
-
-	auto make_vec2       = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
-	auto make_vec3       = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
-	auto make_vec4       = new GUI::Tree_Item(tree_make, "Vec 4", 2, { { 1000, "MAKE VEC4" } });
-	auto make_quat       = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "MAKE QUAT" } });
-	auto make_mat2       = new GUI::Tree_Item(tree_make, "Mat 2", 2, { { 1000, "MAKE MAT2" } });
-	auto make_mat3       = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "MAKE MAT3" } });
-	auto make_mat4       = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "MAKE MAT4" } });
-
-	auto arithmetic      = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
-	auto trigonometry    = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
-
-	auto boolean_comparison  = new GUI::Tree_Item(tree_boolean, "Comparison", 2, { { 1000, "BOOLEAN COMPARISON" } });
-	auto boolean_if          = new GUI::Tree_Item(tree_boolean, "If"        , 2, { { 1000, "BOOLEAN IF"         } });
-	auto boolean_if_else     = new GUI::Tree_Item(tree_boolean, "If Else"   , 2, { { 1000, "BOOLEAN IF ELSE"    } });
-	auto boolean_select      = new GUI::Tree_Item(tree_boolean, "Select"    , 2, { { 1000, "BOOLEAN SELECT"     } });
-
-	auto render_2d_line      = new GUI::Tree_Item(tree_render_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
-	auto render_2d_triangle  = new GUI::Tree_Item(tree_render_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });
-	auto render_2d_rectangle = new GUI::Tree_Item(tree_render_2d, "Rectangle", 2, { { 1000, "RENDER 2D RECTANGLE" } });
-	auto render_2d_circle    = new GUI::Tree_Item(tree_render_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
+	auto tree_boolean = new GUI::Tree_Item(this, "Boolean");
+	{
+		auto boolean_comparison = new GUI::Tree_Item(tree_boolean, "Comparison", 1, { { 1000, "BOOLEAN COMPARISON" } });
+		auto boolean_if         = new GUI::Tree_Item(tree_boolean, "If"        , 1, { { 1000, "BOOLEAN IF"         } });
+		auto boolean_if_else    = new GUI::Tree_Item(tree_boolean, "If Else"   , 1, { { 1000, "BOOLEAN IF ELSE"    } });
+		auto boolean_select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
+	}
+	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");
+	{
+		auto singleton_background = new GUI::Tree_Item(tree_singleton, "Render Background", 1, { { 1000, "SINGLETON BACKGROUND" } });
+		auto singleton_camera_2d  = new GUI::Tree_Item(tree_singleton, "Camera 2D"        , 1, { { 1000, "SINGLETON 2D CAMERA"  } });
+		auto singleton_camera_3d  = new GUI::Tree_Item(tree_singleton, "Camera 3D"        , 1, { { 1000, "SINGLETON 3D CAMERA"  } });
+	}
+	auto tree_render = new GUI::Tree_Item(this, "Rendering");
+	{
+		auto tree_render_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
+		{
+			auto render_2d_line      = new GUI::Tree_Item(tree_render_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
+			auto render_2d_triangle  = new GUI::Tree_Item(tree_render_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });
+			auto render_2d_rectangle = new GUI::Tree_Item(tree_render_2d, "Rectangle", 2, { { 1000, "RENDER 2D RECTANGLE" } });
+			auto render_2d_circle    = new GUI::Tree_Item(tree_render_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
+		}
+		auto tree_render_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
+	}
 
 	expandAll();
 }

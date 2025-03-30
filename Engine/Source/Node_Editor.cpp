@@ -20,21 +20,6 @@ Node_Editor::Node_Editor(QWidget* parent) :
 
 	scene->addItem(FILE.euler_tick);
 	FILE.euler_tick->setPos(QPointF(0,0));
-
-	scene->addItem(FILE.background);
-	FILE.background->setPos(QPointF(200,0));
-
-	scene->addItem(FILE.camera_2d);
-	FILE.camera_2d->setPos(QPointF(200,200));
-
-	scene->addItem(FILE.camera_3d);
-	FILE.camera_3d->setPos(QPointF(600,200));
-
-	scene->addItem(FILE.input_key);
-	FILE.input_key->setPos(QPointF(0,200));
-
-	scene->addItem(FILE.input_mouse);
-	FILE.input_mouse->setPos(QPointF(0,400));
 }
 
 Node_Editor::~Node_Editor() {
@@ -248,6 +233,9 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 				}
 				move_pos = mapToScene(event->pos()) - node->pos();
 			}
+			//else if (QGraphicsProxyWidget* proxyWidget = qgraphicsitem_cast<QGraphicsProxyWidget*>(item)) {
+			//	QApplication::sendEvent(proxyWidget->widget(), event);
+			//}
 			else {
 				for (auto item : selection) {
 					item->setSelected(false);
@@ -340,13 +328,9 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 		case Qt::Key_Delete: {
 			for (Node* node : selection) {
 				if (
-					not dynamic_cast<NODES::DEFAULT::Euler_Tick*>(node) and
-					not dynamic_cast<NODES::DEFAULT::Background*>(node) and
-					not dynamic_cast<NODES::DEFAULT::Camera_2D*>(node) and
-					not dynamic_cast<NODES::DEFAULT::Camera_3D*>(node) and
-					not dynamic_cast<NODES::DEFAULT::Input_Key*>(node) and
-					not dynamic_cast<NODES::DEFAULT::Input_Mouse*>(node)
-				) {
+					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
+					) {
+					FILE.nodes.remove(node);
 					scene->removeItem(node);
 					delete node;
 				}
@@ -457,6 +441,33 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "RENDER 2D CIRCLE") {
 				node = new NODES::RENDERING::DIM_2D::Circle();
 			}
+			else if (type.startsWith("SINGLETON")) {
+				#define NODE_EXISTS(type) false;\
+				for (Node* node : FILE.nodes) {\
+					if (dynamic_cast<type>(node)) {\
+						exists = true;\
+						break;\
+					}\
+				}
+				if (type == "SINGLETON BACKGROUND") {
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Background*)
+					if (!exists) {
+						node = new NODES::SINGLETON::Background();
+					}
+				}
+				else if (type == "SINGLETON 2D CAMERA") {
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_2D*)
+					if (!exists) {
+						node = new NODES::SINGLETON::Camera_2D();
+					}
+				}
+				else if (type == "SINGLETON 3D CAMERA") {
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_3D*)
+					if (!exists) {
+						node = new NODES::SINGLETON::Camera_3D();
+					}
+				}
+			}
 			else if (type == "SCRIPT") {
 				QByteArray itemDataPath = event->mimeData()->data("Path");
 				QDataStream dataStreamPath(&itemDataPath, QIODevice::ReadOnly);
@@ -466,9 +477,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 		}
 		if (node) {
+			FILE.nodes.push(node);
 			scene->addItem(node);
 			node->setPos(drop_pos);
-			event->acceptProposedAction();
 		}
 	}
 }

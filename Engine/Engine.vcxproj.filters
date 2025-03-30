@@ -26,6 +26,7 @@
     <ClInclude Include="Include\Scripting.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\File.hpp" />
+    <ClInclude Include="Include\Timeline.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -52,5 +53,9 @@
     <ClCompile Include="Source\Viewport.cpp" />
     <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\File.cpp" />
+    <ClCompile Include="Source\Timeline.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Style.css" />
   </ItemGroup>
 </Project>

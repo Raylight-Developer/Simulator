@@ -68,15 +68,15 @@ namespace NODES {
 		struct Select;
 	}
 	namespace EXEC {
+		struct Input_Key;
+		struct Input_Mouse;
 		enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
 	}
-	namespace DEFAULT {
+	namespace SINGLETON {
 		struct Euler_Tick;
 		struct Background;
 		struct Camera_2D;
 		struct Camera_3D;
-		struct Input_Key;
-		struct Input_Mouse;
 	}
 	namespace RENDERING {
 		namespace DIM_2D {
@@ -247,7 +247,7 @@ namespace NODES {
 
 			bool onConnRequested(Port* port, Connection* conn);
 			void onDisconnection(Port* port);
-			void cascade(Port* port, const VARIABLE::Type& var_type);
+			void cascade(Port* port, const VAR_TYPE& var_type);
 
 			Variable getData(const Port* port) const override;
 		};
@@ -286,13 +286,33 @@ namespace NODES {
 	}
 
 	namespace EXEC {
+		struct Input_Key : Node {
+			PORT:: Exec_O* exec_press;
+			PORT:: Exec_O* exec_release;
+			PORT:: Data_O* key;
+
+			Input_Key();
+
+			Variable getData(const Port* port) const override;
+		};
+		struct Input_Mouse : Node {
+			PORT:: Exec_O* exec_press;
+			PORT:: Exec_O* exec_release;
+			PORT:: Data_O* button;
+
+			Input_Mouse();
+
+			Variable getData(const Port* port) const override;
+		};
 	}
 
-	namespace DEFAULT {
+	namespace SINGLETON {
 		struct Euler_Tick : Node {
 			dvec1 delta;
 			PORT:: Exec_O* exec_out;
-			PORT:: Data_O* delta_out;
+			PORT:: Data_O* o_delta;
+			PORT:: Data_O* o_calls;
+			PORT:: Data_O* o_runtime;
 
 			Euler_Tick();
 
@@ -327,24 +347,6 @@ namespace NODES {
 			Camera_3D();
 
 			void exec(const Port* port) override;
-		};
-		struct Input_Key : Node {
-			PORT:: Exec_O* exec_press;
-			PORT:: Exec_O* exec_release;
-			PORT:: Data_O* key;
-
-			Input_Key();
-
-			Variable getData(const Port* port) const override;
-		};
-		struct Input_Mouse : Node {
-			PORT:: Exec_O* exec_press;
-			PORT:: Exec_O* exec_release;
-			PORT:: Data_O* button;
-
-			Input_Mouse();
-
-			Variable getData(const Port* port) const override;
 		};
 	}
 

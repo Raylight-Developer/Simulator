@@ -29,9 +29,18 @@ Viewport::~Viewport() {
 }
 
 void Viewport::f_tickUpdate() {
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	FILE.euler_tick->exec(delta_time);
+	if (SESSION->active or SESSION->realtime) {
+		glClear(GL_COLOR_BUFFER_BIT);
+		if (FILE.euler_tick) {
+			if (SESSION->realtime) {
+				FILE.euler_tick->exec(delta_time > 0.025 ? 0.025 : delta_time);
+			}
+			else {
+				FILE.euler_tick->exec(1.0 / SESSION->samples);
+			}
+		}
+		SESSION->current_frame++;
+	}
 }
 
 void Viewport::f_compile() {

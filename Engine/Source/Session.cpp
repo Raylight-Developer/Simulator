@@ -20,4 +20,10 @@ void Session::destroy() {
 Session::Session() :
 	KL::Session(),
 	file(File())
-{}
+{
+	current_frame = 0;
+	samples = 60;
+	active = false;
+	realtime = false;
+	start = NOW;
+}
