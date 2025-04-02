@@ -5,21 +5,19 @@
 #include "Scripting.hpp"
 #include "Nodes.hpp"
 
-class Node_Shelf;
+struct Node_Shelf;
 namespace NODE_SHELF {
-	class Tree;
+	struct Tree;
 }
 
-class Node_Shelf : public GUI::Linear_Contents {
-public:
+struct Node_Shelf : GUI::Linear_Contents {
 	Node_Shelf(QWidget* parent = nullptr);
 
 	NODE_SHELF::Tree* tree;
 };
 
 namespace NODE_SHELF {
-	class Tree : public GUI::Tree {
-	public:
+	struct Tree : GUI::Tree {
 		GUI::Tree_Item* user_scripts;
 
 		Tree(Node_Shelf* parent = nullptr);

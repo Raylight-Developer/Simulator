@@ -13,7 +13,7 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 	addWidget(tree);
 
 	connect(add_script, &GUI::Button::pressed, [this]() {
-		const QString script_id = QInputDialog::getText(nullptr, "CONSTANT Dialog", "Enter Script ID:");
+		const QString script_id = QInputDialog::getText(nullptr, "Add Script", "Enter Script ID:");
 		if (!script_id.isEmpty()) {
 			const QString script_path = QFileDialog::getOpenFileName(nullptr, "Open Script DLL File", "", "Dll Files (*.dll)");
 			if (!script_path.isEmpty()) {

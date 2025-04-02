@@ -27,6 +27,7 @@
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\File.hpp" />
     <ClInclude Include="Include\Timeline.hpp" />
+    <ClInclude Include="Include\Variable_Editor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -54,6 +55,7 @@
     <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\File.cpp" />
     <ClCompile Include="Source\Timeline.cpp" />
+    <ClCompile Include="Source\Variable_Editor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

@@ -2,6 +2,7 @@
 
 #include "KL.hpp"
 
+#include "Variable_Editor.hpp"
 #include "Node_Editor.hpp"
 #include "Node_Shelf.hpp"
 #include "Viewport.hpp"

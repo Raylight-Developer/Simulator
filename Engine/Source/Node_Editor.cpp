@@ -468,6 +468,19 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 					}
 				}
 			}
+			else if (type.startsWith("VARIABLE")) {
+				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
+					existing->setVar(type.remove(0, 9));
+				}
+				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
+					existing->setVar(type.remove(0, 9));
+				}
+				else {
+					auto def_node = new NODES::VARIABLES::Get();
+					def_node->setVar(type.remove(0, 9));
+					node = def_node;
+				}
+			}
 			else if (type == "SCRIPT") {
 				QByteArray itemDataPath = event->mimeData()->data("Path");
 				QDataStream dataStreamPath(&itemDataPath, QIODevice::ReadOnly);

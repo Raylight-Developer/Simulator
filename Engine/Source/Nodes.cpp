@@ -643,10 +643,22 @@ Variable NODES::VARIABLES::Constant::getData(const Port* port) const {
 NODES::VARIABLES::Get::Get() :
 	Node("Get Var")
 {
-	rect.setWidth(100);
+	rect.setWidth(120);
 	rect.setHeight(60);
 
-	out = DATA_O("", VAR_TYPE::INT);
+	out = DATA_O("", VAR_TYPE::BLOCKED);
+
+	label = new GUI::Label();
+	label->setFixedSize(80, 20);
+
+	PROXY(label);
+	proxy_label->setPos(20, 30);
+}
+
+void NODES::VARIABLES::Get::setVar(const QString name) {
+	var = name;
+	out->setType(SESSION->variables[var].type);
+	label->setText(var);
 }
 
 Variable NODES::VARIABLES::Get::getData(const Port* port) const {
@@ -663,10 +675,24 @@ NODES::VARIABLES::Set::Set() :
 	exec_out = EXEC_O("");
 	in  = DATA_I("", VAR_TYPE::NONE);
 	out = DATA_O("", VAR_TYPE::NONE);
+
+	label = new GUI::Label();
+	label->setFixedSize(80, 20);
+
+	PROXY(label);
+	proxy_label->setPos(20, 30);
+}
+
+void NODES::VARIABLES::Set::setVar(const QString name) {
+	var = name;
+	out->setType(SESSION->variables[var].type);
+	label->setText(var);
 }
 
 void NODES::VARIABLES::Set::exec(const Port* port) {
-	SESSION->variables[var] = in->getData();
+	if (in->connected()) {
+		SESSION->variables[var] = in->getData();
+	}
 	exec_out->exec();
 }
 

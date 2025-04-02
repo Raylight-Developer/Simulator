@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Window.cpp" />
     <ClCompile Include="Source\Viewport.cpp" />
     <ClCompile Include="Source\Timeline.cpp" />
+    <ClCompile Include="Source\Variable_Editor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\File.hpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Include\Viewport.hpp" />
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\Timeline.hpp" />
+    <ClInclude Include="Include\Variable_Editor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

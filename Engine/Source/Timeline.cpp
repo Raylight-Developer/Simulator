@@ -23,7 +23,7 @@ Timeline::Timeline(QWidget* parent) :
 	addWidget(live);
 	addWidget(samples_label);
 	addWidget(samples);
-	setFixedHeight(20);
+	setFixedHeight(24);
 
 	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop]() {
 		if (SESSION->active) {

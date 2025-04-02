@@ -111,9 +111,11 @@ namespace NODES {
 		};
 		struct Get : Node {
 			PORT::Data_O* out;
+			GUI::Label* label;
 			QString var;
 
 			Get();
+			void setVar(const QString name);
 
 			Variable getData(const Port* port) const override;
 		};
@@ -122,9 +124,12 @@ namespace NODES {
 			PORT::Exec_O* exec_out;
 			PORT::Data_I* in;
 			PORT::Data_O* out;
+			GUI::Label* label;
 			QString var;
 
 			Set();
+
+			void setVar(const QString name);
 
 			void exec(const Port* port) override;
 			Variable getData(const Port* port) const override;

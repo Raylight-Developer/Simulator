@@ -54,7 +54,9 @@ Variable::Variable(const dmat4 & data) :
 	data(data)
 {}
 
-Variable::Variable(const VARIABLE::Type & type) {
+Variable::Variable(const VARIABLE::Type& type) :
+	type(type)
+{
 	switch (type) {
 		case VARIABLE::Type::NONE  : data = nullptr          ; break;
 		case VARIABLE::Type::DOUBLE: data = 0.0              ; break;

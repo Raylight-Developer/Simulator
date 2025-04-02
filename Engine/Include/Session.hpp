@@ -18,6 +18,7 @@ struct Session : KL::Session {
 	static void destroy();
 
 	QOpenGLFunctions_4_5_Core* gl;
+	GUI::Window* window;
 	Viewport* viewport;
 
 	int64 current_frame;
@@ -27,7 +28,9 @@ struct Session : KL::Session {
 	bool realtime;
 
 	File file;
+
 	KL::U_Map<QString, Variable> variables;
+	KL::U_Map<QString, KL::List<Node*>> variable_refs;
 
 	KL::List<NODES::SCRIPT::Script*> scripts;
 	KL::U_Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
