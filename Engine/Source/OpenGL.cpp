@@ -101,14 +101,14 @@ void OpenGL::printShaderErrorWithContext(const string& shader_code, const string
 		return;
 	}
 
-	uint64 lineNumber = str_to_ul(error_str.substr(pos + 1, endPos - pos - 1));
+	U64 lineNumber = stoU64(error_str.substr(pos + 1, endPos - pos - 1));
 
 	Tokens lines = f_split(shader_code, "\n");
 
-	uint64 startLine = max(0ULL, lineNumber - 4);
-	uint64 endLine = min(lines.size(), lineNumber + 3);
+	U64 startLine = max(0ULL, lineNumber - 4);
+	U64 endLine = min(lines.size(), lineNumber + 3);
 
-	for (uint64 i = startLine; i < endLine; ++i) {
+	for (U64 i = startLine; i < endLine; ++i) {
 		LOG NL << (i + 1) << ": " << lines[i];
 		if (i == lineNumber - 1) {
 			LOG NL << ANSI_RED << "^-- Error here: " ANSI_RESET << error_str;
@@ -119,14 +119,14 @@ void OpenGL::printShaderErrorWithContext(const string& shader_code, const string
 	FLUSH;
 }
 
-GLuint OpenGL::renderLayer(const uvec2& resolution, const GLuint& filter) {
+GLuint OpenGL::renderLayer(const T_V2<U64>& resolution, const GLuint& filter) {
 	GLuint ID;
 	GL->glCreateTextures(GL_TEXTURE_2D, 1, &ID);
 	GL->glTextureParameteri(ID, GL_TEXTURE_MIN_FILTER, filter);
 	GL->glTextureParameteri(ID, GL_TEXTURE_MAG_FILTER, filter);
 	GL->glTextureParameteri(ID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	GL->glTextureParameteri(ID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	GL->glTextureStorage2D (ID, 1, GL_RGBA32F, resolution.x,resolution.y);
+	GL->glTextureStorage2D (ID, 1, GL_RGBA32F, resolution.x, resolution.y);
 	return ID;
 }
 
@@ -214,14 +214,14 @@ void RENDER::Dim_2D::INIT::Circle() {
 	GL->glBindVertexArray(0);
 }
 
-void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, const Color& color) {
-	vec2 lineDir = d_to_f(glm::normalize(v2 - v1));
-	vec2 perpDir = vec2(-lineDir.y, lineDir.x);
-	const vec1 halfWidth = width * 0.5f;
-	vec2 n1 = v1 + perpDir * halfWidth;
-	vec2 n2 = v1 - perpDir * halfWidth;
-	vec2 n4 = v2 + perpDir * halfWidth;
-	vec2 n3 = v2 - perpDir * halfWidth;
+void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
+	F32_V2 lineDir = glm::normalize(v2 - v1);
+	F32_V2 perpDir = F32_V2(-lineDir.y, lineDir.x);
+	const F32 halfWidth = width * 0.5f;
+	F32_V2 n1 = v1 + perpDir * halfWidth;
+	F32_V2 n2 = v1 - perpDir * halfWidth;
+	F32_V2 n4 = v2 + perpDir * halfWidth;
+	F32_V2 n3 = v2 - perpDir * halfWidth;
 
 	const GLfloat vertices[8] = {
 		n1.x, n1.y,
@@ -235,11 +235,11 @@ void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, con
 	// Render
 	const GLuint Shader = SESSION->viewport->gl_data["2D Line Shader"];
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.fRgba()));
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
 
 	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Line VAO"]);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -248,22 +248,22 @@ void RENDER::Dim_2D::Line(const vec2& v1, const vec2& v2, const vec1& width, con
 	GL->glUseProgram(0);
 }
 
-void RENDER::Dim_2D::RoundedLine(const vec2& v1, const vec2& v2, const vec1& width, const Color& color) {
+void RENDER::Dim_2D::RoundedLine(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
 	Line(v1, v2, width, color);
 	Circle(v1, width * 0.5, color);
 	Circle(v2, width * 0.5, color);
 }
 
-void RENDER::Dim_2D::Circle(const vec2& center, const vec1& radius, const Color& color) {
+void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color& color) {
 	const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.fRgba()));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uRadius"), radius);
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uRadius"), radius);
 
 	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Circle VAO"]);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

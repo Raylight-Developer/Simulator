@@ -3,24 +3,24 @@
 #include "KL.hpp"
 
 struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
-	dvec1 aspect_ratio;
-	uvec2 resolution;
+	F64 aspect_ratio;
+	T_V2<U64> resolution;
 
-	dvec2 center_2d;
-	dvec1 zoom_2d;
+	F64_V2 center_2d;
+	F64 zoom_2d;
 	bool  move_2d;
 
-	uint64 frame_counter;
-	uint64 frame_count;
+	U64 frame_counter;
+	U64 frame_count;
 
 	Timestamp current_time;
 	Timestamp start_time;
 	Timestamp last_time;
-	dvec1 window_time;
-	dvec1 delta_time;
+	F64 window_time;
+	F64 delta_time;
 
-	dvec2 current_mouse;
-	dvec2 last_mouse;
+	F64_V2 current_mouse;
+	F64_V2 last_mouse;
 
 	unordered_map<string, GLuint> gl_data;
 

@@ -19,15 +19,15 @@ QOpenGLFunctions_4_5_Core* NODES::SCRIPT::SCRIPT_LAYER::SL_Session::gl() const {
 	return session->gl;
 }
 
-uvec2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewportResolution() const {
+T_V2<U64> NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewportResolution() const {
 	return session->viewport->resolution;
 }
 
-dvec1 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DZoom() const {
+F64 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DZoom() const {
 	return session->viewport->zoom_2d;
 }
 
-dvec2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DCenter() const {
+F64_V2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DCenter() const {
 	return session->viewport->center_2d;
 }
 

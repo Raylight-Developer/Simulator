@@ -19,7 +19,6 @@
     <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
     <ClInclude Include="Include\Session.hpp" />
     <ClInclude Include="Include\Node.hpp" />
-    <ClInclude Include="Include\Variable.hpp" />
     <ClInclude Include="Include\Node_Shelf.hpp" />
     <ClInclude Include="Include\Nodes.hpp" />
     <ClInclude Include="Include\Viewport.hpp" />
@@ -28,6 +27,7 @@
     <ClInclude Include="Include\File.hpp" />
     <ClInclude Include="Include\Timeline.hpp" />
     <ClInclude Include="Include\Variable_Editor.hpp" />
+    <ClInclude Include="Include\Variable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -47,7 +47,6 @@
     </ClCompile>
     <ClCompile Include="Source\Session.cpp" />
     <ClCompile Include="Source\Node.cpp" />
-    <ClCompile Include="Source\Variable.cpp" />
     <ClCompile Include="Source\Node_Shelf.cpp" />
     <ClCompile Include="Source\Nodes.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
@@ -56,6 +55,7 @@
     <ClCompile Include="Source\File.cpp" />
     <ClCompile Include="Source\Timeline.cpp" />
     <ClCompile Include="Source\Variable_Editor.cpp" />
+    <ClCompile Include="Source\Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

@@ -100,7 +100,7 @@ namespace NODES {
 		struct Constant : Node {
 			PORT::Data_O* out;
 
-			KL::List<GUI::Graphics_Widget*> proxies;
+			KL::Stack<GUI::Graphics_Widget*> proxies;
 			GUI::Options* enums;
 			QRectF expanded;
 			Variable value;
@@ -313,7 +313,7 @@ namespace NODES {
 
 	namespace SINGLETON {
 		struct Euler_Tick : Node {
-			dvec1 delta;
+			F64 delta;
 			PORT:: Exec_O* exec_out;
 			PORT:: Data_O* o_delta;
 			PORT:: Data_O* o_calls;
@@ -321,7 +321,7 @@ namespace NODES {
 
 			Euler_Tick();
 
-			void exec(const dvec1& delta);
+			void exec(const F64& delta);
 			Variable getData(const Port* port) const override;
 		};
 		struct Background : Node {

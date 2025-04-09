@@ -27,7 +27,7 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 		}
 	});
 
-	connect(list, &GUI::List::itemDoubleClicked, [this, details](QListWidgetItem* item) {
+	connect(list, &GUI::List::currentItemChanged, [this, details](QListWidgetItem* item, QListWidgetItem* previous) {
 		details->layout->clear();
 
 		auto enums = new GUI::Options(this);
@@ -66,6 +66,18 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 				case 11: var = Variable(VAR_TYPE::MAT4  ); break;
 			}
 			SESSION->variables[item->text()] = var;
+			for (Node* node : SESSION->variable_refs[item->text()]) {
+				if (auto node_def = dynamic_cast<NODES::VARIABLES::Get*>(node)) {
+					node_def->out->disconnect();
+					node_def->out->setType(var.type);
+				}
+				else if (auto node_def = dynamic_cast<NODES::VARIABLES::Set*>(node)) {
+					node_def->in->disconnect();
+					node_def->in->setType(var.type);
+					node_def->out->disconnect();
+					node_def->out->setType(var.type);
+				}
+			}
 		});
 	});
 }

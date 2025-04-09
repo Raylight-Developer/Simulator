@@ -66,7 +66,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input = new GUI::Int_Input();
 				input->setFixedSize(100, 20);
 				input->setText("0");
-				QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { value = Variable(i_to_il(val.toInt())); });
+				QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { value = Variable(to_I64(val.toInt())); });
 
 				PROXY(input);
 				proxy_input->setPos(20, 30);
@@ -128,12 +128,12 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 70);
 
 				out->setType(VAR_TYPE::VEC2);
-				value = Variable(dvec2(0.0));
+				value = Variable(F64_V2(0.0));
 
 				auto input_x = new GUI::Double_Input();
 				input_x->setFixedSize(100, 20);
 				input_x->setText("0");
-				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(val.toDouble(), original.y)); });
+				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V2>(); value = Variable(F64_V2(val.toDouble(), original.y)); });
 
 				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
@@ -141,7 +141,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_y = new GUI::Double_Input();
 				input_y->setFixedSize(100, 20);
 				input_y->setText("0");
-				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec2>(); value = Variable(dvec2(original.x, val.toDouble())); });
+				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V2>(); value = Variable(F64_V2(original.x, val.toDouble())); });
 
 				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
@@ -155,12 +155,12 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 90);
 
 				out->setType(VAR_TYPE::VEC3);
-				value = Variable(dvec3(0.0));
+				value = Variable(F64_V3(0.0));
 
 				auto input_x = new GUI::Double_Input();
 				input_x->setFixedSize(100, 20);
 				input_x->setText("0");
-				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(val.toDouble(), original.y, original.z)); });
+				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); value = Variable(F64_V3(val.toDouble(), original.y, original.z)); });
 
 				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
@@ -168,7 +168,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_y = new GUI::Double_Input();
 				input_y->setFixedSize(100, 20);
 				input_y->setText("0");
-				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, val.toDouble(), original.z)); });
+				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); value = Variable(F64_V3(original.x, val.toDouble(), original.z)); });
 
 				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
@@ -176,7 +176,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_z = new GUI::Double_Input();
 				input_z->setFixedSize(100, 20);
 				input_z->setText("0");
-				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec3>(); value = Variable(dvec3(original.x, original.y, val.toDouble())); });
+				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); value = Variable(F64_V3(original.x, original.y, val.toDouble())); });
 
 				PROXY(input_z);
 				proxy_input_z->setPos(20, 70);
@@ -191,12 +191,12 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 110);
 
 				out->setType(VAR_TYPE::VEC4);
-				value = Variable(dvec4(0.0));
+				value = Variable(F64_V4(0.0));
 
 				auto input_x = new GUI::Double_Input();
 				input_x->setFixedSize(100, 20);
 				input_x->setText("0");
-				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(val.toDouble(), original.y, original.z, original.w)); });
+				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_V4(val.toDouble(), original.y, original.z, original.w)); });
 
 				PROXY(input_x);
 				proxy_input_x->setPos(20, 30);
@@ -204,7 +204,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_y = new GUI::Double_Input();
 				input_y->setFixedSize(100, 20);
 				input_y->setText("0");
-				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, val.toDouble(), original.z, original.w)); });
+				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_V4(original.x, val.toDouble(), original.z, original.w)); });
 
 				PROXY(input_y);
 				proxy_input_y->setPos(20, 50);
@@ -212,7 +212,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_z = new GUI::Double_Input();
 				input_z->setFixedSize(100, 20);
 				input_z->setText("0");
-				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, val.toDouble(), original.z)); });
+				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_V4(original.x, original.y, val.toDouble(), original.z)); });
 
 				PROXY(input_z);
 				proxy_input_z->setPos(20, 70);
@@ -220,7 +220,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_w = new GUI::Double_Input();
 				input_w->setFixedSize(100, 20);
 				input_w->setText("0");
-				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dvec4(original.x, original.y, original.z, val.toDouble())); });
+				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_V4(original.x, original.y, original.z, val.toDouble())); });
 
 				PROXY(input_w);
 				proxy_input_w->setPos(20, 90);
@@ -281,12 +281,12 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 110);
 
 				out->setType(VAR_TYPE::QUAT);
-				value = Variable(dquat(1, 0, 0, 0));
+				value = Variable(F64_Quat(1, 0, 0, 0));
 
 				auto input_w = new GUI::Double_Input();
 				input_w->setFixedSize(100, 20);
 				input_w->setText("1");
-				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(val.toDouble(), original.x, original.y, original.z)); });
+				QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_Quat(val.toDouble(), original.x, original.y, original.z)); });
 
 				PROXY(input_w);
 				proxy_input_w->setPos(20, 30);
@@ -294,7 +294,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_x = new GUI::Double_Input();
 				input_x->setFixedSize(100, 20);
 				input_x->setText("0");
-				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, val.toDouble(), original.y, original.z)); });
+				QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_Quat(original.w, val.toDouble(), original.y, original.z)); });
 
 				PROXY(input_x);
 				proxy_input_x->setPos(20, 50);
@@ -302,7 +302,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_y = new GUI::Double_Input();
 				input_y->setFixedSize(100, 20);
 				input_y->setText("0");
-				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, val.toDouble(), original.z)); });
+				QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_Quat(original.w, original.x, val.toDouble(), original.z)); });
 
 				PROXY(input_y);
 				proxy_input_y->setPos(20, 70);
@@ -310,7 +310,7 @@ NODES::VARIABLES::Constant::Constant() :
 				auto input_z = new GUI::Double_Input();
 				input_z->setFixedSize(100, 20);
 				input_z->setText("0");
-				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dvec4>(); value = Variable(dquat(original.w, original.x, original.y, val.toDouble())); });
+				QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); value = Variable(F64_Quat(original.w, original.x, original.y, val.toDouble())); });
 
 				PROXY(input_z);
 				proxy_input_z->setPos(20, 90);
@@ -326,13 +326,13 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 70);
 
 				out->setType(VAR_TYPE::MAT2);
-				value = Variable(dmat2(1.0));
+				value = Variable(F64_M2(1.0));
 
 				{
 					auto input_xx = new GUI::Double_Input();
 					input_xx->setFixedSize(50, 20);
 					input_xx->setText("1");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(val.toDouble(), original[0][1]), original[1])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M2>(); value = Variable(F64_M2(F64_V2(val.toDouble(), original[0][1]), original[1])); });
 
 					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
@@ -340,7 +340,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xy = new GUI::Double_Input();
 					input_xy->setFixedSize(50, 20);
 					input_xy->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(dvec2(original[0][0], val.toDouble()), original[1])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M2>(); value = Variable(F64_M2(F64_V2(original[0][0], val.toDouble()), original[1])); });
 
 					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
@@ -352,7 +352,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yx = new GUI::Double_Input();
 					input_yx->setFixedSize(50, 20);
 					input_yx->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(val.toDouble(), original[0][1]))); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M2>(); value = Variable(F64_M2(original[0], F64_V2(val.toDouble(), original[0][1]))); });
 
 					PROXY(input_yx);
 					proxy_input_yx->setPos(70, 30);
@@ -360,7 +360,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yy = new GUI::Double_Input();
 					input_yy->setFixedSize(50, 20);
 					input_yy->setText("1");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat2>(); value = Variable(dmat2(original[0], dvec2(original[0][0], val.toDouble()))); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M2>(); value = Variable(F64_M2(original[0], F64_V2(original[0][0], val.toDouble()))); });
 
 					PROXY(input_yy);
 					proxy_input_yy->setPos(70, 50);
@@ -377,13 +377,13 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 90);
 
 				out->setType(VAR_TYPE::MAT3);
-				value = Variable(dmat3(1.0));
+				value = Variable(F64_M3(1.0));
 
 				{
 					auto input_xx = new GUI::Double_Input();
 					input_xx->setFixedSize(40, 20);
 					input_xx->setText("1");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(F64_V3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2])); });
 
 					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
@@ -391,7 +391,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xy = new GUI::Double_Input();
 					input_xy->setFixedSize(40, 20);
 					input_xy->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(F64_V3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2])); });
 
 					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
@@ -399,7 +399,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xz = new GUI::Double_Input();
 					input_xz->setFixedSize(40, 20);
 					input_xz->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(dvec3(original[0][0], original[0][1], val.toDouble()), original[1], original[2])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(F64_V3(original[0][0], original[0][1], val.toDouble()), original[1], original[2])); });
 
 					PROXY(input_xz);
 					proxy_input_xz->setPos(20, 70);
@@ -412,7 +412,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yx = new GUI::Double_Input();
 					input_yx->setFixedSize(40, 20);
 					input_yx->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(val.toDouble(), original[0][1], original[0][2]), original[2])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], F64_V3(val.toDouble(), original[0][1], original[0][2]), original[2])); });
 
 					PROXY(input_yx);
 					proxy_input_yx->setPos(60, 30);
@@ -420,7 +420,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yy = new GUI::Double_Input();
 					input_yy->setFixedSize(40, 20);
 					input_yy->setText("1");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], val.toDouble(), original[0][2]), original[2])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], F64_V3(original[0][0], val.toDouble(), original[0][2]), original[2])); });
 
 					PROXY(input_yy);
 					proxy_input_yy->setPos(60, 50);
@@ -428,7 +428,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yz = new GUI::Double_Input();
 					input_yz->setFixedSize(40, 20);
 					input_yz->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], dvec3(original[0][0], original[0][1], val.toDouble()), original[2])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], F64_V3(original[0][0], original[0][1], val.toDouble()), original[2])); });
 
 					PROXY(input_yz);
 					proxy_input_yz->setPos(60, 70);
@@ -441,7 +441,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zx = new GUI::Double_Input();
 					input_zx->setFixedSize(40, 20);
 					input_zx->setText("0");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(val.toDouble(), original[0][1], original[0][2]))); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], original[1], F64_V3(val.toDouble(), original[0][1], original[0][2]))); });
 
 					PROXY(input_zx);
 					proxy_input_zx->setPos(100, 30);
@@ -449,7 +449,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zy = new GUI::Double_Input();
 					input_zy->setFixedSize(40, 20);
 					input_zy->setText("0");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], val.toDouble(), original[0][2]))); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], val.toDouble(), original[0][2]))); });
 
 					PROXY(input_zy);
 					proxy_input_zy->setPos(100, 50);
@@ -457,7 +457,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zz = new GUI::Double_Input();
 					input_zz->setFixedSize(40, 20);
 					input_zz->setText("1");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat3>(); value = Variable(dmat3(original[0], original[1], dvec3(original[0][0], original[0][1], val.toDouble()))); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M3>(); value = Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], original[0][1], val.toDouble()))); });
 
 					PROXY(input_zz);
 					proxy_input_zz->setPos(100, 70);
@@ -475,13 +475,13 @@ NODES::VARIABLES::Constant::Constant() :
 				proxy_enums->setPos(20, 110);
 
 				out->setType(VAR_TYPE::MAT4);
-				value = Variable(dmat4(1.0));
+				value = Variable(F64_M4(1.0));
 
 				{
 					auto input_xx = new GUI::Double_Input();
 					input_xx->setFixedSize(40, 20);
 					input_xx->setText("1");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3])); });
 
 					PROXY(input_xx);
 					proxy_input_xx->setPos(20, 30);
@@ -489,7 +489,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xy = new GUI::Double_Input();
 					input_xy->setFixedSize(40, 20);
 					input_xy->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3])); });
 
 					PROXY(input_xy);
 					proxy_input_xy->setPos(20, 50);
@@ -497,7 +497,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xz = new GUI::Double_Input();
 					input_xz->setFixedSize(40, 20);
 					input_xz->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3])); });
 
 					PROXY(input_xz);
 					proxy_input_xz->setPos(20, 70);
@@ -505,7 +505,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_xw = new GUI::Double_Input();
 					input_xw->setFixedSize(40, 20);
 					input_xw->setText("0");
-					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3])); });
+					QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3])); });
 
 					PROXY(input_xw);
 					proxy_input_xw->setPos(20, 90);
@@ -519,7 +519,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yx = new GUI::Double_Input();
 					input_yx->setFixedSize(40, 20);
 					input_yx->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3])); });
 
 					PROXY(input_yx);
 					proxy_input_yx->setPos(60, 30);
@@ -527,7 +527,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yy = new GUI::Double_Input();
 					input_yy->setFixedSize(40, 20);
 					input_yy->setText("1");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3])); });
 
 					PROXY(input_yy);
 					proxy_input_yy->setPos(60, 50);
@@ -535,7 +535,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yz = new GUI::Double_Input();
 					input_yz->setFixedSize(40, 20);
 					input_yz->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3])); });
 
 					PROXY(input_yz);
 					proxy_input_yz->setPos(60, 70);
@@ -543,7 +543,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_yw = new GUI::Double_Input();
 					input_yw->setFixedSize(40, 20);
 					input_yw->setText("0");
-					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3])); });
+					QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3])); });
 
 					PROXY(input_yw);
 					proxy_input_yw->setPos(60, 90);
@@ -557,7 +557,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zx = new GUI::Double_Input();
 					input_zx->setFixedSize(40, 20);
 					input_zx->setText("0");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3])); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3])); });
 
 					PROXY(input_zx);
 					proxy_input_zx->setPos(100, 30);
@@ -565,7 +565,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zy = new GUI::Double_Input();
 					input_zy->setFixedSize(40, 20);
 					input_zy->setText("0");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3])); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3])); });
 
 					PROXY(input_zy);
 					proxy_input_zy->setPos(100, 50);
@@ -573,7 +573,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zz = new GUI::Double_Input();
 					input_zz->setFixedSize(40, 20);
 					input_zz->setText("1");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3])); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3])); });
 
 					PROXY(input_zz);
 					proxy_input_zz->setPos(100, 70);
@@ -581,7 +581,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_zw = new GUI::Double_Input();
 					input_zw->setFixedSize(40, 20);
 					input_zw->setText("0");
-					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3])); });
+					QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3])); });
 
 					PROXY(input_zw);
 					proxy_input_zw->setPos(100, 90);
@@ -595,7 +595,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_wx = new GUI::Double_Input();
 					input_wx->setFixedSize(40, 20);
 					input_wx->setText("0");
-					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(val.toDouble(), original[0][1], original[0][2], original[0][3]))); });
+					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], original[2], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]))); });
 
 					PROXY(input_wx);
 					proxy_input_wx->setPos(140, 30);
@@ -603,7 +603,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_wy = new GUI::Double_Input();
 					input_wy->setFixedSize(40, 20);
 					input_wy->setText("0");
-					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], val.toDouble(), original[0][2], original[0][3]))); });
+					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]))); });
 
 					PROXY(input_wy);
 					proxy_input_wy->setPos(140, 50);
@@ -611,7 +611,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_wz = new GUI::Double_Input();
 					input_wz->setFixedSize(40, 20);
 					input_wz->setText("0");
-					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], val.toDouble(), original[0][3]))); });
+					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]))); });
 
 					PROXY(input_wz);
 					proxy_input_wz->setPos(140, 70);
@@ -619,7 +619,7 @@ NODES::VARIABLES::Constant::Constant() :
 					auto input_ww = new GUI::Double_Input();
 					input_ww->setFixedSize(40, 20);
 					input_ww->setText("1");
-					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<dmat4>(); value = Variable(dmat4(original[0], original[1], original[2], dvec4(original[0][0], original[0][1], original[0][2], val.toDouble()))); });
+					QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_M4>(); value = Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()))); });
 
 					PROXY(input_ww);
 					proxy_input_ww->setPos(140, 90);
@@ -668,7 +668,7 @@ Variable NODES::VARIABLES::Get::getData(const Port* port) const {
 NODES::VARIABLES::Set::Set() :
 	Node("Set Var")
 {
-	rect.setWidth(100);
+	rect.setWidth(120);
 	rect.setHeight(80);
 
 	exec_in  = EXEC_I("");
@@ -723,7 +723,7 @@ void NODES::CAST::MAKE::Vec2::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
-	return Variable(dvec2(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1)));
+	return Variable(F64_V2(i_x->GET_DATA(F64), i_y->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Vec3::Vec3() :
@@ -751,7 +751,7 @@ void NODES::CAST::MAKE::Vec3::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
-	return Variable(dvec3(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1)));
+	return Variable(F64_V3(i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Vec4::Vec4() :
@@ -781,7 +781,7 @@ void NODES::CAST::MAKE::Vec4::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
-	return Variable(dvec4(i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1), i_w->GET_DATA(dvec1)));
+	return Variable(F64_V4(i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64), i_w->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Quat::Quat() :
@@ -811,7 +811,7 @@ void NODES::CAST::MAKE::Quat::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Quat::getData(const Port* port) const {
-	return Variable(dquat(i_w->GET_DATA(dvec1), i_x->GET_DATA(dvec1), i_y->GET_DATA(dvec1), i_z->GET_DATA(dvec1)));
+	return Variable(F64_Quat(i_w->GET_DATA(F64), i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Mat2::Mat2() :
@@ -820,8 +820,8 @@ NODES::CAST::MAKE::Mat2::Mat2() :
 	rect.setWidth(30);
 	rect.setHeight(40);
 
-	i_a = DATA_I("A", Variable(dvec2(0.0)));
-	i_b = DATA_I("B", Variable(dvec2(0.0)));
+	i_a = DATA_I("A", Variable(F64_V2(0.0)));
+	i_b = DATA_I("B", Variable(F64_V2(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT2);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -837,7 +837,7 @@ void NODES::CAST::MAKE::Mat2::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
-	return Variable(dmat2(i_a->GET_DATA(dvec2), i_b->GET_DATA(dvec2)));
+	return Variable(F64_M2(i_a->GET_DATA(F64_V2), i_b->GET_DATA(F64_V2)));
 }
 
 NODES::CAST::MAKE::Mat3::Mat3() :
@@ -846,9 +846,9 @@ NODES::CAST::MAKE::Mat3::Mat3() :
 	rect.setWidth(30);
 	rect.setHeight(60);
 
-	i_a = DATA_I("A", Variable(dvec3(0.0)));
-	i_b = DATA_I("B", Variable(dvec3(0.0)));
-	i_c = DATA_I("C", Variable(dvec3(0.0)));
+	i_a = DATA_I("A", Variable(F64_V3(0.0)));
+	i_b = DATA_I("B", Variable(F64_V3(0.0)));
+	i_c = DATA_I("C", Variable(F64_V3(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT3);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -865,7 +865,7 @@ void NODES::CAST::MAKE::Mat3::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
-	return Variable(dmat3(i_a->GET_DATA(dvec3), i_b->GET_DATA(dvec3), i_c->GET_DATA(dvec3)));
+	return Variable(F64_M3(i_a->GET_DATA(F64_V3), i_b->GET_DATA(F64_V3), i_c->GET_DATA(F64_V3)));
 }
 
 NODES::CAST::MAKE::Mat4::Mat4() :
@@ -874,10 +874,10 @@ NODES::CAST::MAKE::Mat4::Mat4() :
 	rect.setWidth(30);
 	rect.setHeight(80);
 
-	i_a = DATA_I("A", Variable(dvec4(0.0)));
-	i_b = DATA_I("B", Variable(dvec4(0.0)));
-	i_c = DATA_I("C", Variable(dvec4(0.0)));
-	i_d = DATA_I("D", Variable(dvec4(0.0)));
+	i_a = DATA_I("A", Variable(F64_V4(0.0)));
+	i_b = DATA_I("B", Variable(F64_V4(0.0)));
+	i_c = DATA_I("C", Variable(F64_V4(0.0)));
+	i_d = DATA_I("D", Variable(F64_V4(0.0)));
 	out = DATA_O("", VAR_TYPE::MAT4);
 	i_a->rect.moveCenter(QPointF( 0, 10));
 	i_b->rect.moveCenter(QPointF( 0, 30));
@@ -895,7 +895,7 @@ void NODES::CAST::MAKE::Mat4::paint(QPainter* painter, const QStyleOptionGraphic
 }
 
 Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
-	return Variable(dmat4(i_a->GET_DATA(dvec4), i_b->GET_DATA(dvec4), i_c->GET_DATA(dvec4), i_d->GET_DATA(dvec4)));
+	return Variable(F64_M4(i_a->GET_DATA(F64_V4), i_b->GET_DATA(F64_V4), i_c->GET_DATA(F64_V4), i_d->GET_DATA(F64_V4)));
 }
 
 NODES::Arithmetic::Arithmetic() :
@@ -918,10 +918,10 @@ NODES::Arithmetic::Arithmetic() :
 
 Variable NODES::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
-	case 0: return Variable(i_a->GET_DATA(dvec1) + i_b->GET_DATA(dvec1));
-	case 1: return Variable(i_a->GET_DATA(dvec1) - i_b->GET_DATA(dvec1));
-	case 2: return Variable(i_a->GET_DATA(dvec1) * i_b->GET_DATA(dvec1));
-	case 3: return Variable(i_a->GET_DATA(dvec1) / i_b->GET_DATA(dvec1));
+	case 0: return Variable(i_a->GET_DATA(F64) + i_b->GET_DATA(F64));
+	case 1: return Variable(i_a->GET_DATA(F64) - i_b->GET_DATA(F64));
+	case 2: return Variable(i_a->GET_DATA(F64) * i_b->GET_DATA(F64));
+	case 3: return Variable(i_a->GET_DATA(F64) / i_b->GET_DATA(F64));
 	}
 	return Variable(0.0);
 }
@@ -944,7 +944,7 @@ NODES::Trigonometry::Trigonometry() :
 }
 
 Variable NODES::Trigonometry::getData(const Port* port) const {
-	const dvec1 x = in->GET_DATA(dvec1);
+	const F64 x = in->GET_DATA(F64);
 	switch (enums->currentIndex()) {
 		case  0: return sin(x);
 		case  1: return cos(x);
@@ -1159,7 +1159,7 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 	delta = 0;
 }
 
-void NODES::SINGLETON::Euler_Tick::exec(const dvec1& _delta) {
+void NODES::SINGLETON::Euler_Tick::exec(const F64& _delta) {
 	delta = _delta;
 	exec_out->exec();
 }
@@ -1186,7 +1186,7 @@ NODES::SINGLETON::Background::Background() :
 }
 
 void NODES::SINGLETON::Background::exec(const Port* port) {
-	const vec4 u_color = d_to_f(color_in->GET_DATA(Color).rgba());
+	const F32_V4 u_color = to_F32(color_in->GET_DATA(Color).rgba());
 	GL->glClearColor(u_color.r, u_color.g, u_color.b, u_color.a);
 	GL->glClear(GL_COLOR_BUFFER_BIT);
 	exec_out->exec();
@@ -1202,13 +1202,13 @@ NODES::SINGLETON::Camera_2D::Camera_2D() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	center = DATA_I("Color", Variable(dvec2(0,0)));
+	center = DATA_I("Color", Variable(F64_V2(0,0)));
 	zoom = DATA_I("Color", Variable(1.0));
 }
 
 void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = center->GET_DATA(dvec2);
-	SESSION->viewport->zoom_2d = zoom->GET_DATA(dvec1);
+	SESSION->viewport->center_2d = center->GET_DATA(F64_V2);
+	SESSION->viewport->zoom_2d = zoom->GET_DATA(F64);
 	exec_out->exec();
 }
 
@@ -1237,17 +1237,17 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	vert_a = DATA_I("A", Variable(dvec2(-200, -200)));
-	vert_b = DATA_I("B", Variable(dvec2( 200,  200)));
+	vert_a = DATA_I("A", Variable(F64_V2(-200, -200)));
+	vert_b = DATA_I("B", Variable(F64_V2( 200,  200)));
 	width  = DATA_I("Width", Variable(3.0));
 	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 }
 
 void NODES::RENDERING::DIM_2D::Line::render() {
 	// Update vertices
-	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
-	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
-	const auto radius  = d_to_f(width ->GET_DATA(dvec1));
+	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
+	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
+	const auto radius  = to_F32(width ->GET_DATA(F64));
 	const auto u_color = color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Line(v1, v2, radius, u_color);
@@ -1270,9 +1270,9 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	vert_a = DATA_I("A", Variable(dvec2(  0,  57.777)));
-	vert_b = DATA_I("B", Variable(dvec2(-50, -28.868)));
-	vert_c = DATA_I("C", Variable(dvec2( 50, -28.868)));
+	vert_a = DATA_I("A", Variable(F64_V2(  0,  57.777)));
+	vert_b = DATA_I("B", Variable(F64_V2(-50, -28.868)));
+	vert_c = DATA_I("C", Variable(F64_V2( 50, -28.868)));
 	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 
 	init();
@@ -1297,10 +1297,10 @@ void NODES::RENDERING::DIM_2D::Triangle::init() {
 
 void NODES::RENDERING::DIM_2D::Triangle::render() {
 	// Update vertices
-	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
-	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
-	const auto v3      = d_to_f(vert_c->GET_DATA(dvec2));
-	const auto u_color = color ->GET_DATA(Color).fRgba();
+	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
+	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
+	const auto v3      = to_F32(vert_c->GET_DATA(F64_V2));
+	const auto u_color = color ->GET_DATA(Color).rgba_32();
 
 	const GLfloat vertices[6] = {
 		v1.x, v1.y,
@@ -1313,11 +1313,11 @@ void NODES::RENDERING::DIM_2D::Triangle::render() {
 	// Render
 	const GLuint Shader = SESSION->viewport->SP_2D_Triangle;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -1343,10 +1343,10 @@ NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	vert_a = DATA_I("A", Variable(dvec2(-100, -100)));
-	vert_b = DATA_I("B", Variable(dvec2(-100,  100)));
-	vert_c = DATA_I("C", Variable(dvec2( 100,  100)));
-	vert_d = DATA_I("D", Variable(dvec2( 100, -100)));
+	vert_a = DATA_I("A", Variable(F64_V2(-100, -100)));
+	vert_b = DATA_I("B", Variable(F64_V2(-100,  100)));
+	vert_c = DATA_I("C", Variable(F64_V2( 100,  100)));
+	vert_d = DATA_I("D", Variable(F64_V2( 100, -100)));
 	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
 
 	init();
@@ -1379,11 +1379,11 @@ void NODES::RENDERING::DIM_2D::Rectangle::init() {
 
 void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	// Update vertices
-	const auto v1      = d_to_f(vert_a->GET_DATA(dvec2));
-	const auto v2      = d_to_f(vert_b->GET_DATA(dvec2));
-	const auto v3      = d_to_f(vert_c->GET_DATA(dvec2));
-	const auto v4      = d_to_f(vert_d->GET_DATA(dvec2));
-	const auto u_color = color ->GET_DATA(Color).fRgba();
+	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
+	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
+	const auto v3      = to_F32(vert_c->GET_DATA(F64_V2));
+	const auto v4      = to_F32(vert_d->GET_DATA(F64_V2));
+	const auto u_color = color ->GET_DATA(Color).rgba_32();
 
 	const GLfloat vertices[8] = {
 		v1.x, v1.y,
@@ -1397,11 +1397,11 @@ void NODES::RENDERING::DIM_2D::Rectangle::render() {
 	// Render
 	const GLuint Shader = SESSION->viewport->SP_2D_Rectangle;
 	GL->glUseProgram(Shader);
-	GL->glUniform2uiv(GL->glGetUniformLocation(Shader, "uResolution"), 1, glm::value_ptr(SESSION->viewport->resolution));
-	GL->glUniform2fv (GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(d_to_f(SESSION->viewport->center_2d)));
-	GL->glUniform1f  (GL->glGetUniformLocation(Shader, "uZoom"), d_to_f(SESSION->viewport->zoom_2d));
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
 
-	GL->glUniform4fv (GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
 
 	GL->glBindVertexArray(VAO);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -1425,14 +1425,14 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	center = DATA_I("Center", Variable(dvec2(0, 0)));
+	center = DATA_I("Center", Variable(F64_V2(0, 0)));
 	radius = DATA_I("Radius", Variable(50.0));
 	color  = DATA_I("Color" , Variable(Color(1, 1, 1, 1)));
 }
 
 void NODES::RENDERING::DIM_2D::Circle::render() {
-	const auto u_center = d_to_f(center->GET_DATA(dvec2));
-	const auto u_radius = d_to_f(radius->GET_DATA(dvec1));
+	const auto u_center = to_F32(center->GET_DATA(F64_V2));
+	const auto u_radius = to_F32(radius->GET_DATA(F64));
 	const auto u_color  = color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Circle(u_center, u_radius, u_color);

@@ -24,10 +24,10 @@ namespace NODES {
 				KL::Lace& printer() const;
 				QOpenGLFunctions_4_5_Core* gl() const;
 
-				uvec2 viewportResolution() const;
+				T_V2<U64> viewportResolution() const;
 
-				dvec1 viewport2DZoom() const;
-				dvec2 viewport2DCenter() const;
+				F64 viewport2DZoom() const;
+				F64_V2 viewport2DCenter() const;
 
 				void flush();
 			};

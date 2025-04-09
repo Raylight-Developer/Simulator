@@ -350,6 +350,7 @@ void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
 	if (onTypeChanged) {
 		onTypeChanged(this, var_type);
 	}
+	update();
 }
 
 Variable NODE::PORT::Data_I::getData() const {
@@ -449,6 +450,7 @@ void NODE::PORT::Data_O::setType(const VARIABLE::Type& type) {
 	if (onTypeChanged) {
 		onTypeChanged(this, var_type);
 	}
+	update();
 }
 
 Variable NODE::PORT::Data_O::getData() const {

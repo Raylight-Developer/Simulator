@@ -21,8 +21,8 @@ struct Session : KL::Session {
 	GUI::Window* window;
 	Viewport* viewport;
 
-	int64 current_frame;
-	int64 samples;
+	I64 current_frame;
+	I64 samples;
 	Timestamp start;
 	bool active;
 	bool realtime;
@@ -30,9 +30,9 @@ struct Session : KL::Session {
 	File file;
 
 	KL::U_Map<QString, Variable> variables;
-	KL::U_Map<QString, KL::List<Node*>> variable_refs;
+	KL::U_Map<QString, KL::Stack<Node*>> variable_refs;
 
-	KL::List<NODES::SCRIPT::Script*> scripts;
+	KL::Stack<NODES::SCRIPT::Script*> scripts;
 	KL::U_Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	Session();
@@ -42,6 +42,19 @@ struct Session : KL::Session {
 };
 
 #define SESSION Session::session_ptr
+
+#undef CMD
+#undef UNDO
+#undef REDO
+#undef LOG
+#undef FLUSH
+
+#define CMD(command) SESSION->history.execute(command)
+#define UNDO(count)  SESSION->history.undo(count)
+#define REDO(count)  SESSION->history.redo(count)
+#define LOG          SESSION->buffer
+#define FLUSH        SESSION->flushLog()
+
 #define PRINT(msg) SESSION->printer msg; printf(SESSION->printer.str().c_str()); SESSION->printer.clear()
 #define FILE SESSION->file
 #define GL SESSION->gl

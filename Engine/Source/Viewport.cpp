@@ -9,14 +9,14 @@ Viewport::Viewport() :
 	frame_counter(0),
 	frame_count(0),
 
-	resolution(uvec2(3840U, 2160U)),
-	aspect_ratio(u_to_d(resolution.x) / u_to_d(resolution.y)),
+	resolution(T_V2<U64>(3840U, 2160U)),
+	aspect_ratio(to_F64(resolution.x) / to_F64(resolution.y)),
 
-	center_2d(dvec2(0.0, 0.0)),
+	center_2d(F64_V2(0.0, 0.0)),
 	zoom_2d(1.0),
 	move_2d(false),
 
-	current_mouse(u_to_d(resolution / 2U)),
+	current_mouse(F64_V2(to_F64(resolution.x / 2ULL), to_F64(resolution.y / 2ULL))),
 	last_mouse(current_mouse),
 
 	window_time(0.0),
@@ -106,8 +106,8 @@ void Viewport::paintGL() {
 }
 
 void Viewport::resizeGL(int w, int h) {
-	resolution = uvec2(i_to_u(w), i_to_u(h));
-	aspect_ratio = u_to_d(resolution.x) / u_to_d(resolution.y);
+	resolution = T_V2<U64>(to_U64(w), to_U64(h));
+	aspect_ratio = to_F64(resolution.x) / to_F64(resolution.y);
 
 	glViewport(0, 0, resolution.x, resolution.y);
 }
@@ -128,8 +128,8 @@ void Viewport::mousePressEvent(QMouseEvent* event) {
 void Viewport::mouseMoveEvent(QMouseEvent* event) {
 	current_mouse = p_to_d(event->pos());
 	if (move_2d) {
-		const dvec2 delta = last_mouse - p_to_d(event->pos());
-		center_2d += dvec2(-delta.x, delta.y) / zoom_2d;
+		const F64_V2 delta = last_mouse - p_to_d(event->pos());
+		center_2d += F64_V2(-delta.x, delta.y) / zoom_2d;
 		last_mouse = p_to_d(event->pos());
 	}
 }

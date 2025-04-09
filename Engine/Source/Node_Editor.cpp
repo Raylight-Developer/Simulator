@@ -329,7 +329,13 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 			for (Node* node : selection) {
 				if (
 					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
-					) {
+				) {
+					if (auto node_def = dynamic_cast<NODES::VARIABLES::Get*>(node)) {
+						SESSION->variable_refs[node_def->var].remove(node_def);
+					}
+					else if (auto node_def = dynamic_cast<NODES::VARIABLES::Set*>(node)) {
+						SESSION->variable_refs[node_def->var].remove(node_def);
+					}
 					FILE.nodes.remove(node);
 					scene->removeItem(node);
 					delete node;
@@ -469,15 +475,21 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 				}
 			}
 			else if (type.startsWith("VARIABLE")) {
+				const QString name = type.remove(0, 9);
 				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
-					existing->setVar(type.remove(0, 9));
+					SESSION->variable_refs[existing->var].remove(existing);
+					SESSION->variable_refs[name].push(existing);
+					existing->setVar(name);
 				}
 				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
-					existing->setVar(type.remove(0, 9));
+					SESSION->variable_refs[existing->var].remove(existing);
+					SESSION->variable_refs[name].push(existing);
+					existing->setVar(name);
 				}
 				else {
 					auto def_node = new NODES::VARIABLES::Get();
-					def_node->setVar(type.remove(0, 9));
+					SESSION->variable_refs[name].push(def_node);
+					def_node->setVar(name);
 					node = def_node;
 				}
 			}
