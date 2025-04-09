@@ -41,6 +41,8 @@ struct Session : KL::Session {
 	Session& operator=(const Session&) = delete;
 };
 
+#undef SESSION
+
 #define SESSION Session::session_ptr
 
 #undef CMD
