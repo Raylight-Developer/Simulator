@@ -66,12 +66,12 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 				case 11: var = Variable(VAR_TYPE::MAT4  ); break;
 			}
 			SESSION->variables[item->text()] = var;
-			for (Node* node : SESSION->variable_refs[item->text()]) {
-				if (auto node_def = dynamic_cast<NODES::VARIABLES::Get*>(node)) {
+			for (Ptr_S<Node> node : SESSION->variable_refs[item->text()]) {
+				if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
 					node_def->out->disconnect();
 					node_def->out->setType(var.type);
 				}
-				else if (auto node_def = dynamic_cast<NODES::VARIABLES::Set*>(node)) {
+				else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
 					node_def->in->disconnect();
 					node_def->in->setType(var.type);
 					node_def->out->disconnect();

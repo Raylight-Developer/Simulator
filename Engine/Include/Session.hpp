@@ -10,7 +10,8 @@
 
 struct Viewport;
 
-struct Session : KL::Session {
+struct Session : CORE::Session {
+	U16 major_version, minor_version, patch_version;
 	static Session* session_ptr;
 
 	static void initialize(Session* session);
@@ -29,11 +30,11 @@ struct Session : KL::Session {
 
 	File file;
 
-	KL::U_Map<QString, Variable> variables;
-	KL::U_Map<QString, KL::Stack<Node*>> variable_refs;
+	CORE::UMap<QString, Variable> variables;
+	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;
 
-	KL::Stack<NODES::SCRIPT::Script*> scripts;
-	KL::U_Map<NODES::SCRIPT::Script*, HINSTANCE> dlls;
+	CORE::Stack<NODES::SCRIPT::Script*> scripts;
+	CORE::UMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	Session();
 	~Session() = default;
@@ -41,21 +42,15 @@ struct Session : KL::Session {
 	Session& operator=(const Session&) = delete;
 };
 
-#undef SESSION
-
 #define SESSION Session::session_ptr
 
-#undef CMD
-#undef UNDO
-#undef REDO
-#undef LOG
-#undef FLUSH
+#define H_PUSH(command) SESSION->history.execute(command)
+#define H_UNDO(count)   SESSION->history.undo(count)
+#define H_REDO(count)   SESSION->history.redo(count)
+#define LOG   SESSION->buffer
+#define FLUSH SESSION->flushLog()
 
-#define CMD(command) SESSION->history.execute(command)
-#define UNDO(count)  SESSION->history.undo(count)
-#define REDO(count)  SESSION->history.redo(count)
-#define LOG          SESSION->buffer
-#define FLUSH        SESSION->flushLog()
+#define LOGL(msg) LOG NL msg; FLUSH
 
 #define PRINT(msg) SESSION->printer msg; printf(SESSION->printer.str().c_str()); SESSION->printer.clear()
 #define FILE SESSION->file

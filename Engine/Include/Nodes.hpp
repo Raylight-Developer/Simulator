@@ -100,7 +100,7 @@ namespace NODES {
 		struct Constant : Node {
 			PORT::Data_O* out;
 
-			KL::Stack<GUI::Graphics_Widget*> proxies;
+			CORE::Stack<GUI::Graphics_Widget*> proxies;
 			GUI::Options* enums;
 			QRectF expanded;
 			Variable value;

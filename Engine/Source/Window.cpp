@@ -4,8 +4,9 @@
 
 Window::Window() {
 	session = new Session();
-	session->window = this;
 	Session::initialize(session);
+	session->window = this;
+	session->file = File::loadFile("./Resources/Default.sim");
 
 	auto shelf = new Node_Shelf(this);
 	auto timeline = new Timeline(this);
@@ -27,9 +28,10 @@ Window::Window() {
 	main_splitter->setSizes({ 20, 1000, 1000 });
 	
 	setCentralWidget(main_splitter);
-	PRINT(NL << "Loaded");
 	showMaximized();
+	LOGL(<< "Loaded Simulator v" << SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version);
 }
 
 Window::~Window() {
+	delete session;
 }

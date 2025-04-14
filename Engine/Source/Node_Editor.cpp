@@ -18,7 +18,7 @@ Node_Editor::Node_Editor(QWidget* parent) :
 
 	scene->addItem(selection_rect);
 
-	scene->addItem(FILE.euler_tick);
+	scene->addItem(FILE.euler_tick.get());
 	FILE.euler_tick->setPos(QPointF(0,0));
 }
 
@@ -303,7 +303,7 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 		if (moving) {
 			for (auto& node : selection) {
 				const QPointF delta = mapToScene(event->pos()) - move_pos;
-				node->setPos(KL::f_roundToNearest(delta.x(), 10.0), KL::f_roundToNearest(delta.y(), 10.0));
+				node->setPos(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
 			}
 		}
 		if (selecting) {
@@ -331,12 +331,12 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
 				) {
 					if (auto node_def = dynamic_cast<NODES::VARIABLES::Get*>(node)) {
-						SESSION->variable_refs[node_def->var].remove(node_def);
+						SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
 					}
 					else if (auto node_def = dynamic_cast<NODES::VARIABLES::Set*>(node)) {
-						SESSION->variable_refs[node_def->var].remove(node_def);
+						SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
 					}
-					FILE.nodes.remove(node);
+					FILE.nodes.remove(node->shared_from_this());
 					scene->removeItem(node);
 					delete node;
 				}
@@ -377,9 +377,9 @@ void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
 }
 
 void Node_Editor::dropEvent(QDropEvent* event) {
-	const QPointF drop_pos = d_to_p(KL::f_roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
+	const QPointF drop_pos = d_to_p(MATH::roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
 	if (event->mimeData()->hasText()) {
-		Node* node = nullptr;
+		Ptr_S<Node> node;
 
 		if (event->mimeData()->text() == "NODE") {
 			QByteArray itemDataType = event->mimeData()->data("Type");
@@ -388,106 +388,106 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			dataStreamType >> type;
 
 			if (type == "CONSTANT") {
-				node = new NODES::VARIABLES::Constant();
+				node = make_shared<NODES::VARIABLES::Constant>();
 			}
 			else if (type == "VARIABLE SET") {
-				node = new NODES::VARIABLES::Set();
+				node = make_shared<NODES::VARIABLES::Set>();
 			}
 			else if (type == "VARIABLE GET") {
-				node = new NODES::VARIABLES::Get();
+				node = make_shared<NODES::VARIABLES::Get>();
 			}
 			else if (type == "MAKE VEC2") {
-				node = new NODES::CAST::MAKE::Vec2();
+				node = make_shared<NODES::CAST::MAKE::Vec2>();
 			}
 			else if (type == "MAKE VEC3") {
-				node = new NODES::CAST::MAKE::Vec3();
+				node = make_shared<NODES::CAST::MAKE::Vec3>();
 			}
 			else if (type == "MAKE VEC4") {
-				node = new NODES::CAST::MAKE::Vec4();
+				node = make_shared<NODES::CAST::MAKE::Vec4>();
 			}
 			else if (type == "MAKE QUAT") {
-				node = new NODES::CAST::MAKE::Quat();
+				node = make_shared<NODES::CAST::MAKE::Quat>();
 			}
 			else if (type == "MAKE MAT2") {
-				node = new NODES::CAST::MAKE::Mat2();
+				node = make_shared<NODES::CAST::MAKE::Mat2>();
 			}
 			else if (type == "MAKE MAT3") {
-				node = new NODES::CAST::MAKE::Mat3();
+				node = make_shared<NODES::CAST::MAKE::Mat3>();
 			}
 			else if (type == "MAKE MAT4") {
-				node = new NODES::CAST::MAKE::Mat4();
+				node = make_shared<NODES::CAST::MAKE::Mat4>();
 			}
 			else if (type == "ARITHMETIC") {
-				node = new NODES::Arithmetic();
+				node = make_shared<NODES::Arithmetic>();
 			}
 			else if (type == "TRIGONOMETRY") {
-				node = new NODES::Trigonometry();
+				node = make_shared<NODES::Trigonometry>();
 			}
 			else if (type == "BOOLEAN COMPARISON") {
-				node = new NODES::BOOLEAN::Compare();
+				node = make_shared<NODES::BOOLEAN::Compare>();
 			}
 			else if (type == "BOOLEAN IF") {
-				node = new NODES::BOOLEAN::If();
+				node = make_shared<NODES::BOOLEAN::If>();
 			}
 			else if (type == "BOOLEAN IF ELSE") {
-				node = new NODES::BOOLEAN::If_Else();
+				node = make_shared<NODES::BOOLEAN::If_Else>();
 			}
 			else if (type == "BOOLEAN SELECT") {
-				node = new NODES::BOOLEAN::Select();
+				node = make_shared<NODES::BOOLEAN::Select>();
 			}
 			else if (type == "RENDER 2D LINE") {
-				node = new NODES::RENDERING::DIM_2D::Line();
+				node = make_shared<NODES::RENDERING::DIM_2D::Line>();
 			}
 			else if (type == "RENDER 2D TRIANGLE") {
-				node = new NODES::RENDERING::DIM_2D::Triangle();
+				node = make_shared<NODES::RENDERING::DIM_2D::Triangle>();
 			}
 			else if (type == "RENDER 2D RECTANGLE") {
-				node = new NODES::RENDERING::DIM_2D::Rectangle();
+				node = make_shared<NODES::RENDERING::DIM_2D::Rectangle>();
 			}
 			else if (type == "RENDER 2D CIRCLE") {
-				node = new NODES::RENDERING::DIM_2D::Circle();
+				node = make_shared<NODES::RENDERING::DIM_2D::Circle>();
 			}
 			else if (type.startsWith("SINGLETON")) {
 				#define NODE_EXISTS(type) false;\
-				for (Node* node : FILE.nodes) {\
-					if (dynamic_cast<type>(node)) {\
+				for (Ptr_S<Node> node : FILE.nodes) {\
+					if (dynamic_pointer_cast<type>(node)) {\
 						exists = true;\
 						break;\
 					}\
 				}
 				if (type == "SINGLETON BACKGROUND") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Background*)
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Background)
 					if (!exists) {
-						node = new NODES::SINGLETON::Background();
+						node = make_shared<NODES::SINGLETON::Background>();
 					}
 				}
 				else if (type == "SINGLETON 2D CAMERA") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_2D*)
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_2D)
 					if (!exists) {
-						node = new NODES::SINGLETON::Camera_2D();
+						node = make_shared<NODES::SINGLETON::Camera_2D>();
 					}
 				}
 				else if (type == "SINGLETON 3D CAMERA") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_3D*)
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_3D)
 					if (!exists) {
-						node = new NODES::SINGLETON::Camera_3D();
+						node = make_shared<NODES::SINGLETON::Camera_3D>();
 					}
 				}
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
 				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
-					SESSION->variable_refs[existing->var].remove(existing);
-					SESSION->variable_refs[name].push(existing);
+					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
+					SESSION->variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
 				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
-					SESSION->variable_refs[existing->var].remove(existing);
-					SESSION->variable_refs[name].push(existing);
+					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
+					SESSION->variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
 				else {
-					auto def_node = new NODES::VARIABLES::Get();
+					auto def_node = make_shared<NODES::VARIABLES::Get>();
 					SESSION->variable_refs[name].push(def_node);
 					def_node->setVar(name);
 					node = def_node;
@@ -498,12 +498,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 				QDataStream dataStreamPath(&itemDataPath, QIODevice::ReadOnly);
 				QString script_path;
 				dataStreamPath >> script_path;
-				node = NODES::SCRIPT::loadScript(script_path);
+				node = Ptr_S<NODES::SCRIPT::Script>(NODES::SCRIPT::loadScript(script_path));
 			}
 		}
 		if (node) {
 			FILE.nodes.push(node);
-			scene->addItem(node);
+			scene->addItem(node.get());
 			node->setPos(drop_pos);
 		}
 	}

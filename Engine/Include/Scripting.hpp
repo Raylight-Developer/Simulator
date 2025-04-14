@@ -20,8 +20,8 @@ namespace NODES {
 			public:
 				SL_Session(Script* script = nullptr, Session* session = nullptr);
 
-				KL::Lace& log() const;
-				KL::Lace& printer() const;
+				CORE::Lace& log() const;
+				CORE::Lace& printer() const;
 				QOpenGLFunctions_4_5_Core* gl() const;
 
 				T_V2<U64> viewportResolution() const;

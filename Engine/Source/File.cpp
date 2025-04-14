@@ -5,7 +5,7 @@
 #define NULL_REF "*NULL"
 
 File::File() {
-	euler_tick = new NODES::SINGLETON::Euler_Tick();
+	euler_tick = make_shared<NODES::SINGLETON::Euler_Tick>();
 	nodes.push(euler_tick);
 }
 
@@ -48,7 +48,7 @@ File File::loadFile(const string& file_path) {
 }
 
 bool File::saveFile(const string& file_path) {
-	KL::Lace lace;
+	CORE::Lace lace;
 	save(lace);
 	return writeToFile(file_path, lace.str());
 }
@@ -57,8 +57,12 @@ void File::load(const Token_Array& token_data) {
 	LOG++;
 
 	const unordered_map<string, function<void(const Token_Array&)>> actions = {
-		{"└Header", [this](const Token_Array& tokens) {loadHeader(tokens); }},
-		{"└Build" , [this](const Token_Array& tokens) {loadBuild (tokens); }}
+		{"└Header"     , [this](const Token_Array& tokens) { loadHeader    (tokens); }},
+		{"└Variables"  , [this](const Token_Array& tokens) { loadVariables (tokens); }},
+		{"└Node-Groups", [this](const Token_Array& tokens) { loadNodeGroups(tokens); }},
+		{"└Node-Tree"  , [this](const Token_Array& tokens) { loadNodeTree  (tokens); }},
+		{"└Build"      , [this](const Token_Array& tokens) { loadBuild     (tokens); }},
+		{"└Scripts"    , [this](const Token_Array& tokens) { loadScripts   (tokens); }}
 	};
 
 	Token_Array block_buffer;
@@ -82,12 +86,42 @@ void File::loadHeader(const Token_Array& token_data) {
 	for (const Tokens& tokens : token_data) {
 		if (tokens[0] == "Version") {
 			Tokens version = f_split(tokens[1], ".");
-			major_version = stoU16(version[0]);
-			minor_version = stoU16(version[1]);
-			patch_version = stoU16(version[2]);
+			const U16 file_major_version = stoU16(version[0]);
+			const U16 file_minor_version = stoU16(version[1]);
+			const U16 file_patch_version = stoU16(version[2]);
+			if (SESSION->major_version != file_major_version or SESSION->minor_version != file_minor_version or SESSION->patch_version != file_patch_version) {
+				LOGL(<< WARNING("Version Mismatch: SYSTEM [" <<
+					SESSION->major_version << "." <<
+					SESSION->minor_version << "." <<
+					SESSION->patch_version << "] FILE [" <<
+					file_major_version << "." <<
+					file_minor_version << "." <<
+					file_patch_version << "]"
+				));
+			}
+
+
 			LOGL(<< "Version:" >> tokens[1]);
 		}
 	}
+	LOG--;
+}
+
+void File::loadVariables(const Token_Array& token_data) {
+	LOGL(<< MSG_BLUE("[Variables]"));
+	LOG++;
+	LOG--;
+}
+
+void File::loadNodeGroups(const Token_Array& token_data) {
+	LOGL(<< MSG_BLUE("[Node-Groups]"));
+	LOG++;
+	LOG--;
+}
+
+void File::loadNodeTree(const Token_Array& token_data) {
+	LOGL(<< MSG_BLUE("[Node-Tree]"));
+	LOG++;
 	LOG--;
 }
 
@@ -97,20 +131,26 @@ void File::loadBuild(const Token_Array& token_data) {
 	LOG--;
 }
 
-void File::save(KL::Lace& lace) {
+void File::loadScripts(const Token_Array& token_data) {
+	LOGL(<< MSG_BLUE("[Scripts]"));
+	LOG++;
+	LOG--;
+}
+
+void File::save(CORE::Lace& lace) {
 	saveHeader(lace);
 	saveBuild(lace);
 }
 
-void File::saveHeader(KL::Lace& lace) {
+void File::saveHeader(CORE::Lace& lace) {
 	lace << "┌Header";
 	lace++;
-	lace NL << "Version" >> major_version << "." << minor_version << "." << patch_version;
+	lace NL << "Version" >> SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version;
 	lace--;
 	lace NL << "└Header";
 }
 
-void File::saveBuild(KL::Lace& lace) {
+void File::saveBuild(CORE::Lace& lace) {
 	lace NL << "┌Build";
 	lace++;
 	lace--;

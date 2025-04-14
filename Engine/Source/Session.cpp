@@ -18,8 +18,14 @@ void Session::destroy() {
 }
 
 Session::Session() :
-	KL::Session(),
-	file(File())
+	CORE::Session(),
+	major_version(0),
+	minor_version(0),
+	patch_version(1),
+	file(File()),
+	gl(nullptr),
+	window(nullptr),
+	viewport(nullptr)
 {
 	current_frame = 0;
 	samples = 60;

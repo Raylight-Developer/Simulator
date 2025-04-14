@@ -16,7 +16,7 @@ namespace NODE {
 	}
 }
 
-struct Node : QGraphicsItem {
+struct Node : Self<Node>, QGraphicsItem {
 	QColor header_color;
 	QString label;
 	QRectF rect;

@@ -30,6 +30,7 @@ Viewport::~Viewport() {
 
 void Viewport::f_tickUpdate() {
 	if (SESSION->active or SESSION->realtime) {
+		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		if (FILE.euler_tick) {
 			if (SESSION->realtime) {

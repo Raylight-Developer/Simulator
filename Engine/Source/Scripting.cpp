@@ -7,11 +7,11 @@ NODES::SCRIPT::SCRIPT_LAYER::SL_Session::SL_Session(Script* script, Session* ses
 	session(session)
 {}
 
-KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() const {
+CORE::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() const {
 	return session->buffer;
 }
 
-KL::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() const {
+CORE::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() const {
 	return session->printer;
 }
 

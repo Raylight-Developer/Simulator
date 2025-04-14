@@ -1171,6 +1171,7 @@ Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
 		return Variable(SESSION->current_frame);
 	if (port == o_runtime)
 		return Variable(chrono::duration<double>(NOW - SESSION->start).count());
+	return Variable();
 }
 
 NODES::SINGLETON::Background::Background() :

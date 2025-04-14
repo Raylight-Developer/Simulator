@@ -3,7 +3,7 @@
 #include "Session.hpp"
 #include "Viewport.hpp"
 
-KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, const string& frag_file_path) {
+CORE::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, const string& frag_file_path) {
 	GLuint vert_shader = GL->glCreateShader(GL_VERTEX_SHADER);
 	const string vertex_code = loadFromFile(vert_file_path);
 	const char* vertex_code_cstr = vertex_code.c_str();
@@ -11,7 +11,7 @@ KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, co
 	GL->glCompileShader(vert_shader);
 
 	if (!checkShaderCompilation(vert_shader, vertex_code)) {
-		return KL::Confirm<GLuint>();
+		return CORE::Confirm<GLuint>();
 	}
 
 	GLuint frag_shader = GL->glCreateShader(GL_FRAGMENT_SHADER);
@@ -21,7 +21,7 @@ KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, co
 	GL->glCompileShader(frag_shader);
 
 	if (!checkShaderCompilation(frag_shader, fragment_code)) {
-		return KL::Confirm<GLuint>();
+		return CORE::Confirm<GLuint>();
 	}
 
 	GLuint shader_program = GL->glCreateProgram();
@@ -34,10 +34,10 @@ KL::Confirm<GLuint> OpenGL::f_compileFragShader(const string& vert_file_path, co
 	GL->glDeleteShader(vert_shader);
 	GL->glDeleteShader(frag_shader);
 
-	return KL::Confirm(shader_program);
+	return CORE::Confirm(shader_program);
 }
 
-KL::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
+CORE::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
 	string compute_code = preprocessShader(comp_file_path);
 
 	const char* compute_code_cstr = compute_code.c_str();
@@ -46,7 +46,7 @@ KL::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
 	GL->glCompileShader(comp_shader);
 
 	if (!checkShaderCompilation(comp_shader, compute_code)) {
-		return KL::Confirm<GLuint>();
+		return CORE::Confirm<GLuint>();
 	}
 
 	GLuint shader_program = GL->glCreateProgram();
@@ -57,7 +57,7 @@ KL::Confirm<GLuint> OpenGL::f_compileCompShader(const string& comp_file_path) {
 
 	GL->glDeleteShader(comp_shader);
 
-	return KL::Confirm(shader_program);
+	return CORE::Confirm(shader_program);
 }
 
 bool OpenGL::checkShaderCompilation(const GLuint& shader, const string& shader_code) {
