@@ -4,10 +4,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script", "Scripting\Scripting.vcxproj", "{299353B2-F307-4259-8F46-CD8F8F6FE872}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3869813C-D5C7-408B-9F86-2F01A1A65169} = {3869813C-D5C7-408B-9F86-2F01A1A65169}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3869813C-D5C7-408B-9F86-2F01A1A65169} = {3869813C-D5C7-408B-9F86-2F01A1A65169}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script-OpenGL_Test", "Script-OpenGL_Test\Script-OpenGL_Test.vcxproj", "{F1C86D9F-BE21-4790-8568-187012F8C317}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3869813C-D5C7-408B-9F86-2F01A1A65169} = {3869813C-D5C7-408B-9F86-2F01A1A65169}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KL", "..\KL\KL\KL.vcxproj", "{3869813C-D5C7-408B-9F86-2F01A1A65169}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +52,14 @@ Global
 		{F1C86D9F-BE21-4790-8568-187012F8C317}.Release|x64.Build.0 = Release|x64
 		{F1C86D9F-BE21-4790-8568-187012F8C317}.Release|x86.ActiveCfg = Release|x64
 		{F1C86D9F-BE21-4790-8568-187012F8C317}.Release|x86.Build.0 = Release|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Debug|x64.ActiveCfg = Debug|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Debug|x64.Build.0 = Debug|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Debug|x86.ActiveCfg = Debug|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Debug|x86.Build.0 = Debug|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Release|x64.ActiveCfg = Release|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Release|x64.Build.0 = Release|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Release|x86.ActiveCfg = Release|x64
+		{3869813C-D5C7-408B-9F86-2F01A1A65169}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
