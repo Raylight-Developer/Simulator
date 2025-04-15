@@ -558,7 +558,7 @@ void Node_Editor::Add_Node::undo() {
 }
 
 Node_Editor::Move_Node::Move_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& from, const F64_V2& to) :
-	CORE::CMD("Delete Node"),
+	CORE::CMD("Move Node"),
 	editor(editor),
 	node(node),
 	from(from),
