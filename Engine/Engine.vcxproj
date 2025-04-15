@@ -11,6 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
+    <ClCompile Include="Source\Variables\Constant.cpp" />
+    <ClCompile Include="Source\Variables\Get.cpp" />
+    <ClCompile Include="Source\Variables\Set.cpp" />
+    <ClCompile Include="Source\Rendering\2D\Line.cpp" />
+    <ClCompile Include="Source\Rendering\2D\Rectangle.cpp" />
+    <ClCompile Include="Source\Rendering\2D\Circle.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Euler_Tick.cpp" />
     <ClCompile Include="Source\History_View.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\File.cpp" />
@@ -27,8 +35,15 @@
     <ClCompile Include="Source\Viewport.cpp" />
     <ClCompile Include="Source\Timeline.cpp" />
     <ClCompile Include="Source\Variable_Editor.cpp" />
+    <ClCompile Include="Source\Nodes\Exec\Subsample.cpp" />
+    <ClCompile Include="Source\Rendering\2D\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Nodes\Singleton\Background.hpp" />
+    <ClInclude Include="Include\Nodes\Variables\Constant.hpp" />
+    <ClInclude Include="Include\Nodes\Variables\Get.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\2D\Circle.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Euler_Tick.hpp" />
     <ClInclude Include="Include\History_View.hpp" />
     <ClInclude Include="Include\File.hpp" />
     <ClInclude Include="Include\Inline\Glm.hpp" />
@@ -54,6 +69,11 @@
     <ClInclude Include="Include\Timeline.hpp" />
     <ClInclude Include="Include\Variable_Editor.hpp" />
     <ClInclude Include="Include\Input.hpp" />
+    <ClInclude Include="Include\Nodes\Exec\Subsample.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\2D\Line.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp" />
+    <ClInclude Include="Include\Nodes\Variables\Set.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

@@ -15,6 +15,11 @@
 #undef PRINT
 #undef SESSION
 
+#undef DATA_I
+#undef DATA_O
+#undef EXEC_I
+#undef EXEC_O
+
 #define SCRIPT NODES::SCRIPT::Script
 #define SCRIPT_INIT Session::initialize(this->session);
 

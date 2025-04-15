@@ -22,6 +22,8 @@ Node_Editor::Node_Editor(QWidget* parent) :
 
 	scene->addItem(FILE.euler_tick.get());
 	FILE.euler_tick->setPos(QPointF(0,0));
+
+	editor_ptr = this;
 }
 
 Node_Editor::~Node_Editor() {
@@ -106,8 +108,9 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 			selection_rect->hide();
 		}
 		if (creating_connection) {
-			if (auto item = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
-				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(item)) {
+			if (auto port_r = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
+				//h_connectPorts(creating_connection->port_l, port_r);
+				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(port_r)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = new NODE::Connection(source_port, drop_port);
@@ -124,7 +127,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(item)) {
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(port_r)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = new NODE::Connection(drop_port, source_port);
@@ -141,7 +144,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(port_r)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = new NODE::Connection(source_port, drop_port);
@@ -158,7 +161,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(port_r)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = new NODE::Connection(drop_port, source_port);
@@ -524,32 +527,17 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 	}
 }
 
-void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
-	H_PUSH(make_shared<Add_Node>(node, this, pos));
-}
-
-void Node_Editor::h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) {
-	H_PUSH(make_shared<Move_Node>(node, this, from, to));
-}
-
-void Node_Editor::h_deleteNode(Ptr_S<Node> node) {
-	H_PUSH(make_shared<Delete_Node>(node, this));
-}
-
-Node_Editor::Add_Node::Add_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& pos) :
-	CORE::CMD("Add Node"),
-	editor(editor),
-	node(node),
-	pos(pos)
-{}
-
-void Node_Editor::Add_Node::execute() const {
+void Node_Editor::addNode(Ptr_S<Node> node, const F64_V2& pos) {
 	FILE.nodes.push(node);
-	editor->scene->addItem(node.get());
+	editor_ptr->scene->addItem(node.get());
 	node->setPos(pos.x, pos.y);
 }
 
-void Node_Editor::Add_Node::undo() {
+void Node_Editor::moveNode(Ptr_S<Node> node, const F64_V2& new_pos) {
+	node->setPos(new_pos.x, new_pos.y);
+}
+
+void Node_Editor::deleteNode(Ptr_S<Node> node) {
 	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
 		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
@@ -557,46 +545,171 @@ void Node_Editor::Add_Node::undo() {
 		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
 	FILE.nodes.remove(node->shared_from_this());
-	editor->scene->removeItem(node.get());
+	editor_ptr->scene->removeItem(node.get());
 }
 
-Node_Editor::Move_Node::Move_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& from, const F64_V2& to) :
+bool Node_Editor::connectPorts(Port* port_l, Port* port_r) {
+	if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(port_r)) {
+		if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(port_l)) {
+			if (source_port->node != drop_port->node) {
+				auto new_conn = new NODE::Connection(source_port, drop_port);
+				if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
+					if (drop_port->connection) {
+						delete drop_port->connection;
+					}
+					drop_port->connection = new_conn;
+					source_port->connections.push_back(new_conn);
+					return true;
+				}
+				else {
+					delete new_conn;
+				}
+			}
+		}
+	}
+	else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(port_r)) {
+		if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(port_l)) {
+			if (source_port->node != drop_port->node) {
+				auto new_conn = new NODE::Connection(drop_port, source_port);
+				if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
+					if (source_port->connection) {
+						delete source_port->connection;
+					}
+					source_port->connection = new_conn;
+					drop_port->connections.push_back(new_conn);
+					return true;
+				}
+				else {
+					delete new_conn;
+				}
+			}
+		}
+	}
+	else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(port_r)) {
+		if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(port_l)) {
+			if (source_port->node != drop_port->node) {
+				auto new_conn = new NODE::Connection(source_port, drop_port);
+				if (drop_port->requestConnection(new_conn) and source_port->requestConnection(new_conn)) {
+					if (source_port->connection) {
+						delete source_port->connection;
+					}
+					source_port->connection = new_conn; // TODO Verify
+					drop_port->connections.push_back(new_conn);
+					return true;
+				}
+				else {
+					delete new_conn;
+				}
+			}
+		}
+	}
+	else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(port_r)) {
+		if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(port_l)) {
+			if (source_port->node != drop_port->node) {
+				auto new_conn = new NODE::Connection(drop_port, source_port);
+				if (source_port->requestConnection(new_conn) and drop_port->requestConnection(new_conn)) {
+					if (drop_port->connection) {
+						delete drop_port->connection;
+					}
+					drop_port->connection = new_conn;
+					source_port->connections.push_back(new_conn);
+					return true;
+				}
+				else {
+					delete new_conn;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+void Node_Editor::disconnectPorts(Connection* connection) {
+	
+}
+
+void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
+	H_PUSH(make_shared<Add_Node>(node, pos));
+}
+
+void Node_Editor::h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) {
+	H_PUSH(make_shared<Move_Node>(node, from, to));
+}
+
+void Node_Editor::h_deleteNode(Ptr_S<Node> node) {
+	H_PUSH(make_shared<Delete_Node>(node));
+}
+
+void Node_Editor::h_connectPorts(Port* port_l, Port* port_r) {
+}
+
+void Node_Editor::h_disconnectPorts(Port* port_l, Port* port_r) {
+}
+
+Node_Editor::Add_Node::Add_Node(Ptr_S<Node> node, const F64_V2& pos) :
+	CORE::CMD("Add Node"),
+	node(node),
+	pos(pos)
+{}
+
+void Node_Editor::Add_Node::execute() const {
+	editor_ptr->addNode(node, pos);
+}
+
+void Node_Editor::Add_Node::undo() {
+	editor_ptr->deleteNode(node);
+}
+
+Node_Editor::Move_Node::Move_Node(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) :
 	CORE::CMD("Move Node"),
-	editor(editor),
 	node(node),
 	from(from),
 	to(to)
 {}
 
 void Node_Editor::Move_Node::execute() const {
-	node->setPos(to.x, to.y);
+	editor_ptr->moveNode(node, to);
 }
 
 void Node_Editor::Move_Node::undo() {
-	node->setPos(from.x, from.y);
+	editor_ptr->moveNode(node, from);
 }
 
-Node_Editor::Delete_Node::Delete_Node(Ptr_S<Node> node, Node_Editor* editor) :
+Node_Editor::Delete_Node::Delete_Node(Ptr_S<Node> node) :
 	CORE::CMD("Delete Node"),
-	editor(editor),
 	node(node)
 {
 	pos = F64_V2(node->pos().x(), node->pos().y());
 }
 
 void Node_Editor::Delete_Node::execute() const {
-	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
-		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
-	}
-	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
-		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
-	}
-	FILE.nodes.remove(node->shared_from_this());
-	editor->scene->removeItem(node.get());
+	editor_ptr->deleteNode(node);
 }
 
 void Node_Editor::Delete_Node::undo() {
-	FILE.nodes.push(node);
-	editor->scene->addItem(node.get());
-	node->setPos(pos.x, pos.y);
+	editor_ptr->addNode(node, pos);
+}
+
+Node_Editor::Connect::Connect(Port* port_l, Port* port_r) :
+	CORE::CMD("Connect Nodes"),
+	port_l(port_l),
+	port_r(port_r)
+{}
+
+void Node_Editor::Connect::execute() const {
+}
+
+void Node_Editor::Connect::undo() {
+}
+
+Node_Editor::Disconnect::Disconnect(Port* port_l, Port* port_r) :
+	CORE::CMD("Disconnect Nodes"),
+	port_l(port_l),
+	port_r(port_r)
+{}
+
+void Node_Editor::Disconnect::execute() const {
+}
+
+void Node_Editor::Disconnect::undo() {
 }

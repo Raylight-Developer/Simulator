@@ -13,6 +13,7 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			keys_held.insert(key);
 			if (key_event->modifiers() == Qt::KeyboardModifier::ControlModifier) {
 				if (key == Qt::Key::Key_Z) {
+					/*
 					if (SESSION->history.group_undo_stack.empty()) return false;
 					if (SESSION->history.group_undo_stack.back() > 1) {
 						LOGL(<< "Undo: [" << SESSION->history.group_undo_stack.back() << "] Actions");
@@ -25,10 +26,12 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 					else {
 						LOGL(<< "Undo: " << SESSION->history.undo_stack.back()->info);
 					}
+					*/
 					H_UNDO;
 					return false;
 				}
 				else if (key == Qt::Key::Key_Y) {
+					/*
 					if (SESSION->history.group_redo_stack.empty()) return false;
 					if (SESSION->history.group_redo_stack.back() > 1) {
 						LOGL(<< "Redo: [" << SESSION->history.group_redo_stack.back() << "] Actions");
@@ -41,6 +44,7 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 					else {
 						LOGL(<< "Redo: " << SESSION->history.redo_stack.back()->info);
 					}
+					*/
 					H_REDO;
 					return false;
 				}

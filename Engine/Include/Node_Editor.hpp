@@ -5,7 +5,7 @@
 #include "Scripting.hpp"
 #include "Nodes.hpp"
 
-class Node_Editor : public GUI::Graphics_View {
+struct Node_Editor : GUI::Graphics_View {
 	GUI::Graphics_Scene* scene;
 
 	bool moving;
@@ -17,7 +17,7 @@ class Node_Editor : public GUI::Graphics_View {
 	QPointF selection_start;
 	QGraphicsRectItem* selection_rect;
 	NODE::Connection* creating_connection;
-public:
+
 	vector<Node*> selection;
 
 	Node_Editor(QWidget* parent = nullptr);
@@ -34,48 +34,63 @@ public:
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
 
+	void addNode(Ptr_S<Node> node, const F64_V2& pos);
+	void moveNode(Ptr_S<Node> node, const F64_V2& new_pos);
+	void deleteNode(Ptr_S<Node> node);
+
+	bool connectPorts(Port* port_l, Port* port_r);
+	void disconnectPorts(Connection* connection);
+
 	void h_addNode(Ptr_S<Node> node, const F64_V2& pos);
 	void h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to);
 	void h_deleteNode(Ptr_S<Node> node);
 
+	void h_connectPorts(Port* port_l, Port* port_r);
+	void h_disconnectPorts(Port* port_l, Port* port_r);
+
 	struct Add_Node : Self<Add_Node>, CORE::CMD {
-		Node_Editor* editor;
 		Ptr_S<Node> node;
 		F64_V2 pos;
 
-		Add_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& pos);
+		Add_Node(Ptr_S<Node> node, const F64_V2& pos);
 
 		void execute() const final override;
 		void undo() final override;
 	};
 	struct Move_Node : Self<Move_Node>, CORE::CMD {
-		Node_Editor* editor;
 		Ptr_S<Node> node;
 		F64_V2 from, to;
 
-		Move_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& from, const F64_V2& to);
+		Move_Node(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to);
 
 		void execute() const final override;
 		void undo() final override;
 	};
 	struct Delete_Node : Self<Delete_Node>, CORE::CMD {
-		Node_Editor* editor;
 		Ptr_S<Node> node;
 		F64_V2 pos;
 
-		Delete_Node(Ptr_S<Node> node, Node_Editor* editor);
+		Delete_Node(Ptr_S<Node> node);
 
 		void execute() const final override;
 		void undo() final override;
 	};
 
-	struct Connect_Port : Self<Connect_Port>, CORE::CMD {
+	struct Connect : Self<Connect>, CORE::CMD {
+		Port* port_l;
+		Port* port_r;
 		//TODO
+		Connect(Port* port_l, Port* port_r);
+
 		void execute() const final override;
 		void undo() final override;
 	};
-	struct Disconnect_Port : Self<Disconnect_Port>, CORE::CMD {
+	struct Disconnect : Self<Disconnect>, CORE::CMD {
+		Port* port_l;
+		Port* port_r;
 		//TODO
+		Disconnect(Port* port_l, Port* port_r);
+
 		void execute() const final override;
 		void undo() final override;
 	};
@@ -85,3 +100,5 @@ public:
 		void undo() final override;
 	};
 };
+
+static Node_Editor* editor_ptr;

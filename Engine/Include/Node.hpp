@@ -148,3 +148,11 @@ namespace NODE {
 		};
 	}
 }
+
+#define DATA_I(label, type) new PORT::Data_I(this, label, type);
+#define DATA_O(label, type) new PORT::Data_O(this, label, type);
+#define EXEC_I(label) new PORT::Exec_I(this, label);
+#define EXEC_O(label) new PORT::Exec_O(this, label);
+
+#define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
+#define GET_DATA(type) getData().get<type>()

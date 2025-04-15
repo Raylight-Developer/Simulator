@@ -1,0 +1,35 @@
+#pragma once
+
+#include "KL.hpp"
+
+#include "Node.hpp"
+
+using namespace NODE;
+
+namespace NODES {
+	namespace VARIABLES {
+		struct Constant : Node {
+			PORT::Data_O* out;
+
+			CORE::Stack<GUI::Graphics_Widget*> proxies;
+			GUI::Options* enums;
+			QRectF expanded;
+			Variable value;
+
+			Constant();
+
+			Variable getData(const Port* port) const override;
+
+			struct Set_Type : Self<Set_Type>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
+			struct Set_Value : Self<Set_Value>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
+		};
+	}
+}
