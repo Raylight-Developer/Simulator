@@ -1,7 +1,12 @@
 #include "Window.hpp"
 #include "Input.hpp"
 
+void customMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
+}
+
 int main(int argc, char *argv[]) {
+	qInstallMessageHandler(customMessageHandler);
+
 	auto app = new GUI::Application(argc, argv);
 
 	Input* input = new Input();

@@ -29,6 +29,7 @@
     <ClInclude Include="Include\Variable_Editor.hpp" />
     <ClInclude Include="Include\Variable.hpp" />
     <ClInclude Include="Include\Input.hpp" />
+    <ClInclude Include="Include\History_View.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -58,6 +59,7 @@
     <ClCompile Include="Source\Variable_Editor.cpp" />
     <ClCompile Include="Source\Variable.cpp" />
     <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\History_View.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

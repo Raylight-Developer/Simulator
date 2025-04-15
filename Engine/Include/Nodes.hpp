@@ -108,6 +108,17 @@ namespace NODES {
 			Constant();
 
 			Variable getData(const Port* port) const override;
+
+			struct Set_Type : Self<Set_Type>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
+			struct Set_Value : Self<Set_Value>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
 		};
 		struct Get : Node {
 			PORT::Data_O* out;
@@ -118,6 +129,12 @@ namespace NODES {
 			void setVar(const QString name);
 
 			Variable getData(const Port* port) const override;
+
+			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
 		};
 		struct Set : Node {
 			PORT::Exec_I* exec_in;
@@ -129,10 +146,21 @@ namespace NODES {
 
 			Set();
 
+			void h_setVar(const QString name);
 			void setVar(const QString name);
 
 			void exec(const Port* port) override;
 			Variable getData(const Port* port) const override;
+
+			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
+				Set* node;
+				QString from, to;
+
+				Set_Variable(Set* node, const QString& from, const QString& to);
+
+				void execute() const final override;
+				void undo() final override;
+			};
 		};
 	}
 	namespace CAST {
@@ -228,6 +256,12 @@ namespace NODES {
 		Arithmetic();
 
 		Variable getData(const Port* port) const override;
+
+		struct Set_Mode : Self<Set_Mode>, CORE::CMD {
+			//TODO
+			void execute() const final override;
+			void undo() final override;
+		};
 	};
 	struct Trigonometry : Node {
 		PORT::Data_I* in;
@@ -238,6 +272,12 @@ namespace NODES {
 		Trigonometry();
 
 		Variable getData(const Port* port) const override;
+
+		struct Set_Mode : Self<Set_Mode>, CORE::CMD {
+			//TODO
+			void execute() const final override;
+			void undo() final override;
+		};
 	};
 
 	namespace BOOLEAN {
@@ -255,6 +295,12 @@ namespace NODES {
 			void cascade(Port* port, const VAR_TYPE& var_type);
 
 			Variable getData(const Port* port) const override;
+
+			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
+				//TODO
+				void execute() const final override;
+				void undo() final override;
+			};
 		};
 		struct If : Node {
 			PORT::Exec_I* in;

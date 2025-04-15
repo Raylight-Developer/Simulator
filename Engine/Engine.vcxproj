@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\History_View.cpp" />
     <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\File.cpp" />
     <ClCompile Include="Source\OpenGL.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="Source\Variable_Editor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\History_View.hpp" />
     <ClInclude Include="Include\File.hpp" />
     <ClInclude Include="Include\Inline\Glm.hpp" />
     <ClInclude Include="Include\Inline\Templates.hpp" />

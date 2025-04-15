@@ -70,10 +70,18 @@ public:
 	};
 
 	struct Connect_Port : Self<Connect_Port>, CORE::CMD {
+		//TODO
+		void execute() const final override;
+		void undo() final override;
 	};
 	struct Disconnect_Port : Self<Disconnect_Port>, CORE::CMD {
+		//TODO
+		void execute() const final override;
+		void undo() final override;
 	};
-
 	struct Set_Variable : Self<Set_Variable>, CORE::CMD {
+		//TODO
+		void execute() const final override;
+		void undo() final override;
 	};
 };

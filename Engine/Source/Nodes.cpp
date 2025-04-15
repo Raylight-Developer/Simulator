@@ -683,6 +683,10 @@ NODES::VARIABLES::Set::Set() :
 	proxy_label->setPos(20, 30);
 }
 
+void NODES::VARIABLES::Set::h_setVar(const QString name) {
+	H_PUSH(make_shared<Set_Variable>(this, this->var, name));
+}
+
 void NODES::VARIABLES::Set::setVar(const QString name) {
 	var = name;
 	out->setType(SESSION->variables[var].type);
@@ -698,6 +702,21 @@ void NODES::VARIABLES::Set::exec(const Port* port) {
 
 Variable NODES::VARIABLES::Set::getData(const Port* port) const {
 	return SESSION->variables[var];
+}
+
+NODES::VARIABLES::Set::Set_Variable::Set_Variable(Set* node, const QString& from, const QString& to):
+	CORE::CMD("Set Variable"),
+	node(node),
+	from(from),
+	to(to)
+{}
+
+void NODES::VARIABLES::Set::Set_Variable::execute() const {
+	node->setVar(to);
+}
+
+void NODES::VARIABLES::Set::Set_Variable::undo() {
+	node->setVar(from);
 }
 
 NODES::CAST::MAKE::Vec2::Vec2() :

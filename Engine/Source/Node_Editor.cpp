@@ -79,14 +79,14 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 	}
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (moving) {
-			if (!selection.empty()) {
-				H_GROUP(selection.size());
-			}
 			for (Node* node : selection) {
 				const QPointF from = node_move_start_pos[node];
 				const QPointF delta = from + mapToScene(event->pos()) - l_mouse_down;
 				const F64_V2 to = F64_V2(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
 				h_moveNode(node->shared_from_this(), F64_V2(from.x(), from.y()), to);
+			}
+			if (!selection.empty()) {
+				H_GROUP(to_U16(selection.size()));
 			}
 		}
 		moving = false;
@@ -497,7 +497,8 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
 					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
 					SESSION->variable_refs[name].push(existing->shared_from_this());
-					existing->setVar(name);
+					existing->h_setVar(name);
+					H_GROUP(1);
 				}
 				else {
 					auto def_node = make_shared<NODES::VARIABLES::Get>();
