@@ -330,15 +330,7 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 				if (
 					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
 				) {
-					if (auto node_def = dynamic_cast<NODES::VARIABLES::Get*>(node)) {
-						SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
-					}
-					else if (auto node_def = dynamic_cast<NODES::VARIABLES::Set*>(node)) {
-						SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
-					}
-					FILE.nodes.remove(node->shared_from_this());
-					scene->removeItem(node);
-					delete node;
+					h_deleteNode(node->shared_from_this());
 				}
 			}
 			selection.clear();
@@ -502,9 +494,79 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 		}
 		if (node) {
-			FILE.nodes.push(node);
-			scene->addItem(node.get());
-			node->setPos(drop_pos);
+			h_addNode(node, F64_V2(drop_pos.x(), drop_pos.y()));
 		}
 	}
+}
+
+void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
+	H_PUSH(make_shared<Add_Node>(node, this, pos));
+}
+
+void Node_Editor::h_deleteNode(Ptr_S<Node> node) {
+	H_PUSH(make_shared<Delete_Node>(node, this));
+}
+
+Node_Editor::Add_Node::Add_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& pos) :
+	CORE::CMD("Add Node"),
+	editor(editor),
+	node(node),
+	pos(pos)
+{}
+
+void Node_Editor::Add_Node::execute() const {
+	FILE.nodes.push(node);
+	editor->scene->addItem(node.get());
+	node->setPos(pos.x, pos.y);
+}
+
+void Node_Editor::Add_Node::undo() {
+	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
+		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+	}
+	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
+		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+	}
+	FILE.nodes.remove(node->shared_from_this());
+	editor->scene->removeItem(node.get());
+}
+
+Node_Editor::Move_Node::Move_Node(Ptr_S<Node> src, Node_Editor* editor, const F64_V2& delta) :
+	CORE::CMD("Delete Node"),
+	editor(editor),
+	src(src),
+	delta(delta)
+{}
+
+void Node_Editor::Move_Node::execute() const {
+
+}
+
+void Node_Editor::Move_Node::undo() {
+
+}
+
+Node_Editor::Delete_Node::Delete_Node(Ptr_S<Node> node, Node_Editor* editor) :
+	CORE::CMD("Delete Node"),
+	editor(editor),
+	node(node)
+{
+	pos = F64_V2(node->pos().x(), node->pos().y());
+}
+
+void Node_Editor::Delete_Node::execute() const {
+	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
+		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+	}
+	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
+		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+	}
+	FILE.nodes.remove(node->shared_from_this());
+	editor->scene->removeItem(node.get());
+}
+
+void Node_Editor::Delete_Node::undo() {
+	FILE.nodes.push(node);
+	editor->scene->addItem(node.get());
+	node->setPos(pos.x, pos.y);
 }

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Input.cpp" />
     <ClCompile Include="Source\File.cpp" />
     <ClCompile Include="Source\OpenGL.cpp" />
     <ClCompile Include="Source\Scripting.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Include\OpenGL.hpp" />
     <ClInclude Include="Include\Timeline.hpp" />
     <ClInclude Include="Include\Variable_Editor.hpp" />
+    <ClInclude Include="Include\Input.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

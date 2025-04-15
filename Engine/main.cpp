@@ -1,7 +1,11 @@
 #include "Window.hpp"
+#include "Input.hpp"
 
 int main(int argc, char *argv[]) {
 	auto app = new GUI::Application(argc, argv);
+
+	Input* input = new Input();
+	app->installEventFilter(input);
 
 	//auto style = QFile("./Resources/Style.css");
 	//style.open(QIODevice::ReadOnly | QIODevice::Text);

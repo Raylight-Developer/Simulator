@@ -31,4 +31,38 @@ public:
 
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
+
+	void h_addNode(Ptr_S<Node> node, const F64_V2& pos);
+	void h_deleteNode(Ptr_S<Node> node);
+
+	struct Add_Node : Self<Add_Node>, CORE::CMD {
+		Node_Editor* editor;
+		Ptr_S<Node> node;
+		F64_V2 pos;
+
+		Add_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& pos);
+
+		void execute() const final override;
+		void undo() final override;
+	};
+	struct Move_Node : Self<Move_Node>, CORE::CMD {
+		Node_Editor* editor;
+		Ptr_S<Node> src;
+		F64_V2 delta;
+
+		Move_Node(Ptr_S<Node> src, Node_Editor* editor, const F64_V2& delta);
+
+		void execute() const final override;
+		void undo() final override;
+	};
+	struct Delete_Node : Self<Delete_Node>, CORE::CMD {
+		Node_Editor* editor;
+		Ptr_S<Node> node;
+		F64_V2 pos;
+
+		Delete_Node(Ptr_S<Node> node, Node_Editor* editor);
+
+		void execute() const final override;
+		void undo() final override;
+	};
 };
