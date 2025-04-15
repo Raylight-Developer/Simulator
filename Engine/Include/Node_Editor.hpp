@@ -11,7 +11,9 @@ class Node_Editor : public GUI::Graphics_View {
 	bool moving;
 	bool selecting;
 
-	QPointF move_pos;
+	QPointF l_mouse_down;
+	CORE::UMap<Node*, QPointF> node_move_start_pos;
+
 	QPointF selection_start;
 	QGraphicsRectItem* selection_rect;
 	NODE::Connection* creating_connection;
@@ -33,6 +35,7 @@ public:
 	void dropEvent(QDropEvent* event) override;
 
 	void h_addNode(Ptr_S<Node> node, const F64_V2& pos);
+	void h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to);
 	void h_deleteNode(Ptr_S<Node> node);
 
 	struct Add_Node : Self<Add_Node>, CORE::CMD {
@@ -47,10 +50,10 @@ public:
 	};
 	struct Move_Node : Self<Move_Node>, CORE::CMD {
 		Node_Editor* editor;
-		Ptr_S<Node> src;
-		F64_V2 delta;
+		Ptr_S<Node> node;
+		F64_V2 from, to;
 
-		Move_Node(Ptr_S<Node> src, Node_Editor* editor, const F64_V2& delta);
+		Move_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& from, const F64_V2& to);
 
 		void execute() const final override;
 		void undo() final override;

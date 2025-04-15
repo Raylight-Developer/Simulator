@@ -78,6 +78,14 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 		setCursor(Qt::ArrowCursor);
 	}
 	if (event->button() == Qt::MouseButton::LeftButton) {
+		if (moving) {
+			for (Node* node : selection) {
+				const QPointF from = node_move_start_pos[node];
+				const QPointF delta = from + mapToScene(event->pos()) - l_mouse_down;
+				const F64_V2 to = F64_V2(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
+				h_moveNode(node->shared_from_this(), F64_V2(from.x(), from.y()), to);
+			}
+		}
 		moving = false;
 		setCursor(Qt::ArrowCursor);
 		if (selecting) {
@@ -231,7 +239,6 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						selection.push_back(node);
 					}
 				}
-				move_pos = mapToScene(event->pos()) - node->pos();
 			}
 			//else if (QGraphicsProxyWidget* proxyWidget = qgraphicsitem_cast<QGraphicsProxyWidget*>(item)) {
 			//	QApplication::sendEvent(proxyWidget->widget(), event);
@@ -244,8 +251,8 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			}
 		}
 		else {
-			for (auto item : selection) {
-				item->setSelected(false);
+			for (Node* node : selection) {
+				node->setSelected(false);
 			}
 			selection.clear();
 
@@ -253,6 +260,11 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			selection_start = mapToScene(event->pos());
 			selection_rect->setRect(QRectF(selection_start, QSizeF(0,0)));
 			selection_rect->show();
+		}
+		l_mouse_down = mapToScene(event->pos());
+		node_move_start_pos.clear();
+		for (Node* node : selection) {
+			node_move_start_pos[node] = node->pos();
 		}
 	}
 	GUI::Graphics_View::mousePressEvent(event);
@@ -301,8 +313,9 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 	}
 	else {
 		if (moving) {
-			for (auto& node : selection) {
-				const QPointF delta = mapToScene(event->pos()) - move_pos;
+			for (Node* node : selection) {
+				const QPointF current_pos = mapToScene(event->pos());
+				const QPointF delta = node_move_start_pos[node] + current_pos - l_mouse_down;
 				node->setPos(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
 			}
 		}
@@ -503,6 +516,10 @@ void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
 	H_PUSH(make_shared<Add_Node>(node, this, pos));
 }
 
+void Node_Editor::h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) {
+	H_PUSH(make_shared<Move_Node>(node, this, from, to));
+}
+
 void Node_Editor::h_deleteNode(Ptr_S<Node> node) {
 	H_PUSH(make_shared<Delete_Node>(node, this));
 }
@@ -531,19 +548,20 @@ void Node_Editor::Add_Node::undo() {
 	editor->scene->removeItem(node.get());
 }
 
-Node_Editor::Move_Node::Move_Node(Ptr_S<Node> src, Node_Editor* editor, const F64_V2& delta) :
+Node_Editor::Move_Node::Move_Node(Ptr_S<Node> node, Node_Editor* editor, const F64_V2& from, const F64_V2& to) :
 	CORE::CMD("Delete Node"),
 	editor(editor),
-	src(src),
-	delta(delta)
+	node(node),
+	from(from),
+	to(to)
 {}
 
 void Node_Editor::Move_Node::execute() const {
-
+	node->setPos(to.x, to.y);
 }
 
 void Node_Editor::Move_Node::undo() {
-
+	node->setPos(from.x, from.y);
 }
 
 Node_Editor::Delete_Node::Delete_Node(Ptr_S<Node> node, Node_Editor* editor) :
