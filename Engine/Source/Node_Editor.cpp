@@ -79,6 +79,9 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 	}
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (moving) {
+			if (!selection.empty()) {
+				H_GROUP(selection.size());
+			}
 			for (Node* node : selection) {
 				const QPointF from = node_move_start_pos[node];
 				const QPointF delta = from + mapToScene(event->pos()) - l_mouse_down;
@@ -339,12 +342,17 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 void Node_Editor::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 		case Qt::Key_Delete: {
+			U64 count = 0;
 			for (Node* node : selection) {
 				if (
 					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
 				) {
 					h_deleteNode(node->shared_from_this());
+					count++;
 				}
+			}
+			if (count != 0) {
+				H_GROUP(count);
 			}
 			selection.clear();
 			break;
@@ -508,6 +516,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 		}
 		if (node) {
 			h_addNode(node, F64_V2(drop_pos.x(), drop_pos.y()));
+			H_GROUP(1);
 		}
 	}
 }

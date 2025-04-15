@@ -13,11 +13,11 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			keys_held.insert(key);
 			if (key_event->modifiers() == Qt::KeyboardModifier::ControlModifier) {
 				if (key == Qt::Key::Key_Z) {
-					H_UNDO(1);
+					H_UNDO;
 					return false;
 				}
 				else if (key == Qt::Key::Key_Y) {
-					H_REDO(1);
+					H_REDO;
 					return false;
 				}
 			}

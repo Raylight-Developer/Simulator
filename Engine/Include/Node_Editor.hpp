@@ -68,4 +68,12 @@ public:
 		void execute() const final override;
 		void undo() final override;
 	};
+
+	struct Connect_Port : Self<Connect_Port>, CORE::CMD {
+	};
+	struct Disconnect_Port : Self<Disconnect_Port>, CORE::CMD {
+	};
+
+	struct Set_Variable : Self<Set_Variable>, CORE::CMD {
+	};
 };

@@ -45,8 +45,9 @@ struct Session : CORE::Session {
 #define SESSION Session::session_ptr
 
 #define H_PUSH(command) SESSION->history.execute(command)
-#define H_UNDO(count)   SESSION->history.undo(count)
-#define H_REDO(count)   SESSION->history.redo(count)
+#define H_GROUP(count)  SESSION->history.group(count)
+#define H_UNDO          SESSION->history.undo()
+#define H_REDO          SESSION->history.redo()
 #define LOG   SESSION->buffer
 #define FLUSH SESSION->flushLog()
 
