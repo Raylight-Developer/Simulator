@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 	Input* input = new Input();
 	app->installEventFilter(input);
 
-	//auto style = QFile("./Resources/Style.css");
+	//auto style = QFile("./Resources/Style.css"); https://bugreports.qt.io/browse/QTBUG-135340
 	//style.open(QIODevice::ReadOnly | QIODevice::Text);
 	//app->setStyleSheet(QTextStream(&style).readAll());
 

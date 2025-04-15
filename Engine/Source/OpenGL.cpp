@@ -136,7 +136,7 @@ void OpenGL::bindRenderLayer(const GLuint& program_id, const GLuint& unit, const
 }
 
 void RENDER::Dim_2D::INIT::Line() {
-	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Template.vert", "./Shaders/2D/Template.frag");
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
 	if (confirm) {
 		SESSION->viewport->gl_data["2D Line Shader"] = confirm.data;
 	}
@@ -214,6 +214,72 @@ void RENDER::Dim_2D::INIT::Circle() {
 	GL->glBindVertexArray(0);
 }
 
+void RENDER::Dim_2D::INIT::Triangle() {
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Triangle.vert", "./Shaders/2D/Triangle.frag");
+	if (confirm) {
+		SESSION->viewport->gl_data["2D Triangle Shader"] = confirm.data;
+	}
+
+	SESSION->viewport->gl_data["2D Triangle VAO"] = 0;
+	SESSION->viewport->gl_data["2D Triangle VBO"] = 0;
+	SESSION->viewport->gl_data["2D Triangle EBO"] = 0;
+	GLuint* VAO = &SESSION->viewport->gl_data["2D Triangle VAO"];
+	GLuint* VBO = &SESSION->viewport->gl_data["2D Triangle VBO"];
+	GLuint* EBO = &SESSION->viewport->gl_data["2D Triangle EBO"];
+
+	const GLfloat vertices[6] = { 0 };
+	GL->glGenVertexArrays(1, VAO);
+	GL->glGenBuffers(1, VBO);
+
+	GL->glBindVertexArray(*VAO);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
+void RENDER::Dim_2D::INIT::Rectangle() {
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Rectangle.vert", "./Shaders/2D/Rectangle.frag");
+	if (confirm) {
+		SESSION->viewport->gl_data["2D Rectangle Shader"] = confirm.data;
+	}
+
+	SESSION->viewport->gl_data["2D Rectangle VAO"] = 0;
+	SESSION->viewport->gl_data["2D Rectangle VBO"] = 0;
+	SESSION->viewport->gl_data["2D Rectangle EBO"] = 0;
+	GLuint* VAO = &SESSION->viewport->gl_data["2D Rectangle VAO"];
+	GLuint* VBO = &SESSION->viewport->gl_data["2D Rectangle VBO"];
+	GLuint* EBO = &SESSION->viewport->gl_data["2D Rectangle EBO"];
+
+	const GLfloat vertices[8] = { 0 };
+	const GLuint indices[6] = {
+		0, 1, 2,
+		0, 2, 3
+	};
+	GL->glGenVertexArrays(1, VAO);
+	GL->glGenBuffers(1, VBO);
+	GL->glGenBuffers(1, EBO);
+
+	GL->glBindVertexArray(*VAO);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
+	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
 void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
 	F32_V2 lineDir = glm::normalize(v2 - v1);
 	F32_V2 perpDir = F32_V2(-lineDir.y, lineDir.x);
@@ -266,6 +332,91 @@ void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color
 	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uRadius"), radius);
 
 	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Circle VAO"]);
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const Color& color) {
+	const GLfloat vertices[6] = {
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y
+	};
+	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Triangle VBO"]);
+	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+	// Render
+	const GLuint Shader = SESSION->viewport->gl_data["2D Triangle Shader"];
+	GL->glUseProgram(Shader);
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
+
+	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Triangle VAO"]);
+	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32& height, const Color& color) {
+	const auto h_w = width * 0.5;
+	const auto h_h = height * 0.5;
+
+	const auto v1 = F32_V2(center.x - h_w, center.y - h_h);
+	const auto v2 = F32_V2(center.x - h_w, center.y + h_h);
+	const auto v3 = F32_V2(center.x + h_w, center.y - h_h);
+	const auto v4 = F32_V2(center.x + h_w, center.y + h_h);
+
+	const GLfloat vertices[8] = {
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y,
+		v4.x, v4.y
+	};
+	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
+	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+	// Render
+	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
+	GL->glUseProgram(Shader);
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+
+	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+}
+
+void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const F32_V2& v4, const Color& color) {
+	const GLfloat vertices[8] = {
+		v1.x, v1.y,
+		v2.x, v2.y,
+		v3.x, v3.y,
+		v4.x, v4.y
+	};
+	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
+	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+	// Render
+	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
+	GL->glUseProgram(Shader);
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+
+	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+
+	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
 	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	GL->glBindVertexArray(0);

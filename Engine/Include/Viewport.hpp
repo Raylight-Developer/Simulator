@@ -46,6 +46,4 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	void keyReleaseEvent(QKeyEvent* event) override;
 	void keyPressEvent(QKeyEvent* event) override;
 	void wheelEvent(QWheelEvent* event) override;
-
-	GLuint SP_2D_Triangle, SP_2D_Rectangle;
 };

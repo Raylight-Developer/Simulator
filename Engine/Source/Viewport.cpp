@@ -45,15 +45,10 @@ void Viewport::f_tickUpdate() {
 }
 
 void Viewport::f_compile() {
-	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Template.vert", "./Shaders/2D/Template.frag");
-		if (confirm) {
-			SP_2D_Triangle  = confirm.data;
-			SP_2D_Rectangle = confirm.data;
-		}
-	}
 	RENDER::Dim_2D::INIT::Line();
 	RENDER::Dim_2D::INIT::Circle();
+	RENDER::Dim_2D::INIT::Triangle();
+	RENDER::Dim_2D::INIT::Rectangle();
 }
 
 void Viewport::f_pipeline() {

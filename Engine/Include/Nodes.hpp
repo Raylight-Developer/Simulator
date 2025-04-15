@@ -429,8 +429,6 @@ namespace NODES {
 
 				Triangle();
 
-				GLuint VAO, VBO;
-				void init();
 				void render();
 
 				void exec(const Port* port) override;
@@ -447,8 +445,6 @@ namespace NODES {
 
 				Rectangle();
 
-				GLuint VAO, VBO, EBO;
-				void init();
 				void render();
 
 				void exec(const Port* port) override;

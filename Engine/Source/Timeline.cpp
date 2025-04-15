@@ -62,4 +62,6 @@ Timeline::Timeline(QWidget* parent) :
 	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
 		SESSION->samples = value.toInt();
 	});
+
+	live->toggle();
 }

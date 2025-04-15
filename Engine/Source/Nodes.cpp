@@ -1281,8 +1281,6 @@ void NODES::RENDERING::DIM_2D::Line::exec(const Port* port) {
 NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 	Node("Tri")
 {
-	VAO, VBO = 0;
-
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);
 	rect.setHeight(140);
@@ -1294,25 +1292,6 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 	vert_b = DATA_I("B", Variable(F64_V2(-50, -28.868)));
 	vert_c = DATA_I("C", Variable(F64_V2( 50, -28.868)));
 	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
-
-	init();
-}
-
-void NODES::RENDERING::DIM_2D::Triangle::init() {
-	const GLfloat vertices[6] = { 0 };
-	GL->glGenVertexArrays(1, &VAO);
-	GL->glGenBuffers(1, &VBO);
-
-	GL->glBindVertexArray(VAO);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-	GL->glEnableVertexAttribArray(0);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	GL->glBindVertexArray(0);
 }
 
 void NODES::RENDERING::DIM_2D::Triangle::render() {
@@ -1320,30 +1299,9 @@ void NODES::RENDERING::DIM_2D::Triangle::render() {
 	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
 	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
 	const auto v3      = to_F32(vert_c->GET_DATA(F64_V2));
-	const auto u_color = color ->GET_DATA(Color).rgba_32();
+	const auto u_color = color ->GET_DATA(Color);
 
-	const GLfloat vertices[6] = {
-		v1.x, v1.y,
-		v2.x, v2.y,
-		v3.x, v3.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-	// Render
-	const GLuint Shader = SESSION->viewport->SP_2D_Triangle;
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
-
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-
-	GL->glBindVertexArray(VAO);
-	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
-
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	RENDER::Dim_2D::Triangle(v1, v2, v3, u_color);
 }
 
 void NODES::RENDERING::DIM_2D::Triangle::exec(const Port* port) {
@@ -1354,8 +1312,6 @@ void NODES::RENDERING::DIM_2D::Triangle::exec(const Port* port) {
 NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 	Node("Rect")
 {
-	VAO, VBO, EBO = 0;
-
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);
 	rect.setHeight(160);
@@ -1368,66 +1324,16 @@ NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
 	vert_c = DATA_I("C", Variable(F64_V2( 100,  100)));
 	vert_d = DATA_I("D", Variable(F64_V2( 100, -100)));
 	color  = DATA_I("Color", Variable(Color(1, 1, 1, 1)));
-
-	init();
-}
-
-void NODES::RENDERING::DIM_2D::Rectangle::init() {
-	const GLfloat vertices[8] = { 0 };
-	const GLuint indices[6] = {
-		0, 1, 2,
-		0, 2, 3
-	};
-	GL->glGenVertexArrays(1, &VAO);
-	GL->glGenBuffers(1, &VBO);
-	GL->glGenBuffers(1, &EBO);
-
-	GL->glBindVertexArray(VAO);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-	GL->glEnableVertexAttribArray(0);
-
-	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
-	GL->glBindVertexArray(0);
 }
 
 void NODES::RENDERING::DIM_2D::Rectangle::render() {
-	// Update vertices
-	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
-	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
-	const auto v3      = to_F32(vert_c->GET_DATA(F64_V2));
-	const auto v4      = to_F32(vert_d->GET_DATA(F64_V2));
-	const auto u_color = color ->GET_DATA(Color).rgba_32();
+	const auto v1 = to_F32(vert_a->GET_DATA(F64_V2));
+	const auto v2 = to_F32(vert_b->GET_DATA(F64_V2));
+	const auto v3 = to_F32(vert_c->GET_DATA(F64_V2));
+	const auto v4 = to_F32(vert_d->GET_DATA(F64_V2));
+	const auto u_color = color->GET_DATA(Color);
 
-	const GLfloat vertices[8] = {
-		v1.x, v1.y,
-		v2.x, v2.y,
-		v3.x, v3.y,
-		v4.x, v4.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-	// Render
-	const GLuint Shader = SESSION->viewport->SP_2D_Rectangle;
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
-
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(u_color));
-
-	GL->glBindVertexArray(VAO);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+	RENDER::Dim_2D::Rectangle(v1, v2, v3, v4, u_color);
 }
 
 void NODES::RENDERING::DIM_2D::Rectangle::exec(const Port* port) {

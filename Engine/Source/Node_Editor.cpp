@@ -3,7 +3,9 @@
 #include "Session.hpp"
 
 Node_Editor::Node_Editor(QWidget* parent) :
-	GUI::Graphics_View(parent)
+	GUI::Graphics_View(parent),
+	moving(false),
+	selecting(false)
 {
 	scene = new GUI::Graphics_Scene(this);
 	setScene(scene);
