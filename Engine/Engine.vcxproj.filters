@@ -72,13 +72,13 @@
     <ClCompile Include="Source\History_View.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Euler_Tick.cpp" />
     <ClCompile Include="Source\Nodes\Exec\Subsample.cpp" />
-    <ClCompile Include="Source\Rendering\2D\Circle.cpp" />
-    <ClCompile Include="Source\Rendering\2D\Line.cpp" />
-    <ClCompile Include="Source\Rendering\2D\Rectangle.cpp" />
-    <ClCompile Include="Source\Rendering\2D\Triangle.cpp" />
-    <ClCompile Include="Source\Variables\Set.cpp" />
-    <ClCompile Include="Source\Variables\Get.cpp" />
-    <ClCompile Include="Source\Variables\Constant.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\2D\Circle.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\2D\Line.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\2D\Rectangle.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\2D\Triangle.cpp" />
+    <ClCompile Include="Source\Nodes\Variables\Set.cpp" />
+    <ClCompile Include="Source\Nodes\Variables\Get.cpp" />
+    <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
   </ItemGroup>
   <ItemGroup>

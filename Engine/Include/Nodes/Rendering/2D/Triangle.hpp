@@ -10,13 +10,13 @@ namespace NODES {
 	namespace RENDERING {
 		namespace DIM_2D {
 			struct Triangle : Node {
-				PORT::Exec_I* exec_in;
-				PORT::Exec_O* exec_out;
+				Ptr_U<PORT::Exec_I> exec_in;
+				Ptr_U<PORT::Exec_O> exec_out;
 
-				PORT::Data_I* vert_a;
-				PORT::Data_I* vert_b;
-				PORT::Data_I* vert_c;
-				PORT::Data_I* color;
+				Ptr_U<PORT::Data_I> vert_a;
+				Ptr_U<PORT::Data_I> vert_b;
+				Ptr_U<PORT::Data_I> vert_c;
+				Ptr_U<PORT::Data_I> color;
 
 				Triangle();
 

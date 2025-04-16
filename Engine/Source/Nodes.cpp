@@ -295,12 +295,12 @@ NODES::BOOLEAN::Compare::Compare() :
 }
 
 bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
-	if (port == out) {
+	if (port == out.get()) {
 		return true;
 	}
 
 	const VAR_TYPE incoming_type = conn->getDataO()->var_type;
-	if (port == in_a) {
+	if (port == in_a.get()) {
 		if (!in_b->connected()) {
 			in_a->setType(incoming_type);
 			in_b->setType(incoming_type);
@@ -311,7 +311,7 @@ bool NODES::BOOLEAN::Compare::onConnRequested(Port* port, Connection* conn) {
 			return true;
 		}
 	}
-	if (port == in_b) {
+	if (port == in_b.get()) {
 		if (!in_a->connected()) {
 			in_a->setType(incoming_type);
 			in_b->setType(incoming_type);

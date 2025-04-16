@@ -11,12 +11,8 @@ Node::Node(const QString& label) :
 }
 
 Node::~Node() {
-	for (NODE::Port* port : inputs) {
-		delete port;
-	}
-	for (NODE::Port* port : outputs) {
-		delete port;
-	}
+	inputs.clear();
+	outputs.clear();
 }
 
 void Node::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
@@ -110,10 +106,7 @@ NODE::Connection::Connection(Port* port_l, Port* port_r) :
 NODE::Connection::~Connection() {
 	if (port_r and port_l) {
 		if (auto port = dynamic_cast<PORT::Exec_I*>(port_r)) {
-			auto it = std::find(port->connections.begin(), port->connections.end(), this);
-			if (it != port->connections.end()) {
-				port->connections.erase(it);
-			}
+			port->connections.remove(this);
 		}
 		if (auto port = dynamic_cast<PORT::Exec_O*>(port_l)) {
 			port->connection = nullptr;
@@ -122,10 +115,7 @@ NODE::Connection::~Connection() {
 			port->connection = nullptr;
 		}
 		if (auto port = dynamic_cast<PORT::Data_O*>(port_l)) {
-			auto it = std::find(port->connections.begin(), port->connections.end(), this);
-			if (it != port->connections.end()) {
-				port->connections.erase(it);
-			}
+			port->connections.remove(this);
 		}
 	}
 }
@@ -204,7 +194,7 @@ NODE::PORT::Exec_I::Exec_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label)
 {
-	parent->inputs.push_back(this);
+	parent->inputs.push(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
@@ -241,17 +231,16 @@ NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
 	label(label),
 	connection(nullptr)
 {
-	parent->outputs.push_back(this);
+	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
 NODE::PORT::Exec_O::~Exec_O() {
 	if (connection) {
 		Exec_I* port = static_cast<Exec_I*>(connection->port_r);
-		port->connections.erase(std::find(port->connections.begin(), port->connections.end(), connection));
+		port->connections.remove(connection.get());
 
-		delete connection;
-		connection = nullptr;
+		connection.reset();
 	}
 }
 
@@ -292,7 +281,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	onTypeChanged(nullptr),
 	connection(nullptr)
 {
-	parent->inputs.push_back(this);
+	parent->inputs.push(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
@@ -305,7 +294,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::T
 	onTypeChanged(nullptr),
 	connection(nullptr)
 {
-	parent->inputs.push_back(this);
+	parent->inputs.push(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
@@ -318,17 +307,16 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& d
 	onTypeChanged(nullptr),
 	connection(nullptr)
 {
-	parent->inputs.push_back(this);
+	parent->inputs.push(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
 NODE::PORT::Data_I::~Data_I() {
 	if (connection) {
 		if (Data_O* port = dynamic_cast<Data_O*>(connection->port_r)) {
-			port->connections.erase(std::find(port->connections.begin(), port->connections.end(), connection));
+			port->connections.remove(connection.get());
 		}
-		delete connection;
-		connection = nullptr;
+		connection.reset();
 	}
 }
 
@@ -411,7 +399,7 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	color(VARIABLE::toColor(var_type)),
 	onTypeChanged(nullptr)
 {
-	parent->outputs.push_back(this);
+	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
@@ -422,7 +410,7 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::T
 	color(VARIABLE::toColor(var_type)),
 	onTypeChanged(nullptr)
 {
-	parent->outputs.push_back(this);
+	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 

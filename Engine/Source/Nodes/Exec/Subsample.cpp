@@ -12,11 +12,11 @@ void NODES::EXEC::Subsample::exec(const Port* port) {
 }
 
 Variable NODES::EXEC::Subsample::getData(const Port* port) const {
-	if (port == o_delta)
+	if (port == o_delta.get())
 		return Variable(delta);
-	if (port == o_calls)
+	if (port == o_calls.get())
 		return Variable(SESSION->current_frame);
-	if (port == o_runtime)
+	if (port == o_runtime.get())
 		return Variable(chrono::duration<double>(NOW - SESSION->start).count());
 	return Variable();
 }

@@ -9,7 +9,7 @@ using namespace NODE;
 namespace NODES {
 	namespace VARIABLES {
 		struct Constant : Node {
-			PORT::Data_O* out;
+			Ptr_U<PORT::Data_O> out;
 
 			CORE::Stack<GUI::Graphics_Widget*> proxies;
 			GUI::Options* enums;

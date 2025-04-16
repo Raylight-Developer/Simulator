@@ -21,9 +21,8 @@ struct Node : Self<Node>, QGraphicsItem {
 	QString label;
 	QRectF rect;
 
-	vector<Node*> children;
-	vector<NODE::Port*> inputs;
-	vector<NODE::Port*> outputs;
+	CORE::Stack<NODE::Port*> inputs;
+	CORE::Stack<NODE::Port*> outputs;
 
 	Node(const QString& label = "NODE");
 	~Node();
@@ -38,13 +37,13 @@ struct Node : Self<Node>, QGraphicsItem {
 namespace NODE {
 	struct Port : QGraphicsItem {
 		Node* node;
-
 		QRectF rect;
-
-		Port(Node* node);
 
 		function<bool(Port*, Connection*)> onConnRequested;
 		function<void(Port*)> onDisconnection;
+
+		Port(Node* node);
+
 		virtual bool requestConnection(Connection* connection);
 		void disconnect();
 
@@ -59,7 +58,7 @@ namespace NODE {
 		QPointF pos_r;
 
 		QColor color;
-		vector<QGraphicsItem*> reroutes;
+		CORE::Stack<QGraphicsItem*> reroutes;
 
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
@@ -81,7 +80,7 @@ namespace NODE {
 		struct Exec_I : Port {
 			const QString label;
 
-			vector<Connection*> connections;
+			CORE::Stack<Connection*> connections;
 
 			Exec_I(Node* parent, const QString& label);
 			~Exec_I();
@@ -93,7 +92,7 @@ namespace NODE {
 		struct Exec_O : Port {
 			const QString label;
 
-			Connection* connection;
+			Ptr_U<Connection> connection;
 
 			Exec_O(Node* parent, const QString& label);
 			~Exec_O();
@@ -110,7 +109,7 @@ namespace NODE {
 			Variable variable;
 			QColor color;
 
-			Connection* connection;
+			Ptr_U<Connection> connection;
 
 			Data_I(Node* parent, const QString& label);
 			Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type);
@@ -132,7 +131,7 @@ namespace NODE {
 			VARIABLE::Type var_type;
 			QColor color;
 
-			vector<Connection*> connections;
+			CORE::Stack<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
 			Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type);
@@ -149,10 +148,10 @@ namespace NODE {
 	}
 }
 
-#define DATA_I(label, type) new PORT::Data_I(this, label, type);
-#define DATA_O(label, type) new PORT::Data_O(this, label, type);
-#define EXEC_I(label) new PORT::Exec_I(this, label);
-#define EXEC_O(label) new PORT::Exec_O(this, label);
+#define DATA_I(label, type) make_unique<PORT::Data_I>(this, label, type);
+#define DATA_O(label, type) make_unique<PORT::Data_O>(this, label, type);
+#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label);
+#define EXEC_O(label) make_unique<PORT::Exec_O>(this, label);
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
 #define GET_DATA(type) getData().get<type>()

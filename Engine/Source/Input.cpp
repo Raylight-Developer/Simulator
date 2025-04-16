@@ -49,6 +49,10 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 					return false;
 				}
 			}
+			else if (key_event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) and key == Qt::Key::Key_Z) {
+				H_REDO;
+				return false;
+			}
 		}
 	}
 	else if (event->type() == QEvent::KeyRelease) {

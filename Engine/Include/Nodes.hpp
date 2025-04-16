@@ -127,9 +127,9 @@ namespace NODES {
 	namespace CAST {
 		namespace MAKE {
 			struct Vec2 : Node {
-				PORT::Data_I* i_x;
-				PORT::Data_I* i_y;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_x;
+				Ptr_U<PORT::Data_I> i_y;
+				Ptr_U<PORT::Data_O> out;
 
 				Vec2();
 
@@ -137,10 +137,10 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Vec3 : Node {
-				PORT::Data_I* i_x;
-				PORT::Data_I* i_y;
-				PORT::Data_I* i_z;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_x;
+				Ptr_U<PORT::Data_I> i_y;
+				Ptr_U<PORT::Data_I> i_z;
+				Ptr_U<PORT::Data_O> out;
 
 				Vec3();
 
@@ -148,11 +148,11 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Vec4 : Node {
-				PORT::Data_I* i_x;
-				PORT::Data_I* i_y;
-				PORT::Data_I* i_z;
-				PORT::Data_I* i_w;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_x;
+				Ptr_U<PORT::Data_I> i_y;
+				Ptr_U<PORT::Data_I> i_z;
+				Ptr_U<PORT::Data_I> i_w;
+				Ptr_U<PORT::Data_O> out;
 
 				Vec4();
 
@@ -160,11 +160,11 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Quat : Node {
-				PORT::Data_I* i_w;
-				PORT::Data_I* i_x;
-				PORT::Data_I* i_y;
-				PORT::Data_I* i_z;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_w;
+				Ptr_U<PORT::Data_I> i_x;
+				Ptr_U<PORT::Data_I> i_y;
+				Ptr_U<PORT::Data_I> i_z;
+				Ptr_U<PORT::Data_O> out;
 
 				Quat();
 
@@ -172,9 +172,9 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Mat2 : Node {
-				PORT::Data_I* i_a;
-				PORT::Data_I* i_b;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_a;
+				Ptr_U<PORT::Data_I> i_b;
+				Ptr_U<PORT::Data_O> out;
 
 				Mat2();
 
@@ -182,10 +182,10 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Mat3 : Node {
-				PORT::Data_I* i_a;
-				PORT::Data_I* i_b;
-				PORT::Data_I* i_c;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_a;
+				Ptr_U<PORT::Data_I> i_b;
+				Ptr_U<PORT::Data_I> i_c;
+				Ptr_U<PORT::Data_O> out;
 
 				Mat3();
 
@@ -193,11 +193,11 @@ namespace NODES {
 				Variable getData(const Port* port) const override;
 			};
 			struct Mat4 : Node {
-				PORT::Data_I* i_a;
-				PORT::Data_I* i_b;
-				PORT::Data_I* i_c;
-				PORT::Data_I* i_d;
-				PORT::Data_O* out;
+				Ptr_U<PORT::Data_I> i_a;
+				Ptr_U<PORT::Data_I> i_b;
+				Ptr_U<PORT::Data_I> i_c;
+				Ptr_U<PORT::Data_I> i_d;
+				Ptr_U<PORT::Data_O> out;
 
 				Mat4();
 
@@ -208,9 +208,9 @@ namespace NODES {
 	}
 
 	struct Arithmetic : Node {
-		PORT::Data_I* i_a;
-		PORT::Data_I* i_b;
-		PORT::Data_O* out;
+		Ptr_U<PORT::Data_I> i_a;
+		Ptr_U<PORT::Data_I> i_b;
+		Ptr_U<PORT::Data_O> out;
 
 		GUI::Options* enums;
 
@@ -225,8 +225,8 @@ namespace NODES {
 		};
 	};
 	struct Trigonometry : Node {
-		PORT::Data_I* in;
-		PORT::Data_O* out;
+		Ptr_U<PORT::Data_I> in;
+		Ptr_U<PORT::Data_O> out;
 
 		GUI::Options* enums;
 
@@ -243,9 +243,9 @@ namespace NODES {
 
 	namespace BOOLEAN {
 		struct Compare : Node {
-			PORT::Data_I* in_a;
-			PORT::Data_I* in_b;
-			PORT::Data_O* out;
+			Ptr_U<PORT::Data_I> in_a;
+			Ptr_U<PORT::Data_I> in_b;
+			Ptr_U<PORT::Data_O> out;
 
 			GUI::Options* enums;
 
@@ -264,29 +264,29 @@ namespace NODES {
 			};
 		};
 		struct If : Node {
-			PORT::Exec_I* in;
-			PORT::Data_I* condition;
-			PORT::Exec_O* out;
+			Ptr_U<PORT::Exec_I> in;
+			Ptr_U<PORT::Data_I> condition;
+			Ptr_U<PORT::Exec_O> out;
 
 			If();
 
 			void exec(const Port* port) override;
 		};
 		struct If_Else : Node {
-			PORT::Exec_I* in;
-			PORT::Data_I* condition;
-			PORT::Exec_O* out_a;
-			PORT::Exec_O* out_b;
+			Ptr_U<PORT::Exec_I> in;
+			Ptr_U<PORT::Data_I> condition;
+			Ptr_U<PORT::Exec_O> out_a;
+			Ptr_U<PORT::Exec_O> out_b;
 
 			If_Else();
 
 			void exec(const Port* port) override;
 		};
 		struct Select : Node {
-			PORT::Data_I* condition;
-			PORT::Data_I* i_true;
-			PORT::Data_I* i_false;
-			PORT::Data_O* out;
+			Ptr_U<PORT::Data_I> condition;
+			Ptr_U<PORT::Data_I> i_true;
+			Ptr_U<PORT::Data_I> i_false;
+			Ptr_U<PORT::Data_O> out;
 
 			Select();
 
@@ -299,18 +299,18 @@ namespace NODES {
 
 	namespace EXEC {
 		struct Input_Key : Node {
-			PORT:: Exec_O* exec_press;
-			PORT:: Exec_O* exec_release;
-			PORT:: Data_O* key;
+			Ptr_U<PORT::Exec_O> exec_press;
+			Ptr_U<PORT::Exec_O> exec_release;
+			Ptr_U<PORT::Data_O> key;
 
 			Input_Key();
 
 			Variable getData(const Port* port) const override;
 		};
 		struct Input_Mouse : Node {
-			PORT:: Exec_O* exec_press;
-			PORT:: Exec_O* exec_release;
-			PORT:: Data_O* button;
+			Ptr_U<PORT::Exec_O> exec_press;
+			Ptr_U<PORT::Exec_O> exec_release;
+			Ptr_U<PORT::Data_O> button;
 
 			Input_Mouse();
 
@@ -320,19 +320,19 @@ namespace NODES {
 
 	namespace SINGLETON {
 		struct Camera_2D : Node {
-			PORT:: Exec_I* exec_in;
-			PORT:: Exec_O* exec_out;
+			Ptr_U<PORT::Exec_I> exec_in;
+			Ptr_U<PORT::Exec_O> exec_out;
 
-			PORT:: Data_I* center;
-			PORT:: Data_I* zoom;
+			Ptr_U<PORT::Data_I> center;
+			Ptr_U<PORT::Data_I> zoom;
 
 			Camera_2D();
 
 			void exec(const Port* port) override;
 		};
 		struct Camera_3D : Node {
-			PORT:: Exec_I* exec_in;
-			PORT:: Exec_O* exec_out;
+			Ptr_U<PORT::Exec_I> exec_in;
+			Ptr_U<PORT::Exec_O> exec_out;
 
 			Camera_3D();
 

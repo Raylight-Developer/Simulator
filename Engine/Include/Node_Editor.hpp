@@ -16,7 +16,7 @@ struct Node_Editor : GUI::Graphics_View {
 
 	QPointF selection_start;
 	QGraphicsRectItem* selection_rect;
-	NODE::Connection* creating_connection;
+	Ptr_U<NODE::Connection> creating_connection;
 
 	vector<Node*> selection;
 
