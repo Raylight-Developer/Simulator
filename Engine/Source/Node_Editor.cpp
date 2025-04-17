@@ -82,14 +82,19 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 	}
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (moving) {
+			U32 count = 0;
 			for (Node* node : selection) {
 				const QPointF from = node_move_start_pos[node];
 				const QPointF delta = from + mapToScene(event->pos()) - l_mouse_down;
 				const F64_V2 to = F64_V2(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
-				h_moveNode(node->shared_from_this(), F64_V2(from.x(), from.y()), to);
+				const F64_V2 r_from = F64_V2(MATH::roundToNearest(from.x(), 10.0), MATH::roundToNearest(from.y(), 10.0));
+				if (to != r_from) {
+					h_moveNode(node->shared_from_this(), F64_V2(from.x(), from.y()), to);
+					count++;
+				}
 			}
-			if (!selection.empty()) {
-				H_GROUP(to_U16(selection.size()));
+			if (count > 0) {
+				H_GROUP(count);
 			}
 		}
 		moving = false;
@@ -115,10 +120,16 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_O) {
 						auto source_port = static_cast<NODE::PORT::Data_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
-							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
-								connectPorts(source_port, drop_port);
-								//H_GROUP(1);
+							if (drop_port->canConnect(source_port)) {
+								if (drop_port->connected()) {
+									h_disconnectPort(drop_port);
+									h_connectPorts(source_port, drop_port);
+									H_GROUP(2);
+								}
+								else {
+									h_connectPorts(source_port, drop_port);
+									H_GROUP(1);
+								}
 							}
 						}
 					}
@@ -128,10 +139,16 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_I) {
 						auto source_port = static_cast<NODE::PORT::Data_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
-							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
-								connectPorts(drop_port, source_port);
-								//H_GROUP(1);
+							if (source_port->canConnect(drop_port)) {
+								if (source_port->connected()) {
+									h_disconnectPort(source_port);
+									h_connectPorts(drop_port, source_port);
+									H_GROUP(2);
+								}
+								else {
+									h_connectPorts(drop_port, source_port);
+									H_GROUP(1);
+								}
 							}
 						}
 					}
@@ -141,10 +158,16 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_EXEC_I) {
 						auto source_port = static_cast<NODE::PORT::Exec_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
-							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
-								connectPorts(drop_port, source_port);
-								//H_GROUP(1);
+							if (drop_port->canConnect(source_port)) {
+								if (drop_port->connected()) {
+									h_disconnectPort(drop_port);
+									h_connectPorts(drop_port, source_port);
+									H_GROUP(2);
+								}
+								else {
+									h_connectPorts(drop_port, source_port);
+									H_GROUP(1);
+								}
 							}
 						}
 					}
@@ -154,10 +177,16 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_EXEC_O) {
 						auto source_port = static_cast<NODE::PORT::Exec_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
-							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
-								connectPorts(source_port, drop_port);
-								//H_GROUP(1);
+							if (source_port->canConnect(drop_port)) {
+								if (source_port->connected()) {
+									h_disconnectPort(source_port);
+									h_connectPorts(source_port, drop_port);
+									H_GROUP(2);
+								}
+								else {
+									h_connectPorts(source_port, drop_port);
+									H_GROUP(1);
+								}
 							}
 						}
 					}
@@ -176,30 +205,30 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
 			const int type = item->type();
-			// TODO escape key cancel
+			// TODO escape key cancel creating conn or lifting conn
 			if (IS_PORT(type)) {
 				if (type == Graphics_Item_Type::E_DATA_I) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
 					if (port_r->var_type != VARIABLE::Type::BLOCKED) {
-						if (!port_r->connection) {
+						if (!port_r->connected()) {
 							creating_connection = make_unique<NODE::Connection>(port_r);
 						}
 						else {
-							auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
-							//port_r->connection.reset(); // TODO deleteConn
-							creating_connection = make_unique<NODE::Connection>(port_l);
+							h_disconnectPort(port_r);
+							H_GROUP(1);
+							creating_connection = make_unique<NODE::Connection>(port_r);
 						}
 					}
 				}
-				else if (type == Graphics_Item_Type::E_EXEC_O) { // TODO Modify lift connection behavior
+				else if (type == Graphics_Item_Type::E_EXEC_O) {
 					auto port_l = static_cast<NODE::PORT::Exec_O*>(item);
-					if (!port_l->connection) {
+					if (!port_l->connected()) {
 						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
 					else {
-						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
-						//port_l->connection.reset(); // TODO deleteConn
-						creating_connection = make_unique<NODE::Connection>(port_r);
+						h_disconnectPort(port_l);
+						H_GROUP(1);
+						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
 				}
 				else if (type == Graphics_Item_Type::E_DATA_O) {
@@ -273,8 +302,8 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 			if (IS_PORT(item->type())) {
 				NODE::Port* port = static_cast<NODE::Port*>(item);
 				if (port->connected()) {
-					disconnectPort(port);
-					//H_GROUP(1);
+					h_disconnectPort(port);
+					H_GROUP(1);
 				}
 			}
 		}
@@ -523,7 +552,29 @@ void Node_Editor::connectPorts(Port* port_l, Port* port_r) {
 }
 
 void Node_Editor::disconnectPort(Port* port) {
-	port->disconnect();
+	const int type = port->type();
+	switch (type) {
+		case Graphics_Item_Type::E_DATA_I: {
+			auto port_r = static_cast<NODE::PORT::Data_I*>(port);
+			port_r->disconnect();
+			break;
+		}
+		case Graphics_Item_Type::E_DATA_O: {
+			auto port_l = static_cast<NODE::PORT::Data_O*>(port);
+			port_l->disconnect();
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_O: {
+			auto port_l = static_cast<NODE::PORT::Exec_O*>(port);
+			port_l->disconnect();
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_I: {
+			auto port_r = static_cast<NODE::PORT::Exec_I*>(port);
+			port_r->disconnect();
+			break;
+		}
+	}
 }
 
 void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {

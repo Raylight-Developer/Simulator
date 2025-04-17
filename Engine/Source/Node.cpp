@@ -215,37 +215,39 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& d
 }
 
 NODE::PORT::Data_I::~Data_I() {
-	disconnect();
+	if (connected()) {
+		disconnect();
+	}
 }
 
 bool NODE::PORT::Data_I::connected() const {
 	return connection != nullptr;
 }
 
-void NODE::PORT::Data_I::connect(Data_O* port) {
-	auto temp = Connection(port, this);
-	if (requestConnection(&temp) and port->requestConnection(&temp)) {
-		if (connection) {
-			disconnect();
-		}
-		connection = make_unique<Connection>(port, this);
-		port->connections.push(connection.get());
+bool NODE::PORT::Data_I::canConnect(Data_O* port) {
+	auto temp = make_unique<Connection>(port, this);
+	if (port->requestConnection(temp.get()) and requestConnection(temp.get())) {
+		return true;
 	}
+	return false;
+}
+
+void NODE::PORT::Data_I::connect(Data_O* port) {
+	connection = make_unique<Connection>(port, this);
+	port->connections.push(connection.get());
 }
 
 void NODE::PORT::Data_I::disconnect() {
-	if (connection) {
-		auto port_l = connection->getDataO();
-		port_l->connections.remove(connection.get());
-		connection.reset();
+	auto port_l = connection->getDataO();
+	port_l->connections.remove(connection.get());
+	connection.reset();
 
-		if (port_l->onDisconnection) {
-			port_l->onDisconnection(this);
-		}
+	if (port_l->onDisconnection) {
+		port_l->onDisconnection(this);
+	}
 
-		if (onDisconnection) {
-			onDisconnection(this);
-		}
+	if (onDisconnection) {
+		onDisconnection(this);
 	}
 }
 
@@ -344,7 +346,9 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::T
 }
 
 NODE::PORT::Data_O::~Data_O() {
-	disconnect();
+	if (connected()) {
+		disconnect();
+	}
 }
 
 void NODE::PORT::Data_O::disconnect() {
@@ -444,37 +448,39 @@ NODE::PORT::Exec_O::Exec_O(Node* parent, const QString& label) :
 }
 
 NODE::PORT::Exec_O::~Exec_O() {
-	disconnect();
+	if (connected()) {
+		disconnect();
+	}
 }
 
 bool NODE::PORT::Exec_O::connected() const {
 	return connection != nullptr;
 }
 
-void NODE::PORT::Exec_O::connect(Exec_I* port) {
-	auto temp = Connection(this, port);
-	if (requestConnection(&temp) and port->requestConnection(&temp)) {
-		if (connection) {
-			disconnect();
-		}
-		connection = make_unique<Connection>(this, port);
-		port->connections.push(connection.get());
+bool NODE::PORT::Exec_O::canConnect(Exec_I* port) {
+	auto temp = make_unique<Connection>(this, port);
+	if (requestConnection(temp.get()) and port->requestConnection(temp.get())) {
+		return true;
 	}
+	return false;
+}
+
+void NODE::PORT::Exec_O::connect(Exec_I* port) {
+	connection = make_unique<Connection>(this, port);
+	port->connections.push(connection.get());
 }
 
 void NODE::PORT::Exec_O::disconnect() {
-	if (connection) {
-		auto port_r = connection->getExecI();
-		port_r->connections.remove(connection.get());
-		connection.reset();
+	auto port_r = connection->getExecI();
+	port_r->connections.remove(connection.get());
+	connection.reset();
 
-		if (port_r->onDisconnection) {
-			port_r->onDisconnection(this);
-		}
+	if (port_r->onDisconnection) {
+		port_r->onDisconnection(this);
+	}
 
-		if (onDisconnection) {
-			onDisconnection(this);
-		}
+	if (onDisconnection) {
+		onDisconnection(this);
 	}
 }
 
@@ -515,7 +521,9 @@ NODE::PORT::Exec_I::Exec_I(Node* parent, const QString& label) :
 }
 
 NODE::PORT::Exec_I::~Exec_I() {
-	disconnect();
+	if (connected()) {
+		disconnect();
+	}
 }
 
 void NODE::PORT::Exec_I::disconnect() {

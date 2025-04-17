@@ -16,6 +16,8 @@ struct Node_Editor : GUI::Graphics_View {
 
 	QPointF selection_start;
 	QGraphicsRectItem* selection_rect;
+
+	Ptr_U<NODE::Connection> lifting_connection;
 	Ptr_U<NODE::Connection> creating_connection;
 
 	vector<Node*> selection;
@@ -79,7 +81,7 @@ struct Node_Editor : GUI::Graphics_View {
 	struct Connect : Self<Connect>, CORE::CMD {
 		Port* port_l;
 		Port* port_r;
-		//TODO
+
 		Connect(Port* port_l, Port* port_r);
 
 		void execute() const final override;
@@ -88,7 +90,7 @@ struct Node_Editor : GUI::Graphics_View {
 	struct Disconnect : Self<Disconnect>, CORE::CMD {
 		Port* port;
 		CORE::Stack<Port*> connections;
-		//TODO
+
 		Disconnect(Port* port);
 
 		void execute() const final override;
