@@ -96,7 +96,8 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 		setCursor(Qt::ArrowCursor);
 		if (selecting) {
 			for (auto item : scene->items(selection_rect->rect())) {
-				if (Node* node = dynamic_cast<Node*>(item)) {
+				if (item->type() == Graphics_Item_Type::E_NODE) {
+					Node* node = static_cast<Node*>(item);
 					if (!node->isSelected()) {
 						node->setSelected(true);
 						selection.push_back(node);
@@ -107,9 +108,12 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 			selection_rect->hide();
 		}
 		if (creating_connection) {
-			if (auto port = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
-				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(port)) {
-					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
+			if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
+				const int type = item->type();
+				if (type == Graphics_Item_Type::E_DATA_I) {
+					auto drop_port = static_cast<NODE::PORT::Data_I*>(item);
+					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_O) {
+						auto source_port = static_cast<NODE::PORT::Data_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
 							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
@@ -119,8 +123,10 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(port)) {
-					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
+				else if (type == Graphics_Item_Type::E_DATA_O) {
+					auto drop_port = static_cast<NODE::PORT::Data_O*>(item);
+					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_I) {
+						auto source_port = static_cast<NODE::PORT::Data_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
 							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
@@ -130,8 +136,10 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
-					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
+				else if (type == Graphics_Item_Type::E_EXEC_O) {
+					auto drop_port = static_cast<NODE::PORT::Exec_O*>(item);
+					if (creating_connection->port_l->type() == Graphics_Item_Type::E_EXEC_I) {
+						auto source_port = static_cast<NODE::PORT::Exec_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
 							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
@@ -141,8 +149,10 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
-					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
+				else if (type == Graphics_Item_Type::E_EXEC_I) {
+					auto drop_port = static_cast<NODE::PORT::Exec_I*>(item);
+					if (creating_connection->port_l->type() == Graphics_Item_Type::E_EXEC_O) {
+						auto source_port = static_cast<NODE::PORT::Exec_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
 							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
@@ -152,12 +162,12 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 						}
 					}
 				}
-			}
-			else {
-				// TODO create context nodes
+				else {
+					// TODO create context monu for available nodes
+				}
 			}
 			creating_connection.reset();
-		};
+		}
 	}
 	GUI::Graphics_View::mouseReleaseEvent(event);
 }
@@ -165,9 +175,11 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 void Node_Editor::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::LeftButton) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
+			const int type = item->type();
 			// TODO escape key cancel
-			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
-				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
+			if (IS_PORT(type)) {
+				if (type == Graphics_Item_Type::E_DATA_I) {
+					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
 					if (port_r->var_type != VARIABLE::Type::BLOCKED) {
 						if (!port_r->connection) {
 							creating_connection = make_unique<NODE::Connection>(port_r);
@@ -179,7 +191,8 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						}
 					}
 				}
-				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) { // TODO Modify lift connection behavior
+				else if (type == Graphics_Item_Type::E_EXEC_O) { // TODO Modify lift connection behavior
+					auto port_l = static_cast<NODE::PORT::Exec_O*>(item);
 					if (!port_l->connection) {
 						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
@@ -189,16 +202,19 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						creating_connection = make_unique<NODE::Connection>(port_r);
 					}
 				}
-				else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
+				else if (type == Graphics_Item_Type::E_DATA_O) {
+					auto port_l = static_cast<NODE::PORT::Data_O*>(item);
 					if (port_l->var_type != VARIABLE::Type::BLOCKED) {
-						creating_connection = make_unique<NODE::Connection>(port);
+						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
 				}
 				else {
+					auto port = static_cast<NODE::Port*>(item);
 					creating_connection = make_unique<NODE::Connection>(port);
 				}
 			}
-			else if (Node* node = dynamic_cast<Node*>(item)) {
+			if (type == Graphics_Item_Type::E_NODE) {
+				Node* node = static_cast<Node*>(item);
 				moving = true;
 				setCursor(Qt::ClosedHandCursor);
 				if (event->modifiers() & Qt::KeyboardModifier::ShiftModifier) {
@@ -254,7 +270,8 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 	if (event->modifiers() & Qt::KeyboardModifier::AltModifier) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
-			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
+			if (IS_PORT(item->type())) {
+				NODE::Port* port = static_cast<NODE::Port*>(item);
 				if (port->connected()) {
 					disconnectPort(port);
 					//H_GROUP(1);
@@ -339,6 +356,7 @@ void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
 
 void Node_Editor::dropEvent(QDropEvent* event) {
 	const QPointF drop_pos = d_to_p(MATH::roundToNearest(p_to_d(mapToScene(event->position().toPoint())), 10.0));
+	auto under_mouse = scene->itemAt(mapToScene(event->position().toPoint()), transform());
 	if (event->mimeData()->hasText()) {
 		Ptr_S<Node> node;
 
@@ -437,12 +455,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
-				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
+				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(under_mouse)) {
 					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
 					SESSION->variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
-				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(scene->itemAt(mapToScene(event->position().toPoint()), transform()))) {
+				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(under_mouse)) {
 					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
 					SESSION->variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
@@ -492,15 +510,15 @@ void Node_Editor::deleteNode(Ptr_S<Node> node) {
 }
 
 void Node_Editor::connectPorts(Port* port_l, Port* port_r) {
-	if (auto d_port_r = dynamic_cast<PORT::Data_I*>(port_r)) {
-		if (auto d_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
-			d_port_r->connect(d_port_l);
-		}
+	if (port_r->type() == Graphics_Item_Type::E_DATA_I) {
+		auto d_port_r = static_cast<PORT::Data_I*>(port_r);
+		auto d_port_l = static_cast<PORT::Data_O*>(port_l);
+		d_port_r->connect(d_port_l);
 	}
-	else if (auto d_port_l = dynamic_cast<PORT::Exec_O*>(port_l)) {
-		if (auto d_port_r = dynamic_cast<PORT::Exec_I*>(port_r)) {
-			d_port_l->connect(d_port_r);
-		}
+	else {
+		auto d_port_l = static_cast<PORT::Exec_O*>(port_l);
+		auto d_port_r = static_cast<PORT::Exec_I*>(port_r);
+		d_port_l->connect(d_port_r);
 	}
 }
 
@@ -583,10 +601,12 @@ void Node_Editor::Connect::execute() const {
 }
 
 void Node_Editor::Connect::undo() {
-	if (auto d_port_r = dynamic_cast<NODE::PORT::Data_I*>(port_r)) {
+	if (port_r->type() == Graphics_Item_Type::E_DATA_I) {
+		auto d_port_r = static_cast<NODE::PORT::Data_I*>(port_r);
 		d_port_r->disconnect();
 	}
-	else if (auto d_port_l = dynamic_cast<NODE::PORT::Exec_O*>(port_l)) {
+	else {
+		auto d_port_l = static_cast<NODE::PORT::Exec_O*>(port_l);
 		d_port_l->disconnect();
 	}
 }
@@ -595,20 +615,31 @@ Node_Editor::Disconnect::Disconnect(Port* port) :
 	CORE::CMD("Disconnect Nodes"),
 	port(port)
 {
-	if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
+	const int type = port->type();
+	switch (type) {
+		case Graphics_Item_Type::E_DATA_I: {
+		auto port_r = static_cast<NODE::PORT::Data_I*>(port);
 		connections.push(port_r->connection->port_l);
-	}
-	else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
-		for (auto conn : port_l->connections) {
-			connections.push(conn->port_r);
+			break;
 		}
-	}
-	else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
-		connections.push(port_l->connection->port_r);
-	}
-	else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
-		for (auto conn : port_r->connections) {
-			connections.push(conn->port_l);
+		case Graphics_Item_Type::E_DATA_O: {
+			auto port_l = static_cast<NODE::PORT::Data_O*>(port);
+			for (auto conn : port_l->connections) {
+				connections.push(conn->port_r);
+			}
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_O: {
+			auto port_l = static_cast<NODE::PORT::Exec_O*>(port);
+			connections.push(port_l->connection->port_r);
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_I: {
+			auto port_r = static_cast<NODE::PORT::Exec_I*>(port);
+			for (auto conn : port_r->connections) {
+				connections.push(conn->port_l);
+			}
+			break;
 		}
 	}
 }
@@ -618,20 +649,31 @@ void Node_Editor::Disconnect::execute() const {
 }
 
 void Node_Editor::Disconnect::undo() {
-	if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
-		editor_ptr->connectPorts(connections[0], port_r);
-	}
-	else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
-		for (auto conn : connections) {
-			editor_ptr->connectPorts(port_l, conn);
+	const int type = port->type();
+	switch (type) {
+		case Graphics_Item_Type::E_DATA_I: {
+			auto port_r = static_cast<NODE::PORT::Data_I*>(port);
+			editor_ptr->connectPorts(connections[0], port_r);
+			break;
 		}
-	}
-	else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
-		editor_ptr->connectPorts(port_l, connections[0]);
-	}
-	else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
-		for (auto conn : connections) {
-			editor_ptr->connectPorts(conn, port_r);
+		case Graphics_Item_Type::E_DATA_O: {
+			auto port_l = static_cast<NODE::PORT::Data_O*>(port);
+			for (auto conn : connections) {
+				editor_ptr->connectPorts(port_l, conn);
+			}
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_O: {
+			auto port_l = static_cast<NODE::PORT::Exec_O*>(port);
+			editor_ptr->connectPorts(port_l, connections[0]);
+			break;
+		}
+		case Graphics_Item_Type::E_EXEC_I: {
+			auto port_r = static_cast<NODE::PORT::Exec_I*>(port);
+			for (auto conn : connections) {
+				editor_ptr->connectPorts(conn, port_r);
+			}
+			break;
 		}
 	}
 }

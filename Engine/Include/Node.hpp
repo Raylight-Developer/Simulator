@@ -16,6 +16,16 @@ namespace NODE {
 	}
 }
 
+enum Graphics_Item_Type {
+	E_NODE   = QGraphicsItem::UserType + 1,
+	E_CONN   = QGraphicsItem::UserType + 2,
+	E_DATA_I = QGraphicsItem::UserType + 3,
+	E_DATA_O = QGraphicsItem::UserType + 4,
+	E_EXEC_O = QGraphicsItem::UserType + 5,
+	E_EXEC_I = QGraphicsItem::UserType + 6
+};
+#define IS_PORT(type) type >= Graphics_Item_Type::E_DATA_I and type <= Graphics_Item_Type::E_EXEC_I
+
 struct Node : Self<Node>, QGraphicsItem {
 	QColor header_color;
 	QString label;
@@ -30,6 +40,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	virtual void exec(const NODE::Port* port) {}
 	virtual Variable getData(const NODE::Port* port) const { return Variable(); };
 
+	int type() const override;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 	QRectF boundingRect() const override;
 };
@@ -64,6 +75,7 @@ namespace NODE {
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
 
+		int type() const override;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		QRectF boundingRect() const override;
 
@@ -93,14 +105,14 @@ namespace NODE {
 
 			void connect(Data_O* port);
 			void disconnect() final override;
-
 			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
 			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
-
 			bool requestConnection(Connection* connection) override;
+
+			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -117,14 +129,14 @@ namespace NODE {
 			~Data_O();
 
 			void disconnect() final override;
-
 			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
 			void setType(const VARIABLE::Type& var_type);
 			Variable getData() const;
-
 			bool requestConnection(Connection* connection) override;
+
+			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -138,10 +150,11 @@ namespace NODE {
 
 			void connect(Exec_I* port);
 			void disconnect() final override;
-
 			bool connected() const final override;
 
 			void exec() const;
+
+			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -154,9 +167,9 @@ namespace NODE {
 			~Exec_I();
 
 			void disconnect() final override;
-
 			bool connected() const final override;
 
+			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 	}

@@ -15,6 +15,10 @@ Node::~Node() {
 	outputs.clear();
 }
 
+int Node::type() const {
+	return Graphics_Item_Type::E_NODE;
+}
+
 void Node::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	if (isSelected()) {
 		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
@@ -95,6 +99,10 @@ NODE::Connection::Connection(Port* port_l, Port* port_r) :
 	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
 		color = VARIABLE::toColor(t_port_l->var_type);
 	}
+}
+
+int NODE::Connection::type() const {
+	return Graphics_Item_Type::E_CONN;
 }
 
 void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
@@ -278,6 +286,10 @@ bool NODE::PORT::Data_I::requestConnection(Connection* connection) {
 	return false;
 }
 
+int NODE::PORT::Data_I::type() const {
+	return Graphics_Item_Type::E_DATA_I;
+}
+
 void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
@@ -386,6 +398,10 @@ bool NODE::PORT::Data_O::requestConnection(Connection* connection) {
 	return false;
 }
 
+int NODE::PORT::Data_O::type() const {
+	return Graphics_Item_Type::E_DATA_O;
+}
+
 void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
@@ -468,6 +484,10 @@ void NODE::PORT::Exec_O::exec() const {
 	}
 }
 
+int NODE::PORT::Exec_O::type() const {
+	return Graphics_Item_Type::E_EXEC_O;
+}
+
 void NODE::PORT::Exec_O::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(Qt::black);
 	painter->setPen(QPen(Qt::white, 1.0, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -514,6 +534,10 @@ void NODE::PORT::Exec_I::disconnect() {
 
 bool NODE::PORT::Exec_I::connected() const {
 	return !connections.empty();
+}
+
+int NODE::PORT::Exec_I::type() const {
+	return Graphics_Item_Type::E_EXEC_I;
 }
 
 void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
