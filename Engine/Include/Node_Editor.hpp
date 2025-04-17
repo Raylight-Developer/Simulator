@@ -79,7 +79,7 @@ struct Node_Editor : GUI::Graphics_View {
 	struct Connect : Self<Connect>, CORE::CMD {
 		Port* port_l;
 		Port* port_r;
-		//TODO
+
 		Connect(Port* port_l, Port* port_r);
 
 		void execute() const final override;
