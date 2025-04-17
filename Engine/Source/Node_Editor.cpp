@@ -107,60 +107,47 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 			selection_rect->hide();
 		}
 		if (creating_connection) {
-			if (auto port_r = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
-				//h_connectPorts(creating_connection->port_l, port_r);
-				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(port_r)) {
+			if (auto port = dynamic_cast<NODE::Port*>(scene->itemAt(mapToScene(event->pos()), transform()))) {
+				if (auto drop_port = dynamic_cast<NODE::PORT::Data_I*>(port)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_O*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
 							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
-								if (drop_port->connection) {
-									drop_port->connection.reset();
-								}
-								drop_port->connection = std::move(new_conn);
-								source_port->connections.push(new_conn.get());
+								connectPorts(source_port, drop_port);
+								//H_GROUP(1);
 							}
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(port_r)) {
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Data_O*>(port)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Data_I*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
 							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
-								if (source_port->connection) {
-									source_port->connection.reset();
-								}
-								source_port->connection = std::move(new_conn);
-								drop_port->connections.push(new_conn.get());
+								connectPorts(drop_port, source_port);
+								//H_GROUP(1);
 							}
 						}
 					}
 				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(port_r)) {
-					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
-						if (source_port->node != drop_port->node) {
-							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
-							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
-								if (source_port->connection) {
-									source_port->connection.reset();
-								}
-								source_port->connection = std::move(new_conn); // TODO Not Working. connection being deleted somewhere.
-								drop_port->connections.push(new_conn.get());
-							}
-						}
-					}
-				}
-				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(port_r)) {
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
 					if (auto source_port = dynamic_cast<NODE::PORT::Exec_I*>(creating_connection->port_l)) {
 						if (source_port->node != drop_port->node) {
 							auto new_conn = make_unique<NODE::Connection>(drop_port, source_port);
 							if (source_port->requestConnection(new_conn.get()) and drop_port->requestConnection(new_conn.get())) {
-								if (drop_port->connection) {
-									drop_port->connection.reset();
-								}
-								drop_port->connection = std::move(new_conn);
-								source_port->connections.push(new_conn.get());
+								connectPorts(drop_port, source_port);
+								//H_GROUP(1);
+							}
+						}
+					}
+				}
+				else if (auto drop_port = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
+					if (auto source_port = dynamic_cast<NODE::PORT::Exec_O*>(creating_connection->port_l)) {
+						if (source_port->node != drop_port->node) {
+							auto new_conn = make_unique<NODE::Connection>(source_port, drop_port);
+							if (drop_port->requestConnection(new_conn.get()) and source_port->requestConnection(new_conn.get())) {
+								connectPorts(source_port, drop_port);
+								//H_GROUP(1);
 							}
 						}
 					}
@@ -187,7 +174,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 						}
 						else {
 							auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
-							port_r->connection.reset();
+							//port_r->connection.reset(); // TODO deleteConn
 							creating_connection = make_unique<NODE::Connection>(port_l);
 						}
 					}
@@ -198,7 +185,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 					}
 					else {
 						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
-						port_l->connection.reset();
+						//port_l->connection.reset(); // TODO deleteConn
 						creating_connection = make_unique<NODE::Connection>(port_r);
 					}
 				}
@@ -268,39 +255,9 @@ void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
 	if (event->modifiers() & Qt::KeyboardModifier::AltModifier) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
 			if (NODE::Port* port = dynamic_cast<NODE::Port*>(item)) {
-				if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(item)) {
-					if (port_r->connection) {
-						auto port_l = static_cast<NODE::PORT::Data_O*>(port_r->connection->port_l);
-						port_r->connection.reset();
-						port_l->disconnect();
-						port_r->disconnect();
-					}
-				}
-				else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(item)) {
-					for (auto conn : port_l->connections) {
-						auto port_r = static_cast<NODE::PORT::Data_I*>(conn->port_r);
-						port_r->connection.reset();
-						port_r->disconnect();
-					}
-					port_l->connections.clear();
-					port_l->disconnect();
-				}
-				else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(item)) {
-					for (auto conn : port_r->connections) {
-						auto port_l = static_cast<NODE::PORT::Exec_O*>(conn->port_l);
-						port_l->connection.reset();
-						port_l->disconnect();
-					}
-					port_r->connections.clear();
-					port_r->disconnect();
-				}
-				else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(item)) {
-					if (port_l->connection) {
-						auto port_r = static_cast<NODE::PORT::Exec_I*>(port_l->connection->port_r);
-						port_l->connection.reset();
-						port_l->disconnect();
-						port_r->disconnect();
-					}
+				if (port->connected()) {
+					disconnectPort(port);
+					//H_GROUP(1);
 				}
 			}
 		}
@@ -534,12 +491,21 @@ void Node_Editor::deleteNode(Ptr_S<Node> node) {
 	editor_ptr->scene->removeItem(node.get());
 }
 
-bool Node_Editor::connectPorts(Port* port_l, Port* port_r) {
-	return false;
+void Node_Editor::connectPorts(Port* port_l, Port* port_r) {
+	if (auto d_port_r = dynamic_cast<PORT::Data_I*>(port_r)) {
+		if (auto d_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
+			d_port_r->connect(d_port_l);
+		}
+	}
+	else if (auto d_port_l = dynamic_cast<PORT::Exec_O*>(port_l)) {
+		if (auto d_port_r = dynamic_cast<PORT::Exec_I*>(port_r)) {
+			d_port_l->connect(d_port_r);
+		}
+	}
 }
 
-void Node_Editor::disconnectPorts(Connection* connection) {
-	
+void Node_Editor::disconnectPort(Port* port) {
+	port->disconnect();
 }
 
 void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
@@ -555,9 +521,11 @@ void Node_Editor::h_deleteNode(Ptr_S<Node> node) {
 }
 
 void Node_Editor::h_connectPorts(Port* port_l, Port* port_r) {
+	H_PUSH(make_shared<Connect>(port_l, port_r));
 }
 
-void Node_Editor::h_disconnectPorts(Port* port_l, Port* port_r) {
+void Node_Editor::h_disconnectPort(Port* port) {
+	H_PUSH(make_shared<Disconnect>(port));
 }
 
 Node_Editor::Add_Node::Add_Node(Ptr_S<Node> node, const F64_V2& pos) :
@@ -611,19 +579,59 @@ Node_Editor::Connect::Connect(Port* port_l, Port* port_r) :
 {}
 
 void Node_Editor::Connect::execute() const {
+	editor_ptr->connectPorts(port_l, port_r);
 }
 
 void Node_Editor::Connect::undo() {
+	if (auto d_port_r = dynamic_cast<NODE::PORT::Data_I*>(port_r)) {
+		d_port_r->disconnect();
+	}
+	else if (auto d_port_l = dynamic_cast<NODE::PORT::Exec_O*>(port_l)) {
+		d_port_l->disconnect();
+	}
 }
 
-Node_Editor::Disconnect::Disconnect(Port* port_l, Port* port_r) :
+Node_Editor::Disconnect::Disconnect(Port* port) :
 	CORE::CMD("Disconnect Nodes"),
-	port_l(port_l),
-	port_r(port_r)
-{}
+	port(port)
+{
+	if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
+		connections.push(port_r->connection->port_l);
+	}
+	else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
+		for (auto conn : port_l->connections) {
+			connections.push(conn->port_r);
+		}
+	}
+	else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
+		connections.push(port_l->connection->port_r);
+	}
+	else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
+		for (auto conn : port_r->connections) {
+			connections.push(conn->port_l);
+		}
+	}
+}
 
 void Node_Editor::Disconnect::execute() const {
+	editor_ptr->disconnectPort(port);
 }
 
 void Node_Editor::Disconnect::undo() {
+	if (auto port_r = dynamic_cast<NODE::PORT::Data_I*>(port)) {
+		editor_ptr->connectPorts(connections[0], port_r);
+	}
+	else if (auto port_l = dynamic_cast<NODE::PORT::Data_O*>(port)) {
+		for (auto conn : connections) {
+			editor_ptr->connectPorts(port_l, conn);
+		}
+	}
+	else if (auto port_l = dynamic_cast<NODE::PORT::Exec_O*>(port)) {
+		editor_ptr->connectPorts(port_l, connections[0]);
+	}
+	else if (auto port_r = dynamic_cast<NODE::PORT::Exec_I*>(port)) {
+		for (auto conn : connections) {
+			editor_ptr->connectPorts(conn, port_r);
+		}
+	}
 }

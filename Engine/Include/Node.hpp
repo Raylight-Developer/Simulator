@@ -10,9 +10,9 @@ namespace NODE {
 	struct Connection;
 	namespace PORT {
 		struct Data_I;
-		struct Exec_I;
 		struct Data_O;
 		struct Exec_O;
+		struct Exec_I;
 	}
 }
 
@@ -45,7 +45,8 @@ namespace NODE {
 		Port(Node* node);
 
 		virtual bool requestConnection(Connection* connection);
-		void disconnect();
+		virtual bool connected() const = 0;
+		virtual void disconnect() = 0;
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
 		QRectF boundingRect() const override;
@@ -62,7 +63,6 @@ namespace NODE {
 
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
-		~Connection();
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		QRectF boundingRect() const override;
@@ -70,38 +70,13 @@ namespace NODE {
 		void updateL(const QPointF& point);
 		void updateR(const QPointF& point);
 
-		PORT::Exec_I* getExecI() const;
-		PORT::Exec_O* getExecO() const;
 		PORT::Data_I* getDataI() const;
 		PORT::Data_O* getDataO() const;
+		PORT::Exec_O* getExecO() const;
+		PORT::Exec_I* getExecI() const;
 	};
 
 	namespace PORT {
-		struct Exec_I : Port {
-			const QString label;
-
-			CORE::Stack<Connection*> connections;
-
-			Exec_I(Node* parent, const QString& label);
-			~Exec_I();
-			bool connected() const;
-
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-
-		struct Exec_O : Port {
-			const QString label;
-
-			Ptr_U<Connection> connection;
-
-			Exec_O(Node* parent, const QString& label);
-			~Exec_O();
-			bool connected() const;
-
-			void exec() const;
-			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-		};
-
 		struct Data_I : Port {
 			const QString label;
 
@@ -115,7 +90,11 @@ namespace NODE {
 			Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type);
 			Data_I(Node* parent, const QString& label, const Variable& default_variable);
 			~Data_I();
-			bool connected() const;
+
+			void connect(Data_O* port);
+			void disconnect() final override;
+
+			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
 			void setType(const VARIABLE::Type& var_type);
@@ -136,7 +115,10 @@ namespace NODE {
 			Data_O(Node* parent, const QString& label);
 			Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type);
 			~Data_O();
-			bool connected() const;
+
+			void disconnect() final override;
+
+			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
 			void setType(const VARIABLE::Type& var_type);
@@ -145,13 +127,45 @@ namespace NODE {
 			bool requestConnection(Connection* connection) override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
+
+		struct Exec_O : Port {
+			const QString label;
+
+			Ptr_U<Connection> connection;
+
+			Exec_O(Node* parent, const QString& label);
+			~Exec_O();
+
+			void connect(Exec_I* port);
+			void disconnect() final override;
+
+			bool connected() const final override;
+
+			void exec() const;
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
+
+		struct Exec_I : Port {
+			const QString label;
+
+			CORE::Stack<Connection*> connections;
+
+			Exec_I(Node* parent, const QString& label);
+			~Exec_I();
+
+			void disconnect() final override;
+
+			bool connected() const final override;
+
+			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+		};
 	}
 }
 
 #define DATA_I(label, type) make_unique<PORT::Data_I>(this, label, type);
 #define DATA_O(label, type) make_unique<PORT::Data_O>(this, label, type);
-#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label);
 #define EXEC_O(label) make_unique<PORT::Exec_O>(this, label);
+#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label);
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
 #define GET_DATA(type) getData().get<type>()

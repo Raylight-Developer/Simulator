@@ -2,6 +2,8 @@
 
 #include "KL.hpp"
 
+#include "Node.hpp"
+
 struct Variable_Editor;
 namespace Varialbe_Editor {
 	struct List;

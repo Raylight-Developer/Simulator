@@ -32,6 +32,7 @@ void Viewport::f_tickUpdate() {
 	if (SESSION->active or SESSION->realtime) {
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
+		File* file = &SESSION->file;
 		if (FILE.euler_tick) {
 			if (SESSION->realtime) {
 				FILE.euler_tick->exec(delta_time > 0.025 ? 0.025 : delta_time);

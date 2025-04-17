@@ -38,15 +38,15 @@ struct Node_Editor : GUI::Graphics_View {
 	void moveNode(Ptr_S<Node> node, const F64_V2& new_pos);
 	void deleteNode(Ptr_S<Node> node);
 
-	bool connectPorts(Port* port_l, Port* port_r);
-	void disconnectPorts(Connection* connection);
+	void connectPorts(Port* port_l, Port* port_r);
+	void disconnectPort(Port* port);
 
 	void h_addNode(Ptr_S<Node> node, const F64_V2& pos);
 	void h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to);
 	void h_deleteNode(Ptr_S<Node> node);
 
 	void h_connectPorts(Port* port_l, Port* port_r);
-	void h_disconnectPorts(Port* port_l, Port* port_r);
+	void h_disconnectPort(Port* port);
 
 	struct Add_Node : Self<Add_Node>, CORE::CMD {
 		Ptr_S<Node> node;
@@ -86,10 +86,10 @@ struct Node_Editor : GUI::Graphics_View {
 		void undo() final override;
 	};
 	struct Disconnect : Self<Disconnect>, CORE::CMD {
-		Port* port_l;
-		Port* port_r;
+		Port* port;
+		CORE::Stack<Port*> connections;
 		//TODO
-		Disconnect(Port* port_l, Port* port_r);
+		Disconnect(Port* port);
 
 		void execute() const final override;
 		void undo() final override;
