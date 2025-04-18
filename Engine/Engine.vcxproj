@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
     <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
     <ClCompile Include="Source\Nodes\Variables\Get.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp" />
     <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp" />
     <ClInclude Include="Include\Nodes\Variables\Set.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

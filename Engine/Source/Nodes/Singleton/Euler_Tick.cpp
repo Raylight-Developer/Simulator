@@ -1,4 +1,4 @@
-#include "Nodes/Singleton/Euler_Tick.hpp"
+	#include "Nodes/Singleton/Euler_Tick.hpp"
 
 #include "Session.hpp"
 
@@ -6,7 +6,7 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 	Node("Tick")
 {
 	rect.setWidth(100);
-	rect.setHeight(120);
+	rect.setHeight(140);
 
 	exec_out  = EXEC_O("Tick");
 	o_delta   = DATA_O("Delta", VAR_TYPE::DOUBLE);
@@ -27,6 +27,6 @@ Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
 	if (port == o_calls.get())
 		return Variable(SESSION->current_frame);
 	if (port == o_runtime.get())
-		return Variable(chrono::duration<double>(NOW - SESSION->start).count());
+		return Variable(chrono::duration<F64>(NOW - SESSION->start).count());
 	return Variable();
 }

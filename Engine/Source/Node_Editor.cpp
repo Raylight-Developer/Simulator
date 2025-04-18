@@ -23,6 +23,9 @@ Node_Editor::Node_Editor(QWidget* parent) :
 	scene->addItem(FILE.euler_tick.get());
 	FILE.euler_tick->setPos(QPointF(0,0));
 
+	scene->addItem(FILE.reset.get());
+	FILE.reset->setPos(QPointF(0,200));
+
 	editor_ptr = this;
 }
 
@@ -395,7 +398,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			QString type;
 			dataStreamType >> type;
 
-			if (type == "CONSTANT") {
+			if (type == "VARIABLE CONSTANT") {
 				node = make_shared<NODES::VARIABLES::Constant>();
 			}
 			else if (type == "VARIABLE SET") {
@@ -442,6 +445,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "BOOLEAN SELECT") {
 				node = make_shared<NODES::BOOLEAN::Select>();
+			}
+			else if (type == "EXEC SUBSAMPLE") {
+				node = make_shared<NODES::EXEC::Subsample>();
 			}
 			else if (type == "RENDER 2D LINE") {
 				node = make_shared<NODES::RENDERING::DIM_2D::Line>();
@@ -496,7 +502,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 					H_GROUP(1);
 				}
 				else {
-					auto def_node = make_shared<NODES::VARIABLES::Get>();
+					auto def_node = make_shared<NODES::VARIABLES::Set>();
 					SESSION->variable_refs[name].push(def_node);
 					def_node->setVar(name);
 					node = def_node;
@@ -536,6 +542,7 @@ void Node_Editor::deleteNode(Ptr_S<Node> node) {
 	}
 	FILE.nodes.remove(node->shared_from_this());
 	editor_ptr->scene->removeItem(node.get());
+	// TODO dissolve connections and store
 }
 
 void Node_Editor::connectPorts(Port* port_l, Port* port_r) {

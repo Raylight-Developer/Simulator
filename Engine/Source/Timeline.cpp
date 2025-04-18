@@ -26,21 +26,26 @@ Timeline::Timeline(QWidget* parent) :
 	setFixedHeight(24);
 
 	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop]() {
-		if (SESSION->active) {
-			SESSION->active = false;
+		if (SESSION->playback_mode == Playback_Mode::PLAYING) {
+			SESSION->playback_mode = Playback_Mode::O_STOPPED;
 			start_stop->setText("🔁");
 		}
-		else {
-			SESSION->start = NOW;
-			SESSION->active = true;
-			SESSION->current_frame = 0;
+		else if (SESSION->playback_mode == Playback_Mode::STOPPED) {
+			SESSION->playback_mode = Playback_Mode::O_RESET;
+			start_stop->setText("⏯");
+		}
+		else if (SESSION->playback_mode == Playback_Mode::RESET) {
+			SESSION->playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
+
+			SESSION->current_frame = 0;
+			SESSION->start = NOW;
 		}
 	});
 
 	connect(live, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, live](bool checked) {
 		if (checked) {
-			SESSION->realtime = true;
+			SESSION->playback_mode = Playback_Mode::REALTIME;
 			SESSION->start = NOW;
 			SESSION->current_frame = 0;
 			live->setText("Mode: Realtime");
@@ -50,8 +55,7 @@ Timeline::Timeline(QWidget* parent) :
 		}
 		else {
 			live->setText("Mode: Playback");
-			SESSION->realtime = false;
-			SESSION->active = false;
+			SESSION->playback_mode = Playback_Mode::O_RESET;
 			start_stop->setText("⏯");
 			start_stop->show();
 			samples_label->show();

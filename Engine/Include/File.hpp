@@ -8,6 +8,7 @@ struct File {
 	CORE::BiMap<U64, U64> pointer_map;
 
 	Ptr_S<NODES::SINGLETON::Euler_Tick> euler_tick;
+	Ptr_S<NODES::SINGLETON::Reset> reset;
 	
 	CORE::Stack<Ptr_S<Node>> nodes;
 

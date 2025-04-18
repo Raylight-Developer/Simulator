@@ -68,13 +68,19 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 			SESSION->variables[item->text()] = var;
 			for (Ptr_S<Node> node : SESSION->variable_refs[item->text()]) {
 				if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
-					node_def->out->disconnect();
+					if (node_def->out->connected()) {
+						node_def->out->disconnect();
+					}
 					node_def->out->setType(var.type);
 				}
 				else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
-					node_def->in->disconnect();
+					if (node_def->in->connected()) {
+						node_def->in->disconnect();
+					}
+					if (node_def->out->connected()) {
+						node_def->out->disconnect();
+					}
 					node_def->in->setType(var.type);
-					node_def->out->disconnect();
 					node_def->out->setType(var.type);
 				}
 			}

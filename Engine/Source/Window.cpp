@@ -6,7 +6,7 @@ Window::Window() {
 	session = new Session();
 	Session::initialize(session);
 	session->window = this;
-	session->file = File::loadFile("./Resources/Default.sim");
+	session->file = std::move(File::loadFile("./Resources/Default.sim"));
 
 	auto shelf = new Node_Shelf(this);
 	auto timeline = new Timeline(this);

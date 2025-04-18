@@ -29,27 +29,95 @@ Viewport::~Viewport() {
 }
 
 void Viewport::f_tickUpdate() {
-	if (SESSION->active or SESSION->realtime) {
-		glClearColor(0, 0, 0, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
-		File* file = &SESSION->file;
-		if (FILE.euler_tick) {
-			if (SESSION->realtime) {
-				FILE.euler_tick->exec(delta_time > 0.025 ? 0.025 : delta_time);
-			}
-			else {
-				FILE.euler_tick->exec(1.0 / SESSION->samples);
-			}
+	// TODO MSAA for FBOs
+
+	glClearColor(0, 0, 0, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	switch (SESSION->playback_mode) {
+		case Playback_Mode::REALTIME: {
+			FILE.euler_tick->exec(delta_time > 0.25 ? 0.25 : delta_time);
+			SESSION->current_frame++;
+			break;
 		}
-		SESSION->current_frame++;
+		case Playback_Mode::PLAYING: {
+			FILE.euler_tick->exec(1.0 / SESSION->samples);
+			SESSION->current_frame++;
+			break;
+		}
+		case Playback_Mode::O_STOPPED: {
+			glBindFramebuffer(GL_FRAMEBUFFER, gl_data["FRAME -1 FBO"]);
+
+			glViewport(0, 0, resolution.x, resolution.y);
+			glClearColor(0, 0, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			FILE.euler_tick->exec(1.0 / SESSION->samples);
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			SESSION->playback_mode = Playback_Mode::STOPPED;
+			break;
+		}
+		case Playback_Mode::O_RESET: {
+			glBindFramebuffer(GL_FRAMEBUFFER, gl_data["FRAME 0 FBO"]);
+
+			glViewport(0, 0, resolution.x, resolution.y);
+			glClearColor(0, 0, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			FILE.reset->exec();
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			SESSION->playback_mode = Playback_Mode::RESET;
+			break;
+		}
+		case Playback_Mode::STOPPED: {
+			const GLuint Shader = gl_data["FBO Shader"];
+			glUseProgram(Shader);
+
+			glBindVertexArray(gl_data["FBO VAO"]);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, gl_data["FRAME -1 FBT"]);
+			glUniform1ui(glGetUniformLocation(Shader, "uFboTexture"), 0);
+
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+			glBindVertexArray(0);
+			glUseProgram(0);
+			break;
+		}
+		case Playback_Mode::RESET: {
+			const GLuint Shader = gl_data["FBO Shader"];
+			glUseProgram(Shader);
+
+			glBindVertexArray(gl_data["FBO VAO"]);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, gl_data["FRAME 0 FBT"]);
+			glUniform1ui(glGetUniformLocation(Shader, "uFboTexture"), 0);
+
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+			glBindVertexArray(0);
+			glUseProgram(0);
+			break;
+		}
 	}
 }
 
 void Viewport::f_compile() {
+	RENDER::INIT::Fbo();
 	RENDER::Dim_2D::INIT::Line();
 	RENDER::Dim_2D::INIT::Circle();
 	RENDER::Dim_2D::INIT::Triangle();
 	RENDER::Dim_2D::INIT::Rectangle();
+
+	gl_data["FRAME -1 FBO"] = 0;
+	gl_data["FRAME -1 FBT"] = 0;
+	gl_data["FRAME 0 FBO"] = 0;
+	gl_data["FRAME 0 FBT"] = 0;
+	OpenGL::createFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution);
+	OpenGL::createFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution);
 }
 
 void Viewport::f_pipeline() {
@@ -68,6 +136,25 @@ void Viewport::f_guiUpdate() {
 		frame_count = frame_counter;
 		window_time = 0.0;
 		frame_counter = 0;
+	}
+
+	if (SESSION->playback_mode == Playback_Mode::REALTIME or SESSION->playback_mode == Playback_Mode::PLAYING) {
+		QPainter painter(this);
+		if (frame_count >= 60) {
+			painter.setPen(QColor(50, 255, 50));
+		}
+		else if (frame_count >= 48) {
+			painter.setPen(QColor(150, 255, 50));
+		}
+		else if (frame_count >= 24) {
+			painter.setPen(QColor(255, 150, 50));
+		}
+		else {
+			painter.setPen(QColor(255, 50, 50));
+		}
+		painter.drawText(20, 20, "FPS:");
+		painter.setPen(Qt::white);
+		painter.drawText(65, 20, QString::number(frame_count));
 	}
 }
 
@@ -107,6 +194,9 @@ void Viewport::resizeGL(int w, int h) {
 	aspect_ratio = to_F64(resolution.x) / to_F64(resolution.y);
 
 	glViewport(0, 0, resolution.x, resolution.y);
+
+	OpenGL::resizeFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution);
+	OpenGL::resizeFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution);
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event) {

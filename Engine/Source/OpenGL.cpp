@@ -135,6 +135,95 @@ void OpenGL::bindRenderLayer(const GLuint& program_id, const GLuint& unit, const
 	GL->glBindTextureUnit(unit, id);
 }
 
+void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type, const GLuint& filter) {
+	GL->glGenTextures(1, FBT);
+	GL->glBindTexture(GL_TEXTURE_2D, *FBT);
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resolution.x, resolution.y, 0, GL_RGBA, type, nullptr);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	GL->glBindTexture(GL_TEXTURE_2D, 0);
+
+	GL->glGenFramebuffers(1, FBO);
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+
+	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
+
+	if (GL->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		LOGL(<< ERROR("Resized framebuffer is not complete"));
+	}
+
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGL::resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type, const GLuint& filter) {
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+
+	GL->glDeleteTextures(1, FBT);
+
+	GL->glGenTextures(1, FBT);
+	GL->glBindTexture(GL_TEXTURE_2D, *FBT);
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resolution.x, resolution.y, 0, GL_RGBA, type, nullptr);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
+
+	if (GL->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		LOGL(<< ERROR("Resized framebuffer is not complete"));
+	}
+
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RENDER::INIT::Fbo() {
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/FBO.vert", "./Shaders/FBO.frag");
+	if (confirm) {
+		SESSION->viewport->gl_data["FBO Shader"] = confirm.data;
+	}
+
+	SESSION->viewport->gl_data["FBO VAO"] = 0;
+	SESSION->viewport->gl_data["FBO VBO"] = 0;
+	SESSION->viewport->gl_data["FBO EBO"] = 0;
+	GLuint* VAO = &SESSION->viewport->gl_data["FBO VAO"];
+	GLuint* VBO = &SESSION->viewport->gl_data["FBO VBO"];
+	GLuint* EBO = &SESSION->viewport->gl_data["FBO EBO"];
+
+	const GLfloat vertices[16] = {
+		-1, -1, 0, 0,
+		-1,  1, 0, 1,
+		 1,  1, 1, 1,
+		 1, -1, 1, 0
+	};
+	const GLuint indices[6] = {
+		0, 1, 2,
+		0, 2, 3
+	};
+	GL->glGenVertexArrays(1, VAO);
+	GL->glGenBuffers(1, VBO);
+	GL->glGenBuffers(1, EBO);
+
+	GL->glBindVertexArray(*VAO);
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
+	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0);
+	GL->glEnableVertexAttribArray(0);
+
+	GL->glEnableVertexAttribArray(1);
+	GL->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(GLfloat)));
+
+	GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GL->glBindVertexArray(0);
+}
+
 void RENDER::Dim_2D::INIT::Line() {
 	const auto confirm = OpenGL::f_compileFragShader("./Shaders/2D/Line.vert", "./Shaders/2D/Line.frag");
 	if (confirm) {

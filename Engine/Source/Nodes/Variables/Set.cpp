@@ -10,8 +10,8 @@ NODES::VARIABLES::Set::Set() :
 
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
-	in  = DATA_I("", VAR_TYPE::NONE);
-	out = DATA_O("", VAR_TYPE::NONE);
+	in  = DATA_I("", VAR_TYPE::BLOCKED);
+	out = DATA_O("", VAR_TYPE::BLOCKED);
 
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
@@ -26,8 +26,15 @@ void NODES::VARIABLES::Set::h_setVar(const QString name) {
 
 void NODES::VARIABLES::Set::setVar(const QString name) {
 	var = name;
-	out->setType(SESSION->variables[var].type);
 	label->setText(var);
+	if (name != "") {
+		in->setType(SESSION->variables[var].type);
+		out->setType(SESSION->variables[var].type);
+	}
+	else {
+		in->setType(VAR_TYPE::BLOCKED);
+		out->setType(VAR_TYPE::BLOCKED);
+	}
 }
 
 void NODES::VARIABLES::Set::exec(const Port* port) {

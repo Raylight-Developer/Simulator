@@ -68,6 +68,8 @@ namespace NODES {
 		struct Select;
 	}
 	namespace EXEC {
+		struct Reset;
+		struct Subsample;
 		struct Input_Key;
 		struct Input_Mouse;
 		enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
@@ -115,8 +117,11 @@ namespace NODES {
 #include "Nodes/Variables/Get.hpp"
 #include "Nodes/Variables/Set.hpp"
 
+#include "Nodes/Exec/Subsample.hpp"
+
 #include "Nodes/Singleton/Background.hpp"
 #include "Nodes/Singleton/Euler_Tick.hpp"
+#include "Nodes/Singleton/Reset.hpp"
 
 #include "Nodes/Rendering/2D/Line.hpp"
 #include "Nodes/Rendering/2D/Circle.hpp"

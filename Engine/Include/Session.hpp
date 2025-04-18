@@ -10,6 +10,15 @@
 
 struct Viewport;
 
+enum struct Playback_Mode {
+	REALTIME,
+	O_STOPPED,
+	STOPPED,
+	PLAYING,
+	O_RESET,
+	RESET
+};
+
 struct Session : CORE::Session {
 	U16 major_version, minor_version, patch_version;
 	static Session* session_ptr;
@@ -25,8 +34,7 @@ struct Session : CORE::Session {
 	I64 current_frame;
 	I64 samples;
 	Timestamp start;
-	bool active;
-	bool realtime;
+	Playback_Mode playback_mode;
 
 	File file;
 

@@ -6,7 +6,9 @@
 
 File::File() {
 	euler_tick = make_shared<NODES::SINGLETON::Euler_Tick>();
+	reset = make_shared<NODES::SINGLETON::Reset>();
 	nodes.push(euler_tick);
+	nodes.push(reset);
 }
 
 File::~File() {

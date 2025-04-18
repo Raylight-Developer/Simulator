@@ -29,7 +29,6 @@ Session::Session() :
 {
 	current_frame = 0;
 	samples = 60;
-	active = false;
-	realtime = false;
+	playback_mode = Playback_Mode::REALTIME;
 	start = NOW;
 }

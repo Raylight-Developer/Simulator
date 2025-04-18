@@ -40,6 +40,7 @@
     <ClInclude Include="Include\Nodes\Variables\Get.hpp" />
     <ClInclude Include="Include\Nodes\Variables\Constant.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Background.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -80,6 +81,7 @@
     <ClCompile Include="Source\Nodes\Variables\Get.cpp" />
     <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

@@ -5,18 +5,37 @@
 NODES::EXEC::Subsample::Subsample() :
 	Node("Subsample")
 {
+	rect.setWidth(160);
+	rect.setHeight(140);
+
+	exec_in   = EXEC_I("");
+	delta_in  = DATA_I("Delta", Variable(0.004166666));
+	count_in  = DATA_I("Samples", Variable(4LL));
+
+	exec_out    = EXEC_O("Finished");
+	samples_out = EXEC_O("Tick");
+	o_delta     = DATA_O("Delta", VAR_TYPE::DOUBLE);
+	o_calls     = DATA_O("Calls", VAR_TYPE::INT);
+	o_runtime   = DATA_O("Runtime", VAR_TYPE::DOUBLE);
+
+	calls = 0;
 }
 
 void NODES::EXEC::Subsample::exec(const Port* port) {
-	exec_out->exec();
+	const I64 count = count_in->GET_DATA(I64);
+	for (I64 i = 0; i < count; i++) {
+		calls++;
+		exec_out->exec();
+	}
+	samples_out->exec();
 }
 
 Variable NODES::EXEC::Subsample::getData(const Port* port) const {
 	if (port == o_delta.get())
-		return Variable(delta);
+		return Variable(delta_in->GET_DATA(F64) / count_in->GET_DATA(I64));
 	if (port == o_calls.get())
-		return Variable(SESSION->current_frame);
+		return Variable(calls);
 	if (port == o_runtime.get())
-		return Variable(chrono::duration<double>(NOW - SESSION->start).count());
+		return Variable(chrono::duration<F64>(NOW - SESSION->start).count());
 	return Variable();
 }

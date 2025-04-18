@@ -41,9 +41,9 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_variables = new GUI::Tree_Item(this, "Variables");
 	{
-		auto constant_set = new GUI::Tree_Item(tree_variables, "Constant", 1, { { 1000, "CONSTANT"     } });
-		auto variable_set = new GUI::Tree_Item(tree_variables, "Set"     , 1, { { 1000, "VARIABLE SET" } });
-		auto variable_get = new GUI::Tree_Item(tree_variables, "Get"     , 1, { { 1000, "VARIABLE GET" } });
+		auto constant_set = new GUI::Tree_Item(tree_variables, "Constant", 1, { { 1000, "VARIABLE CONSTANT" } });
+		auto variable_set = new GUI::Tree_Item(tree_variables, "Set"     , 1, { { 1000, "VARIABLE SET"      } });
+		auto variable_get = new GUI::Tree_Item(tree_variables, "Get"     , 1, { { 1000, "VARIABLE GET"      } });
 	}
 
 	auto tree_cast = new GUI::Tree_Item(this, "Casting");
@@ -73,6 +73,10 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		auto boolean_if         = new GUI::Tree_Item(tree_boolean, "If"        , 1, { { 1000, "BOOLEAN IF"         } });
 		auto boolean_if_else    = new GUI::Tree_Item(tree_boolean, "If Else"   , 1, { { 1000, "BOOLEAN IF ELSE"    } });
 		auto boolean_select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
+	}
+	auto tree_exec = new GUI::Tree_Item(this, "Exec");
+	{
+		auto exec_subsample = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
 	}
 	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");
 	{
