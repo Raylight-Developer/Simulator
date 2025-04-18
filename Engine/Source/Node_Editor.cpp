@@ -589,6 +589,7 @@ void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
 }
 
 void Node_Editor::h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) {
+	// TODO only if delta actually moved
 	H_PUSH(make_shared<Move_Node>(node, from, to));
 }
 
