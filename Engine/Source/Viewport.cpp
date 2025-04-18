@@ -29,8 +29,6 @@ Viewport::~Viewport() {
 }
 
 void Viewport::f_tickUpdate() {
-	// TODO MSAA for FBOs
-
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	switch (SESSION->playback_mode) {
@@ -190,7 +188,11 @@ void Viewport::paintGL() {
 }
 
 void Viewport::resizeGL(int w, int h) {
-	resolution = T_V2<U64>(to_U64(w), to_U64(h));
+	const F64 pixelRatio = devicePixelRatio();
+	const int p_w = int(w * pixelRatio);
+	const int p_h = int(h * pixelRatio);
+
+	resolution = T_V2<U64>(to_U64(p_w), to_U64(p_h));
 	aspect_ratio = to_F64(resolution.x) / to_F64(resolution.y);
 
 	glViewport(0, 0, resolution.x, resolution.y);

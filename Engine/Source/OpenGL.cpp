@@ -135,7 +135,35 @@ void OpenGL::bindRenderLayer(const GLuint& program_id, const GLuint& unit, const
 	GL->glBindTextureUnit(unit, id);
 }
 
+void OpenGL::createHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type) {
+	GL->glGenFramebuffers(1, FBO);
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+
+	GL->glGenRenderbuffers(1, RBO);
+	GL->glBindRenderbuffer(GL_RENDERBUFFER, *RBO);
+	GL->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, resolution.x, resolution.y); // 4x MSAA
+	GL->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, *RBO);
+
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGL::resizeHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type) {
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+
+	GL->glDeleteRenderbuffers(1, RBO);
+
+	GL->glGenRenderbuffers(1, RBO);
+	GL->glBindRenderbuffer(GL_RENDERBUFFER, *RBO);
+	GL->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, resolution.x, resolution.y); // 4x MSAA
+	GL->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, *RBO);
+
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type, const GLuint& filter) {
+	GL->glGenFramebuffers(1, FBO);
+	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+
 	GL->glGenTextures(1, FBT);
 	GL->glBindTexture(GL_TEXTURE_2D, *FBT);
 	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resolution.x, resolution.y, 0, GL_RGBA, type, nullptr);
@@ -145,14 +173,7 @@ void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, co
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	GL->glBindTexture(GL_TEXTURE_2D, 0);
 
-	GL->glGenFramebuffers(1, FBO);
-	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
-
 	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
-
-	if (GL->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		LOGL(<< ERROR("Resized framebuffer is not complete"));
-	}
 
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -171,10 +192,6 @@ void OpenGL::resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, co
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
-
-	if (GL->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		LOGL(<< ERROR("Resized framebuffer is not complete"));
-	}
 
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

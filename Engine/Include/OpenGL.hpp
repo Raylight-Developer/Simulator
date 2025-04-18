@@ -12,6 +12,9 @@ namespace OpenGL {
 	GLuint renderLayer(const T_V2<U64>& resolution, const GLuint& filter = GL_NEAREST);
 	void   bindRenderLayer(const GLuint& program_id, const GLuint& unit, const GLuint& id, const string& name);
 
+	void createHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type = GL_UNSIGNED_BYTE);
+	void resizeHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type = GL_UNSIGNED_BYTE);
+
 	void createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type = GL_UNSIGNED_BYTE, const GLuint& filter = GL_NEAREST);
 	void resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type = GL_UNSIGNED_BYTE, const GLuint& filter = GL_NEAREST);
 }
