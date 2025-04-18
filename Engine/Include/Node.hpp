@@ -57,6 +57,7 @@ namespace NODE {
 
 		virtual bool requestConnection(Connection* connection);
 		virtual bool connected() const = 0;
+		virtual void disconnect() = 0;
 
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
 		QRectF boundingRect() const override;
@@ -104,7 +105,7 @@ namespace NODE {
 
 			bool canConnect(Data_O* port);
 			void connect(Data_O* port);
-			void disconnect();
+			void disconnect() final override;
 			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
@@ -128,7 +129,7 @@ namespace NODE {
 			Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type);
 			~Data_O();
 
-			void disconnect();
+			void disconnect() final override;
 			bool connected() const final override;
 
 			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
@@ -150,7 +151,7 @@ namespace NODE {
 
 			bool canConnect(Exec_I* port);
 			void connect(Exec_I* port);
-			void disconnect();
+			void disconnect() final override;
 			bool connected() const final override;
 
 			void exec() const;
@@ -167,7 +168,7 @@ namespace NODE {
 			Exec_I(Node* parent, const QString& label);
 			~Exec_I();
 
-			void disconnect();
+			void disconnect() final override;
 			bool connected() const final override;
 
 			int type() const override;

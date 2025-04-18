@@ -542,7 +542,6 @@ void Node_Editor::deleteNode(Ptr_S<Node> node) {
 	}
 	FILE.nodes.remove(node->shared_from_this());
 	editor_ptr->scene->removeItem(node.get());
-	// TODO dissolve connections and store
 }
 
 void Node_Editor::connectPorts(Port* port_l, Port* port_r) {
@@ -639,14 +638,75 @@ Node_Editor::Delete_Node::Delete_Node(Ptr_S<Node> node) :
 	node(node)
 {
 	pos = F64_V2(node->pos().x(), node->pos().y());
+
+	// TODO may cause issues if history is forked
+	for (Port* port : node->inputs) {
+		if (port->connected()) {
+			if (port->type() == Graphics_Item_Type::E_DATA_I) {
+				auto d_port = static_cast<PORT::Data_I*>(port);
+				connections[d_port].push(d_port->connection->getDataO());
+			}
+			else {
+				auto d_port = static_cast<PORT::Exec_I*>(port);
+				for (Connection* conn : d_port->connections) {
+					connections[d_port].push(conn->getExecO());
+				}
+			}
+		}
+	}
+	for (Port* port : node->outputs) {
+		if (port->connected()) {
+			if (port->type() == Graphics_Item_Type::E_EXEC_O) {
+				auto d_port = static_cast<PORT::Exec_O*>(port);
+				connections[d_port].push(d_port->connection->getExecI());
+			}
+			else {
+				auto d_port = static_cast<PORT::Data_O*>(port);
+				for (Connection* conn : d_port->connections) {
+					connections[d_port].push(conn->getDataI());
+				}
+			}
+		}
+	}
 }
 
 void Node_Editor::Delete_Node::execute() const {
 	editor_ptr->deleteNode(node);
+
+	for (Port* port : node->inputs) {
+		if (port->connected()) {
+			port->disconnect();
+		}
+	}
+	for (Port* port : node->outputs) {
+		if (port->connected()) {
+			port->disconnect();
+		}
+	}
 }
 
 void Node_Editor::Delete_Node::undo() {
 	editor_ptr->addNode(node, pos);
+
+	for (auto& [port, ports] : connections) {
+		const int type = port->type();
+		switch (type) {
+			case Graphics_Item_Type::E_DATA_I:
+			case Graphics_Item_Type::E_EXEC_I: {
+				for (Port* other : ports) {
+					editor_ptr->connectPorts(other, port);
+				}
+				break;
+			}
+			case Graphics_Item_Type::E_DATA_O:
+			case Graphics_Item_Type::E_EXEC_O: {
+				for (Port* other : ports) {
+					editor_ptr->connectPorts(port, other);
+				}
+				break;
+			}
+		}
+	}
 }
 
 Node_Editor::Connect::Connect(Port* port_l, Port* port_r) :

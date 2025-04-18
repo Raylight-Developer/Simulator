@@ -71,6 +71,7 @@ struct Node_Editor : GUI::Graphics_View {
 	struct Delete_Node : Self<Delete_Node>, CORE::CMD {
 		Ptr_S<Node> node;
 		F64_V2 pos;
+		CORE::UMap<Port*, CORE::Stack<Port*>> connections;
 
 		Delete_Node(Ptr_S<Node> node);
 
