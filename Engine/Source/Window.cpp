@@ -36,7 +36,7 @@ Window::Window() {
 	
 	setCentralWidget(main_splitter);
 	showMaximized();
-	LOGL(<< SUCCESS("Loaded Simulator v" << SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version));
+	LOGL(<< SUCCESS("Loaded Simulator v-" << SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version));
 }
 
 Window::~Window() {

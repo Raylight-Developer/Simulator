@@ -87,12 +87,12 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 		if (moving) {
 			U32 count = 0;
 			for (Node* node : selection) {
-				const QPointF from = node_move_start_pos[node];
-				const QPointF delta = from + mapToScene(event->pos()) - l_mouse_down;
-				const F64_V2 to = F64_V2(MATH::roundToNearest(delta.x(), 10.0), MATH::roundToNearest(delta.y(), 10.0));
+				const QPointF from  = node_move_start_pos[node];
+				const QPointF to    = from + mapToScene(event->pos()) - l_mouse_down;
+				const F64_V2 r_to   = F64_V2(MATH::roundToNearest(to.x()  , 10.0), MATH::roundToNearest(to.y()  , 10.0));
 				const F64_V2 r_from = F64_V2(MATH::roundToNearest(from.x(), 10.0), MATH::roundToNearest(from.y(), 10.0));
-				if (to != r_from) {
-					h_moveNode(node->shared_from_this(), F64_V2(from.x(), from.y()), to);
+				if (r_to != r_from) {
+					h_moveNode(node->shared_from_this(), r_from, r_to);
 					count++;
 				}
 			}
@@ -195,13 +195,14 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					}
 				}
 				else {
-					// TODO create context monu for available nodes
+					// TODO create context menu for available nodes
 				}
 			}
 			creating_connection.reset();
 		}
 	}
 	GUI::Graphics_View::mouseReleaseEvent(event);
+	viewport()->update();
 }
 
 void Node_Editor::mousePressEvent(QMouseEvent* event) {
@@ -297,6 +298,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 		}
 	}
 	GUI::Graphics_View::mousePressEvent(event);
+	viewport()->update();
 }
 
 void Node_Editor::mouseMoveEvent(QMouseEvent* event) {
@@ -360,6 +362,7 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 			QApplication::sendEvent(widget, event);
 		}
 	}
+	viewport()->update();
 }
 
 void Node_Editor::wheelEvent(QWheelEvent* event) {
@@ -380,6 +383,7 @@ void Node_Editor::wheelEvent(QWheelEvent* event) {
 	}
 
 	GUI::Graphics_View::wheelEvent(event);
+	viewport()->update();
 }
 
 void Node_Editor::dragMoveEvent(QDragMoveEvent* event) {
@@ -407,6 +411,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "VARIABLE GET") {
 				node = make_shared<NODES::VARIABLES::Get>();
 			}
+			else if (type == "MATH ARITHMETIC") {
+				node = make_shared<NODES::MATH::Arithmetic>();
+			}
+			else if (type == "MATH TRIGONOMETRY") {
+				node = make_shared<NODES::MATH::Trigonometry>();
+			}
 			else if (type == "MAKE VEC2") {
 				node = make_shared<NODES::CAST::MAKE::Vec2>();
 			}
@@ -428,23 +438,17 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "MAKE MAT4") {
 				node = make_shared<NODES::CAST::MAKE::Mat4>();
 			}
-			else if (type == "ARITHMETIC") {
-				node = make_shared<NODES::Arithmetic>();
-			}
-			else if (type == "TRIGONOMETRY") {
-				node = make_shared<NODES::Trigonometry>();
-			}
 			else if (type == "BOOLEAN COMPARISON") {
 				node = make_shared<NODES::BOOLEAN::Compare>();
 			}
-			else if (type == "BOOLEAN IF") {
-				node = make_shared<NODES::BOOLEAN::If>();
-			}
-			else if (type == "BOOLEAN IF ELSE") {
-				node = make_shared<NODES::BOOLEAN::If_Else>();
-			}
 			else if (type == "BOOLEAN SELECT") {
 				node = make_shared<NODES::BOOLEAN::Select>();
+			}
+			else if (type == "EXEC IF") {
+				node = make_shared<NODES::EXEC::If>();
+			}
+			else if (type == "EXEC IF ELSE") {
+				node = make_shared<NODES::EXEC::If_Else>();
 			}
 			else if (type == "EXEC SUBSAMPLE") {
 				node = make_shared<NODES::EXEC::Subsample>();
@@ -521,6 +525,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			H_GROUP(1);
 		}
 	}
+	viewport()->update();
 }
 
 void Node_Editor::addNode(Ptr_S<Node> node, const F64_V2& pos) {
@@ -588,7 +593,6 @@ void Node_Editor::h_addNode(Ptr_S<Node> node, const F64_V2& pos) {
 }
 
 void Node_Editor::h_moveNode(Ptr_S<Node> node, const F64_V2& from, const F64_V2& to) {
-	// TODO only if delta actually moved
 	H_PUSH(make_shared<Move_Node>(node, from, to));
 }
 

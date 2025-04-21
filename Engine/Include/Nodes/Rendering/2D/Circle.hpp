@@ -10,12 +10,12 @@ namespace NODES {
 	namespace RENDERING {
 		namespace DIM_2D {
 			struct Circle : Node {
-				Ptr_U<PORT::Exec_I> exec_in;
-				Ptr_U<PORT::Exec_O> exec_out;
+				PORT_EXEC_I exec_in;
+				PORT_EXEC_O exec_out;
 
-				Ptr_U<PORT::Data_I> center;
-				Ptr_U<PORT::Data_I> radius;
-				Ptr_U<PORT::Data_I> color;
+				PORT_DATA_I center;
+				PORT_DATA_I radius;
+				PORT_DATA_I color;
 
 				Circle();
 

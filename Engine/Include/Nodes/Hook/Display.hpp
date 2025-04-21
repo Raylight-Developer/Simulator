@@ -7,14 +7,11 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace SINGLETON {
-		struct Reset : Node {
-			PORT_EXEC_O exec_out;
-			PORT_DATA_O bool_out;
+	namespace HOOK {
+		struct Display : Node {
+			Display();
+			PORT_DATA_O resolution;
 
-			Reset();
-
-			void exec();
 			Variable getData(const Port* port) const override;
 		};
 	}

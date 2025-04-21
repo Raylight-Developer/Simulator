@@ -10,10 +10,10 @@ namespace NODES {
 	namespace SINGLETON {
 		struct Euler_Tick : Node {
 			F64 delta;
-			Ptr_U<PORT::Exec_O> exec_out;
-			Ptr_U<PORT::Data_O> o_delta;
-			Ptr_U<PORT::Data_O> o_calls;
-			Ptr_U<PORT::Data_O> o_runtime;
+			PORT_EXEC_O exec_out;
+			PORT_DATA_O o_delta;
+			PORT_DATA_O o_calls;
+			PORT_DATA_O o_runtime;
 
 			Euler_Tick();
 

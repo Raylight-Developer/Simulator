@@ -28,7 +28,7 @@ struct Node_Editor : GUI::Graphics_View {
 	void drawBackground(QPainter* painter, const QRectF& rect) override;
 
 	void mouseReleaseEvent(QMouseEvent* event) override;
-	void mousePressEvent(QMouseEvent* event) override; // TODO Fix sticky mouse, double clicks and odd non-registering behaviors
+	void mousePressEvent(QMouseEvent* event) override; // TODO Fix sticky nodes become unmovable and non deletable
 	void mouseMoveEvent(QMouseEvent* event) override;
 	void keyPressEvent(QKeyEvent* event) override;
 	void wheelEvent(QWheelEvent* event) override;

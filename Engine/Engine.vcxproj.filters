@@ -41,6 +41,19 @@
     <ClInclude Include="Include\Nodes\Variables\Constant.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Background.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Reset.hpp" />
+    <ClInclude Include="Include\Nodes\Exec\If.hpp" />
+    <ClInclude Include="Include\Nodes\Exec\If_Else.hpp" />
+    <ClInclude Include="Include\Nodes\Boolean\Compare.hpp" />
+    <ClInclude Include="Include\Nodes\Boolean\Select.hpp" />
+    <ClInclude Include="Include\Nodes\Math\Arithmetic.hpp" />
+    <ClInclude Include="Include\Nodes\Math\Trigonometry.hpp" />
+    <ClInclude Include="Include\Nodes\Hook\Input\Key.hpp" />
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp" />
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp" />
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
+    <ClInclude Include="Include\Nodes\Hook\Display.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Camera_2D.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Camera_3D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -82,6 +95,19 @@
     <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Reset.cpp" />
+    <ClCompile Include="Source\Nodes\Exec\If.cpp" />
+    <ClCompile Include="Source\Nodes\Exec\If_Else.cpp" />
+    <ClCompile Include="Source\Nodes\Boolean\Compare.cpp" />
+    <ClCompile Include="Source\Nodes\Boolean\Select.cpp" />
+    <ClCompile Include="Source\Nodes\Math\Arithmetic.cpp" />
+    <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp" />
+    <ClCompile Include="Source\Nodes\Hook\Input\Key.cpp" />
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Pos.cpp" />
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Wheel.cpp" />
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse.cpp" />
+    <ClCompile Include="Source\Nodes\Hook\Display.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Camera_2D.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Camera_3D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

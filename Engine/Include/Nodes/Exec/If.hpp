@@ -7,14 +7,13 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace SINGLETON {
-		struct Background : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
+	namespace EXEC {
+		struct If : Node {
+			PORT_EXEC_I in;
+			PORT_DATA_I condition;
+			PORT_EXEC_O out;
 
-			PORT_DATA_I color_in;
-
-			Background();
+			If();
 
 			void exec(const Port* port) override;
 		};

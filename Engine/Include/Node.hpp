@@ -177,10 +177,15 @@ namespace NODE {
 	}
 }
 
-#define DATA_I(label, type) make_unique<PORT::Data_I>(this, label, type);
-#define DATA_O(label, type) make_unique<PORT::Data_O>(this, label, type);
-#define EXEC_O(label) make_unique<PORT::Exec_O>(this, label);
-#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label);
+#define DATA_I(label, type) make_unique<PORT::Data_I>(this, label, type)
+#define DATA_O(label, type) make_unique<PORT::Data_O>(this, label, type)
+#define EXEC_O(label) make_unique<PORT::Exec_O>(this, label)
+#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label)
+
+#define PORT_DATA_I Ptr_U<PORT::Data_I>
+#define PORT_DATA_O Ptr_U<PORT::Data_O>
+#define PORT_EXEC_O Ptr_U<PORT::Exec_O>
+#define PORT_EXEC_I Ptr_U<PORT::Exec_I>
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
 #define GET_DATA(type) getData().get<type>()

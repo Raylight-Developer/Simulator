@@ -73,15 +73,15 @@ struct Variable {
 	template <typename T>
 	inline T getInfer() const {
 		switch (type) {
-			case VARIABLE::Type::DOUBLE : return static_cast<T>(any_cast<F64  >(data));
-			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<I64 >(data));
-			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool   >(data));
-			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString>(data));
+			case VARIABLE::Type::DOUBLE : return static_cast<T>(any_cast<F64     >(data));
+			case VARIABLE::Type::INT    : return static_cast<T>(any_cast<I64     >(data));
+			case VARIABLE::Type::BOOL   : return static_cast<T>(any_cast<bool    >(data));
+			case VARIABLE::Type::STRING : return static_cast<T>(any_cast<QString >(data));
 			case VARIABLE::Type::VEC2   : return static_cast<T>(any_cast<F64_V2  >(data));
 			case VARIABLE::Type::VEC3   : return static_cast<T>(any_cast<F64_V3  >(data));
 			case VARIABLE::Type::VEC4   : return static_cast<T>(any_cast<F64_V4  >(data));
-			case VARIABLE::Type::COLOR  : return static_cast<T>(any_cast<Color  >(data));
-			case VARIABLE::Type::QUAT   : return static_cast<T>(any_cast<F64_Quat  >(data));
+			case VARIABLE::Type::COLOR  : return static_cast<T>(any_cast<Color   >(data));
+			case VARIABLE::Type::QUAT   : return static_cast<T>(any_cast<F64_Quat>(data));
 			case VARIABLE::Type::MAT2   : return static_cast<T>(any_cast<F64_M2  >(data));
 			case VARIABLE::Type::MAT3   : return static_cast<T>(any_cast<F64_M3  >(data));
 			case VARIABLE::Type::MAT4   : return static_cast<T>(any_cast<F64_M4  >(data));

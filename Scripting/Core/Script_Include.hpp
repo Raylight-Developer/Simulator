@@ -4,6 +4,7 @@
 
 #include "KL.hpp"
 
+#include "Node.hpp"
 #include "OpenGL.hpp"
 #include "Session.hpp"
 #include "Viewport.hpp"
@@ -14,11 +15,6 @@
 #undef FLUSH
 #undef PRINT
 #undef SESSION
-
-#undef DATA_I
-#undef DATA_O
-#undef EXEC_I
-#undef EXEC_O
 
 #define SCRIPT NODES::SCRIPT::Script
 #define SCRIPT_INIT Session::initialize(this->session);
@@ -35,8 +31,3 @@ using Data_I = NODE::PORT::Data_I;
 using Data_O = NODE::PORT::Data_O;
 using Exec_I = NODE::PORT::Exec_I;
 using Exec_O = NODE::PORT::Exec_O;
-
-#define DATA_I(label, type) new Data_I(this, label, type);
-#define DATA_O(label, type) new Data_O(this, label, type);
-#define EXEC_I(label) new Exec_I(this, label);
-#define EXEC_O(label) new Exec_O(this, label);

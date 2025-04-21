@@ -7,18 +7,19 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace VARIABLES {
-		struct Get : Node {
+	namespace MATH {
+		struct Arithmetic : Node {
+			PORT_DATA_I i_a;
+			PORT_DATA_I i_b;
 			PORT_DATA_O out;
-			GUI::Label* label;
-			QString var;
 
-			Get();
-			void setVar(const QString name);
+			GUI::Options* enums;
+
+			Arithmetic();
 
 			Variable getData(const Port* port) const override;
 
-			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
+			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
 				//TODO
 				void execute() const final override;
 				void undo() final override;

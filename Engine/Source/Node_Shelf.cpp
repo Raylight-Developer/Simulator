@@ -63,19 +63,19 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_math = new GUI::Tree_Item(this, "Math");
 	{
-		auto arithmetic   = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "ARITHMETIC"   } });
-		auto trigonometry = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "TRIGONOMETRY" } });
+		auto arithmetic   = new GUI::Tree_Item(tree_math, "Arithmetic"  , 1, { { 1000, "MATH ARITHMETIC"   } });
+		auto trigonometry = new GUI::Tree_Item(tree_math, "Trigonometry", 1, { { 1000, "MATH TRIGONOMETRY" } });
 	}
 
 	auto tree_boolean = new GUI::Tree_Item(this, "Boolean");
 	{
 		auto boolean_comparison = new GUI::Tree_Item(tree_boolean, "Comparison", 1, { { 1000, "BOOLEAN COMPARISON" } });
-		auto boolean_if         = new GUI::Tree_Item(tree_boolean, "If"        , 1, { { 1000, "BOOLEAN IF"         } });
-		auto boolean_if_else    = new GUI::Tree_Item(tree_boolean, "If Else"   , 1, { { 1000, "BOOLEAN IF ELSE"    } });
 		auto boolean_select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
 	}
 	auto tree_exec = new GUI::Tree_Item(this, "Exec");
 	{
+		auto exec_if        = new GUI::Tree_Item(tree_exec, "If"       , 1, { { 1000, "EXEC IF"        } });
+		auto exec_if_else   = new GUI::Tree_Item(tree_exec, "If Else"  , 1, { { 1000, "EXEC IF ELSE"   } });
 		auto exec_subsample = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
 	}
 	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");

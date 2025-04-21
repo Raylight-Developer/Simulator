@@ -1,5 +1,6 @@
 #include "Window.hpp"
 #include "Input.hpp"
+#include "Session.hpp"
 
 void customMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
 }
@@ -21,5 +22,13 @@ int main(int argc, char *argv[]) {
 	app->setFont(font);
 
 	auto window = new Window();
-	return app->exec();
+	const int res = app->exec();
+
+	LOGL();
+	LOGL();
+	LOGL(<< SUCCESS("Shutdown"));
+	LOGL();
+	LOGL();
+
+	return res;
 }
