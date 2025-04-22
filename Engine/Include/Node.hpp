@@ -3,6 +3,8 @@
 #include "KL.hpp"
 
 #include "Variable.hpp"
+
+struct File;
 namespace NODES {
 	enum struct Node_Type;
 }
@@ -45,8 +47,9 @@ struct Node : Self<Node>, QGraphicsItem {
 	virtual void exec(const NODE::Port* port) {}
 	virtual Variable getData(const NODE::Port* port) const { return Variable(); };
 
-	virtual void save(CORE::Lace& lace, const U64& index) const;
-	static tuple<Node*, U64> load(const Token_Array& tokens);
+	void save(CORE::Lace& lace, const U64& index) const;
+	virtual void saveDetail(CORE::Lace& lace) const;
+	static void load(File* file, const Token_Array& tokens);
 
 	int type() const override;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;

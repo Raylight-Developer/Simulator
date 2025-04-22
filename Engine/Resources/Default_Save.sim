@@ -5,18 +5,32 @@
 └Scripts
 ┌Variables( 0 )
 └Variables
-┌Node-Groups
+┌Node-Groups( 0 )
 └Node-Groups
 ┌Node-Tree( 2 )
  ┌Node [ 0 ] Tick
-  * 1422022953856
+  * 1607360933040
   Type SINGLETON::EULER_TICK
   ( 0 0 )
+  ┌In( 0 )
+  └In
+  ┌Out( 4 )
+   * 1607360933328
+   * 1607360912928
+   * 1607360913776
+   * 1607360914624
+  └Out
  └Node
  ┌Node [ 1 ] Reset
-  * 1421987962752
+  * 1607311854336
   Type SINGLETON::RESET
   ( 0 200 )
+  ┌In( 0 )
+  └In
+  ┌Out( 2 )
+   * 1607360985280
+   * 1607360986016
+  └Out
  └Node
 └Node-Tree
 ┌Build

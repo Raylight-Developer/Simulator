@@ -17,8 +17,7 @@ U64 File::ptrKey(const void* val) const {
 	return pointer_map.getKey(to_U(val));
 }
 
-File File::loadFile(const string& file_path) {
-	File file;
+void File::loadFile(const string& file_path) {
 	LOGL(<< MSG_BLUE("[File]") >> "Loading ASCII File from:" >> file_path);
 	LOG++;
 	ifstream in_file(file_path, ios::binary);
@@ -38,11 +37,10 @@ File File::loadFile(const string& file_path) {
 		}
 		in_file.close();
 		LOGL(<< MSG_GREEN("[File]") >> "Parsing...");
-		file.load(token_data);
+		load(token_data);
 	}
 	LOGL(<< MSG_GREEN("[File]") >> "Loaded");
 	LOG--;
-	return file;
 }
 
 bool File::saveFile(const string& file_path) {
@@ -126,30 +124,9 @@ void File::loadNodeGroups(const Token_Array& token_data) {
 void File::loadNodeTree(const Token_Array& token_data) {
 	LOGL(<< MSG_BLUE("[Node-Tree]"));
 	LOG++;
-	bool is_processing = false;
-	Token_Array read_data = Token_Array();
-	for (const Tokens& tokens : token_data) {
-		if (tokens[0] == "┌Node") {
-			is_processing = true;
-			read_data.clear();
-			read_data.push_back(tokens);
-		}
-		else if (tokens[0] == "└Node") {
-			is_processing = false;
-			auto [node_ptr, ptr] = Node::load(read_data);
-			pointer_map.set(ptr, to_U(node_ptr));
-			Ptr_S<Node> node(node_ptr);
-			nodes.push(node);
-			if (node->node_type == NODES::Node_Type::SINGLETON_EULER_TICK) {
-				euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
-			}
-			else if (node->node_type == NODES::Node_Type::SINGLETON_RESET) {
-				reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
-			}
-		}
-		else if (is_processing) {
-			read_data.push_back(tokens);
-		}
+	const CORE::Stack<Token_Array> nodes_data = getBlocks("┌Node", "└Node", token_data, true);
+	for (const Token_Array& node_data : nodes_data) {
+		Node::load(this, node_data);
 	}
 	LOG--;
 }
@@ -194,7 +171,7 @@ void File::saveVariables(CORE::Lace& lace) {
 }
 
 void File::saveNodeGroups(CORE::Lace& lace) {
-	lace NL << "┌Node-Groups";
+	lace NL << "┌Node-Groups( 0 )";
 	lace++;
 
 	lace--;
@@ -218,4 +195,53 @@ void File::saveBuild(CORE::Lace& lace) {
 	lace++;
 	lace--;
 	lace NL << "└Build";
+}
+
+Token_Array File::getBlock(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close) {
+	Token_Array block;
+	bool is_processing = false;
+	for (const Tokens& tokens : tokens) {
+		if (tokens[0] == open) {
+			is_processing = true;
+			if (include_open_close) {
+				block.push_back(tokens);
+			}
+		}
+		else if (tokens[0] == close) {
+			if (include_open_close) {
+				block.push_back(tokens);
+			}
+			return block;
+		}
+		else if (is_processing) {
+			block.push_back(tokens);
+		}
+	}
+	return block;
+}
+
+CORE::Stack<Token_Array> File::getBlocks(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close) {
+	bool is_processing = false;
+	CORE::Stack<Token_Array> blocks;
+	Token_Array buffer;
+	for (const Tokens& tokens : tokens) {
+		if (tokens[0] == open) {
+			is_processing = true;
+			if (include_open_close) {
+				buffer.push_back(tokens);
+			}
+		}
+		else if (tokens[0] == close) {
+			is_processing = false;
+			if (include_open_close) {
+				buffer.push_back(tokens);
+			}
+			blocks.push(buffer);
+			buffer.clear();
+		}
+		else if (is_processing) {
+			buffer.push_back(tokens);
+		}
+	}
+	return blocks;
 }

@@ -580,36 +580,70 @@ void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 #include "Session.hpp"
 #include "Window.hpp"
 #include "Nodes.hpp"
+#include "File.hpp"
+
 void Node::save(CORE::Lace& lace, const U64& index) const {
 	lace NL << "┌Node [ " << index << " ] " << label;
 	lace++;
 	lace NL PTR(shared_from_this().get());
 	lace NL << "Type " << NODES::toString(node_type);
 	lace NL << "( " << pos() << " )";
+	lace NL << "┌In( " << inputs.size() << " )";
+	lace++;
+	for (Port* port : inputs) {
+		lace NL PTR(port);
+	}
+	lace--;
+	lace NL << "└In";
+	lace NL << "┌Out( " << outputs.size() << " )";
+	lace++;
+	for (Port* port : outputs) {
+		lace NL PTR(port);
+	}
+	lace--;
+	lace NL << "└Out";
+	saveDetail(lace);
 	lace--;
 	lace NL << "└Node";
 }
 
-tuple<Node*, U64> Node::load(const Token_Array& tokens) {
-	const string  r_label = f_join(tokens[0], 4);
-	const U64     r_ptr = stoU64(tokens[1][1]);
-	const string  r_type = tokens[2][1];
-	const QPointF r_pos = QPointF(stoF64(tokens[3][1]), stoF64(tokens[3][2]));
+void Node::saveDetail(CORE::Lace& lace) const {
+}
 
-	Node* node = nullptr;
+void Node::load(File* file, const Token_Array& tokens) {
+	const string  r_label = f_join(tokens[0], 4);
+	const U64     r_ptr   = stoU64(tokens[1][1]);
+	const string  r_type  = tokens[2][1];
+	const QPointF r_pos   = QPointF(stoF64(tokens[3][1]), stoF64(tokens[3][2]));
+
+	Ptr_S<Node> node;
 
 	if (r_type == "SINGLETON::EULER_TICK") {
-		node = new NODES::SINGLETON::Euler_Tick();
+		node = make_shared<NODES::SINGLETON::Euler_Tick>();
+		file->euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
 	}
 	else if (r_type == "SINGLETON::RESET") {
-		node = new NODES::SINGLETON::Reset();
+		node = make_shared<NODES::SINGLETON::Reset>();
+		file->reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
 	}
 
 	if (node) {
 		node->label = qstr(r_label);
 
-		SESSION->window->node_editor->scene->addItem(node);
+		SESSION->window->node_editor->scene->addItem(node.get());
 		node->setPos(r_pos);
+
+		file->pointer_map.set(r_ptr, to_U(node.get()));
+		file->nodes.push(node);
+
+		Token_Array inputs  = File::getBlock("┌In" , "└In" , tokens);
+		Token_Array outputs = File::getBlock("┌Out", "└Out", tokens);
+
+		for (U64 i = 0; i < inputs.size(); i++) {
+			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs[i]));
+		}
+		for (U64 i = 0; i < outputs.size(); i++) {
+			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs[i]));
+		}
 	}
-	return tie(node, r_ptr);
 }

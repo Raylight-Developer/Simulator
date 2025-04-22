@@ -12,12 +12,30 @@
   * 0
   Type SINGLETON::EULER_TICK
   ( 0 0 )
+  ┌In( 0 )
+  └In
+  ┌Out( 4 )
+  * 01
+  * 02
+  * 03
+  * 04
+  └Out
  └Node
  ┌Node [ 1 ] Reset
   * 1
   Type SINGLETON::RESET
   ( 0 200 )
+  ┌In( 0 )
+  └In
+  ┌Out( 2 )
+  * 11
+  * 12
+  └Out
  └Node
 └Node-Tree
 ┌Build
+ ┌Node-Exec
+ └Node-Exec
+ ┌Node-Data
+ └Node-Data
 └Build

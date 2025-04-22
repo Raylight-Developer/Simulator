@@ -26,8 +26,8 @@ struct File {
 	U64 ptrVal(const void* key) const;
 	U64 ptrKey(const void* val) const;
 
-	static File loadFile(const string& file_path);
-	bool        saveFile(const string& file_path);
+	void loadFile(const string& file_path);
+	bool saveFile(const string& file_path);
 
 	void load          (const Token_Array& token_data);
 	void loadHeader    (const Token_Array& token_data);
@@ -44,4 +44,7 @@ struct File {
 	void saveNodeGroups(CORE::Lace& lace);
 	void saveNodeTree  (CORE::Lace& lace);
 	void saveBuild     (CORE::Lace& lace);
+
+	static Token_Array getBlock(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close = false);
+	static CORE::Stack<Token_Array> getBlocks(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close = false);
 };

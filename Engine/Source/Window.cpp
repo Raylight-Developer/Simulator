@@ -13,8 +13,6 @@ Window::Window() {
 	history_view = new History_View(this);
 	variable_editor = new Variable_Editor(this);
 
-	session->file = std::move(File::loadFile("./Resources/Default.sim"));
-
 	auto viewport = new Viewport();
 	auto container = QWidget::createWindowContainer(viewport, this);
 
@@ -35,6 +33,8 @@ Window::Window() {
 	main_splitter->addWidget(history_view);
 	main_splitter->setSizes({ 2000, 400 });
 	
+	session->file.loadFile("./Resources/Default.sim");
+
 	setCentralWidget(main_splitter);
 	showMaximized();
 	LOGL(<< SUCCESS("Loaded Simulator v-" << SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version));

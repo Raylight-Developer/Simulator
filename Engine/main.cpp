@@ -26,11 +26,7 @@ int main(int argc, char *argv[]) {
 
 	window->session->file.saveFile("./Resources/Default_Save.sim");
 
-	LOGL();
-	LOGL();
-	LOGL(<< SUCCESS("Shutdown"));
-	LOGL();
-	LOGL();
+	LOGL(NL NL NL << SUCCESS("Shutdown") NL NL NL);
 
 	return res;
 }
