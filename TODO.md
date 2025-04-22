@@ -1,12 +1,10 @@
 - Circular Dependencies Check
-- Scripting
-- Node Groups
+- Node Groups / Functions
 - Auto Suggest on Connection Creation Empty Drop
 - Escape to cancel
 - Scroll fix for QGraphicsProxyWidget inside QGraphicsView
 - Style fix for QGraphicsProxyWidget
 - Copy Paste
-- Undo Redo
 - Cache Sim
 - File Save Load
 

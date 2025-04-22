@@ -5,6 +5,7 @@
 #include "File.hpp"
 #include "Node.hpp"
 #include "Nodes.hpp"
+#include "Window.hpp"
 #include "Variable.hpp"
 #include "Scripting.hpp"
 
@@ -28,7 +29,7 @@ struct Session : CORE::Session {
 	static void destroy();
 
 	QOpenGLFunctions_4_5_Core* gl;
-	GUI::Window* window;
+	Window* window;
 	Viewport* viewport;
 
 	I64 current_frame;
@@ -37,12 +38,6 @@ struct Session : CORE::Session {
 	Playback_Mode playback_mode;
 
 	File file;
-
-	CORE::UMap<QString, Variable> variables;
-	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;
-
-	CORE::Stack<NODES::SCRIPT::Script*> scripts;
-	CORE::UMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	Session();
 	~Session() = default;

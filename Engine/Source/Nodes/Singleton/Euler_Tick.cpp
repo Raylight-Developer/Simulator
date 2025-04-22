@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::SINGLETON::Euler_Tick::Euler_Tick() :
-	Node("Tick")
+	Node("SINGLETON::EULER_TICK", "Tick")
 {
 	rect.setWidth(100);
 	rect.setHeight(140);

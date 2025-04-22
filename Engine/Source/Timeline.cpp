@@ -65,6 +65,7 @@ Timeline::Timeline(QWidget* parent) :
 
 	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
 		SESSION->samples = value.toInt();
+		SESSION->viewport->fixed_delta_time = 1.0 / SESSION->samples;
 	});
 
 	live->toggle();

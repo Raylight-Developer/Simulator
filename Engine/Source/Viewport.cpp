@@ -20,7 +20,8 @@ Viewport::Viewport() :
 	last_mouse(current_mouse),
 
 	window_time(0.0),
-	delta_time(0.01666666)
+	delta_time(0.01666666),
+	fixed_delta_time(0.01666666)
 {
 	SESSION->viewport = this;
 }
@@ -38,7 +39,7 @@ void Viewport::f_tickUpdate() {
 			break;
 		}
 		case Playback_Mode::PLAYING: {
-			FILE.euler_tick->exec(1.0 / SESSION->samples);
+			FILE.euler_tick->exec(fixed_delta_time);
 			SESSION->current_frame++;
 			break;
 		}

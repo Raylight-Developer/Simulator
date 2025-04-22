@@ -1,13 +1,23 @@
 ┌Header
  Version 0.0.1
 └Header
+┌Scripts( 0 )
+└Scripts
 ┌Variables( 0 )
 └Variables
 ┌Node-Groups( 0 )
 └Node-Groups
-┌Node-Tree
+┌Node-Tree( 2 )
+ ┌Node [ 0 ] Tick
+  * 0
+  Type SINGLETON::EULER_TICK
+  ( 0 0 )
+ └Node
+ ┌Node [ 1 ] Reset
+  * 1
+  Type SINGLETON::RESET
+  ( 0 200 )
+ └Node
 └Node-Tree
 ┌Build
 └Build
-┌Scripts( 0 )
-└Scripts

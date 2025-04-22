@@ -9,9 +9,16 @@
 #include "Viewport.hpp"
 #include "Timeline.hpp"
 
-class Window : public GUI::Window {
-public:
+struct Session;
+
+struct Window : GUI::Window {
 	Session* session;
+
+	Node_Shelf*      shelf          ;
+	Timeline*        timeline       ;
+	Node_Editor*     node_editor    ;
+	History_View*    history_view   ;
+	Variable_Editor* variable_editor;
 
 	Window();
 	~Window();

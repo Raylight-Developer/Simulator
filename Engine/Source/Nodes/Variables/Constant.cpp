@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::VARIABLES::Constant::Constant() :
-	Node("Constant")
+	Node("VARIABLES::CONSTANT", "Constant")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);

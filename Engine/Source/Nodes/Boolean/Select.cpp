@@ -1,7 +1,7 @@
 #include "Nodes/Boolean/Select.hpp"
 
 NODES::BOOLEAN::Select::Select() :
-	Node("Select")
+	Node("BOOLEAN::SELECT", "Select")
 {
 	rect.setWidth(80);
 	rect.setHeight(100);

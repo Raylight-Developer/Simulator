@@ -24,6 +24,8 @@ int main(int argc, char *argv[]) {
 	auto window = new Window();
 	const int res = app->exec();
 
+	window->session->file.saveFile("./Resources/Default_Save.sim");
+
 	LOGL();
 	LOGL();
 	LOGL(<< SUCCESS("Shutdown"));

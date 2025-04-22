@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::HOOK::INPUT::Key::Key() :
-	Node("Key")
+	Node("HOOK::INPUT::KEY", "Key")
 {
 	rect.setWidth(120);
 	rect.setHeight(100);

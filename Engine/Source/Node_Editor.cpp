@@ -19,13 +19,6 @@ Node_Editor::Node_Editor(QWidget* parent) :
 	creating_connection = nullptr;
 
 	scene->addItem(selection_rect);
-
-	scene->addItem(FILE.euler_tick.get());
-	FILE.euler_tick->setPos(QPointF(0,0));
-
-	scene->addItem(FILE.reset.get());
-	FILE.reset->setPos(QPointF(0,200));
-
 	editor_ptr = this;
 }
 
@@ -495,19 +488,19 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
 				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(under_mouse)) {
-					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
-					SESSION->variable_refs[name].push(existing->shared_from_this());
+					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
+					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
 				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(under_mouse)) {
-					SESSION->variable_refs[existing->var].remove(existing->shared_from_this());
-					SESSION->variable_refs[name].push(existing->shared_from_this());
+					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
+					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
 					H_GROUP(1);
 				}
 				else {
 					auto def_node = make_shared<NODES::VARIABLES::Set>();
-					SESSION->variable_refs[name].push(def_node);
+					FILE.variable_refs[name].push(def_node);
 					def_node->setVar(name);
 					node = def_node;
 				}
@@ -540,10 +533,10 @@ void Node_Editor::moveNode(Ptr_S<Node> node, const F64_V2& new_pos) {
 
 void Node_Editor::deleteNode(Ptr_S<Node> node) {
 	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
-		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
 	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
-		SESSION->variable_refs[node_def->var].remove(node_def->shared_from_this());
+		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
 	FILE.nodes.remove(node->shared_from_this());
 	editor_ptr->scene->removeItem(node.get());

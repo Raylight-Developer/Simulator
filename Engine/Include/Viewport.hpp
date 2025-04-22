@@ -18,6 +18,7 @@ struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
 	Timestamp last_time;
 	F64 window_time;
 	F64 delta_time;
+	F64 fixed_delta_time;
 
 	F64_V2 current_mouse;
 	F64_V2 last_mouse;

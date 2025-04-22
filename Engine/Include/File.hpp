@@ -3,6 +3,8 @@
 #include "KL.hpp"
 
 #include "Nodes.hpp"
+#include "Variable.hpp"
+#include "Scripting.hpp"
 
 struct File {
 	CORE::BiMap<U64, U64> pointer_map;
@@ -11,6 +13,12 @@ struct File {
 	Ptr_S<NODES::SINGLETON::Reset> reset;
 	
 	CORE::Stack<Ptr_S<Node>> nodes;
+
+	CORE::UMap<QString, Variable> variables;
+	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;
+
+	CORE::Stack<NODES::SCRIPT::Script*> scripts;
+	CORE::UMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	File();
 	~File();
@@ -23,13 +31,17 @@ struct File {
 
 	void load          (const Token_Array& token_data);
 	void loadHeader    (const Token_Array& token_data);
+	void loadScripts   (const Token_Array& token_data);
 	void loadVariables (const Token_Array& token_data);
 	void loadNodeGroups(const Token_Array& token_data);
 	void loadNodeTree  (const Token_Array& token_data);
 	void loadBuild     (const Token_Array& token_data);
-	void loadScripts   (const Token_Array& token_data);
 
-	void save      (CORE::Lace& lace);
-	void saveHeader(CORE::Lace& lace);
-	void saveBuild (CORE::Lace& lace);
+	void save          (CORE::Lace& lace);
+	void saveHeader    (CORE::Lace& lace);
+	void saveScripts   (CORE::Lace& lace);
+	void saveVariables (CORE::Lace& lace);
+	void saveNodeGroups(CORE::Lace& lace);
+	void saveNodeTree  (CORE::Lace& lace);
+	void saveBuild     (CORE::Lace& lace);
 };

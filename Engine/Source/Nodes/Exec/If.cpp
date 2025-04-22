@@ -1,7 +1,7 @@
 #include "Nodes/Exec/If.hpp"
 
 NODES::EXEC::If::If() :
-	Node("If")
+	Node("EXEC::IF", "If")
 {
 	rect.setWidth(40);
 	rect.setHeight(80);

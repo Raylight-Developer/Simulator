@@ -6,13 +6,14 @@ Window::Window() {
 	session = new Session();
 	Session::initialize(session);
 	session->window = this;
-	session->file = std::move(File::loadFile("./Resources/Default.sim"));
 
-	auto shelf = new Node_Shelf(this);
-	auto timeline = new Timeline(this);
-	auto node_editor = new Node_Editor(this);
-	auto history_view = new History_View(this);
-	auto variable_editor = new Variable_Editor(this);
+	shelf = new Node_Shelf(this);
+	timeline = new Timeline(this);
+	node_editor = new Node_Editor(this);
+	history_view = new History_View(this);
+	variable_editor = new Variable_Editor(this);
+
+	session->file = std::move(File::loadFile("./Resources/Default.sim"));
 
 	auto viewport = new Viewport();
 	auto container = QWidget::createWindowContainer(viewport, this);

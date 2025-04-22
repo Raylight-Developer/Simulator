@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::VARIABLES::Set::Set() :
-	Node("Set Var")
+	Node("VARIABLES::SET", "Set Var")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);

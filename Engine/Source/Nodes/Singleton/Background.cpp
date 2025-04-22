@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::SINGLETON::Background::Background() :
-	Node("Background")
+	Node("SINGLETON::BACKGROUND", "Background")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);
@@ -11,7 +11,7 @@ NODES::SINGLETON::Background::Background() :
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
 
-	color_in = DATA_I("Color", Variable(Color()));
+	color_in = DATA_I("Color", Variable(Color(1,0,1,1)));
 }
 
 void NODES::SINGLETON::Background::exec(const Port* port) {

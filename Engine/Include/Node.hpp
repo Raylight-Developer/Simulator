@@ -28,17 +28,22 @@ enum Graphics_Item_Type {
 
 struct Node : Self<Node>, QGraphicsItem {
 	QColor header_color;
+	QString node_type;
 	QString label;
 	QRectF rect;
 
 	CORE::Stack<NODE::Port*> inputs;
 	CORE::Stack<NODE::Port*> outputs;
 
-	Node(const QString& label = "NODE");
+	Node();
+	Node(const QString& node_type, const QString& label);
 	~Node();
 
 	virtual void exec(const NODE::Port* port) {}
 	virtual Variable getData(const NODE::Port* port) const { return Variable(); };
+
+	virtual void save(CORE::Lace& lace, const U64& index) const;
+	static tuple<Node*, U64> load(const Token_Array& tokens);
 
 	int type() const override;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;

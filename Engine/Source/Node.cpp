@@ -1,7 +1,19 @@
-#include "Node.hpp"
+﻿#include "Node.hpp"
 
-Node::Node(const QString& label) :
+Node::Node() :
 	QGraphicsItem(),
+	node_type("ERROR"),
+	label("NODE"),
+	rect(QRectF(0, 0, 200, 200))
+{
+	setZValue(1);
+	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
+	header_color = QColor(25, 25, 25);
+}
+
+Node::Node(const QString& node_type, const QString& label) :
+	QGraphicsItem(),
+	node_type(node_type),
 	label(label),
 	rect(QRectF(0, 0, 200, 200))
 {
@@ -13,6 +25,16 @@ Node::Node(const QString& label) :
 Node::~Node() {
 	inputs.clear();
 	outputs.clear();
+}
+
+void Node::save(CORE::Lace& lace, const U64& index) const {
+	lace NL << "┌Node [ " << index << " ] " << label;
+	lace++;
+	lace NL PTR(shared_from_this().get());
+	lace NL << "Type " << node_type;
+	lace NL << "( " << pos() << " )";
+	lace--;
+	lace NL << "└Node";
 }
 
 int Node::type() const {
@@ -563,4 +585,31 @@ void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->drawPath(path);
 
 	painter->drawText(rect.bottomRight() + QPointF(5, 0), label);
+}
+
+#include "Session.hpp"
+#include "Window.hpp"
+#include "Nodes.hpp"
+tuple<Node*, U64> Node::load(const Token_Array& tokens) {
+	const string  r_label = f_join(tokens[0], 4);
+	const U64     r_ptr = stoU64(tokens[1][1]);
+	const string  r_type = tokens[2][1];
+	const QPointF r_pos = QPointF(stoF64(tokens[3][1]), stoF64(tokens[3][2]));
+
+	Node* node = nullptr;
+
+	if (r_type == "SINGLETON::EULER_TICK") {
+		node = new NODES::SINGLETON::Euler_Tick();
+	}
+	else if (r_type == "SINGLETON::RESET") {
+		node = new NODES::SINGLETON::Reset();
+	}
+
+	if (node) {
+		node->label = qstr(r_label);
+
+		SESSION->window->node_editor->scene->addItem(node);
+		node->setPos(r_pos);
+	}
+	return tie(node, r_ptr);
 }

@@ -36,7 +36,7 @@ void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
 }
 
 NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
-	Node(id),
+	Node("SCRIPT", id),
 	session(session)
 {}
 
@@ -76,8 +76,8 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 			//script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
 			//script->session = &SESSION;
 
-			SESSION->scripts.push(script);
-			SESSION->dlls[script] = script_addr;
+			FILE.scripts.push(script);
+			FILE.dlls[script] = script_addr;
 			script->onLoad();
 		}
 	}
@@ -88,10 +88,10 @@ void NODES::SCRIPT::reloadScript(Script* script) {
 }
 
 void NODES::SCRIPT::unloadScript(Script* script) {
-	HINSTANCE script_addr = SESSION->dlls[script];
+	HINSTANCE script_addr = FILE.dlls[script];
 
 	script->onUnload();
-	SESSION->dlls.remove(script);
-	SESSION->scripts.removeDelete(script); // TEST if Delete
+	FILE.dlls.remove(script);
+	FILE.scripts.removeDelete(script); // TEST if Delete
 	unloadDLL(script_addr);
 }
