@@ -6,7 +6,7 @@ struct Script : SCRIPT {
 	Script(Session* session);
 
 	/*
-	Called Once after internally binding the script to the program.
+	Called Once after internally binding the script to the program, either after adding node to scene or during File::loadBuild().
 	*/
 	void onLoad() override;
 
@@ -18,13 +18,13 @@ struct Script : SCRIPT {
 	void onUnload() override;
 
 	/* OPTIONAL
-	Handles node execution on Exec_Input trigger.
-	User should manually handle downstream Exec_Output execution from here.
+	Handles node execution on trigger of const Exec_I* port.
+	User should manually handle downstream Exec_Output execution from here, otherwise call a slightly more expensive: execAllDownstream().
 	*/
-	void exec(const Port* port) override;
+	void exec(const Exec_I* port) override;
 
 	/* OPTIONAL
-	Handles data request by the Data_Output ports.
+	Handles data request by the connection of the const Data_O* port.
 	*/
-	Variable getData(const Port* port) const override;
+	Variable getData(const Data_O* port) const override;
 };

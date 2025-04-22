@@ -12,10 +12,10 @@ void Script::onUnload() {
 	PRINT(NL << "Unloaded Test Script");
 }
 
-void Script::exec(const Port* port) {
-	PRINT(NL << "Exec");
+void Script::exec(const Exec_I* port) {
+	execAllDownstream();
 }
 
-Variable Script::getData(const Port* port) const {
+Variable Script::getData(const Data_O* port) const {
 	return Variable();
 }

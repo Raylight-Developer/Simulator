@@ -20,7 +20,7 @@ void Script::onUnload() {
 	Session::destroy();
 }
 
-void Script::exec(const Port* port) {
+void Script::exec(const Exec_I* port) {
 	render();
 	exec_out->exec();
 }

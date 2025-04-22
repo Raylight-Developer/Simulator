@@ -4,44 +4,28 @@
 
 #include "Node.hpp"
 
+using namespace NODE;
+
 struct Session;
-namespace NODES {
-	namespace SCRIPT {
-		struct Script;
-	}
-}
 
 namespace NODES {
 	namespace SCRIPT {
-		namespace SCRIPT_LAYER {
-			class SL_Session {
-			private:
-				Session* session;
-			public:
-				SL_Session(Script* script = nullptr, Session* session = nullptr);
-
-				CORE::Lace& log() const;
-				CORE::Lace& printer() const;
-				QOpenGLFunctions_4_5_Core* gl() const;
-
-				T_V2<U64> viewportResolution() const;
-
-				F64 viewport2DZoom() const;
-				F64_V2 viewport2DCenter() const;
-
-				void flush();
-			};
-		}
-
 		struct Script : Node {
-			//SCRIPT_LAYER::SL_Session* session;
 			Session* session;
 
 			Script(const QString& id, Session* session);
 			~Script();
 
-			virtual void onLoad() {}
-			virtual void onUnload() {}
+			void execAllDownstream() const;
+
+			void exec(const Port* port) final override;
+			Variable getData(const Port* port) const final override;
+
+			virtual void exec(const PORT::Exec_I* port);
+			virtual Variable getData(const PORT::Data_O* port) const;
+
+			virtual void onLoad() = 0;
+			virtual void onUnload() = 0;
 		};
 
 		void loadDLL(HINSTANCE& dynlib, const QString& dll_path);

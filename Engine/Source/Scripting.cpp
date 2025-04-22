@@ -3,38 +3,6 @@
 #include "Session.hpp"
 #include "Viewport.hpp"
 
-NODES::SCRIPT::SCRIPT_LAYER::SL_Session::SL_Session(Script* script, Session* session) :
-	session(session)
-{}
-
-CORE::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::log() const {
-	return session->buffer;
-}
-
-CORE::Lace& NODES::SCRIPT::SCRIPT_LAYER::SL_Session::printer() const {
-	return session->printer;
-}
-
-QOpenGLFunctions_4_5_Core* NODES::SCRIPT::SCRIPT_LAYER::SL_Session::gl() const {
-	return session->gl;
-}
-
-T_V2<U64> NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewportResolution() const {
-	return session->viewport->resolution;
-}
-
-F64 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DZoom() const {
-	return session->viewport->zoom_2d;
-}
-
-F64_V2 NODES::SCRIPT::SCRIPT_LAYER::SL_Session::viewport2DCenter() const {
-	return session->viewport->center_2d;
-}
-
-void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
-	session->flushLog();
-}
-
 NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
 	Node(Node_Type::SCRIPT, id),
 	session(session)
@@ -92,6 +60,31 @@ void NODES::SCRIPT::unloadScript(Script* script) {
 
 	script->onUnload();
 	FILE.dlls.remove(script);
-	FILE.scripts.removeDelete(script); // TEST if Delete
+	FILE.scripts.removeDelete(script);
 	unloadDLL(script_addr);
+}
+
+void NODES::SCRIPT::Script::execAllDownstream() const {
+	for (const Port* port : outputs) {
+		if (port->type() == Graphics_Item_Type::E_EXEC_O) {
+			static_cast<const PORT::Exec_O*>(port)->exec();
+		}
+	}
+}
+
+void NODES::SCRIPT::Script::exec(const Port* port) {
+	exec(static_cast<const PORT::Exec_I*>(port));
+}
+
+Variable NODES::SCRIPT::Script::getData(const Port* port) const {
+	return getData(static_cast<const PORT::Data_O*>(port));
+}
+
+
+void NODES::SCRIPT::Script::exec(const PORT::Exec_I* port) {
+	execAllDownstream();
+}
+
+Variable NODES::SCRIPT::Script::getData(const PORT::Data_O* port) const {
+	return Variable();
 }

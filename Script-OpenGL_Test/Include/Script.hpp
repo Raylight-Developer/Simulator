@@ -11,7 +11,7 @@ struct Script : SCRIPT {
 	void onLoad() override;
 	void onUnload() override;
 
-	void exec(const Port* port) override;
+	void exec(const Exec_I* port) override;
 
 	void render();
 };

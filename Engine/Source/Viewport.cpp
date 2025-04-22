@@ -229,7 +229,7 @@ void Viewport::keyReleaseEvent(QKeyEvent* event) {
 
 void Viewport::keyPressEvent(QKeyEvent* event) {
 	if (event->key() == Qt::Key::Key_R) {
-		f_compile();
+		//f_compile();
 	}
 }
 
