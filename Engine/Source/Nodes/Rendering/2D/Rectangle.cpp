@@ -4,7 +4,7 @@
 #include "OpenGL.hpp"
 
 NODES::RENDERING::DIM_2D::Rectangle::Rectangle() :
-	Node("RENDERING::2D::RECTANGLE", "Rect")
+	Node(Node_Type::NONE, "Rect")
 {
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);

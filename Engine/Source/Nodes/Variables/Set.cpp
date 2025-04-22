@@ -2,8 +2,8 @@
 
 #include "Session.hpp"
 
-NODES::VARIABLES::Set::Set() :
-	Node("VARIABLES::SET", "Set Var")
+NODES::VARIABLE::Set::Set() :
+	Node(Node_Type::VARIABLE_SET, "Set Var")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);
@@ -20,16 +20,16 @@ NODES::VARIABLES::Set::Set() :
 	proxy_label->setPos(20, 30);
 }
 
-void NODES::VARIABLES::Set::h_setVar(const QString name) {
+void NODES::VARIABLE::Set::h_setVar(const QString name) {
 	H_PUSH(make_shared<Set_Variable>(this, this->var, name));
 }
 
-void NODES::VARIABLES::Set::setVar(const QString name) {
+void NODES::VARIABLE::Set::setVar(const QString name) {
 	var = name;
 	label->setText(var);
 	if (name != "") {
-		in->setType(SESSION->variables[var].type);
-		out->setType(SESSION->variables[var].type);
+		in->setType(FILE.variables[var].type);
+		out->setType(FILE.variables[var].type);
 	}
 	else {
 		in->setType(VAR_TYPE::BLOCKED);
@@ -37,28 +37,28 @@ void NODES::VARIABLES::Set::setVar(const QString name) {
 	}
 }
 
-void NODES::VARIABLES::Set::exec(const Port* port) {
+void NODES::VARIABLE::Set::exec(const Port* port) {
 	if (in->connected()) {
-		SESSION->variables[var] = in->getData();
+		FILE.variables[var] = in->getData();
 	}
 	exec_out->exec();
 }
 
-Variable NODES::VARIABLES::Set::getData(const Port* port) const {
-	return SESSION->variables[var];
+Variable NODES::VARIABLE::Set::getData(const Port* port) const {
+	return FILE.variables[var];
 }
 
-NODES::VARIABLES::Set::Set_Variable::Set_Variable(Set* node, const QString& from, const QString& to):
+NODES::VARIABLE::Set::Set_Variable::Set_Variable(Set* node, const QString& from, const QString& to):
 	CORE::CMD("Set Variable"),
 	node(node),
 	from(from),
 	to(to)
 {}
 
-void NODES::VARIABLES::Set::Set_Variable::execute() const {
+void NODES::VARIABLE::Set::Set_Variable::execute() const {
 	node->setVar(to);
 }
 
-void NODES::VARIABLES::Set::Set_Variable::undo() {
+void NODES::VARIABLE::Set::Set_Variable::undo() {
 	node->setVar(from);
 }

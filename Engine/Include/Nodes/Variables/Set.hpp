@@ -7,7 +7,7 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace VARIABLES {
+	namespace VARIABLE {
 		struct Set : Node {
 			PORT_EXEC_I exec_in;
 			PORT_EXEC_O exec_out;

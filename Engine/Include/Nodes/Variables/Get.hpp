@@ -7,7 +7,7 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace VARIABLES {
+	namespace VARIABLE {
 		struct Get : Node {
 			PORT_DATA_O out;
 			GUI::Label* label;

@@ -140,10 +140,10 @@ void File::loadNodeTree(const Token_Array& token_data) {
 			pointer_map.set(ptr, to_U(node_ptr));
 			Ptr_S<Node> node(node_ptr);
 			nodes.push(node);
-			if (node->node_type == "SINGLETON::EULER_TICK") {
+			if (node->node_type == NODES::Node_Type::SINGLETON_EULER_TICK) {
 				euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
 			}
-			else if (node->node_type == "SINGLETON::RESET") {
+			else if (node->node_type == NODES::Node_Type::SINGLETON_RESET) {
 				reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
 			}
 		}

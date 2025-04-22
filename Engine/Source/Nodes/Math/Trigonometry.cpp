@@ -1,7 +1,7 @@
 #include "Nodes/Math/Trigonometry.hpp"
 
 NODES::MATH::Trigonometry::Trigonometry() :
-	Node("MATH::TRIGONOMETRY", "Trigonometry")
+	Node(Node_Type::NONE, "Trigonometry")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);

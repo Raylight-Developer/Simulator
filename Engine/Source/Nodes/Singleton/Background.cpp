@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::SINGLETON::Background::Background() :
-	Node("SINGLETON::BACKGROUND", "Background")
+	Node(Node_Type::NONE, "Background")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);

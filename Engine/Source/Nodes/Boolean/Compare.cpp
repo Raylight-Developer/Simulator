@@ -1,7 +1,7 @@
 #include "Nodes/Boolean/Compare.hpp"
 
 NODES::BOOLEAN::Compare::Compare() :
-	Node("BOOLEAN::COMPARE", "Compare")
+	Node(Node_Type::NONE, "Compare")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);

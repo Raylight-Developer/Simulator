@@ -3,6 +3,9 @@
 #include "KL.hpp"
 
 #include "Variable.hpp"
+namespace NODES {
+	enum struct Node_Type;
+}
 
 struct Node;
 namespace NODE {
@@ -27,8 +30,8 @@ enum Graphics_Item_Type {
 #define IS_PORT(type) type >= Graphics_Item_Type::E_DATA_I and type <= Graphics_Item_Type::E_EXEC_I
 
 struct Node : Self<Node>, QGraphicsItem {
+	const NODES::Node_Type node_type;
 	QColor header_color;
-	QString node_type;
 	QString label;
 	QRectF rect;
 
@@ -36,7 +39,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	CORE::Stack<NODE::Port*> outputs;
 
 	Node();
-	Node(const QString& node_type, const QString& label);
+	Node(const NODES::Node_Type& node_type, const QString& label);
 	~Node();
 
 	virtual void exec(const NODE::Port* port) {}
@@ -64,7 +67,7 @@ namespace NODE {
 		virtual bool connected() const = 0;
 		virtual void disconnect() = 0;
 
-		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;;
+		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		QRectF boundingRect() const override;
 	};
 
@@ -97,14 +100,14 @@ namespace NODE {
 		struct Data_I : Port {
 			const QString label;
 
-			VARIABLE::Type var_type;
+			VAR::Type var_type;
 			Variable variable;
 			QColor color;
 
 			Ptr_U<Connection> connection;
 
 			Data_I(Node* parent, const QString& label);
-			Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type);
+			Data_I(Node* parent, const QString& label, const VAR::Type& var_type);
 			Data_I(Node* parent, const QString& label, const Variable& default_variable);
 			~Data_I();
 
@@ -113,8 +116,8 @@ namespace NODE {
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
-			void setType(const VARIABLE::Type& var_type);
+			function<void(Port*, const VAR::Type&)> onTypeChanged;
+			void setType(const VAR::Type& var_type);
 			Variable getData() const;
 			bool requestConnection(Connection* connection) override;
 
@@ -125,20 +128,20 @@ namespace NODE {
 		struct Data_O : Port {
 			const QString label;
 
-			VARIABLE::Type var_type;
+			VAR::Type var_type;
 			QColor color;
 
 			CORE::Stack<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
-			Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type);
+			Data_O(Node* parent, const QString& label, const VAR::Type& var_type);
 			~Data_O();
 
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VARIABLE::Type&)> onTypeChanged;
-			void setType(const VARIABLE::Type& var_type);
+			function<void(Port*, const VAR::Type&)> onTypeChanged;
+			void setType(const VAR::Type& var_type);
 			Variable getData() const;
 			bool requestConnection(Connection* connection) override;
 
@@ -182,15 +185,27 @@ namespace NODE {
 	}
 }
 
-#define DATA_I(label, type) make_unique<PORT::Data_I>(this, label, type)
-#define DATA_O(label, type) make_unique<PORT::Data_O>(this, label, type)
-#define EXEC_O(label) make_unique<PORT::Exec_O>(this, label)
-#define EXEC_I(label) make_unique<PORT::Exec_I>(this, label)
+#define DATA_I(label, type) make_unique<NODE::PORT::Data_I>(this, label, type)
+#define DATA_O(label, type) make_unique<NODE::PORT::Data_O>(this, label, type)
+#define EXEC_O(label) make_unique<NODE::PORT::Exec_O>(this, label)
+#define EXEC_I(label) make_unique<NODE::PORT::Exec_I>(this, label)
 
-#define PORT_DATA_I Ptr_U<PORT::Data_I>
-#define PORT_DATA_O Ptr_U<PORT::Data_O>
-#define PORT_EXEC_O Ptr_U<PORT::Exec_O>
-#define PORT_EXEC_I Ptr_U<PORT::Exec_I>
+#define PORT_DATA_I Ptr_U<NODE::PORT::Data_I>
+#define PORT_DATA_O Ptr_U<NODE::PORT::Data_O>
+#define PORT_EXEC_O Ptr_U<NODE::PORT::Exec_O>
+#define PORT_EXEC_I Ptr_U<NODE::PORT::Exec_I>
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
 #define GET_DATA(type) getData().get<type>()
+
+namespace NODES {
+	enum struct Node_Type {
+		NONE                 = QGraphicsItem::UserType + 1,
+		SCRIPT               = QGraphicsItem::UserType + 7,
+		VARIABLE_CONSTANT    = QGraphicsItem::UserType + 8,
+		VARIABLE_GET         = QGraphicsItem::UserType + 9,
+		VARIABLE_SET         = QGraphicsItem::UserType + 10,
+		SINGLETON_EULER_TICK = QGraphicsItem::UserType + 11,
+		SINGLETON_RESET      = QGraphicsItem::UserType + 12
+	};
+}

@@ -2,8 +2,8 @@
 
 #include "Session.hpp"
 
-NODES::VARIABLES::Constant::Constant() :
-	Node("VARIABLES::CONSTANT", "Constant")
+NODES::VARIABLE::Constant::Constant() :
+	Node(Node_Type::VARIABLE_CONSTANT, "Constant")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);
@@ -626,6 +626,6 @@ NODES::VARIABLES::Constant::Constant() :
 		});
 }
 
-Variable NODES::VARIABLES::Constant::getData(const Port* port) const {
+Variable NODES::VARIABLE::Constant::getData(const Port* port) const {
 	return value;
 }

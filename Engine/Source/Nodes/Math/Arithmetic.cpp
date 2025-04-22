@@ -1,7 +1,7 @@
 #include "Nodes/Math/Arithmetic.hpp"
 
 NODES::MATH::Arithmetic::Arithmetic() :
-	Node("MATH::ARITHMETIC", "Arithmetic")
+	Node(Node_Type::NONE, "Arithmetic")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);

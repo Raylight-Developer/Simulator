@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::EXEC::Subsample::Subsample() :
-	Node("EXEC::SUBSAMPLE", "Subsample")
+	Node(Node_Type::NONE, "Subsample")
 {
 	rect.setWidth(160);
 	rect.setHeight(140);

@@ -4,7 +4,7 @@
 #include "OpenGL.hpp"
 
 NODES::RENDERING::DIM_2D::Line::Line() :
-	Node("RENDERING::2D::LINE", "Line")
+	Node(Node_Type::NONE, "Line")
 {
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);

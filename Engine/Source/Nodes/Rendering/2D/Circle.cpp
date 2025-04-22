@@ -4,7 +4,7 @@
 #include "OpenGL.hpp"
 
 NODES::RENDERING::DIM_2D::Circle::Circle() :
-	Node("RENDERING::2D::CIRCLE", "Circle")
+	Node(Node_Type::NONE, "Circle")
 {
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);

@@ -1,32 +1,22 @@
 ┌Header
  Version 0.0.1
 └Header
-┌Scripts( 1 )
+┌Scripts( 0 )
 └Scripts
 ┌Variables( 0 )
 └Variables
 ┌Node-Groups
 └Node-Groups
-┌Node-Tree( 4 )
+┌Node-Tree( 2 )
  ┌Node [ 0 ] Tick
-  * 3066525090192
+  * 1422022953856
   Type SINGLETON::EULER_TICK
   ( 0 0 )
  └Node
  ┌Node [ 1 ] Reset
-  * 3066476763280
+  * 1421987962752
   Type SINGLETON::RESET
   ( 0 200 )
- └Node
- ┌Node [ 2 ] OpenGL Script
-  * 3064545063664
-  Type SCRIPT
-  ( 320 20 )
- └Node
- ┌Node [ 3 ] Background
-  * 3066525094464
-  Type SINGLETON::BACKGROUND
-  ( 140 190 )
  └Node
 └Node-Tree
 ┌Build

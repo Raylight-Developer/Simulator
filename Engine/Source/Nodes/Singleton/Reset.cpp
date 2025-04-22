@@ -1,7 +1,7 @@
 #include "Nodes/Singleton/Reset.hpp"
 
 NODES::SINGLETON::Reset::Reset() :
-	Node("SINGLETON::RESET", "Reset")
+	Node(Node_Type::SINGLETON_RESET, "Reset")
 {
 	rect.setWidth(80);
 	rect.setHeight(80);

@@ -206,7 +206,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			if (IS_PORT(type)) {
 				if (type == Graphics_Item_Type::E_DATA_I) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
-					if (port_r->var_type != VARIABLE::Type::BLOCKED) {
+					if (port_r->var_type != VAR_TYPE::BLOCKED) {
 						if (!port_r->connected()) {
 							creating_connection = make_unique<NODE::Connection>(port_r);
 						}
@@ -230,7 +230,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 				}
 				else if (type == Graphics_Item_Type::E_DATA_O) {
 					auto port_l = static_cast<NODE::PORT::Data_O*>(item);
-					if (port_l->var_type != VARIABLE::Type::BLOCKED) {
+					if (port_l->var_type != VAR_TYPE::BLOCKED) {
 						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
 				}
@@ -396,13 +396,13 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			dataStreamType >> type;
 
 			if (type == "VARIABLE CONSTANT") {
-				node = make_shared<NODES::VARIABLES::Constant>();
+				node = make_shared<NODES::VARIABLE::Constant>();
 			}
 			else if (type == "VARIABLE SET") {
-				node = make_shared<NODES::VARIABLES::Set>();
+				node = make_shared<NODES::VARIABLE::Set>();
 			}
 			else if (type == "VARIABLE GET") {
-				node = make_shared<NODES::VARIABLES::Get>();
+				node = make_shared<NODES::VARIABLE::Get>();
 			}
 			else if (type == "MATH ARITHMETIC") {
 				node = make_shared<NODES::MATH::Arithmetic>();
@@ -487,19 +487,19 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
-				if (auto existing = dynamic_cast<NODES::VARIABLES::Get*>(under_mouse)) {
+				if (auto existing = dynamic_cast<NODES::VARIABLE::Get*>(under_mouse)) {
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
-				else if (auto existing = dynamic_cast<NODES::VARIABLES::Set*>(under_mouse)) {
+				else if (auto existing = dynamic_cast<NODES::VARIABLE::Set*>(under_mouse)) {
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
 					H_GROUP(1);
 				}
 				else {
-					auto def_node = make_shared<NODES::VARIABLES::Set>();
+					auto def_node = make_shared<NODES::VARIABLE::Set>();
 					FILE.variable_refs[name].push(def_node);
 					def_node->setVar(name);
 					node = def_node;
@@ -532,10 +532,10 @@ void Node_Editor::moveNode(Ptr_S<Node> node, const F64_V2& new_pos) {
 }
 
 void Node_Editor::deleteNode(Ptr_S<Node> node) {
-	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Get>(node)) {
+	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Get>(node)) {
 		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
-	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLES::Set>(node)) {
+	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Set>(node)) {
 		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
 	}
 	FILE.nodes.remove(node->shared_from_this());

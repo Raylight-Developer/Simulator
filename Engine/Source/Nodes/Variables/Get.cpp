@@ -2,8 +2,8 @@
 
 #include "Session.hpp"
 
-NODES::VARIABLES::Get::Get() :
-	Node("VARIABLES::GET", "Get Var")
+NODES::VARIABLE::Get::Get() :
+	Node(Node_Type::VARIABLE_GET, "Get Var")
 {
 	rect.setWidth(120);
 	rect.setHeight(60);
@@ -17,12 +17,12 @@ NODES::VARIABLES::Get::Get() :
 	proxy_label->setPos(20, 30);
 }
 
-void NODES::VARIABLES::Get::setVar(const QString name) {
+void NODES::VARIABLE::Get::setVar(const QString name) {
 	var = name;
-	out->setType(SESSION->variables[var].type);
+	out->setType(FILE.variables[var].type);
 	label->setText(var);
 }
 
-Variable NODES::VARIABLES::Get::getData(const Port* port) const {
-	return SESSION->variables[var];
+Variable NODES::VARIABLE::Get::getData(const Port* port) const {
+	return FILE.variables[var];
 }

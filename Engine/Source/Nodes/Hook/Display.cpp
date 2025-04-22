@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::HOOK::Display::Display() :
-	Node("HOOK::DISPLAY", "Display")
+	Node(Node_Type::NONE, "Display")
 {
 	rect.setWidth(120);
 	rect.setHeight(100);

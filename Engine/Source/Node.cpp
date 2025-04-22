@@ -2,7 +2,7 @@
 
 Node::Node() :
 	QGraphicsItem(),
-	node_type("ERROR"),
+	node_type(NODES::Node_Type::NONE),
 	label("NODE"),
 	rect(QRectF(0, 0, 200, 200))
 {
@@ -11,7 +11,7 @@ Node::Node() :
 	header_color = QColor(25, 25, 25);
 }
 
-Node::Node(const QString& node_type, const QString& label) :
+Node::Node(const NODES::Node_Type& node_type, const QString& label) :
 	QGraphicsItem(),
 	node_type(node_type),
 	label(label),
@@ -25,16 +25,6 @@ Node::Node(const QString& node_type, const QString& label) :
 Node::~Node() {
 	inputs.clear();
 	outputs.clear();
-}
-
-void Node::save(CORE::Lace& lace, const U64& index) const {
-	lace NL << "┌Node [ " << index << " ] " << label;
-	lace++;
-	lace NL PTR(shared_from_this().get());
-	lace NL << "Type " << node_type;
-	lace NL << "( " << pos() << " )";
-	lace--;
-	lace NL << "└Node";
 }
 
 int Node::type() const {
@@ -100,10 +90,10 @@ NODE::Connection::Connection(Port* source_port) :
 	pos_r = pos_l;
 
 	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
-		color = VARIABLE::toColor(t_port_l->var_type);
+		color = VAR::toColor(t_port_l->var_type);
 	}
 	else if (auto t_port_l = dynamic_cast<PORT::Data_I*>(port_l)) {
-		color = VARIABLE::toColor(t_port_l->var_type);
+		color = VAR::toColor(t_port_l->var_type);
 	}
 }
 
@@ -119,7 +109,7 @@ NODE::Connection::Connection(Port* port_l, Port* port_r) :
 	pos_r = mapFromItem(port_r, port_r->boundingRect().center());
 
 	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
-		color = VARIABLE::toColor(t_port_l->var_type);
+		color = VAR::toColor(t_port_l->var_type);
 	}
 }
 
@@ -200,8 +190,8 @@ NODE::PORT::Exec_I* NODE::Connection::getExecI() const {
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	var_type(VARIABLE::Type::NONE),
-	color(VARIABLE::toColor(var_type)),
+	var_type(VAR_TYPE::NONE),
+	color(VAR::toColor(var_type)),
 	variable(Variable()),
 	onTypeChanged(nullptr),
 	connection(nullptr)
@@ -210,11 +200,11 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
-NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type) :
 	Port(parent),
 	label(label),
 	var_type(var_type),
-	color(VARIABLE::toColor(var_type)),
+	color(VAR::toColor(var_type)),
 	variable(Variable()),
 	onTypeChanged(nullptr),
 	connection(nullptr)
@@ -227,7 +217,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& d
 	Port(parent),
 	label(label),
 	var_type(default_variable.type),
-	color(VARIABLE::toColor(default_variable.type)),
+	color(VAR::toColor(default_variable.type)),
 	variable(default_variable),
 	onTypeChanged(nullptr),
 	connection(nullptr)
@@ -273,10 +263,10 @@ void NODE::PORT::Data_I::disconnect() {
 	}
 }
 
-void NODE::PORT::Data_I::setType(const VARIABLE::Type& type) {
+void NODE::PORT::Data_I::setType(const VAR_TYPE& type) {
 	var_type = type;
 	variable = Variable(var_type);
-	color = VARIABLE::toColor(type);
+	color = VAR::toColor(type);
 	if (connection) {
 		connection->color = toColor(var_type);
 		auto other = static_cast<Data_O*>(connection->port_l);
@@ -298,7 +288,7 @@ Variable NODE::PORT::Data_I::getData() const {
 }
 
 bool NODE::PORT::Data_I::requestConnection(Connection* connection) {
-	if (var_type == VARIABLE::Type::BLOCKED) {
+	if (var_type == VAR_TYPE::BLOCKED) {
 		return false;
 	}
 	if (onConnRequested) {
@@ -323,44 +313,44 @@ void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 
 	painter->setPen(QPen(Qt::white, 0.5));
 	switch (var_type) {
-	case VARIABLE::Type::VEC2:
-	case VARIABLE::Type::MAT2: {
-		painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
-		break;
-	}
-	case VARIABLE::Type::VEC3:
-	case VARIABLE::Type::MAT3: {
-		painter->drawLine(rect.center(), rect.center() + QPointF(4.9, 0));
-		painter->drawLine(rect.center(), rect.center() + QPointF(-2.45,  4.32));
-		painter->drawLine(rect.center(), rect.center() + QPointF(-2.45, -4.32));
-		break;
+		case VAR_TYPE::VEC2:
+		case VAR_TYPE::MAT2: {
+			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
+			break;
+		}
+		case VAR_TYPE::VEC3:
+		case VAR_TYPE::MAT3: {
+			painter->drawLine(rect.center(), rect.center() + QPointF(4.9, 0));
+			painter->drawLine(rect.center(), rect.center() + QPointF(-2.45,  4.32));
+			painter->drawLine(rect.center(), rect.center() + QPointF(-2.45, -4.32));
+			break;
 
-	}
-	case VARIABLE::Type::VEC4:
-	case VARIABLE::Type::MAT4: {
-		painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
-		painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
-		break;
-	}
+		}
+		case VAR_TYPE::VEC4:
+		case VAR_TYPE::MAT4: {
+			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
+			painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
+			break;
+		}
 	}
 }
 
 NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	var_type(VARIABLE::Type::NONE),
-	color(VARIABLE::toColor(var_type)),
+	var_type(VAR_TYPE::NONE),
+	color(VAR::toColor(var_type)),
 	onTypeChanged(nullptr)
 {
 	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
-NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VARIABLE::Type& var_type) :
+NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type) :
 	Port(parent),
 	label(label),
 	var_type(var_type),
-	color(VARIABLE::toColor(var_type)),
+	color(VAR::toColor(var_type)),
 	onTypeChanged(nullptr)
 {
 	parent->outputs.push(this);
@@ -391,9 +381,9 @@ bool NODE::PORT::Data_O::connected() const {
 	return !connections.empty();
 }
 
-void NODE::PORT::Data_O::setType(const VARIABLE::Type& type) {
+void NODE::PORT::Data_O::setType(const VAR_TYPE& type) {
 	var_type = type;
-	color = VARIABLE::toColor(type);
+	color = VAR::toColor(type);
 	for (Connection* conn : connections) {
 		conn->color = toColor(var_type);
 		auto other = static_cast<Data_I*>(conn->port_r);
@@ -412,7 +402,7 @@ Variable NODE::PORT::Data_O::getData() const {
 }
 
 bool NODE::PORT::Data_O::requestConnection(Connection* connection) {
-	if (var_type == VARIABLE::Type::BLOCKED) {
+	if (var_type == VAR_TYPE::BLOCKED) {
 		return false;
 	}
 	if (onConnRequested) {
@@ -438,25 +428,25 @@ void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 
 	painter->setPen(QPen(Qt::white, 0.5));
 	switch (var_type) {
-	case VARIABLE::Type::VEC2:
-	case VARIABLE::Type::MAT2: {
-		painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
-		break;
-	}
-	case VARIABLE::Type::VEC3:
-	case VARIABLE::Type::MAT3: {
-		painter->drawLine(rect.center(), rect.center() + QPointF(-4.9, 0));
-		painter->drawLine(rect.center(), rect.center() + QPointF(2.45,  4.32));
-		painter->drawLine(rect.center(), rect.center() + QPointF(2.45, -4.32));
-		break;
+		case VAR_TYPE::VEC2:
+		case VAR_TYPE::MAT2: {
+			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
+			break;
+		}
+		case VAR_TYPE::VEC3:
+		case VAR_TYPE::MAT3: {
+			painter->drawLine(rect.center(), rect.center() + QPointF(-4.9, 0));
+			painter->drawLine(rect.center(), rect.center() + QPointF(2.45,  4.32));
+			painter->drawLine(rect.center(), rect.center() + QPointF(2.45, -4.32));
+			break;
 
-	}
-	case VARIABLE::Type::VEC4:
-	case VARIABLE::Type::MAT4: {
-		painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
-		painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
-		break;
-	}
+		}
+		case VAR_TYPE::VEC4:
+		case VAR_TYPE::MAT4: {
+			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
+			painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
+			break;
+		}
 	}
 }
 
@@ -590,6 +580,16 @@ void NODE::PORT::Exec_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 #include "Session.hpp"
 #include "Window.hpp"
 #include "Nodes.hpp"
+void Node::save(CORE::Lace& lace, const U64& index) const {
+	lace NL << "┌Node [ " << index << " ] " << label;
+	lace++;
+	lace NL PTR(shared_from_this().get());
+	lace NL << "Type " << NODES::toString(node_type);
+	lace NL << "( " << pos() << " )";
+	lace--;
+	lace NL << "└Node";
+}
+
 tuple<Node*, U64> Node::load(const Token_Array& tokens) {
 	const string  r_label = f_join(tokens[0], 4);
 	const U64     r_ptr = stoU64(tokens[1][1]);

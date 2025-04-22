@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::SINGLETON::Euler_Tick::Euler_Tick() :
-	Node("SINGLETON::EULER_TICK", "Tick")
+	Node(Node_Type::SINGLETON_EULER_TICK, "Tick")
 {
 	rect.setWidth(100);
 	rect.setHeight(140);
@@ -30,3 +30,5 @@ Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
 		return Variable(chrono::duration<F64>(NOW - SESSION->start).count());
 	return Variable();
 }
+
+// TODO override type()  , optimize lookup in other places

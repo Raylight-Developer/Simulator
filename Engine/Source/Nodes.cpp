@@ -5,7 +5,7 @@
 #include "Viewport.hpp"
 
 NODES::CAST::MAKE::Vec2::Vec2() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(40);
@@ -31,7 +31,7 @@ Variable NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Vec3::Vec3() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(60);
@@ -59,7 +59,7 @@ Variable NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Vec4::Vec4() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(80);
@@ -89,7 +89,7 @@ Variable NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Quat::Quat() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(80);
@@ -119,7 +119,7 @@ Variable NODES::CAST::MAKE::Quat::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Mat2::Mat2() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(40);
@@ -145,7 +145,7 @@ Variable NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Mat3::Mat3() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(60);
@@ -173,7 +173,7 @@ Variable NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
 }
 
 NODES::CAST::MAKE::Mat4::Mat4() :
-	Node("CAST::MAKE::", "Make")
+	Node(Node_Type::NONE, "Make")
 {
 	rect.setWidth(30);
 	rect.setHeight(80);
@@ -203,7 +203,7 @@ Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
 }
 
 NODES::SINGLETON::Camera_2D::Camera_2D() :
-	Node("CAST::MAKE::", "2D Camera")
+	Node(Node_Type::NONE, "2D Camera")
 {
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);
@@ -223,7 +223,7 @@ void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
 }
 
 NODES::SINGLETON::Camera_3D::Camera_3D() :
-	Node("CAST::MAKE::", "3D Camera")
+	Node(Node_Type::NONE, "3D Camera")
 {
 	header_color = QColor(25, 25, 75);
 	rect.setWidth(100);
@@ -235,4 +235,22 @@ NODES::SINGLETON::Camera_3D::Camera_3D() :
 
 void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
 	exec_out->exec();
+}
+
+string NODES::toString(const Node_Type& value) {
+	for (auto& [e, name] : enumMap) {
+		if (e == value) {
+			return string(name);
+		}
+	}
+	return "NONE";
+}
+
+NODES::Node_Type NODES::toEnum(const string_view& name) {
+	for (auto& [e, str] : enumMap) {
+		if (str == name) {
+			return e;
+		}
+	}
+	return Node_Type::NONE;
 }

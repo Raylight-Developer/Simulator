@@ -7,7 +7,7 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace VARIABLES {
+	namespace VARIABLE {
 		struct Constant : Node {
 			PORT_DATA_O out;
 

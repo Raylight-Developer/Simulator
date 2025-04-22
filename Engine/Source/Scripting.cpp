@@ -36,7 +36,7 @@ void NODES::SCRIPT::SCRIPT_LAYER::SL_Session::flush() {
 }
 
 NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
-	Node("SCRIPT", id),
+	Node(Node_Type::SCRIPT, id),
 	session(session)
 {}
 

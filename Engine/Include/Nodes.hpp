@@ -2,11 +2,7 @@
 
 #include "KL.hpp"
 
-#include "Node.hpp"
-
-using namespace NODE;
-
-namespace NODES::VARIABLES {
+namespace NODES::VARIABLE {
 	struct Constant;
 	struct Get;
 	struct Set;
@@ -138,7 +134,7 @@ namespace NODES {
 namespace NODES {
 	namespace CAST {
 		namespace MAKE {
-			struct Vec2 : Node {	
+			struct Vec2 : Node {
 				PORT_DATA_I i_x;
 				PORT_DATA_I i_y;
 				PORT_DATA_O out;
@@ -240,4 +236,22 @@ namespace NODES {
 			void exec(const Port* port) override;
 		};
 	}
+}
+
+namespace NODES {
+	static const unordered_map<Node_Type, function<Ptr_S<Node>()>> node_get_map = {
+		{ Node_Type::VARIABLE_CONSTANT, []() { return make_unique<VARIABLE::Constant>(); }}
+	};
+
+	static const array<pair<Node_Type, string_view>, 6> enumMap {{
+		{ Node_Type::NONE                 , "NONE"                  },
+		{ Node_Type::VARIABLE_CONSTANT    , "VARIABLE::CONSTANT"    },
+		{ Node_Type::VARIABLE_GET         , "VARIABLE::GET"         },
+		{ Node_Type::VARIABLE_SET         , "VARIABLE::SET"         },
+		{ Node_Type::SINGLETON_EULER_TICK , "SINGLETON::EULER_TICK" },
+		{ Node_Type::SINGLETON_RESET      , "SINGLETON::RESET"      }
+	}};
+
+	string toString(const Node_Type& value);
+	Node_Type toEnum(const string_view& name);
 }
