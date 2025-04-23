@@ -41,22 +41,22 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_variables = new GUI::Tree_Item(this, "Variables");
 	{
-		auto constant_set = new GUI::Tree_Item(tree_variables, "Constant", 1, { { 1000, "VARIABLE CONSTANT" } });
-		auto variable_set = new GUI::Tree_Item(tree_variables, "Set"     , 1, { { 1000, "VARIABLE SET"      } });
-		auto variable_get = new GUI::Tree_Item(tree_variables, "Get"     , 1, { { 1000, "VARIABLE GET"      } });
+		auto constant = new GUI::Tree_Item(tree_variables, "Constant", 1, { { 1000, "VARIABLE CONSTANT" } });
+		auto set      = new GUI::Tree_Item(tree_variables, "Set"     , 1, { { 1000, "VARIABLE SET"      } });
+		auto get      = new GUI::Tree_Item(tree_variables, "Get"     , 1, { { 1000, "VARIABLE GET"      } });
 	}
 
 	auto tree_cast = new GUI::Tree_Item(this, "Casting");
 	{
 		auto tree_make = new GUI::Tree_Item(tree_cast, "Make", 1);
 		{
-			auto make_vec2 = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
-			auto make_vec3 = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
-			auto make_vec4 = new GUI::Tree_Item(tree_make, "Vec 4", 2, { { 1000, "MAKE VEC4" } });
-			auto make_quat = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "MAKE QUAT" } });
-			auto make_mat2 = new GUI::Tree_Item(tree_make, "Mat 2", 2, { { 1000, "MAKE MAT2" } });
-			auto make_mat3 = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "MAKE MAT3" } });
-			auto make_mat4 = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "MAKE MAT4" } });
+			auto vec2 = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "MAKE VEC2" } });
+			auto vec3 = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "MAKE VEC3" } });
+			auto vec4 = new GUI::Tree_Item(tree_make, "Vec 4", 2, { { 1000, "MAKE VEC4" } });
+			auto quat = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "MAKE QUAT" } });
+			auto mat2 = new GUI::Tree_Item(tree_make, "Mat 2", 2, { { 1000, "MAKE MAT2" } });
+			auto mat3 = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "MAKE MAT3" } });
+			auto mat4 = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "MAKE MAT4" } });
 		}
 		auto tree_break = new GUI::Tree_Item(tree_cast, "Break", 1);
 	}
@@ -69,31 +69,44 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_boolean = new GUI::Tree_Item(this, "Boolean");
 	{
-		auto boolean_comparison = new GUI::Tree_Item(tree_boolean, "Comparison", 1, { { 1000, "BOOLEAN COMPARISON" } });
-		auto boolean_select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
+		auto comparison = new GUI::Tree_Item(tree_boolean, "Comparison", 1, { { 1000, "BOOLEAN COMPARISON" } });
+		auto select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
 	}
 	auto tree_exec = new GUI::Tree_Item(this, "Exec");
 	{
-		auto exec_if        = new GUI::Tree_Item(tree_exec, "If"       , 1, { { 1000, "EXEC IF"        } });
-		auto exec_if_else   = new GUI::Tree_Item(tree_exec, "If Else"  , 1, { { 1000, "EXEC IF ELSE"   } });
-		auto exec_subsample = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
+		auto _if        = new GUI::Tree_Item(tree_exec, "If"       , 1, { { 1000, "EXEC IF"        } });
+		auto _if_else   = new GUI::Tree_Item(tree_exec, "If Else"  , 1, { { 1000, "EXEC IF ELSE"   } });
+		auto subsample  = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
 	}
 	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");
 	{
-		auto singleton_background = new GUI::Tree_Item(tree_singleton, "Render Background", 1, { { 1000, "SINGLETON BACKGROUND" } });
-		auto singleton_camera_2d  = new GUI::Tree_Item(tree_singleton, "Camera 2D"        , 1, { { 1000, "SINGLETON 2D CAMERA"  } });
-		auto singleton_camera_3d  = new GUI::Tree_Item(tree_singleton, "Camera 3D"        , 1, { { 1000, "SINGLETON 3D CAMERA"  } });
+		auto background = new GUI::Tree_Item(tree_singleton, "Render Background", 1, { { 1000, "SINGLETON BACKGROUND" } });
+		auto camera_2d  = new GUI::Tree_Item(tree_singleton, "Camera 2D"        , 1, { { 1000, "SINGLETON 2D CAMERA"  } });
+		auto camera_3d  = new GUI::Tree_Item(tree_singleton, "Camera 3D"        , 1, { { 1000, "SINGLETON 3D CAMERA"  } });
+		auto euler_tick = new GUI::Tree_Item(tree_singleton, "Euler Tick"       , 1, { { 1000, "SINGLETON EULER TICK" } });
+		auto reset      = new GUI::Tree_Item(tree_singleton, "Reset Scene"      , 1, { { 1000, "SINGLETON RESET"      } });
+	}
+	auto tree_hooks = new GUI::Tree_Item(this, "Hooks");
+	{
+		auto tree_inputs = new GUI::Tree_Item(tree_hooks, "Inputs", 1);
+		{
+			auto key         = new GUI::Tree_Item(tree_inputs, "Key"        , 2, { { 1000, "HOOK INPUT KEY"         } });
+			auto mouse       = new GUI::Tree_Item(tree_inputs, "Mouse"      , 2, { { 1000, "HOOK INPUT MOUSE"       } });
+			auto mouse_pos   = new GUI::Tree_Item(tree_inputs, "Mouse Pos"  , 2, { { 1000, "HOOK INPUT MOUSE POS"   } });
+			auto mouse_wheel = new GUI::Tree_Item(tree_inputs, "Mouse Wheel", 2, { { 1000, "HOOK INPUT MOUSE WHEEL" } });
+		}
+		auto display = new GUI::Tree_Item(tree_hooks, "Resolution", 1, { { 1000, "HOOK DISPLAY" } });
 	}
 	auto tree_render = new GUI::Tree_Item(this, "Rendering");
 	{
-		auto tree_render_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
+		auto tree_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);
 		{
-			auto render_2d_line      = new GUI::Tree_Item(tree_render_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
-			auto render_2d_triangle  = new GUI::Tree_Item(tree_render_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });
-			auto render_2d_rectangle = new GUI::Tree_Item(tree_render_2d, "Rectangle", 2, { { 1000, "RENDER 2D RECTANGLE" } });
-			auto render_2d_circle    = new GUI::Tree_Item(tree_render_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
+			auto line      = new GUI::Tree_Item(tree_2d, "Line"     , 2, { { 1000, "RENDER 2D LINE"      } });
+			auto triangle  = new GUI::Tree_Item(tree_2d, "Triangle" , 2, { { 1000, "RENDER 2D TRIANGLE"  } });
+			auto rectangle = new GUI::Tree_Item(tree_2d, "Rectangle", 2, { { 1000, "RENDER 2D RECTANGLE" } });
+			auto circle    = new GUI::Tree_Item(tree_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
 		}
-		auto tree_render_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
+		auto tree_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
 	}
 
 	expandAll();

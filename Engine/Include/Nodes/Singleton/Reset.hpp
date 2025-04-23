@@ -16,6 +16,8 @@ namespace NODES {
 
 			void exec();
 			Variable getData(const Port* port) const override;
+
+			void loadDetail() override;
 		};
 	}
 }

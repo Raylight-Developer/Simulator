@@ -11,8 +11,10 @@ namespace NODES {
 		namespace INPUT {
 			struct Mouse : Node {
 				Mouse();
-				PORT_DATA_O button;
+				string button;
 				PORT_DATA_O is_down;
+
+				GUI::Options* buttons;
 
 				Variable getData(const Port* port) const override;
 			};

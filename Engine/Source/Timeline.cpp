@@ -38,16 +38,16 @@ Timeline::Timeline(QWidget* parent) :
 			SESSION->playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
 
-			SESSION->current_frame = 0;
-			SESSION->start = NOW;
+			SESSION->hook.playback_start = NOW;
+			SESSION->hook.current_frame = 0;
 		}
 	});
 
 	connect(live, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, live](bool checked) {
 		if (checked) {
 			SESSION->playback_mode = Playback_Mode::REALTIME;
-			SESSION->start = NOW;
-			SESSION->current_frame = 0;
+			SESSION->hook.playback_start = NOW;
+			SESSION->hook.current_frame = 0;
 			live->setText("Mode: Realtime");
 			start_stop->hide();
 			samples_label->hide();

@@ -24,6 +24,7 @@ Viewport::Viewport() :
 	fixed_delta_time(0.01666666)
 {
 	SESSION->viewport = this;
+	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
 }
 
 Viewport::~Viewport() {
@@ -35,12 +36,12 @@ void Viewport::f_tickUpdate() {
 	switch (SESSION->playback_mode) {
 		case Playback_Mode::REALTIME: {
 			FILE.euler_tick->exec(delta_time > 0.25 ? 0.25 : delta_time);
-			SESSION->current_frame++;
+			SESSION->hook.current_frame++;
 			break;
 		}
 		case Playback_Mode::PLAYING: {
 			FILE.euler_tick->exec(fixed_delta_time);
-			SESSION->current_frame++;
+			SESSION->hook.current_frame++;
 			break;
 		}
 		case Playback_Mode::O_STOPPED: {
@@ -196,6 +197,8 @@ void Viewport::resizeGL(int w, int h) {
 	resolution = T_V2<U64>(to_U64(p_w), to_U64(p_h));
 	aspect_ratio = to_F64(resolution.x) / to_F64(resolution.y);
 
+	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
+
 	glViewport(0, 0, resolution.x, resolution.y);
 
 	OpenGL::resizeFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution);
@@ -206,6 +209,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = false;
 	}
+	SESSION->hook.input_down[qtKey(event->button())] = false;
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event) {
@@ -213,6 +217,7 @@ void Viewport::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = true;
 	}
+	SESSION->hook.input_down[qtKey(event->button())] = true;
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event) {
@@ -222,15 +227,15 @@ void Viewport::mouseMoveEvent(QMouseEvent* event) {
 		center_2d += F64_V2(-delta.x, delta.y) / zoom_2d;
 		last_mouse = p_to_d(event->pos());
 	}
+	SESSION->hook.mouse_pos = current_mouse;
 }
 
 void Viewport::keyReleaseEvent(QKeyEvent* event) {
+	//SESSION->hook.input_down[qtKey(event->key())] = false;
 }
 
 void Viewport::keyPressEvent(QKeyEvent* event) {
-	if (event->key() == Qt::Key::Key_R) {
-		//f_compile();
-	}
+	//SESSION->hook.input_down[qtKey(event->key())] = true;
 }
 
 void Viewport::wheelEvent(QWheelEvent* event) {
@@ -241,4 +246,6 @@ void Viewport::wheelEvent(QWheelEvent* event) {
 	else {
 		zoom_2d /= 1.1;
 	}
+	SESSION->hook.mouse_wheel.x = scrollAmount.x();
+	SESSION->hook.mouse_wheel.y = scrollAmount.y();
 }

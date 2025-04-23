@@ -13,6 +13,7 @@ struct File {
 	Ptr_S<NODES::SINGLETON::Reset> reset;
 	
 	CORE::Stack<Ptr_S<Node>> nodes;
+	CORE::Stack<Ptr_S<Node>> node_singletons;
 
 	CORE::UMap<QString, Variable> variables;
 	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;

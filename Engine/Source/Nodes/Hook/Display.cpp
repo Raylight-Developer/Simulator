@@ -3,12 +3,14 @@
 #include "Session.hpp"
 
 NODES::HOOK::Display::Display() :
-	Node(Node_Type::NONE, "Display")
+	Node(Node_Type::NONE, "Resolution")
 {
 	rect.setWidth(120);
 	rect.setHeight(100);
+
+	resolution = DATA_O("Pixels", VAR_TYPE::VEC2);
 }
 
 Variable NODES::HOOK::Display::getData(const Port* port) const {
-	return Variable();
+	return Variable(SESSION->hook.viewport_resolution);
 }

@@ -11,8 +11,10 @@ namespace NODES {
 		namespace INPUT {
 			struct Key : Node {
 				Key();
-				PORT_DATA_O key;
+				string key;
 				PORT_DATA_O is_down;
+
+				GUI::Options* keys;
 
 				Variable getData(const Port* port) const override;
 			};

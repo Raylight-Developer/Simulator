@@ -31,11 +31,11 @@ void NODES::EXEC::Subsample::exec(const Port* port) {
 }
 
 Variable NODES::EXEC::Subsample::getData(const Port* port) const {
-	if (port == o_delta.get())
+	if (port == o_delta.get()) {
 		return Variable(delta_in->GET_DATA(F64) / count_in->GET_DATA(I64));
-	if (port == o_calls.get())
+	}
+	if (port == o_calls.get()) {
 		return Variable(calls);
-	if (port == o_runtime.get())
-		return Variable(chrono::duration<F64>(NOW - SESSION->start).count());
-	return Variable();
+	}
+	return Variable(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
 }

@@ -446,6 +446,21 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "EXEC SUBSAMPLE") {
 				node = make_shared<NODES::EXEC::Subsample>();
 			}
+			else if (type == "HOOK INPUT KEY") {
+				node = make_shared<NODES::HOOK::INPUT::Key>();
+			}
+			else if (type == "HOOK INPUT MOUSE") {
+				node = make_shared<NODES::HOOK::INPUT::Mouse>();
+			}
+			else if (type == "HOOK INPUT MOUSE POS") {
+				node = make_shared<NODES::HOOK::INPUT::Mouse_Pos>();
+			}
+			else if (type == "HOOK INPUT MOUSE WHEEL") {
+				node = make_shared<NODES::HOOK::INPUT::Mouse_Wheel>();
+			}
+			else if (type == "HOOK DISPLAY") {
+				node = make_shared<NODES::HOOK::Display>();
+			}
 			else if (type == "RENDER 2D LINE") {
 				node = make_shared<NODES::RENDERING::DIM_2D::Line>();
 			}
@@ -460,7 +475,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("SINGLETON")) {
 				#define NODE_EXISTS(type) false;\
-				for (Ptr_S<Node> node : FILE.nodes) {\
+				for (Ptr_S<Node> node : FILE.node_singletons) {\
 					if (dynamic_pointer_cast<type>(node)) {\
 						exists = true;\
 						break;\
@@ -470,18 +485,37 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 					bool exists = NODE_EXISTS(NODES::SINGLETON::Background)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Background>();
+						FILE.node_singletons.push(node);
 					}
 				}
 				else if (type == "SINGLETON 2D CAMERA") {
 					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_2D)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Camera_2D>();
+						FILE.node_singletons.push(node);
 					}
 				}
 				else if (type == "SINGLETON 3D CAMERA") {
 					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_3D)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Camera_3D>();
+						FILE.node_singletons.push(node);
+					}
+				}
+				else if (type == "SINGLETON EULER TICK") {
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Euler_Tick)
+					if (!exists) {
+						node = make_shared<NODES::SINGLETON::Euler_Tick>();
+						FILE.node_singletons.push(node);
+						FILE.euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
+					}
+				}
+				else if (type == "SINGLETON RESET") {
+					bool exists = NODE_EXISTS(NODES::SINGLETON::Reset)
+					if (!exists) {
+						node = make_shared<NODES::SINGLETON::Reset>();
+						FILE.node_singletons.push(node);
+						FILE.reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
 					}
 				}
 			}

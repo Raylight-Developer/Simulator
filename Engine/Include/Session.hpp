@@ -20,6 +20,17 @@ enum struct Playback_Mode {
 	RESET
 };
 
+struct Hook {
+	F64_V2 viewport_resolution;
+	F64_V2 mouse_pos;
+	bool mouse_on_screen;
+	T_V2<I32> mouse_wheel;
+	CORE::UMap<string, bool> input_down;
+
+	Timestamp playback_start;
+	U64 current_frame;
+};
+
 struct Session : CORE::Session {
 	U16 major_version, minor_version, patch_version;
 	static Session* session_ptr;
@@ -32,11 +43,10 @@ struct Session : CORE::Session {
 	Window* window;
 	Viewport* viewport;
 
-	I64 current_frame;
 	I64 samples;
-	Timestamp start;
 	Playback_Mode playback_mode;
 
+	Hook hook;
 	File file;
 
 	Session();

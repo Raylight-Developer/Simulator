@@ -23,12 +23,14 @@ Session::Session() :
 	minor_version(0),
 	patch_version(1),
 	file(File()),
+	hook(Hook()),
 	gl(nullptr),
 	window(nullptr),
 	viewport(nullptr)
 {
-	current_frame = 0;
 	samples = 60;
 	playback_mode = Playback_Mode::REALTIME;
-	start = NOW;
+
+	hook.playback_start = NOW;
+	hook.current_frame = 0;
 }

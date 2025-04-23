@@ -7,8 +7,14 @@ NODES::HOOK::INPUT::Mouse_Wheel::Mouse_Wheel() :
 {
 	rect.setWidth(120);
 	rect.setHeight(100);
+
+	angle_x = DATA_O("Angle X", VAR_TYPE::INT);
+	angle_y = DATA_O("Angle Y", VAR_TYPE::INT);
 }
 
 Variable NODES::HOOK::INPUT::Mouse_Wheel::getData(const Port* port) const {
-	return Variable();
+	if (port == angle_x.get()) {
+		return Variable(static_cast<I64>(SESSION->hook.mouse_wheel.x));
+	}
+	return Variable(static_cast<I64>(SESSION->hook.mouse_wheel.y));
 }

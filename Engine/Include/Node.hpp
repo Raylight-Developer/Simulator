@@ -49,6 +49,7 @@ struct Node : Self<Node>, QGraphicsItem {
 
 	void save(CORE::Lace& lace, const U64& index) const;
 	virtual void saveDetail(CORE::Lace& lace) const;
+	virtual void loadDetail() {}
 	static void load(File* file, const Token_Array& tokens);
 
 	int type() const override;
@@ -103,14 +104,14 @@ namespace NODE {
 		struct Data_I : Port {
 			const QString label;
 
-			VAR::Type var_type;
+			VAR_TYPE var_type;
 			Variable variable;
 			QColor color;
 
 			Ptr_U<Connection> connection;
 
 			Data_I(Node* parent, const QString& label);
-			Data_I(Node* parent, const QString& label, const VAR::Type& var_type);
+			Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type);
 			Data_I(Node* parent, const QString& label, const Variable& default_variable);
 			~Data_I();
 
@@ -119,8 +120,8 @@ namespace NODE {
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VAR::Type&)> onTypeChanged;
-			void setType(const VAR::Type& var_type);
+			function<void(Port*, const VAR_TYPE&)> onTypeChanged;
+			void setType(const VAR_TYPE& var_type);
 			Variable getData() const;
 			bool requestConnection(Connection* connection) override;
 
@@ -131,20 +132,20 @@ namespace NODE {
 		struct Data_O : Port {
 			const QString label;
 
-			VAR::Type var_type;
+			VAR_TYPE var_type;
 			QColor color;
 
 			CORE::Stack<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
-			Data_O(Node* parent, const QString& label, const VAR::Type& var_type);
+			Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type);
 			~Data_O();
 
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VAR::Type&)> onTypeChanged;
-			void setType(const VAR::Type& var_type);
+			function<void(Port*, const VAR_TYPE&)> onTypeChanged;
+			void setType(const VAR_TYPE& var_type);
 			Variable getData() const;
 			bool requestConnection(Connection* connection) override;
 

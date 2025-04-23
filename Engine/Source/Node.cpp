@@ -616,16 +616,10 @@ void Node::load(File* file, const Token_Array& tokens) {
 	const string  r_type  = tokens[2][1];
 	const QPointF r_pos   = QPointF(stoF64(tokens[3][1]), stoF64(tokens[3][2]));
 
-	Ptr_S<Node> node;
+	const NODES::Node_Type r_node_type  = NODES::toEnum(r_type);
 
-	if (r_type == "SINGLETON::EULER_TICK") {
-		node = make_shared<NODES::SINGLETON::Euler_Tick>();
-		file->euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
-	}
-	else if (r_type == "SINGLETON::RESET") {
-		node = make_shared<NODES::SINGLETON::Reset>();
-		file->reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
-	}
+	Ptr_S<Node> node = NODES::node_get_map.at(r_node_type)();
+	node->loadDetail();
 
 	if (node) {
 		node->label = qstr(r_label);

@@ -213,7 +213,7 @@ NODES::SINGLETON::Camera_2D::Camera_2D() :
 	exec_out = EXEC_O("");
 
 	center = DATA_I("Color", Variable(F64_V2(0,0)));
-	zoom = DATA_I("Color", Variable(1.0));
+	zoom   = DATA_I("Color", Variable(1.0));
 }
 
 void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
@@ -238,7 +238,7 @@ void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
 }
 
 string NODES::toString(const Node_Type& value) {
-	for (auto& [e, name] : enumMap) {
+	for (auto& [e, name] : enu_str_map) {
 		if (e == value) {
 			return string(name);
 		}
@@ -247,7 +247,7 @@ string NODES::toString(const Node_Type& value) {
 }
 
 NODES::Node_Type NODES::toEnum(const string_view& name) {
-	for (auto& [e, str] : enumMap) {
+	for (auto& [e, str] : enu_str_map) {
 		if (str == name) {
 			return e;
 		}

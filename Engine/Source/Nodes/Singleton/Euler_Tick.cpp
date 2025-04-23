@@ -25,10 +25,15 @@ Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
 	if (port == o_delta.get())
 		return Variable(delta);
 	if (port == o_calls.get())
-		return Variable(SESSION->current_frame);
+		return Variable(static_cast<I64>(SESSION->hook.current_frame));
 	if (port == o_runtime.get())
-		return Variable(chrono::duration<F64>(NOW - SESSION->start).count());
+		return Variable(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
 	return Variable();
 }
 
-// TODO override type()  , optimize lookup in other places
+void NODES::SINGLETON::Euler_Tick::loadDetail() {
+	FILE.euler_tick = static_pointer_cast<Euler_Tick>(shared_from_this());
+	FILE.node_singletons.push(shared_from_this());
+}
+
+// TODO override type() , optimize lookup in other places

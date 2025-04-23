@@ -12,12 +12,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\pch.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
     <ClCompile Include="Source\Script.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Internal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -84,6 +84,21 @@ namespace NODES::EXEC {
 #include "Nodes/Exec/If_Else.hpp"
 #include "Nodes/Exec/If.hpp"
 
+namespace NODES::HOOK {
+	namespace INPUT {
+		struct Mouse_Wheel;
+		struct Mouse_Pos;
+		struct Mouse;
+		struct Key;
+	}
+	struct Display;
+}
+#include "Nodes/Hook/Input/Mouse_Wheel.hpp"
+#include "Nodes/Hook/Input/Mouse_Pos.hpp"
+#include "Nodes/Hook/Input/Mouse.hpp"
+#include "Nodes/Hook/Input/Key.hpp"
+#include "Nodes/Hook/Display.hpp"
+
 namespace NODES::SINGLETON {
 	struct Euler_Tick;
 	struct Background;
@@ -240,10 +255,15 @@ namespace NODES {
 
 namespace NODES {
 	static const unordered_map<Node_Type, function<Ptr_S<Node>()>> node_get_map = {
-		{ Node_Type::VARIABLE_CONSTANT, []() { return make_unique<VARIABLE::Constant>(); }}
+		{ Node_Type::NONE                 , []() { return nullptr; }},
+		{ Node_Type::VARIABLE_CONSTANT    , []() { return make_shared<VARIABLE::Constant>();    }},
+		{ Node_Type::VARIABLE_GET         , []() { return make_shared<VARIABLE::Get>();         }},
+		{ Node_Type::VARIABLE_SET         , []() { return make_shared<VARIABLE::Set>();         }},
+		{ Node_Type::SINGLETON_EULER_TICK , []() { return make_shared<SINGLETON::Euler_Tick>(); }},
+		{ Node_Type::SINGLETON_RESET      , []() { return make_shared<SINGLETON::Reset>();      }}
 	};
 
-	static const array<pair<Node_Type, string_view>, 6> enumMap {{
+	static const array<pair<Node_Type, string_view>, 6> enu_str_map {{
 		{ Node_Type::NONE                 , "NONE"                  },
 		{ Node_Type::VARIABLE_CONSTANT    , "VARIABLE::CONSTANT"    },
 		{ Node_Type::VARIABLE_GET         , "VARIABLE::GET"         },
