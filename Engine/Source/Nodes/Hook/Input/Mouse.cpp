@@ -5,8 +5,8 @@
 NODES::HOOK::INPUT::Mouse::Mouse() :
 	Node(Node_Type::NONE, "Mouse")
 {
-	rect.setWidth(120);
-	rect.setHeight(100);
+	rect.setWidth(100);
+	rect.setHeight(80);
 
 	button = "Left";
 	is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
@@ -16,7 +16,7 @@ NODES::HOOK::INPUT::Mouse::Mouse() :
 	buttons->addItems({ "Left", "Right", "Middle" });
 
 	PROXY(buttons);
-	proxy_buttons->setPos(30, 50);
+	proxy_buttons->setPos(10, 50);
 
 	QObject::connect(buttons, &GUI::Options::currentTextChanged, [this](const QString& item) {
 		button = "M " + item.toStdString();

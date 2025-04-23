@@ -4,6 +4,8 @@
 #include "OpenGL.hpp"
 #include "Viewport.hpp"
 
+// TODO optimize lookup of QGraphicsItem if neccesary using node_type
+
 NODES::CAST::MAKE::Vec2::Vec2() :
 	Node(Node_Type::NONE, "Make")
 {
@@ -238,7 +240,7 @@ void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
 }
 
 string NODES::toString(const Node_Type& value) {
-	for (auto& [e, name] : enu_str_map) {
+	for (auto& [e, name] : enum_str_map) {
 		if (e == value) {
 			return string(name);
 		}
@@ -247,7 +249,7 @@ string NODES::toString(const Node_Type& value) {
 }
 
 NODES::Node_Type NODES::toEnum(const string_view& name) {
-	for (auto& [e, str] : enu_str_map) {
+	for (auto& [e, str] : enum_str_map) {
 		if (str == name) {
 			return e;
 		}

@@ -2,7 +2,7 @@
 
 #include "KL.hpp"
 
-struct Viewport : QOpenGLWindow, QOpenGLFunctions_4_5_Core {
+struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 	F64 aspect_ratio;
 	T_V2<U64> resolution;
 

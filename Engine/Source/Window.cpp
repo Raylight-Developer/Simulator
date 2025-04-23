@@ -3,6 +3,8 @@
 #include "Session.hpp"
 
 Window::Window() {
+	setMouseTracking(true);
+
 	session = new Session();
 	Session::initialize(session);
 	session->window = this;
@@ -13,8 +15,7 @@ Window::Window() {
 	history_view = new History_View(this);
 	variable_editor = new Variable_Editor(this);
 
-	auto viewport = new Viewport();
-	auto container = QWidget::createWindowContainer(viewport, this);
+	viewport = new Viewport();
 
 	GUI::Splitter* splitter = new GUI::Splitter(this);
 	splitter->addWidget(shelf);
@@ -23,7 +24,7 @@ Window::Window() {
 
 	GUI::Splitter* v_splitter = new GUI::Splitter(this, true);
 	v_splitter->addWidget(timeline);
-	v_splitter->addWidget(container);
+	v_splitter->addWidget(viewport);
 	v_splitter->addWidget(splitter);
 	v_splitter->setSizes({ 20, 1000, 1000 });
 
@@ -32,7 +33,7 @@ Window::Window() {
 	main_splitter->addWidget(v_splitter);
 	main_splitter->addWidget(history_view);
 	main_splitter->setSizes({ 2000, 400 });
-	
+
 	session->file.loadFile("./Resources/Default.sim");
 
 	setCentralWidget(main_splitter);

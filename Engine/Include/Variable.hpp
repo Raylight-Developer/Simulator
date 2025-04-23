@@ -15,16 +15,14 @@ namespace VAR {
 		VEC2, VEC3, VEC4, COLOR, QUAT, MAT2, MAT3, MAT4
 		//TRANSFORM_2D, TRANSFORM_3D
 	};
+	enum struct Container {
+		NONE, VECTOR
+	};
 	QColor toColor(const VAR::Type& type);
 }
 
-#define VARIABLE_MATS VAR::Type:: MAT2, VAR::Type:: MAT3, VAR::Type:: MAT4
-#define VARIABLE_VECS VAR::Type:: VEC2, VAR::Type:: VEC3, VAR::Type:: VEC4
-
-#define VARIABLE_INTEGRALS VAR::Type::INT, VAR::Type::DOUBLE
-#define VARIABLE_FULL_INTEGRALS VARIABLE_INTEGRALS, VARIABLE_VECS, VARIABLE_MATS, VAR::Type::COLOR
-
 #define VAR_TYPE VAR::Type
+#define VAR_CONATAINER VAR::Container
 
 struct Variable {
 	any data;
@@ -44,7 +42,7 @@ struct Variable {
 	Variable(const F64_M2&   data);
 	Variable(const F64_M3&   data);
 	Variable(const F64_M4&   data);
-	Variable(const VAR::Type& type);
+	Variable(const VAR::Type& type, const VAR::Container& container = VAR::Container::NONE);
 
 	Variable operator+(const Variable& other) const;
 	Variable operator-(const Variable& other) const;

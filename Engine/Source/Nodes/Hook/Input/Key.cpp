@@ -5,8 +5,8 @@
 NODES::HOOK::INPUT::Key::Key() :
 	Node(Node_Type::NONE, "Key")
 {
-	rect.setWidth(120);
-	rect.setHeight(100);
+	rect.setWidth(100);
+	rect.setHeight(80);
 
 	key = "A";
 	is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
@@ -23,7 +23,7 @@ NODES::HOOK::INPUT::Key::Key() :
 	});
 
 	PROXY(keys);
-	proxy_keys->setPos(30, 50);
+	proxy_keys->setPos(10, 50);
 
 	QObject::connect(keys, &GUI::Options::currentTextChanged, [this](const QString& item) {
 		key = item.toStdString();

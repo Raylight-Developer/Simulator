@@ -20,6 +20,8 @@ struct Window : GUI::Window {
 	History_View*    history_view   ;
 	Variable_Editor* variable_editor;
 
+	Viewport*        viewport       ;
+
 	Window();
 	~Window();
 };

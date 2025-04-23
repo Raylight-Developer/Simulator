@@ -5,11 +5,11 @@
 NODES::HOOK::INPUT::Mouse_Pos::Mouse_Pos() :
 	Node(Node_Type::NONE, "Mouse Pos")
 {
-	rect.setWidth(120);
-	rect.setHeight(100);
+	rect.setWidth(100);
+	rect.setHeight(80);
 
 	screen_pos   = DATA_O("Pos", VAR_TYPE::VEC2);
-	is_on_screen = DATA_O("On Screen", VAR_TYPE::BOOL);
+	is_on_screen = DATA_O("Valid", VAR_TYPE::BOOL);
 }
 
 Variable NODES::HOOK::INPUT::Mouse_Pos::getData(const Port* port) const {

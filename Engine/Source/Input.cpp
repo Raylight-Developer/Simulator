@@ -37,5 +37,14 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 		SESSION->hook.input_down[qtKey(key_event->key())] = false;
 	}
 
+	if (event->type() == QEvent::MouseMove) {
+		if (SESSION->window->viewport->underMouse()) {
+			SESSION->hook.mouse_on_screen = true;
+		}
+		else {
+			SESSION->hook.mouse_on_screen = false;
+		}
+	}
+
 	return QObject::eventFilter(obj, event);
 }

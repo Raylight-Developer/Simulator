@@ -54,7 +54,7 @@ Variable::Variable(const F64_M4 & data) :
 	data(data)
 {}
 
-Variable::Variable(const VAR::Type& type) :
+Variable::Variable(const VAR::Type& type, const VAR::Container& container) :
 	type(type)
 {
 	switch (type) {

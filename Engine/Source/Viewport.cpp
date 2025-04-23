@@ -4,7 +4,7 @@
 #include "OpenGL.hpp"
 
 Viewport::Viewport() :
-	QOpenGLWindow(),
+	QOpenGLWidget(),
 
 	frame_counter(0),
 	frame_count(0),
@@ -23,6 +23,7 @@ Viewport::Viewport() :
 	delta_time(0.01666666),
 	fixed_delta_time(0.01666666)
 {
+	setMouseTracking(true);
 	SESSION->viewport = this;
 	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
 }
@@ -186,7 +187,7 @@ void Viewport::paintGL() {
 	f_frameUpdate();
 	f_guiUpdate();
 
-	requestUpdate();
+	update();
 }
 
 void Viewport::resizeGL(int w, int h) {
@@ -227,6 +228,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event) {
 		center_2d += F64_V2(-delta.x, delta.y) / zoom_2d;
 		last_mouse = p_to_d(event->pos());
 	}
+
 	SESSION->hook.mouse_pos = current_mouse;
 }
 

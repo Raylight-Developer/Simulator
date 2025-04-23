@@ -17,6 +17,16 @@ void Session::destroy() {
 	session_ptr = nullptr;
 }
 
+Hook::Hook() {
+	viewport_resolution = F64_V2(1920, 1080);
+	mouse_pos = F64_V2(980, 540);
+	mouse_on_screen = false;
+	mouse_wheel = { 0, 0 };
+
+	playback_start = NOW;
+	current_frame = 0;
+}
+
 Session::Session() :
 	CORE::Session(),
 	major_version(0),
@@ -30,7 +40,4 @@ Session::Session() :
 {
 	samples = 60;
 	playback_mode = Playback_Mode::REALTIME;
-
-	hook.playback_start = NOW;
-	hook.current_frame = 0;
 }

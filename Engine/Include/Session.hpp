@@ -29,6 +29,8 @@ struct Hook {
 
 	Timestamp playback_start;
 	U64 current_frame;
+
+	Hook();
 };
 
 struct Session : CORE::Session {

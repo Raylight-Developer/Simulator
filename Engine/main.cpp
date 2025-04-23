@@ -10,8 +10,6 @@ int main(int argc, char *argv[]) {
 
 	auto app = new GUI::Application(argc, argv);
 
-	Input* input = new Input();
-	app->installEventFilter(input);
 
 	//auto style = QFile("./Resources/Style.css"); https://bugreports.qt.io/browse/QTBUG-135340
 	//style.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -22,6 +20,10 @@ int main(int argc, char *argv[]) {
 	app->setFont(font);
 
 	auto window = new Window();
+
+	Input* input = new Input();
+	app->installEventFilter(input);
+
 	const int res = app->exec();
 
 	window->session->file.saveFile("./Resources/Default_Save.sim");

@@ -6,7 +6,7 @@ NODES::HOOK::Display::Display() :
 	Node(Node_Type::NONE, "Resolution")
 {
 	rect.setWidth(120);
-	rect.setHeight(100);
+	rect.setHeight(60);
 
 	resolution = DATA_O("Pixels", VAR_TYPE::VEC2);
 }

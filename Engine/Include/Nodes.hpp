@@ -263,7 +263,7 @@ namespace NODES {
 		{ Node_Type::SINGLETON_RESET      , []() { return make_shared<SINGLETON::Reset>();      }}
 	};
 
-	static const array<pair<Node_Type, string_view>, 6> enu_str_map {{
+	static const vector<pair<Node_Type, string_view>> enum_str_map {{
 		{ Node_Type::NONE                 , "NONE"                  },
 		{ Node_Type::VARIABLE_CONSTANT    , "VARIABLE::CONSTANT"    },
 		{ Node_Type::VARIABLE_GET         , "VARIABLE::GET"         },

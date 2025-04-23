@@ -6,7 +6,7 @@ NODES::HOOK::INPUT::Mouse_Wheel::Mouse_Wheel() :
 	Node(Node_Type::NONE, "Mouse Wheel")
 {
 	rect.setWidth(120);
-	rect.setHeight(100);
+	rect.setHeight(80);
 
 	angle_x = DATA_O("Angle X", VAR_TYPE::INT);
 	angle_y = DATA_O("Angle Y", VAR_TYPE::INT);

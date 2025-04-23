@@ -6,7 +6,7 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 	Node(Node_Type::SINGLETON_EULER_TICK, "Tick")
 {
 	rect.setWidth(100);
-	rect.setHeight(140);
+	rect.setHeight(120);
 
 	exec_out  = EXEC_O("Tick");
 	o_delta   = DATA_O("Delta", VAR_TYPE::DOUBLE);
@@ -35,5 +35,3 @@ void NODES::SINGLETON::Euler_Tick::loadDetail() {
 	FILE.euler_tick = static_pointer_cast<Euler_Tick>(shared_from_this());
 	FILE.node_singletons.push(shared_from_this());
 }
-
-// TODO override type() , optimize lookup in other places
