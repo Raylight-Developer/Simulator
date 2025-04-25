@@ -10,8 +10,8 @@ NODES::VARIABLE::Set::Set() :
 
 	exec_in  = EXEC_I("");
 	exec_out = EXEC_O("");
-	in  = DATA_I("", VAR_TYPE::BLOCKED);
-	out = DATA_O("", VAR_TYPE::BLOCKED);
+	in  = DATA_I("", VAR_TYPE::NONE);
+	out = DATA_O("", VAR_TYPE::NONE);
 
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
@@ -33,8 +33,8 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 		out->setType(var_ref.type, var_ref.container);
 	}
 	else {
-		in ->setType(VAR_TYPE::BLOCKED, VAR_CONTAINER::NONE);
-		out->setType(VAR_TYPE::BLOCKED, VAR_CONTAINER::NONE);
+		in ->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
+		out->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 	}
 }
 
@@ -45,7 +45,7 @@ void NODES::VARIABLE::Set::exec(const Port* port) {
 	exec_out->exec();
 }
 
-const Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) const {
+Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) {
 	return make_shared<Variable>(FILE.variables[var]);
 }
 

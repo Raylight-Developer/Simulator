@@ -12,7 +12,7 @@ NODES::HOOK::INPUT::Mouse_Wheel::Mouse_Wheel() :
 	angle_y = DATA_O("Angle Y", VAR_TYPE::INT);
 }
 
-const Ptr_S<Variable> NODES::HOOK::INPUT::Mouse_Wheel::getData(const Port* port) const {
+Ptr_S<Variable> NODES::HOOK::INPUT::Mouse_Wheel::getData(const Port* port) {
 	if (port == angle_x.get()) {
 		return make_shared<Variable>(static_cast<I64>(SESSION->hook.mouse_wheel.x));
 	}

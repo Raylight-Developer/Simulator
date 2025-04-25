@@ -6,54 +6,33 @@ NODES::VARIABLE::Constant::Constant() :
 	Node(Node_Type::VARIABLE_CONSTANT, "Constant")
 {
 	rect.setWidth(140);
-	rect.setHeight(80);
-
-	out = DATA_O("", VAR_TYPE::BLOCKED);
-	value = Variable();
+	rect.setHeight(60);
 
 	current_var_type = VAR_TYPE::NONE;
-	current_var_container = VAR_CONTAINER::NONE;
+	out = DATA_O("", VAR_TYPE::NONE);
+	value = Variable();
 
 	var_type = new GUI::Options();
 	var_type->setFixedSize(100, 20);
-	var_type->addItems({ "", "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
+	var_type->addItems({ "", "Double", "Integer", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
 
 	PROXY(var_type);
 	proxy_var_type->setPos(20, 30);
 	
-	var_container = new GUI::Options();
-	var_container->setFixedSize(100, 20);
-	var_container->addItems({ "Single", "Vector"});
-
-	PROXY(var_container);
-	proxy_var_container->setPos(20, 50);
-
 	expanded = rect;
-	out->onConnRequested = [this, proxy_var_type](Port* port, Connection* conn) {
+	out->onConnection = [this, proxy_var_type](Port* port, Connection* conn) {
 		rect = expanded;
 		rect.setHeight(rect.height() - 20);
 		proxy_var_type->setVisible(false);
 		return true;
 	};
 	out->onDisconnection = [this, proxy_var_type](Port* port) {
+		if (not out->connected()) {
 		rect = expanded;
 		proxy_var_type->setVisible(true);
+		}
 	};
 
-	QObject::connect(var_type, &GUI::Options::currentIndexChanged, [this, proxy_var_type](int index) {
-		switch (index) {
-			case 0: {
-				current_var_container = VAR_CONTAINER::NONE;
-				break;
-			}
-			case 1: {
-				current_var_container = VAR_CONTAINER::LIST;
-				break;
-			}
-		}
-		out->setType(current_var_type, current_var_container);
-		value = Variable(current_var_type, current_var_container);
-	});
 	QObject::connect(var_type, &GUI::Options::currentIndexChanged, [this, proxy_var_type](int index) {
 		proxies.clearDelete();
 		if (index == 0) {
@@ -69,16 +48,16 @@ NODES::VARIABLE::Constant::Constant() :
 
 		switch (index) {
 			case 0: {
-				current_var_type = VAR_TYPE::BLOCKED;
+				current_var_type = VAR_TYPE::NONE;
 				break;
 			}
 			case 1: {
-				current_var_type = VAR_TYPE::INT;
+				current_var_type = VAR_TYPE::DOUBLE;
 
-				auto input = new GUI::Int_Input();
+				auto input = new GUI::Double_Input();
 				input->setFixedSize(100, 20);
 				input->setText("0");
-				QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { value = Variable(to_I64(val.toInt())); });
+				QObject::connect(input, &GUI::Double_Input::textChanged, [this](const QString val) { value = Variable(val.toDouble()); });
 
 				PROXY(input);
 				proxy_input->setPos(20, 30);
@@ -87,12 +66,12 @@ NODES::VARIABLE::Constant::Constant() :
 				break;
 			}
 			case 2: {
-				current_var_type = VAR_TYPE::DOUBLE;
+				current_var_type = VAR_TYPE::INT;
 
-				auto input = new GUI::Double_Input();
+				auto input = new GUI::Int_Input();
 				input->setFixedSize(100, 20);
 				input->setText("0");
-				QObject::connect(input, &GUI::Double_Input::textChanged, [this](const QString val) { value = Variable(val.toDouble()); });
+				QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { value = Variable(to_I64(val.toInt())); });
 
 				PROXY(input);
 				proxy_input->setPos(20, 30);
@@ -633,12 +612,12 @@ NODES::VARIABLE::Constant::Constant() :
 				break;
 			}
 		}
-		out->setType(current_var_type, current_var_container);
-		value = Variable(current_var_type, current_var_container);
+		out->setType(current_var_type, VAR_CONTAINER::NONE);
+		value = Variable(current_var_type, VAR_CONTAINER::NONE);
 		expanded = rect;
 	});
 }
 
-const Ptr_S<Variable> NODES::VARIABLE::Constant::getData(const Port* port) const {
+Ptr_S<Variable> NODES::VARIABLE::Constant::getData(const Port* port) {
 	return make_shared<Variable>(value);
 }

@@ -72,12 +72,27 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		auto comparison = new GUI::Tree_Item(tree_boolean, "Comparison", 1, { { 1000, "BOOLEAN COMPARISON" } });
 		auto select     = new GUI::Tree_Item(tree_boolean, "Select"    , 1, { { 1000, "BOOLEAN SELECT"     } });
 	}
+
+	auto tree_container = new GUI::Tree_Item(this, "Container");
+	{
+		auto tree_list = new GUI::Tree_Item(tree_container, "List", 1);
+		{
+			auto access = new GUI::Tree_Item(tree_list, "Access", 2, { { 1000, "CONTAINER LIST ACCESS" } });
+			auto insert = new GUI::Tree_Item(tree_list, "Insert", 2, { { 1000, "CONTAINER LIST INSERT" } });
+			auto remove = new GUI::Tree_Item(tree_list, "Remove", 2, { { 1000, "CONTAINER LIST REMOVE" } });
+			auto clear  = new GUI::Tree_Item(tree_list, "Clear" , 2, { { 1000, "CONTAINER LIST CLEAR"  } });
+			auto push   = new GUI::Tree_Item(tree_list, "Push"  , 2, { { 1000, "CONTAINER LIST PUSH"   } });
+			auto size   = new GUI::Tree_Item(tree_list, "Size"  , 2, { { 1000, "CONTAINER LIST SIZE"   } });
+		}
+	}
+
 	auto tree_exec = new GUI::Tree_Item(this, "Exec");
 	{
 		auto _if        = new GUI::Tree_Item(tree_exec, "If"       , 1, { { 1000, "EXEC IF"        } });
 		auto _if_else   = new GUI::Tree_Item(tree_exec, "If Else"  , 1, { { 1000, "EXEC IF ELSE"   } });
 		auto subsample  = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
 	}
+
 	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");
 	{
 		auto background = new GUI::Tree_Item(tree_singleton, "Render Background", 1, { { 1000, "SINGLETON BACKGROUND" } });
@@ -86,6 +101,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		auto euler_tick = new GUI::Tree_Item(tree_singleton, "Euler Tick"       , 1, { { 1000, "SINGLETON EULER TICK" } });
 		auto reset      = new GUI::Tree_Item(tree_singleton, "Reset Scene"      , 1, { { 1000, "SINGLETON RESET"      } });
 	}
+
 	auto tree_hooks = new GUI::Tree_Item(this, "Hooks");
 	{
 		auto tree_inputs = new GUI::Tree_Item(tree_hooks, "Inputs", 1);
@@ -97,6 +113,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		}
 		auto display = new GUI::Tree_Item(tree_hooks, "Resolution", 1, { { 1000, "HOOK DISPLAY" } });
 	}
+
 	auto tree_render = new GUI::Tree_Item(this, "Rendering");
 	{
 		auto tree_2d = new GUI::Tree_Item(tree_render, "2D Rendering", 1);

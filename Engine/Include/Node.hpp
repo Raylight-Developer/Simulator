@@ -45,7 +45,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	~Node();
 
 	virtual void exec(const NODE::Port* port) {}
-	virtual const Ptr_S<Variable> getData(const NODE::Port* port) const { return nullptr; };
+	virtual Ptr_S<Variable> getData(const NODE::Port* port) { return nullptr; };
 
 	void save(CORE::Lace& lace, const U64& index) const;
 	virtual void saveDetail(CORE::Lace& lace) const;
@@ -62,7 +62,7 @@ namespace NODE {
 		Node* node;
 		QRectF rect;
 
-		function<bool(Port*, Connection*)> onConnRequested;
+		function<bool(Port*, Connection*)> onConnection;
 		function<void(Port*)> onDisconnection;
 
 		Port(Node* node);
@@ -118,7 +118,7 @@ namespace NODE {
 
 			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
 
-			const Ptr_S<Variable> getData() const;
+			Ptr_S<Variable> getData();
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -142,7 +142,7 @@ namespace NODE {
 
 			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
 
-			const Ptr_S<Variable> getData() const;
+			Ptr_S<Variable> getData();
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -185,6 +185,10 @@ namespace NODE {
 
 #define DATA_I(label, type) make_unique<NODE::PORT::Data_I>(this, label, type)
 #define DATA_O(label, type) make_unique<NODE::PORT::Data_O>(this, label, type)
+
+#define DATA_I_C(label, type, container) make_unique<NODE::PORT::Data_I>(this, label, type, container)
+#define DATA_O_C(label, type, container) make_unique<NODE::PORT::Data_O>(this, label, type, container)
+
 #define EXEC_O(label) make_unique<NODE::PORT::Exec_O>(this, label)
 #define EXEC_I(label) make_unique<NODE::PORT::Exec_I>(this, label)
 
@@ -195,6 +199,7 @@ namespace NODE {
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
 #define GET_DATA(type) getData()->get<type>()
+#define GET_LIST(type) getData()->get<CORE::Stack< type >>()
 
 namespace NODES {
 	enum struct Node_Type {

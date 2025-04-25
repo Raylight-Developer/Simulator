@@ -17,7 +17,7 @@ NODES::MATH::Trigonometry::Trigonometry() :
 	proxy_enums->setPos(20, 30);
 }
 
-const Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) const {
+Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) {
 	const F64 x = *in->GET_DATA(F64);
 	switch (enums->currentIndex()) {
 		case  0: return make_shared<Variable>(sin(x));

@@ -32,21 +32,8 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 		details->layout->clear();
 
 		auto var_type_enums = new GUI::Options(this);
-		var_type_enums->addItems({ "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
-		switch (FILE.variables[item->text()].type) {
-			case VAR_TYPE::INT   : var_type_enums->setCurrentIndex( 0); break;
-			case VAR_TYPE::DOUBLE: var_type_enums->setCurrentIndex( 1); break;
-			case VAR_TYPE::BOOL  : var_type_enums->setCurrentIndex( 2); break;
-			case VAR_TYPE::STRING: var_type_enums->setCurrentIndex( 3); break;
-			case VAR_TYPE::VEC2  : var_type_enums->setCurrentIndex( 4); break;
-			case VAR_TYPE::VEC3  : var_type_enums->setCurrentIndex( 5); break;
-			case VAR_TYPE::VEC4  : var_type_enums->setCurrentIndex( 6); break;
-			case VAR_TYPE::COLOR : var_type_enums->setCurrentIndex( 7); break;
-			case VAR_TYPE::QUAT  : var_type_enums->setCurrentIndex( 8); break;
-			case VAR_TYPE::MAT2  : var_type_enums->setCurrentIndex( 9); break;
-			case VAR_TYPE::MAT3  : var_type_enums->setCurrentIndex(10); break;
-			case VAR_TYPE::MAT4  : var_type_enums->setCurrentIndex(11); break;
-		}
+		var_type_enums->addItems({ "", "Double", "Integer", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
+		var_type_enums->setCurrentIndex(static_cast<I32>(FILE.variables[item->text()].type) - 2);
 
 		auto var_container_enums = new GUI::Options(this);
 		var_container_enums->addItems({ "Single", "List"});
@@ -70,23 +57,9 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 		});
 
 		QObject::connect(var_type_enums, &GUI::Options::currentIndexChanged, [this, item](int index) {
-			Variable var;
 			const QString name = item->text();
 			const auto container = FILE.variables[name].container;
-			switch (index) {
-				case  0: var = Variable(VAR_TYPE::INT   , container); break;
-				case  1: var = Variable(VAR_TYPE::DOUBLE, container); break;
-				case  2: var = Variable(VAR_TYPE::BOOL  , container); break;
-				case  3: var = Variable(VAR_TYPE::STRING, container); break;
-				case  4: var = Variable(VAR_TYPE::VEC2  , container); break;
-				case  5: var = Variable(VAR_TYPE::VEC3  , container); break;
-				case  6: var = Variable(VAR_TYPE::VEC4  , container); break;
-				case  7: var = Variable(VAR_TYPE::COLOR , container); break;
-				case  8: var = Variable(VAR_TYPE::QUAT  , container); break;
-				case  9: var = Variable(VAR_TYPE::MAT2  , container); break;
-				case 10: var = Variable(VAR_TYPE::MAT3  , container); break;
-				case 11: var = Variable(VAR_TYPE::MAT4  , container); break;
-			}
+			Variable var = Variable(static_cast<VAR_TYPE>(index), container);
 			updateVar(name, var);
 		});
 	});

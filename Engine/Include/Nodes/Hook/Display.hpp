@@ -12,7 +12,7 @@ namespace NODES {
 			Display();
 			PORT_DATA_O resolution;
 
-			const Ptr_S<Variable> getData(const Port* port) const override;
+			Ptr_S<Variable> getData(const Port* port) override;
 		};
 	}
 }

@@ -23,7 +23,7 @@ namespace NODES {
 			Subsample();
 
 			void exec(const Port* port) override;
-			const Ptr_S<Variable> getData(const Port* port) const override;
+			Ptr_S<Variable> getData(const Port* port) override;
 		};
 	}
 }

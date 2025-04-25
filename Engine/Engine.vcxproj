@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Nodes\Container\List\Size.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Access.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Insert.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Remove.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Clear.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Insert.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Push.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Remove.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Size.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Camera_2D.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Camera_3D.cpp" />
     <ClCompile Include="Source\Nodes\Hook\Display.cpp" />
@@ -61,6 +61,10 @@
   <ItemGroup>
     <ClInclude Include="Include\Nodes\Container\List\Access.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Clear.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Insert.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Push.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Remove.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Size.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Camera_2D.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Camera_3D.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Display.hpp" />
@@ -75,15 +79,7 @@
     <ClInclude Include="Include\Nodes\Singleton\Euler_Tick.hpp" />
     <ClInclude Include="Include\History_View.hpp" />
     <ClInclude Include="Include\File.hpp" />
-    <ClInclude Include="Include\Inline\Glm.hpp" />
     <ClInclude Include="Include\Inline\Templates.hpp" />
-    <ClInclude Include="Include\Inline\Templates\BiMap.hpp" />
-    <ClInclude Include="Include\Inline\Templates\List.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_BiMap.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Map.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Pointer.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
     <ClInclude Include="Include\Inline\Types.hpp" />
     <ClInclude Include="Include\Node.hpp" />
     <ClInclude Include="Include\Session.hpp" />
@@ -110,13 +106,6 @@
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Push.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Insert.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Remove.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Size.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Style.css" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>

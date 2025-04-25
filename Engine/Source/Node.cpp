@@ -53,7 +53,7 @@ QRectF Node::boundingRect() const {
 NODE::Port::Port(Node* node) :
 	QGraphicsItem(node),
 	node(node),
-	onConnRequested(nullptr),
+	onConnection(nullptr),
 	onDisconnection(nullptr),
 	rect(QRectF(0, 0, 10, 10))
 {
@@ -225,6 +225,13 @@ bool NODE::PORT::Data_I::connected() const {
 void NODE::PORT::Data_I::connect(Data_O* port) {
 	connection = make_unique<Connection>(port, this);
 	port->connections.push(connection.get());
+
+	if (port->onConnection) {
+		port->onConnection(this, connection.get());
+	}
+	if (onConnection) {
+		onConnection(this, connection.get());
+	}
 }
 
 void NODE::PORT::Data_I::disconnect() {
@@ -235,7 +242,6 @@ void NODE::PORT::Data_I::disconnect() {
 	if (port_l->onDisconnection) {
 		port_l->onDisconnection(this);
 	}
-
 	if (onDisconnection) {
 		onDisconnection(this);
 	}
@@ -247,7 +253,7 @@ void NODE::PORT::Data_I::setType(const VAR_TYPE& var_type, const VAR_CONTAINER& 
 	update();
 }
 
-const Ptr_S<Variable> NODE::PORT::Data_I::getData() const {
+Ptr_S<Variable>NODE::PORT::Data_I::getData() {
 	if (connection) {
 		return connection->getDataO()->getData();
 	}
@@ -346,7 +352,7 @@ void NODE::PORT::Data_O::setType(const VAR_TYPE& type, const VAR_CONTAINER& cont
 	update();
 }
 
-const Ptr_S<Variable> NODE::PORT::Data_O::getData() const {
+Ptr_S<Variable>NODE::PORT::Data_O::getData() {
 	return node->getData(this);
 }
 
@@ -412,6 +418,13 @@ bool NODE::PORT::Exec_O::connected() const {
 void NODE::PORT::Exec_O::connect(Exec_I* port) {
 	connection = make_unique<Connection>(this, port);
 	port->connections.push(connection.get());
+
+	if (port->onConnection) {
+		port->onConnection(this, connection.get());
+	}
+	if (onConnection) {
+		onConnection(this, connection.get());
+	}
 }
 
 void NODE::PORT::Exec_O::disconnect() {
@@ -422,7 +435,6 @@ void NODE::PORT::Exec_O::disconnect() {
 	if (port_r->onDisconnection) {
 		port_r->onDisconnection(this);
 	}
-
 	if (onDisconnection) {
 		onDisconnection(this);
 	}

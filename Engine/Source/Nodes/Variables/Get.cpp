@@ -8,7 +8,7 @@ NODES::VARIABLE::Get::Get() :
 	rect.setWidth(120);
 	rect.setHeight(60);
 
-	out = DATA_O("", VAR_TYPE::BLOCKED);
+	out = DATA_O("", VAR_TYPE::NONE);
 
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
@@ -23,6 +23,6 @@ void NODES::VARIABLE::Get::setVar(const QString name) {
 	label->setText(var);
 }
 
-const Ptr_S<Variable> NODES::VARIABLE::Get::getData(const Port* port) const {
+Ptr_S<Variable> NODES::VARIABLE::Get::getData(const Port* port) {
 	return make_shared<Variable>(FILE.variables[var]);
 }

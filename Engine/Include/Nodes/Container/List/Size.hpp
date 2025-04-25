@@ -14,9 +14,11 @@ namespace NODES {
 
 				PORT_DATA_O size;
 
-				//Size();
-				//
-				//const Ptr_S<Variable> getData(const Port* port) const override;
+				GUI::Options* var_type;
+
+				Size();
+				
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 		}
 	}

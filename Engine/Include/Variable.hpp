@@ -9,7 +9,7 @@ struct Variable;
 
 namespace VAR {
 	enum struct Type {
-		NONE, BLOCKED,
+		NONE,
 		DOUBLE, INT,
 		BOOL, STRING,
 		VEC2, VEC3, VEC4, COLOR, QUAT, MAT2, MAT3, MAT4
@@ -44,23 +44,23 @@ struct Variable {
 	Variable(const F64_M3&   data);
 	Variable(const F64_M4&   data);
 
-	Variable(const vector<F64>&      data);
-	Variable(const vector<I64>&      data);
-	Variable(const vector<bool>&     data);
-	Variable(const vector<QString>&  data);
-	Variable(const vector<F64_V2>&   data);
-	Variable(const vector<F64_V3>&   data);
-	Variable(const vector<F64_V4>&   data);
-	Variable(const vector<Color>&    data);
-	Variable(const vector<F64_Quat>& data);
-	Variable(const vector<F64_M2>&   data);
-	Variable(const vector<F64_M3>&   data);
-	Variable(const vector<F64_M4>&   data);
+	Variable(const CORE::Stack<F64>&      data);
+	Variable(const CORE::Stack<I64>&      data);
+	Variable(const CORE::Stack<bool>&     data);
+	Variable(const CORE::Stack<QString>&  data);
+	Variable(const CORE::Stack<F64_V2>&   data);
+	Variable(const CORE::Stack<F64_V3>&   data);
+	Variable(const CORE::Stack<F64_V4>&   data);
+	Variable(const CORE::Stack<Color>&    data);
+	Variable(const CORE::Stack<F64_Quat>& data);
+	Variable(const CORE::Stack<F64_M2>&   data);
+	Variable(const CORE::Stack<F64_M3>&   data);
+	Variable(const CORE::Stack<F64_M4>&   data);
 
 	Variable(const VAR::Type& type, const VAR::Container& container = VAR::Container::NONE);
 
 	template <typename T>
-	inline const T* get() const {
+	inline T* get() {
 		return any_cast<T>(&data);
 	}
 };

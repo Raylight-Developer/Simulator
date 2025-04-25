@@ -76,15 +76,14 @@ void NODES::SCRIPT::Script::exec(const Port* port) {
 	exec(static_cast<const PORT::Exec_I*>(port));
 }
 
-const Ptr_S<Variable> NODES::SCRIPT::Script::getData(const Port* port) const {
+Ptr_S<Variable> NODES::SCRIPT::Script::getData(const Port* port) {
 	return getData(static_cast<const PORT::Data_O*>(port));
 }
-
 
 void NODES::SCRIPT::Script::exec(const PORT::Exec_I* port) {
 	execAllDownstream();
 }
 
-const Ptr_S<Variable> NODES::SCRIPT::Script::getData(const PORT::Data_O* port) const {
+Ptr_S<Variable> NODES::SCRIPT::Script::getData(const PORT::Data_O* port) {
 	return nullptr;
 }

@@ -21,7 +21,7 @@ void NODES::SINGLETON::Euler_Tick::exec(const F64& _delta) {
 	exec_out->exec();
 }
 
-const Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
+Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) {
 	if (port == o_delta.get())
 		return make_shared<Variable>(delta);
 	if (port == o_calls.get())

@@ -28,7 +28,7 @@ void NODES::CAST::MAKE::Vec2::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Vec2::getData(const Port* port) {
 	return make_shared<Variable>(F64_V2(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64)));
 }
 
@@ -56,7 +56,7 @@ void NODES::CAST::MAKE::Vec3::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Vec3::getData(const Port* port) {
 	return make_shared<Variable>(F64_V3(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64)));
 }
 
@@ -86,7 +86,7 @@ void NODES::CAST::MAKE::Vec4::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Vec4::getData(const Port* port) {
 	return make_shared<Variable>(F64_V4(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64), *i_w->GET_DATA(F64)));
 }
 
@@ -116,7 +116,7 @@ void NODES::CAST::MAKE::Quat::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Quat::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Quat::getData(const Port* port) {
 	return make_shared<Variable>(F64_Quat(*i_w->GET_DATA(F64), *i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64)));
 }
 
@@ -142,7 +142,7 @@ void NODES::CAST::MAKE::Mat2::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Mat2::getData(const Port* port) {
 	return make_shared<Variable>(F64_M2(*i_a->GET_DATA(F64_V2), *i_b->GET_DATA(F64_V2)));
 }
 
@@ -170,7 +170,7 @@ void NODES::CAST::MAKE::Mat3::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Mat3::getData(const Port* port) {
 	return make_shared<Variable>(F64_M3(*i_a->GET_DATA(F64_V3), *i_b->GET_DATA(F64_V3), *i_c->GET_DATA(F64_V3)));
 }
 
@@ -200,43 +200,8 @@ void NODES::CAST::MAKE::Mat4::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-const Ptr_S<Variable> NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
+Ptr_S<Variable> NODES::CAST::MAKE::Mat4::getData(const Port* port) {
 	return make_shared<Variable>(F64_M4(*i_a->GET_DATA(F64_V4), *i_b->GET_DATA(F64_V4), *i_c->GET_DATA(F64_V4), *i_d->GET_DATA(F64_V4)));
-}
-
-NODES::SINGLETON::Camera_2D::Camera_2D() :
-	Node(Node_Type::NONE, "2D Camera")
-{
-	header_color = QColor(75, 25, 25);
-	rect.setWidth(100);
-	rect.setHeight(100);
-
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
-
-	center = DATA_I("Color", Variable(F64_V2(0,0)));
-	zoom   = DATA_I("Color", Variable(1.0));
-}
-
-void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = *center->GET_DATA(F64_V2);
-	SESSION->viewport->zoom_2d = *zoom->GET_DATA(F64);
-	exec_out->exec();
-}
-
-NODES::SINGLETON::Camera_3D::Camera_3D() :
-	Node(Node_Type::NONE, "3D Camera")
-{
-	header_color = QColor(25, 25, 75);
-	rect.setWidth(100);
-	rect.setHeight(60);
-
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
-}
-
-void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
-	exec_out->exec();
 }
 
 string NODES::toString(const Node_Type& value) {

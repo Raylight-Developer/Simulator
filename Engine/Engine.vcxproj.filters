@@ -7,59 +7,141 @@
     <ClInclude Include="Include\Node_Editor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Inline\Types.hpp" />
-    <ClInclude Include="Include\Inline\Glm.hpp" />
-    <ClInclude Include="Include\Inline\Templates.hpp" />
-    <ClInclude Include="Include\Inline\Templates\BiMap.hpp" />
-    <ClInclude Include="Include\Inline\Templates\List.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_BiMap.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Map.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Pointer.hpp" />
-    <ClInclude Include="Include\Inline\Templates\Observable_Vector.hpp" />
-    <ClInclude Include="Include\Session.hpp" />
-    <ClInclude Include="Include\Node.hpp" />
-    <ClInclude Include="Include\Node_Shelf.hpp" />
-    <ClInclude Include="Include\Nodes.hpp" />
-    <ClInclude Include="Include\Viewport.hpp" />
-    <ClInclude Include="Include\Scripting.hpp" />
-    <ClInclude Include="Include\OpenGL.hpp" />
-    <ClInclude Include="Include\File.hpp" />
-    <ClInclude Include="Include\Timeline.hpp" />
-    <ClInclude Include="Include\Variable_Editor.hpp" />
-    <ClInclude Include="Include\Variable.hpp" />
-    <ClInclude Include="Include\Input.hpp" />
-    <ClInclude Include="Include\History_View.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Euler_Tick.hpp" />
-    <ClInclude Include="Include\Nodes\Exec\Subsample.hpp" />
-    <ClInclude Include="Include\Nodes\Rendering\2D\Circle.hpp" />
-    <ClInclude Include="Include\Nodes\Rendering\2D\Line.hpp" />
-    <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp" />
-    <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp" />
-    <ClInclude Include="Include\Nodes\Variables\Set.hpp" />
-    <ClInclude Include="Include\Nodes\Variables\Get.hpp" />
-    <ClInclude Include="Include\Nodes\Variables\Constant.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Background.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp" />
-    <ClInclude Include="Include\Nodes\Exec\If.hpp" />
-    <ClInclude Include="Include\Nodes\Exec\If_Else.hpp" />
-    <ClInclude Include="Include\Nodes\Boolean\Compare.hpp" />
-    <ClInclude Include="Include\Nodes\Boolean\Select.hpp" />
-    <ClInclude Include="Include\Nodes\Math\Arithmetic.hpp" />
-    <ClInclude Include="Include\Nodes\Math\Trigonometry.hpp" />
-    <ClInclude Include="Include\Nodes\Hook\Input\Key.hpp" />
-    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp" />
-    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp" />
-    <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
-    <ClInclude Include="Include\Nodes\Hook\Display.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Camera_2D.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Camera_3D.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Clear.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Push.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Access.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Remove.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Insert.hpp" />
-    <ClInclude Include="Include\Nodes\Container\List\Size.hpp" />
+    <ClInclude Include="Include\Viewport.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Variable_Editor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Inline\Types.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Variable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Math\Trigonometry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Timeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Inline\Templates.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Exec\Subsample.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Variables\Set.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Session.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Boolean\Select.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Scripting.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\OpenGL.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Node_Shelf.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Node.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Rendering\2D\Line.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Hook\Input\Key.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Input.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Exec\If_Else.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Exec\If.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\History_View.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Variables\Get.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\File.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Singleton\Euler_Tick.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Hook\Display.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Variables\Constant.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Boolean\Compare.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Rendering\2D\Circle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Singleton\Camera_3D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Singleton\Camera_2D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Singleton\Background.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Math\Arithmetic.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Access.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Size.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Clear.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Insert.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Push.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Nodes\Container\List\Remove.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -70,58 +152,143 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Node_Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Session.cpp" />
-    <ClCompile Include="Source\Node.cpp" />
-    <ClCompile Include="Source\Node_Shelf.cpp" />
-    <ClCompile Include="Source\Nodes.cpp" />
-    <ClCompile Include="Source\Scripting.cpp" />
-    <ClCompile Include="Source\Viewport.cpp" />
-    <ClCompile Include="Source\OpenGL.cpp" />
-    <ClCompile Include="Source\File.cpp" />
-    <ClCompile Include="Source\Timeline.cpp" />
-    <ClCompile Include="Source\Variable_Editor.cpp" />
-    <ClCompile Include="Source\Variable.cpp" />
-    <ClCompile Include="Source\Input.cpp" />
-    <ClCompile Include="Source\History_View.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Euler_Tick.cpp" />
-    <ClCompile Include="Source\Nodes\Exec\Subsample.cpp" />
-    <ClCompile Include="Source\Nodes\Rendering\2D\Circle.cpp" />
-    <ClCompile Include="Source\Nodes\Rendering\2D\Line.cpp" />
-    <ClCompile Include="Source\Nodes\Rendering\2D\Rectangle.cpp" />
-    <ClCompile Include="Source\Nodes\Rendering\2D\Triangle.cpp" />
-    <ClCompile Include="Source\Nodes\Variables\Set.cpp" />
-    <ClCompile Include="Source\Nodes\Variables\Get.cpp" />
-    <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp" />
-    <ClCompile Include="Source\Nodes\Exec\If.cpp" />
-    <ClCompile Include="Source\Nodes\Exec\If_Else.cpp" />
-    <ClCompile Include="Source\Nodes\Boolean\Compare.cpp" />
-    <ClCompile Include="Source\Nodes\Boolean\Select.cpp" />
-    <ClCompile Include="Source\Nodes\Math\Arithmetic.cpp" />
-    <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp" />
-    <ClCompile Include="Source\Nodes\Hook\Input\Key.cpp" />
-    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Pos.cpp" />
-    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Wheel.cpp" />
-    <ClCompile Include="Source\Nodes\Hook\Input\Mouse.cpp" />
-    <ClCompile Include="Source\Nodes\Hook\Display.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Camera_2D.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Camera_3D.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Clear.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Push.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Access.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Remove.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Insert.cpp" />
-    <ClCompile Include="Source\Nodes\Container\List\Size.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Style.css" />
+    <ClCompile Include="Source\Viewport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Exec\Subsample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Timeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Rendering\2D\Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Variable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Variable_Editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Variables\Set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Session.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Rendering\2D\Line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Pos.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Hook\Input\Mouse_Wheel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Node_Shelf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OpenGL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Rendering\2D\Rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scripting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Boolean\Select.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Math\Arithmetic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Singleton\Background.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Singleton\Camera_2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Singleton\Camera_3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Rendering\2D\Circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Boolean\Compare.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Variables\Constant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Hook\Display.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Singleton\Euler_Tick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\File.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Variables\Get.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\History_View.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Exec\If.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Exec\If_Else.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Hook\Input\Key.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Access.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Size.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Remove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Push.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Insert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nodes\Container\List\Clear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@ namespace NODES {
 				PORT_DATA_O angle_x;
 				PORT_DATA_O angle_y;
 
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 		}
 	}

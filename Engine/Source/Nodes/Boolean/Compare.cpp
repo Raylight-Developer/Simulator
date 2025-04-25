@@ -18,7 +18,7 @@ NODES::BOOLEAN::Compare::Compare() :
 	proxy_enums->setPos(30, 50);
 }
 
-const Ptr_S<Variable> NODES::BOOLEAN::Compare::getData(const Port* port) const {
+Ptr_S<Variable> NODES::BOOLEAN::Compare::getData(const Port* port) {
 	//switch (enums->currentIndex()) {
 	//	case 0: return Variable(in_a->getData() == in_b->getData());
 	//	case 1: return Variable(in_a->getData() != in_b->getData());

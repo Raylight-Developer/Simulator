@@ -16,7 +16,7 @@ namespace NODES {
 
 			Trigonometry();
 
-			const Ptr_S<Variable> getData(const Port* port) const override;
+			Ptr_S<Variable> getData(const Port* port) override;
 
 			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
 				//TODO

@@ -19,10 +19,10 @@ namespace NODES {
 			void execAllDownstream() const;
 
 			void exec(const Port* port) final override;
-			const Ptr_S<Variable> getData(const Port* port) const final override;
+			Ptr_S<Variable> getData(const Port* port) final override;
 
 			virtual void exec(const PORT::Exec_I* port);
-			virtual const Ptr_S<Variable> getData(const PORT::Data_O* port) const;
+			virtual Ptr_S<Variable> getData(const PORT::Data_O* port);
 
 			virtual void onLoad() = 0;
 			virtual void onUnload() = 0;

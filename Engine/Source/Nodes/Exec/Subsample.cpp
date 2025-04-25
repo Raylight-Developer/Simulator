@@ -30,7 +30,7 @@ void NODES::EXEC::Subsample::exec(const Port* port) {
 	samples_out->exec();
 }
 
-const Ptr_S<Variable> NODES::EXEC::Subsample::getData(const Port* port) const {
+Ptr_S<Variable> NODES::EXEC::Subsample::getData(const Port* port) {
 	if (port == o_delta.get()) {
 		return make_shared<Variable>(*delta_in->GET_DATA(F64) / *count_in->GET_DATA(I64));
 	}

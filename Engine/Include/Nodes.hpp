@@ -64,20 +64,32 @@ namespace NODES::CONTAINER {
 }
 
 namespace NODES::BOOLEAN {
-	enum struct Type { IF, IF_ELSE, SWITCH, AND, OR, NOT };
+	enum struct Type { SWITCH, AND, OR, NOT };
 	struct Compare;
 	struct Select;
 }
 #include "Nodes/Boolean/Compare.hpp"
 #include "Nodes/Boolean/Select.hpp"
 
+namespace NODES::CONTAINER::LIST {
+	struct Access;
+	struct Insert;
+	struct Remove;
+	struct Clear;
+	struct Push;
+	struct Size;
+}
+#include "Nodes/Container/List/Access.hpp"
+#include "Nodes/Container/List/Insert.hpp"
+#include "Nodes/Container/List/Remove.hpp"
+#include "Nodes/Container/List/Clear.hpp"
+#include "Nodes/Container/List/Push.hpp"
+#include "Nodes/Container/List/Size.hpp"
+
 namespace NODES::EXEC {
-	struct If;
-	struct If_Else;
-	struct Reset;
 	struct Subsample;
-	struct Input_Key;
-	struct Input_Mouse;
+	struct If_Else;
+	struct If;
 	enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
 }
 #include "Nodes/Exec/Subsample.hpp"
@@ -104,7 +116,10 @@ namespace NODES::SINGLETON {
 	struct Background;
 	struct Camera_2D;
 	struct Camera_3D;
+	struct Reset;
 }
+#include "Nodes/Singleton/Camera_2D.hpp"
+#include "Nodes/Singleton/Camera_3D.hpp"
 #include "Nodes/Singleton/Background.hpp"
 #include "Nodes/Singleton/Euler_Tick.hpp"
 #include "Nodes/Singleton/Reset.hpp"
@@ -112,10 +127,10 @@ namespace NODES::SINGLETON {
 namespace NODES::RENDERING {
 	namespace DIM_2D {
 		namespace PRIMITIVE {
-			struct Line;
-			struct Triangle;
 			struct Rectangle;
+			struct Triangle;
 			struct Circle;
+			struct Line;
 		}
 	}
 	namespace DIM_3D {
@@ -141,7 +156,7 @@ using namespace NODE;
 namespace NODES {
 	struct Temp : Node {
 		void exec(const Port* port) override;
-		const Ptr_S<Variable> getData(const Port* port) const override;
+		Ptr_S<Variable> getData(const Port* port) override;
 	};
 }
 */
@@ -157,7 +172,7 @@ namespace NODES {
 				Vec2();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Vec3 : Node {
 				PORT_DATA_I i_x;
@@ -168,7 +183,7 @@ namespace NODES {
 				Vec3();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Vec4 : Node {
 				PORT_DATA_I i_x;
@@ -180,7 +195,7 @@ namespace NODES {
 				Vec4();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Quat : Node {
 				PORT_DATA_I i_w;
@@ -192,7 +207,7 @@ namespace NODES {
 				Quat();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Mat2 : Node {
 				PORT_DATA_I i_a;
@@ -202,7 +217,7 @@ namespace NODES {
 				Mat2();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Mat3 : Node {
 				PORT_DATA_I i_a;
@@ -213,7 +228,7 @@ namespace NODES {
 				Mat3();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 			struct Mat4 : Node {
 				PORT_DATA_I i_a;
@@ -225,31 +240,9 @@ namespace NODES {
 				Mat4();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				const Ptr_S<Variable> getData(const Port* port) const override;
+				Ptr_S<Variable> getData(const Port* port) override;
 			};
 		}
-	}
-
-	namespace SINGLETON {
-		struct Camera_2D : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
-
-			PORT_DATA_I center;
-			PORT_DATA_I zoom;
-
-			Camera_2D();
-
-			void exec(const Port* port) override;
-		};
-		struct Camera_3D : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
-
-			Camera_3D();
-
-			void exec(const Port* port) override;
-		};
 	}
 }
 

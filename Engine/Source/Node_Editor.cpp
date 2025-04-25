@@ -202,7 +202,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			if (IS_PORT(type)) {
 				if (type == Graphics_Item_Type::E_DATA_I) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
-					if (port_r->variable->type != VAR_TYPE::BLOCKED) {
+					if (port_r->variable->type != VAR_TYPE::NONE) {
 						if (!port_r->connected()) {
 							creating_connection = make_unique<NODE::Connection>(port_r);
 						}
@@ -226,7 +226,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 				}
 				else if (type == Graphics_Item_Type::E_DATA_O) {
 					auto port_l = static_cast<NODE::PORT::Data_O*>(item);
-					if (port_l->var_type != VAR_TYPE::BLOCKED) {
+					if (port_l->var_type != VAR_TYPE::NONE) {
 						creating_connection = make_unique<NODE::Connection>(port_l);
 					}
 				}
@@ -432,6 +432,24 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "BOOLEAN SELECT") {
 				node = make_shared<NODES::BOOLEAN::Select>();
+			}
+			else if (type == "CONTAINER LIST ACCESS") {
+				node = make_shared<NODES::CONTAINER::LIST::Access>();
+			}
+			else if (type == "CONTAINER LIST INSERT") {
+				node = make_shared<NODES::CONTAINER::LIST::Insert>();
+			}
+			else if (type == "CONTAINER LIST REMOVE") {
+				node = make_shared<NODES::CONTAINER::LIST::Remove>();
+			}
+			else if (type == "CONTAINER LIST CLEAR") {
+				node = make_shared<NODES::CONTAINER::LIST::Clear>();
+			}
+			else if (type == "CONTAINER LIST PUSH") {
+				node = make_shared<NODES::CONTAINER::LIST::Push>();
+			}
+			else if (type == "CONTAINER LIST SIZE") {
+				node = make_shared<NODES::CONTAINER::LIST::Size>();
 			}
 			else if (type == "EXEC IF") {
 				node = make_shared<NODES::EXEC::If>();

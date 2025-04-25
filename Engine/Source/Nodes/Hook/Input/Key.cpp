@@ -30,6 +30,6 @@ NODES::HOOK::INPUT::Key::Key() :
 	});
 }
 
-const Ptr_S<Variable> NODES::HOOK::INPUT::Key::getData(const Port* port) const {
+Ptr_S<Variable> NODES::HOOK::INPUT::Key::getData(const Port* port) {
 	return make_shared<Variable>(SESSION->hook.input_down[key]);
 }
