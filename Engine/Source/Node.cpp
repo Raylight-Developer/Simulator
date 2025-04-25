@@ -60,13 +60,6 @@ NODE::Port::Port(Node* node) :
 	setZValue(10);
 }
 
-bool NODE::Port::requestConnection(Connection* connection) {
-	if (onConnRequested) {
-		return onConnRequested(this, connection);
-	}
-	return true;
-}
-
 void NODE::Port::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(Qt::black);
 	painter->setPen(Qt::white);
@@ -89,10 +82,8 @@ NODE::Connection::Connection(Port* source_port) :
 	pos_l = mapFromItem(port_l, port_l->boundingRect().center());
 	pos_r = pos_l;
 
-	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
-		color = VAR::toColor(t_port_l->var_type);
-	}
-	else if (auto t_port_l = dynamic_cast<PORT::Data_I*>(port_l)) {
+	if (port_l->type() == Graphics_Item_Type::E_DATA_O) {
+		auto t_port_l = static_cast<PORT::Data_O*>(port_l);
 		color = VAR::toColor(t_port_l->var_type);
 	}
 }
@@ -190,23 +181,19 @@ NODE::PORT::Exec_I* NODE::Connection::getExecI() const {
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	var_type(VAR_TYPE::NONE),
-	color(VAR::toColor(var_type)),
+	color(VAR::toColor(VAR_TYPE::NONE)),
 	variable(Variable()),
-	onTypeChanged(nullptr),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
 	rect.moveCenter(parent->rect.topLeft() + QPointF(0, 20 + parent->inputs.size() * 20));
 }
 
-NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type) :
+NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) :
 	Port(parent),
 	label(label),
-	var_type(var_type),
 	color(VAR::toColor(var_type)),
-	variable(Variable()),
-	onTypeChanged(nullptr),
+	variable(Variable(var_type, var_container)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -216,10 +203,8 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& v
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& default_variable) :
 	Port(parent),
 	label(label),
-	var_type(default_variable.type),
 	color(VAR::toColor(default_variable.type)),
 	variable(default_variable),
-	onTypeChanged(nullptr),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -234,14 +219,6 @@ NODE::PORT::Data_I::~Data_I() {
 
 bool NODE::PORT::Data_I::connected() const {
 	return connection != nullptr;
-}
-
-bool NODE::PORT::Data_I::canConnect(Data_O* port) {
-	auto temp = make_unique<Connection>(port, this);
-	if (port->requestConnection(temp.get()) and requestConnection(temp.get())) {
-		return true;
-	}
-	return false;
 }
 
 void NODE::PORT::Data_I::connect(Data_O* port) {
@@ -263,20 +240,9 @@ void NODE::PORT::Data_I::disconnect() {
 	}
 }
 
-void NODE::PORT::Data_I::setType(const VAR_TYPE& type) {
-	var_type = type;
-	variable = Variable(var_type);
-	color = VAR::toColor(type);
-	if (connection) {
-		connection->color = toColor(var_type);
-		auto other = static_cast<Data_O*>(connection->port_l);
-		if (other->var_type != var_type) {
-			other->setType(var_type);
-		}
-	}
-	if (onTypeChanged) {
-		onTypeChanged(this, var_type);
-	}
+void NODE::PORT::Data_I::setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) {
+	variable = Variable(var_type, var_container);
+	color = VAR::toColor(var_type);
 	update();
 }
 
@@ -287,19 +253,6 @@ Variable NODE::PORT::Data_I::getData() const {
 	return variable;
 }
 
-bool NODE::PORT::Data_I::requestConnection(Connection* connection) {
-	if (var_type == VAR_TYPE::BLOCKED) {
-		return false;
-	}
-	if (onConnRequested) {
-		return onConnRequested(this, connection);
-	}
-	if (static_cast<Data_O*>(connection->port_l)->var_type == var_type) {
-		return true;
-	}
-	return false;
-}
-
 int NODE::PORT::Data_I::type() const {
 	return Graphics_Item_Type::E_DATA_I;
 }
@@ -307,12 +260,16 @@ int NODE::PORT::Data_I::type() const {
 void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
-	painter->drawEllipse(rect);
+
+	switch (variable.container) {
+		case VAR_CONTAINER::NONE  : painter->drawEllipse(rect); break;
+		case VAR_CONTAINER::VECTOR: painter->drawRect(rect); break;
+	}
 
 	painter->drawText(rect.bottomRight() + QPointF(5, 0), label);
 
 	painter->setPen(QPen(Qt::white, 0.5));
-	switch (var_type) {
+	switch (variable.type) {
 		case VAR_TYPE::VEC2:
 		case VAR_TYPE::MAT2: {
 			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
@@ -339,19 +296,19 @@ NODE::PORT::Data_O::Data_O(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
 	var_type(VAR_TYPE::NONE),
-	color(VAR::toColor(var_type)),
-	onTypeChanged(nullptr)
+	var_container(VAR_CONTAINER::NONE),
+	color(VAR::toColor(var_type))
 {
 	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
 }
 
-NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type) :
+NODE::PORT::Data_O::Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) :
 	Port(parent),
 	label(label),
 	var_type(var_type),
-	color(VAR::toColor(var_type)),
-	onTypeChanged(nullptr)
+	var_container(var_container),
+	color(VAR::toColor(var_type))
 {
 	parent->outputs.push(this);
 	rect.moveCenter(parent->rect.topRight() + QPointF(0, 20 + parent->outputs.size() * 20));
@@ -381,37 +338,15 @@ bool NODE::PORT::Data_O::connected() const {
 	return !connections.empty();
 }
 
-void NODE::PORT::Data_O::setType(const VAR_TYPE& type) {
+void NODE::PORT::Data_O::setType(const VAR_TYPE& type, const VAR_CONTAINER& container) {
 	var_type = type;
+	var_container = container;
 	color = VAR::toColor(type);
-	for (Connection* conn : connections) {
-		conn->color = toColor(var_type);
-		auto other = static_cast<Data_I*>(conn->port_r);
-		if (other->var_type != var_type) {
-			other->setType(var_type);
-		}
-	}
-	if (onTypeChanged) {
-		onTypeChanged(this, var_type);
-	}
 	update();
 }
 
 Variable NODE::PORT::Data_O::getData() const {
 	return node->getData(this);
-}
-
-bool NODE::PORT::Data_O::requestConnection(Connection* connection) {
-	if (var_type == VAR_TYPE::BLOCKED) {
-		return false;
-	}
-	if (onConnRequested) {
-		return onConnRequested(this, connection);
-	}
-	if (static_cast<Data_I*>(connection->port_r)->var_type == var_type) {
-		return true;
-	}
-	return false;
 }
 
 int NODE::PORT::Data_O::type() const {
@@ -422,7 +357,11 @@ void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
 
-	painter->drawEllipse(rect);
+	switch (var_container) {
+		case VAR_CONTAINER::NONE  : painter->drawEllipse(rect); break;
+		case VAR_CONTAINER::VECTOR: painter->drawRect(rect); break;
+	}
+
 	const qreal width = - QFontMetrics(QApplication::font()).horizontalAdvance(label) - 5;
 	painter->drawText(rect.bottomLeft() + QPointF(width, 0), label);
 
@@ -467,14 +406,6 @@ NODE::PORT::Exec_O::~Exec_O() {
 
 bool NODE::PORT::Exec_O::connected() const {
 	return connection != nullptr;
-}
-
-bool NODE::PORT::Exec_O::canConnect(Exec_I* port) {
-	auto temp = make_unique<Connection>(this, port);
-	if (requestConnection(temp.get()) and port->requestConnection(temp.get())) {
-		return true;
-	}
-	return false;
 }
 
 void NODE::PORT::Exec_O::connect(Exec_I* port) {

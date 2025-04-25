@@ -9,7 +9,7 @@ NODES::MATH::Trigonometry::Trigonometry() :
 	in = DATA_I("", VAR_TYPE::DOUBLE);
 	out = DATA_O("", VAR_TYPE::DOUBLE);
 
-	enums = new GUI::Options(); // TODO verify delete
+	enums = new GUI::Options();
 	enums->setFixedSize(100, 20);
 	enums->addItems({ "SIN", "COS", "TAN", "ASIN", "ACOS", "ATAN", "SINH", "COSH", "TANH", "COT", "SEC", "CSC", "COTH", "SECH", "CSCH" });
 

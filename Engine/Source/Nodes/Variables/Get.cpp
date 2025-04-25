@@ -19,7 +19,7 @@ NODES::VARIABLE::Get::Get() :
 
 void NODES::VARIABLE::Get::setVar(const QString name) {
 	var = name;
-	out->setType(FILE.variables[var].type);
+	out->setType(FILE.variables[var].type, FILE.variables[var].container);
 	label->setText(var);
 }
 

@@ -28,12 +28,13 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 	var = name;
 	label->setText(var);
 	if (name != "") {
-		in->setType(FILE.variables[var].type);
-		out->setType(FILE.variables[var].type);
+		const Variable& var_ref = FILE.variables[var];
+		in ->setType(var_ref.type, var_ref.container);
+		out->setType(var_ref.type, var_ref.container);
 	}
 	else {
-		in->setType(VAR_TYPE::BLOCKED);
-		out->setType(VAR_TYPE::BLOCKED);
+		in ->setType(VAR_TYPE::BLOCKED, VAR_CONTAINER::NONE);
+		out->setType(VAR_TYPE::BLOCKED, VAR_CONTAINER::NONE);
 	}
 }
 

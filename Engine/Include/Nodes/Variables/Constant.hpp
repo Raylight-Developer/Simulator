@@ -12,9 +12,13 @@ namespace NODES {
 			PORT_DATA_O out;
 
 			CORE::Stack<GUI::Graphics_Widget*> proxies;
-			GUI::Options* enums;
+			GUI::Options* var_container;
+			GUI::Options* var_type;
 			QRectF expanded;
 			Variable value;
+
+			VAR_TYPE current_var_type;
+			VAR_CONTAINER current_var_container;
 
 			Constant();
 

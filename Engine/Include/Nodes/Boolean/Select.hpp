@@ -16,9 +16,6 @@ namespace NODES {
 
 			Select();
 
-			bool onConnRequested(Port* port, Connection* conn);
-			void onDisconnection(Port* port);
-
 			Variable getData(const Port* port) const override;
 		};
 	}

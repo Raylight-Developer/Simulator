@@ -67,7 +67,6 @@ namespace NODE {
 
 		Port(Node* node);
 
-		virtual bool requestConnection(Connection* connection);
 		virtual bool connected() const = 0;
 		virtual void disconnect() = 0;
 
@@ -82,7 +81,6 @@ namespace NODE {
 		QPointF pos_r;
 
 		QColor color;
-		CORE::Stack<QGraphicsItem*> reroutes;
 
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
@@ -104,26 +102,23 @@ namespace NODE {
 		struct Data_I : Port {
 			const QString label;
 
-			VAR_TYPE var_type;
 			Variable variable;
 			QColor color;
 
 			Ptr_U<Connection> connection;
 
 			Data_I(Node* parent, const QString& label);
-			Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type);
+			Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container = VAR_CONTAINER::NONE);
 			Data_I(Node* parent, const QString& label, const Variable& default_variable);
 			~Data_I();
 
-			bool canConnect(Data_O* port);
 			void connect(Data_O* port);
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VAR_TYPE&)> onTypeChanged;
-			void setType(const VAR_TYPE& var_type);
+			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
+
 			Variable getData() const;
-			bool requestConnection(Connection* connection) override;
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -133,21 +128,21 @@ namespace NODE {
 			const QString label;
 
 			VAR_TYPE var_type;
+			VAR_CONTAINER var_container;
 			QColor color;
 
 			CORE::Stack<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
-			Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type);
+			Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container = VAR_CONTAINER::NONE);
 			~Data_O();
 
 			void disconnect() final override;
 			bool connected() const final override;
 
-			function<void(Port*, const VAR_TYPE&)> onTypeChanged;
-			void setType(const VAR_TYPE& var_type);
+			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
+
 			Variable getData() const;
-			bool requestConnection(Connection* connection) override;
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -161,7 +156,6 @@ namespace NODE {
 			Exec_O(Node* parent, const QString& label);
 			~Exec_O();
 
-			bool canConnect(Exec_I* port);
 			void connect(Exec_I* port);
 			void disconnect() final override;
 			bool connected() const final override;

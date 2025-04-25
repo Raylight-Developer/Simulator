@@ -12,7 +12,8 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 
 	auto list = new Varialbe_Editor::List(this);
 
-	auto details = new GUI::Linear_Contents(this);
+	auto details = new GUI::Linear_Contents(this, QBoxLayout::Direction::TopToBottom);
+	details->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
 	addWidget(add_var);
 	addWidget(search);
@@ -30,62 +31,89 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 	connect(list, &GUI::List::currentItemChanged, [this, details](QListWidgetItem* item, QListWidgetItem* previous) {
 		details->layout->clear();
 
-		auto enums = new GUI::Options(this);
-		enums->addItems({ "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
+		auto var_type_enums = new GUI::Options(this);
+		var_type_enums->addItems({ "Integer", "Double", "Bool", "String", "Vec2", "Vec3", "Vec4", "Color", "Quat", "Mat2", "Mat3", "Mat4"});
 		switch (FILE.variables[item->text()].type) {
-			case VAR_TYPE::INT   : enums->setCurrentIndex( 0); break;
-			case VAR_TYPE::DOUBLE: enums->setCurrentIndex( 1); break;
-			case VAR_TYPE::BOOL  : enums->setCurrentIndex( 2); break;
-			case VAR_TYPE::STRING: enums->setCurrentIndex( 3); break;
-			case VAR_TYPE::VEC2  : enums->setCurrentIndex( 4); break;
-			case VAR_TYPE::VEC3  : enums->setCurrentIndex( 5); break;
-			case VAR_TYPE::VEC4  : enums->setCurrentIndex( 6); break;
-			case VAR_TYPE::COLOR : enums->setCurrentIndex( 7); break;
-			case VAR_TYPE::QUAT  : enums->setCurrentIndex( 8); break;
-			case VAR_TYPE::MAT2  : enums->setCurrentIndex( 9); break;
-			case VAR_TYPE::MAT3  : enums->setCurrentIndex(10); break;
-			case VAR_TYPE::MAT4  : enums->setCurrentIndex(11); break;
+			case VAR_TYPE::INT   : var_type_enums->setCurrentIndex( 0); break;
+			case VAR_TYPE::DOUBLE: var_type_enums->setCurrentIndex( 1); break;
+			case VAR_TYPE::BOOL  : var_type_enums->setCurrentIndex( 2); break;
+			case VAR_TYPE::STRING: var_type_enums->setCurrentIndex( 3); break;
+			case VAR_TYPE::VEC2  : var_type_enums->setCurrentIndex( 4); break;
+			case VAR_TYPE::VEC3  : var_type_enums->setCurrentIndex( 5); break;
+			case VAR_TYPE::VEC4  : var_type_enums->setCurrentIndex( 6); break;
+			case VAR_TYPE::COLOR : var_type_enums->setCurrentIndex( 7); break;
+			case VAR_TYPE::QUAT  : var_type_enums->setCurrentIndex( 8); break;
+			case VAR_TYPE::MAT2  : var_type_enums->setCurrentIndex( 9); break;
+			case VAR_TYPE::MAT3  : var_type_enums->setCurrentIndex(10); break;
+			case VAR_TYPE::MAT4  : var_type_enums->setCurrentIndex(11); break;
 		}
 
-		details->addWidget(new GUI::Linear_Contents(this, { new GUI::Label(this, "Var Type:"), enums }));
+		auto var_container_enums = new GUI::Options(this);
+		var_container_enums->addItems({ "Single", "Vector"});
+		switch (FILE.variables[item->text()].container) {
+			case VAR_CONTAINER::NONE  : var_container_enums->setCurrentIndex(0); break;
+			case VAR_CONTAINER::VECTOR: var_container_enums->setCurrentIndex(1); break;
+		}
 
-		QObject::connect(enums, &GUI::Options::currentIndexChanged, [this, item](int index) {
+		details->addWidget(new GUI::Linear_Contents(this, { new GUI::Label(this, "Type:"), var_type_enums }));
+		details->addWidget(new GUI::Linear_Contents(this, { new GUI::Label(this, "Container:"), var_container_enums }));
+
+		QObject::connect(var_container_enums, &GUI::Options::currentIndexChanged, [this, item](int index) {
 			Variable var;
+			const QString name = item->text();
+			const auto type = FILE.variables[name].type;
 			switch (index) {
-				case  0: var = Variable(VAR_TYPE::INT   ); break;
-				case  1: var = Variable(VAR_TYPE::DOUBLE); break;
-				case  2: var = Variable(VAR_TYPE::BOOL  ); break;
-				case  3: var = Variable(VAR_TYPE::STRING); break;
-				case  4: var = Variable(VAR_TYPE::VEC2  ); break;
-				case  5: var = Variable(VAR_TYPE::VEC3  ); break;
-				case  6: var = Variable(VAR_TYPE::VEC4  ); break;
-				case  7: var = Variable(VAR_TYPE::COLOR ); break;
-				case  8: var = Variable(VAR_TYPE::QUAT  ); break;
-				case  9: var = Variable(VAR_TYPE::MAT2  ); break;
-				case 10: var = Variable(VAR_TYPE::MAT3  ); break;
-				case 11: var = Variable(VAR_TYPE::MAT4  ); break;
+				case 0: var = Variable(type, VAR_CONTAINER::NONE  ); break;
+				case 1: var = Variable(type, VAR_CONTAINER::VECTOR); break;
 			}
-			FILE.variables[item->text()] = var;
-			for (Ptr_S<Node> node : FILE.variable_refs[item->text()]) {
-				if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Get>(node)) {
-					if (node_def->out->connected()) {
-						node_def->out->disconnect();
-					}
-					node_def->out->setType(var.type);
-				}
-				else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Set>(node)) {
-					if (node_def->in->connected()) {
-						node_def->in->disconnect();
-					}
-					if (node_def->out->connected()) {
-						node_def->out->disconnect();
-					}
-					node_def->in->setType(var.type);
-					node_def->out->setType(var.type);
-				}
+			updateVar(name, var);
+		});
+
+		QObject::connect(var_type_enums, &GUI::Options::currentIndexChanged, [this, item](int index) {
+			Variable var;
+			const QString name = item->text();
+			const auto container = FILE.variables[name].container;
+			switch (index) {
+				case  0: var = Variable(VAR_TYPE::INT   , container); break;
+				case  1: var = Variable(VAR_TYPE::DOUBLE, container); break;
+				case  2: var = Variable(VAR_TYPE::BOOL  , container); break;
+				case  3: var = Variable(VAR_TYPE::STRING, container); break;
+				case  4: var = Variable(VAR_TYPE::VEC2  , container); break;
+				case  5: var = Variable(VAR_TYPE::VEC3  , container); break;
+				case  6: var = Variable(VAR_TYPE::VEC4  , container); break;
+				case  7: var = Variable(VAR_TYPE::COLOR , container); break;
+				case  8: var = Variable(VAR_TYPE::QUAT  , container); break;
+				case  9: var = Variable(VAR_TYPE::MAT2  , container); break;
+				case 10: var = Variable(VAR_TYPE::MAT3  , container); break;
+				case 11: var = Variable(VAR_TYPE::MAT4  , container); break;
 			}
+			updateVar(name, var);
 		});
 	});
+}
+
+void Variable_Editor::updateVar(const QString& name, const Variable& var) const {
+	FILE.variables[name] = var;
+	for (Ptr_S<Node> node : FILE.variable_refs[name]) {
+		if (node->node_type == NODES::Node_Type::VARIABLE_GET) {
+			auto node_def = static_pointer_cast<NODES::VARIABLE::Get>(node);
+			if (node_def->out->connected()) {
+				node_def->out->disconnect();
+			}
+			node_def->out->setType(var.type, var.container);
+		}
+		else if (node->node_type == NODES::Node_Type::VARIABLE_SET) {
+			auto node_def = static_pointer_cast<NODES::VARIABLE::Set>(node);
+			if (node_def->in->connected()) {
+				node_def->in->disconnect();
+			}
+			if (node_def->out->connected()) {
+				node_def->out->disconnect();
+			}
+			node_def->in ->setType(var.type, var.container);
+			node_def->out->setType(var.type, var.container);
+		}
+	}
 }
 
 Varialbe_Editor::List::List(Variable_Editor* parent) :

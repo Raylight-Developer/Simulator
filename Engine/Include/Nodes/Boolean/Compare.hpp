@@ -17,10 +17,6 @@ namespace NODES {
 
 			Compare();
 
-			bool onConnRequested(Port* port, Connection* conn);
-			void onDisconnection(Port* port);
-			void cascade(Port* port, const VAR_TYPE& var_type);
-
 			Variable getData(const Port* port) const override;
 
 			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
