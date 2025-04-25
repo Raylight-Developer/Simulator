@@ -14,7 +14,7 @@ namespace NODES {
 				PORT_DATA_O screen_pos;
 				PORT_DATA_O is_on_screen;
 
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 		}
 	}

@@ -16,8 +16,8 @@ void NODES::SINGLETON::Reset::exec() {
 	exec_out->exec();
 }
 
-Variable NODES::SINGLETON::Reset::getData(const Port* port) const {
-	return Variable(true);
+const Ptr_S<Variable> NODES::SINGLETON::Reset::getData(const Port* port) const {
+	return make_shared<Variable>(true);
 }
 
 void NODES::SINGLETON::Reset::loadDetail() {

@@ -23,6 +23,6 @@ void NODES::VARIABLE::Get::setVar(const QString name) {
 	label->setText(var);
 }
 
-Variable NODES::VARIABLE::Get::getData(const Port* port) const {
-	return FILE.variables[var];
+const Ptr_S<Variable> NODES::VARIABLE::Get::getData(const Port* port) const {
+	return make_shared<Variable>(FILE.variables[var]);
 }

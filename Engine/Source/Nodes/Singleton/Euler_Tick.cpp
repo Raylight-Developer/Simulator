@@ -21,14 +21,14 @@ void NODES::SINGLETON::Euler_Tick::exec(const F64& _delta) {
 	exec_out->exec();
 }
 
-Variable NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
+const Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) const {
 	if (port == o_delta.get())
-		return Variable(delta);
+		return make_shared<Variable>(delta);
 	if (port == o_calls.get())
-		return Variable(static_cast<I64>(SESSION->hook.current_frame));
+		return make_shared<Variable>(static_cast<I64>(SESSION->hook.current_frame));
 	if (port == o_runtime.get())
-		return Variable(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
-	return Variable();
+		return make_shared<Variable>(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
+	return nullptr;
 }
 
 void NODES::SINGLETON::Euler_Tick::loadDetail() {

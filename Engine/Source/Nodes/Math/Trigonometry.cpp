@@ -17,24 +17,24 @@ NODES::MATH::Trigonometry::Trigonometry() :
 	proxy_enums->setPos(20, 30);
 }
 
-Variable NODES::MATH::Trigonometry::getData(const Port* port) const {
-	const F64 x = in->GET_DATA(F64);
+const Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) const {
+	const F64 x = *in->GET_DATA(F64);
 	switch (enums->currentIndex()) {
-		case  0: return sin(x);
-		case  1: return cos(x);
-		case  2: return tan(x);
-		case  3: return asin(x);
-		case  4: return acos(x);
-		case  5: return atan(x);
-		case  6: return sinh(x);
-		case  7: return cosh(x);
-		case  8: return tanh(x);
-		case  9: return 1.0 / tan(x);
-		case 10: return 1.0 / cos(x);
-		case 11: return 1.0 / sin(x);
-		case 12: return cosh(x) / sinh(x);
-		case 13: return 1.0 / cosh(x);
-		case 14: return 1.0 / sinh(x);
+		case  0: return make_shared<Variable>(sin(x));
+		case  1: return make_shared<Variable>(cos(x));
+		case  2: return make_shared<Variable>(tan(x));
+		case  3: return make_shared<Variable>(asin(x));
+		case  4: return make_shared<Variable>(acos(x));
+		case  5: return make_shared<Variable>(atan(x));
+		case  6: return make_shared<Variable>(sinh(x));
+		case  7: return make_shared<Variable>(cosh(x));
+		case  8: return make_shared<Variable>(tanh(x));
+		case  9: return make_shared<Variable>(1.0 / tan(x));
+		case 10: return make_shared<Variable>(1.0 / cos(x));
+		case 11: return make_shared<Variable>(1.0 / sin(x));
+		case 12: return make_shared<Variable>(cosh(x) / sinh(x));
+		case 13: return make_shared<Variable>(1.0 / cosh(x));
+		case 14: return make_shared<Variable>(1.0 / sinh(x));
 	}
-	return Variable(x);
+	return in->getData();
 }

@@ -40,13 +40,13 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 
 void NODES::VARIABLE::Set::exec(const Port* port) {
 	if (in->connected()) {
-		FILE.variables[var] = in->getData();
+		FILE.variables[var] = *in->getData();
 	}
 	exec_out->exec();
 }
 
-Variable NODES::VARIABLE::Set::getData(const Port* port) const {
-	return FILE.variables[var];
+const Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) const {
+	return make_shared<Variable>(FILE.variables[var]);
 }
 
 NODES::VARIABLE::Set::Set_Variable::Set_Variable(Set* node, const QString& from, const QString& to):

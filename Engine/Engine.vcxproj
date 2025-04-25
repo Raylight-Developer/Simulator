@@ -11,6 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Container\List\Size.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Access.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Insert.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Remove.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Clear.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Push.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Camera_2D.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Camera_3D.cpp" />
     <ClCompile Include="Source\Nodes\Hook\Display.cpp" />
@@ -53,6 +59,8 @@
     <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Nodes\Container\List\Access.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Clear.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Camera_2D.hpp" />
     <ClInclude Include="Include\Nodes\Singleton\Camera_3D.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Display.hpp" />
@@ -102,6 +110,10 @@
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Push.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Insert.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Remove.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Size.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Style.css" />

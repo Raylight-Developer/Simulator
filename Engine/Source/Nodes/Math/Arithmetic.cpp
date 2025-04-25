@@ -18,12 +18,12 @@ NODES::MATH::Arithmetic::Arithmetic() :
 	proxy_enums->setPos(30, 50);
 }
 
-Variable NODES::MATH::Arithmetic::getData(const Port* port) const {
+const Ptr_S<Variable> NODES::MATH::Arithmetic::getData(const Port* port) const {
 	switch (enums->currentIndex()) {
-		case 0: return Variable(i_a->GET_DATA(F64) + i_b->GET_DATA(F64));
-		case 1: return Variable(i_a->GET_DATA(F64) - i_b->GET_DATA(F64));
-		case 2: return Variable(i_a->GET_DATA(F64) * i_b->GET_DATA(F64));
-		case 3: return Variable(i_a->GET_DATA(F64) / i_b->GET_DATA(F64));
+		case 0: return make_shared<Variable>(*i_a->GET_DATA(F64) + *i_b->GET_DATA(F64));
+		case 1: return make_shared<Variable>(*i_a->GET_DATA(F64) - *i_b->GET_DATA(F64));
+		case 2: return make_shared<Variable>(*i_a->GET_DATA(F64) * *i_b->GET_DATA(F64));
+		case 3: return make_shared<Variable>(*i_a->GET_DATA(F64) / *i_b->GET_DATA(F64));
 	}
-	return Variable(0.0);
+	return nullptr;
 }

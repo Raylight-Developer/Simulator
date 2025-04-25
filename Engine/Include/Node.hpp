@@ -45,7 +45,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	~Node();
 
 	virtual void exec(const NODE::Port* port) {}
-	virtual Variable getData(const NODE::Port* port) const { return Variable(); };
+	virtual const Ptr_S<Variable> getData(const NODE::Port* port) const { return nullptr; };
 
 	void save(CORE::Lace& lace, const U64& index) const;
 	virtual void saveDetail(CORE::Lace& lace) const;
@@ -102,7 +102,7 @@ namespace NODE {
 		struct Data_I : Port {
 			const QString label;
 
-			Variable variable;
+			Ptr_S<Variable> variable;
 			QColor color;
 
 			Ptr_U<Connection> connection;
@@ -118,7 +118,7 @@ namespace NODE {
 
 			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
 
-			Variable getData() const;
+			const Ptr_S<Variable> getData() const;
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -142,7 +142,7 @@ namespace NODE {
 
 			void setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container);
 
-			Variable getData() const;
+			const Ptr_S<Variable> getData() const;
 
 			int type() const override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -194,16 +194,19 @@ namespace NODE {
 #define PORT_EXEC_I Ptr_U<NODE::PORT::Exec_I>
 
 #define PROXY(widget) auto* proxy_##widget = new GUI::Graphics_Widget(widget, this)
-#define GET_DATA(type) getData().get<type>()
+#define GET_DATA(type) getData()->get<type>()
 
 namespace NODES {
 	enum struct Node_Type {
 		NONE                 = QGraphicsItem::UserType + 1,
-		SCRIPT               = QGraphicsItem::UserType + 7,
-		VARIABLE_CONSTANT    = QGraphicsItem::UserType + 8,
-		VARIABLE_GET         = QGraphicsItem::UserType + 9,
-		VARIABLE_SET         = QGraphicsItem::UserType + 10,
-		SINGLETON_EULER_TICK = QGraphicsItem::UserType + 11,
-		SINGLETON_RESET      = QGraphicsItem::UserType + 12
+		SINGLETON_EULER_TICK = QGraphicsItem::UserType + 7,
+		SINGLETON_BACKGROUND = QGraphicsItem::UserType + 8,
+		SINGLETON_2D_CAMERA  = QGraphicsItem::UserType + 9,
+		SINGLETON_3D_CAMERA  = QGraphicsItem::UserType + 10,
+		SINGLETON_RESET      = QGraphicsItem::UserType + 11,
+		VARIABLE_CONSTANT    = QGraphicsItem::UserType + 12,
+		VARIABLE_GET         = QGraphicsItem::UserType + 13,
+		VARIABLE_SET         = QGraphicsItem::UserType + 14,
+		SCRIPT               = QGraphicsItem::UserType + 15
 	};
 }

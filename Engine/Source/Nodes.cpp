@@ -28,8 +28,8 @@ void NODES::CAST::MAKE::Vec2::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
-	return Variable(F64_V2(i_x->GET_DATA(F64), i_y->GET_DATA(F64)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Vec2::getData(const Port* port) const {
+	return make_shared<Variable>(F64_V2(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Vec3::Vec3() :
@@ -56,8 +56,8 @@ void NODES::CAST::MAKE::Vec3::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
-	return Variable(F64_V3(i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Vec3::getData(const Port* port) const {
+	return make_shared<Variable>(F64_V3(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Vec4::Vec4() :
@@ -86,8 +86,8 @@ void NODES::CAST::MAKE::Vec4::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
-	return Variable(F64_V4(i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64), i_w->GET_DATA(F64)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Vec4::getData(const Port* port) const {
+	return make_shared<Variable>(F64_V4(*i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64), *i_w->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Quat::Quat() :
@@ -116,8 +116,8 @@ void NODES::CAST::MAKE::Quat::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Quat::getData(const Port* port) const {
-	return Variable(F64_Quat(i_w->GET_DATA(F64), i_x->GET_DATA(F64), i_y->GET_DATA(F64), i_z->GET_DATA(F64)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Quat::getData(const Port* port) const {
+	return make_shared<Variable>(F64_Quat(*i_w->GET_DATA(F64), *i_x->GET_DATA(F64), *i_y->GET_DATA(F64), *i_z->GET_DATA(F64)));
 }
 
 NODES::CAST::MAKE::Mat2::Mat2() :
@@ -142,8 +142,8 @@ void NODES::CAST::MAKE::Mat2::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
-	return Variable(F64_M2(i_a->GET_DATA(F64_V2), i_b->GET_DATA(F64_V2)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Mat2::getData(const Port* port) const {
+	return make_shared<Variable>(F64_M2(*i_a->GET_DATA(F64_V2), *i_b->GET_DATA(F64_V2)));
 }
 
 NODES::CAST::MAKE::Mat3::Mat3() :
@@ -170,8 +170,8 @@ void NODES::CAST::MAKE::Mat3::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
-	return Variable(F64_M3(i_a->GET_DATA(F64_V3), i_b->GET_DATA(F64_V3), i_c->GET_DATA(F64_V3)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Mat3::getData(const Port* port) const {
+	return make_shared<Variable>(F64_M3(*i_a->GET_DATA(F64_V3), *i_b->GET_DATA(F64_V3), *i_c->GET_DATA(F64_V3)));
 }
 
 NODES::CAST::MAKE::Mat4::Mat4() :
@@ -200,8 +200,8 @@ void NODES::CAST::MAKE::Mat4::paint(QPainter* painter, const QStyleOptionGraphic
 	painter->drawRoundedRect(rect, 5, 5);
 }
 
-Variable NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
-	return Variable(F64_M4(i_a->GET_DATA(F64_V4), i_b->GET_DATA(F64_V4), i_c->GET_DATA(F64_V4), i_d->GET_DATA(F64_V4)));
+const Ptr_S<Variable> NODES::CAST::MAKE::Mat4::getData(const Port* port) const {
+	return make_shared<Variable>(F64_M4(*i_a->GET_DATA(F64_V4), *i_b->GET_DATA(F64_V4), *i_c->GET_DATA(F64_V4), *i_d->GET_DATA(F64_V4)));
 }
 
 NODES::SINGLETON::Camera_2D::Camera_2D() :
@@ -219,8 +219,8 @@ NODES::SINGLETON::Camera_2D::Camera_2D() :
 }
 
 void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = center->GET_DATA(F64_V2);
-	SESSION->viewport->zoom_2d = zoom->GET_DATA(F64);
+	SESSION->viewport->center_2d = *center->GET_DATA(F64_V2);
+	SESSION->viewport->zoom_2d = *zoom->GET_DATA(F64);
 	exec_out->exec();
 }
 

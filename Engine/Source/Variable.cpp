@@ -68,62 +68,62 @@ Variable::Variable(const F64_M4& data) :
 {}
 
 Variable::Variable(const vector<F64>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::DOUBLE),
 	data(data)
 {}
 Variable::Variable(const vector<I64>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::INT),
 	data(data)
 {}
 Variable::Variable(const vector<bool>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::BOOL),
 	data(data)
 {}
 Variable::Variable(const vector<QString>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::STRING),
 	data(data)
 {}
 Variable::Variable(const vector<F64_V2>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::VEC2),
 	data(data)
 {}
 Variable::Variable(const vector<F64_V3>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::VEC3),
 	data(data)
 {}
 Variable::Variable(const vector<F64_V4>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::VEC4),
 	data(data)
 {}
 Variable::Variable(const vector<Color>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::COLOR),
 	data(data)
 {}
 Variable::Variable(const vector<F64_Quat>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::QUAT),
 	data(data)
 {}
 Variable::Variable(const vector<F64_M2>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::MAT2),
 	data(data)
 {}
 Variable::Variable(const vector<F64_M3>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::MAT3),
 	data(data)
 {}
 Variable::Variable(const vector<F64_M4>& data) :
-	container(VAR::Container::VECTOR),
+	container(VAR::Container::LIST),
 	type(VAR::Type::MAT4),
 	data(data)
 {}

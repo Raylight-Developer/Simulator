@@ -116,7 +116,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_O) {
 						auto source_port = static_cast<NODE::PORT::Data_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							if (source_port->var_type == drop_port->variable.type and source_port->var_container == drop_port->variable.container) {
+							if (source_port->var_type == drop_port->variable->type and source_port->var_container == drop_port->variable->container) {
 								if (drop_port->connected()) {
 									h_disconnectPort(drop_port);
 									h_connectPorts(source_port, drop_port);
@@ -135,7 +135,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_I) {
 						auto source_port = static_cast<NODE::PORT::Data_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							if (drop_port->var_type == source_port->variable.type and drop_port->var_container == source_port->variable.container) {
+							if (drop_port->var_type == source_port->variable->type and drop_port->var_container == source_port->variable->container) {
 								if (source_port->connected()) {
 									h_disconnectPort(source_port);
 									h_connectPorts(drop_port, source_port);
@@ -202,7 +202,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			if (IS_PORT(type)) {
 				if (type == Graphics_Item_Type::E_DATA_I) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
-					if (port_r->variable.type != VAR_TYPE::BLOCKED) {
+					if (port_r->variable->type != VAR_TYPE::BLOCKED) {
 						if (!port_r->connected()) {
 							creating_connection = make_unique<NODE::Connection>(port_r);
 						}
@@ -333,7 +333,7 @@ void Node_Editor::keyPressEvent(QKeyEvent* event) {
 			U64 count = 0;
 			for (Node* node : selection) {
 				if (
-					not dynamic_cast<NODES::SINGLETON::Euler_Tick*>(node)
+					node->node_type != NODES::Node_Type::SINGLETON_EULER_TICK
 				) {
 					h_deleteNode(node->shared_from_this());
 					count++;
@@ -472,34 +472,34 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type.startsWith("SINGLETON")) {
 				#define NODE_EXISTS(type) false;\
 				for (Ptr_S<Node> node : FILE.node_singletons) {\
-					if (dynamic_pointer_cast<type>(node)) {\
+					if (node->node_type == type) {\
 						exists = true;\
 						break;\
 					}\
 				}
 				if (type == "SINGLETON BACKGROUND") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Background)
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_BACKGROUND)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Background>();
 						FILE.node_singletons.push(node);
 					}
 				}
 				else if (type == "SINGLETON 2D CAMERA") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_2D)
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_2D_CAMERA)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Camera_2D>();
 						FILE.node_singletons.push(node);
 					}
 				}
 				else if (type == "SINGLETON 3D CAMERA") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Camera_3D)
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_3D_CAMERA)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Camera_3D>();
 						FILE.node_singletons.push(node);
 					}
 				}
 				else if (type == "SINGLETON EULER TICK") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Euler_Tick)
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_EULER_TICK)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Euler_Tick>();
 						FILE.node_singletons.push(node);
@@ -507,7 +507,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 					}
 				}
 				else if (type == "SINGLETON RESET") {
-					bool exists = NODE_EXISTS(NODES::SINGLETON::Reset)
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_RESET)
 					if (!exists) {
 						node = make_shared<NODES::SINGLETON::Reset>();
 						FILE.node_singletons.push(node);
@@ -517,12 +517,14 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
-				if (auto existing = dynamic_cast<NODES::VARIABLE::Get*>(under_mouse)) {
+				if (under_mouse->type() == static_cast<int>(NODES::Node_Type::VARIABLE_GET)) {
+					auto existing = static_cast<NODES::VARIABLE::Get*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->setVar(name);
 				}
-				else if (auto existing = dynamic_cast<NODES::VARIABLE::Set*>(under_mouse)) {
+				else if (under_mouse->type() == static_cast<int>(NODES::Node_Type::VARIABLE_SET)) {
+					auto existing = static_cast<NODES::VARIABLE::Set*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
@@ -562,11 +564,17 @@ void Node_Editor::moveNode(Ptr_S<Node> node, const F64_V2& new_pos) {
 }
 
 void Node_Editor::deleteNode(Ptr_S<Node> node) {
-	if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Get>(node)) {
-		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
-	}
-	else if (auto node_def = dynamic_pointer_cast<NODES::VARIABLE::Set>(node)) {
-		FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
+	switch (node->node_type) {
+		case NODES::Node_Type::VARIABLE_GET: {
+			auto node_def = static_pointer_cast<NODES::VARIABLE::Get>(node);
+			FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
+			break;
+		}
+		case NODES::Node_Type::VARIABLE_SET: {
+			auto node_def = static_pointer_cast<NODES::VARIABLE::Set>(node);
+			FILE.variable_refs[node_def->var].remove(node_def->shared_from_this());
+			break;
+		}
 	}
 	FILE.nodes.remove(node->shared_from_this());
 	editor_ptr->scene->removeItem(node.get());

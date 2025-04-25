@@ -12,8 +12,8 @@ NODES::BOOLEAN::Select::Select() :
 	out        = DATA_O("", VAR_TYPE::NONE);
 }
 
-Variable NODES::BOOLEAN::Select::getData(const Port* port) const {
-	if (condition->GET_DATA(bool)) {
+const Ptr_S<Variable> NODES::BOOLEAN::Select::getData(const Port* port) const {
+	if (*condition->GET_DATA(bool)) {
 		return i_true->getData();
 	}
 	return i_false->getData();

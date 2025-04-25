@@ -23,6 +23,6 @@ NODES::HOOK::INPUT::Mouse::Mouse() :
 	});
 }
 
-Variable NODES::HOOK::INPUT::Mouse::getData(const Port* port) const {
-	return Variable(SESSION->hook.input_down[button]);
+const Ptr_S<Variable> NODES::HOOK::INPUT::Mouse::getData(const Port* port) const {
+	return make_shared<Variable>(SESSION->hook.input_down[button]);
 }

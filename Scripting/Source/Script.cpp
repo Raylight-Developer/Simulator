@@ -16,6 +16,6 @@ void Script::exec(const Exec_I* port) {
 	execAllDownstream();
 }
 
-Variable Script::getData(const Data_O* port) const {
-	return Variable();
+const Ptr_S<Variable> Script::getData(const Data_O* port) const {
+	return nullptr;
 }

@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::SINGLETON::Background::Background() :
-	Node(Node_Type::NONE, "Background")
+	Node(Node_Type::SINGLETON_BACKGROUND, "Background")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);
@@ -15,7 +15,7 @@ NODES::SINGLETON::Background::Background() :
 }
 
 void NODES::SINGLETON::Background::exec(const Port* port) {
-	const F32_V4 u_color = to_F32(color_in->GET_DATA(Color).rgba());
+	const F32_V4 u_color = to_F32(color_in->GET_DATA(Color)->rgba());
 	GL->glClearColor(u_color.r, u_color.g, u_color.b, u_color.a);
 	GL->glClear(GL_COLOR_BUFFER_BIT);
 	exec_out->exec();

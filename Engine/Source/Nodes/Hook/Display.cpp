@@ -11,6 +11,6 @@ NODES::HOOK::Display::Display() :
 	resolution = DATA_O("Pixels", VAR_TYPE::VEC2);
 }
 
-Variable NODES::HOOK::Display::getData(const Port* port) const {
-	return Variable(SESSION->hook.viewport_resolution);
+const Ptr_S<Variable> NODES::HOOK::Display::getData(const Port* port) const {
+	return make_shared<Variable>(SESSION->hook.viewport_resolution);
 }

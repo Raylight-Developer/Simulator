@@ -16,7 +16,7 @@ namespace NODES {
 			Get();
 			void setVar(const QString name);
 
-			Variable getData(const Port* port) const override;
+			const Ptr_S<Variable> getData(const Port* port) const override;
 
 			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
 				//TODO

@@ -12,7 +12,7 @@ NODES::EXEC::If::If() :
 }
 
 void NODES::EXEC::If::exec(const Port* port) {
-	if (condition->GET_DATA(bool)) {
+	if (*condition->GET_DATA(bool)) {
 		out ->exec();
 	}
 }

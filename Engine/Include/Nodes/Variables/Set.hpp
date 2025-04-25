@@ -22,7 +22,7 @@ namespace NODES {
 			void setVar(const QString name);
 
 			void exec(const Port* port) override;
-			Variable getData(const Port* port) const override;
+			const Ptr_S<Variable> getData(const Port* port) const override;
 
 			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
 				Set* node;

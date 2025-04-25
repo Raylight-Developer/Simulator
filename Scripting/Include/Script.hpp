@@ -26,5 +26,5 @@ struct Script : SCRIPT {
 	/* OPTIONAL
 	Handles data request by the connection of the const Data_O* port.
 	*/
-	Variable getData(const Data_O* port) const override;
+	const Ptr_S<Variable> getData(const Data_O* port) const override;
 };

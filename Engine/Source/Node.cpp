@@ -99,7 +99,8 @@ NODE::Connection::Connection(Port* port_l, Port* port_r) :
 	pos_l = mapFromItem(port_l, port_l->boundingRect().center());
 	pos_r = mapFromItem(port_r, port_r->boundingRect().center());
 
-	if (auto t_port_l = dynamic_cast<PORT::Data_O*>(port_l)) {
+	if (port_l->type() == Graphics_Item_Type::E_DATA_O) {
+		auto t_port_l = static_cast<PORT::Data_O*>(port_l);
 		color = VAR::toColor(t_port_l->var_type);
 	}
 }
@@ -182,7 +183,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
 	color(VAR::toColor(VAR_TYPE::NONE)),
-	variable(Variable()),
+	variable(make_shared<Variable>()),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -193,7 +194,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& v
 	Port(parent),
 	label(label),
 	color(VAR::toColor(var_type)),
-	variable(Variable(var_type, var_container)),
+	variable(make_shared<Variable>(var_type, var_container)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -204,7 +205,7 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& d
 	Port(parent),
 	label(label),
 	color(VAR::toColor(default_variable.type)),
-	variable(default_variable),
+	variable(make_shared<Variable>(default_variable)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -241,12 +242,12 @@ void NODE::PORT::Data_I::disconnect() {
 }
 
 void NODE::PORT::Data_I::setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) {
-	variable = Variable(var_type, var_container);
+	variable = make_shared<Variable>(var_type, var_container);
 	color = VAR::toColor(var_type);
 	update();
 }
 
-Variable NODE::PORT::Data_I::getData() const {
+const Ptr_S<Variable> NODE::PORT::Data_I::getData() const {
 	if (connection) {
 		return connection->getDataO()->getData();
 	}
@@ -261,15 +262,15 @@ void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 	painter->setBrush(color);
 	painter->setPen(Qt::white);
 
-	switch (variable.container) {
+	switch (variable->container) {
 		case VAR_CONTAINER::NONE  : painter->drawEllipse(rect); break;
-		case VAR_CONTAINER::VECTOR: painter->drawRect(rect); break;
+		case VAR_CONTAINER::LIST: painter->drawRect(rect); break;
 	}
 
 	painter->drawText(rect.bottomRight() + QPointF(5, 0), label);
 
 	painter->setPen(QPen(Qt::white, 0.5));
-	switch (variable.type) {
+	switch (variable->type) {
 		case VAR_TYPE::VEC2:
 		case VAR_TYPE::MAT2: {
 			painter->drawLine(rect.center() - QPointF(3.5, 3.5), rect.center() + QPointF(3.5, 3.5));
@@ -345,7 +346,7 @@ void NODE::PORT::Data_O::setType(const VAR_TYPE& type, const VAR_CONTAINER& cont
 	update();
 }
 
-Variable NODE::PORT::Data_O::getData() const {
+const Ptr_S<Variable> NODE::PORT::Data_O::getData() const {
 	return node->getData(this);
 }
 
@@ -359,7 +360,7 @@ void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 
 	switch (var_container) {
 		case VAR_CONTAINER::NONE  : painter->drawEllipse(rect); break;
-		case VAR_CONTAINER::VECTOR: painter->drawRect(rect); break;
+		case VAR_CONTAINER::LIST: painter->drawRect(rect); break;
 	}
 
 	const qreal width = - QFontMetrics(QApplication::font()).horizontalAdvance(label) - 5;

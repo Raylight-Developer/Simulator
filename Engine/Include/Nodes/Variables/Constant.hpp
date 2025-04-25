@@ -22,7 +22,7 @@ namespace NODES {
 
 			Constant();
 
-			Variable getData(const Port* port) const override;
+			const Ptr_S<Variable> getData(const Port* port) const override;
 
 			struct Set_Type : Self<Set_Type>, CORE::CMD {
 				//TODO

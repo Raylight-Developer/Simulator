@@ -21,10 +21,10 @@ NODES::RENDERING::DIM_2D::Line::Line() :
 
 void NODES::RENDERING::DIM_2D::Line::render() {
 	// Update vertices
-	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
-	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
-	const auto radius  = to_F32(width ->GET_DATA(F64));
-	const auto u_color = color->GET_DATA(Color);
+	const auto v1      = to_F32(*vert_a->GET_DATA(F64_V2));
+	const auto v2      = to_F32(*vert_b->GET_DATA(F64_V2));
+	const auto radius  = to_F32(*width ->GET_DATA(F64));
+	const auto u_color = *color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Line(v1, v2, radius, u_color);
 }

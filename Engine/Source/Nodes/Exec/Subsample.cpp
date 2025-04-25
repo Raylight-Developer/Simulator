@@ -22,7 +22,7 @@ NODES::EXEC::Subsample::Subsample() :
 }
 
 void NODES::EXEC::Subsample::exec(const Port* port) {
-	const I64 count = count_in->GET_DATA(I64);
+	const I64 count = *count_in->GET_DATA(I64);
 	for (I64 i = 0; i < count; i++) {
 		calls++;
 		exec_out->exec();
@@ -30,12 +30,12 @@ void NODES::EXEC::Subsample::exec(const Port* port) {
 	samples_out->exec();
 }
 
-Variable NODES::EXEC::Subsample::getData(const Port* port) const {
+const Ptr_S<Variable> NODES::EXEC::Subsample::getData(const Port* port) const {
 	if (port == o_delta.get()) {
-		return Variable(delta_in->GET_DATA(F64) / count_in->GET_DATA(I64));
+		return make_shared<Variable>(*delta_in->GET_DATA(F64) / *count_in->GET_DATA(I64));
 	}
 	if (port == o_calls.get()) {
-		return Variable(calls);
+		return make_shared<Variable>(calls);
 	}
-	return Variable(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
+	return make_shared<Variable>(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
 }

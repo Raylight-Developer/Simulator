@@ -17,7 +17,7 @@ namespace NODES {
 
 			Compare();
 
-			Variable getData(const Port* port) const override;
+			const Ptr_S<Variable> getData(const Port* port) const override;
 
 			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
 				//TODO

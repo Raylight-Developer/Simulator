@@ -16,7 +16,7 @@ namespace NODES {
 
 				GUI::Options* buttons;
 
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 		}
 	}

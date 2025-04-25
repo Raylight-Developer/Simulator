@@ -16,7 +16,7 @@ namespace VAR {
 		//TRANSFORM_2D, TRANSFORM_3D
 	};
 	enum struct Container {
-		NONE, VECTOR
+		NONE, LIST
 	};
 	QColor toColor(const VAR::Type& type);
 }
@@ -60,7 +60,7 @@ struct Variable {
 	Variable(const VAR::Type& type, const VAR::Container& container = VAR::Container::NONE);
 
 	template <typename T>
-	inline T get() const {
-		return any_cast<T>(data);
+	inline const T* get() const {
+		return any_cast<T>(&data);
 	}
 };

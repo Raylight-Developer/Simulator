@@ -12,9 +12,9 @@ NODES::HOOK::INPUT::Mouse_Pos::Mouse_Pos() :
 	is_on_screen = DATA_O("Valid", VAR_TYPE::BOOL);
 }
 
-Variable NODES::HOOK::INPUT::Mouse_Pos::getData(const Port* port) const {
+const Ptr_S<Variable> NODES::HOOK::INPUT::Mouse_Pos::getData(const Port* port) const {
 	if (port == screen_pos.get()) {
-		return Variable(SESSION->hook.mouse_pos);
+		return make_shared<Variable>(SESSION->hook.mouse_pos);
 	}
-	return Variable(SESSION->hook.mouse_on_screen);
+	return make_shared<Variable>(SESSION->hook.mouse_on_screen);
 }

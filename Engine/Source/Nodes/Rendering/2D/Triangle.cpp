@@ -21,10 +21,10 @@ NODES::RENDERING::DIM_2D::Triangle::Triangle() :
 
 void NODES::RENDERING::DIM_2D::Triangle::render() {
 	// Update vertices
-	const auto v1      = to_F32(vert_a->GET_DATA(F64_V2));
-	const auto v2      = to_F32(vert_b->GET_DATA(F64_V2));
-	const auto v3      = to_F32(vert_c->GET_DATA(F64_V2));
-	const auto u_color = color ->GET_DATA(Color);
+	const auto v1      = to_F32(*vert_a->GET_DATA(F64_V2));
+	const auto v2      = to_F32(*vert_b->GET_DATA(F64_V2));
+	const auto v3      = to_F32(*vert_c->GET_DATA(F64_V2));
+	const auto u_color = *color ->GET_DATA(Color);
 
 	RENDER::Dim_2D::Triangle(v1, v2, v3, u_color);
 }

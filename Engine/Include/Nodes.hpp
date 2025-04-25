@@ -141,7 +141,7 @@ using namespace NODE;
 namespace NODES {
 	struct Temp : Node {
 		void exec(const Port* port) override;
-		Variable getData(const Port* port) const override;
+		const Ptr_S<Variable> getData(const Port* port) const override;
 	};
 }
 */
@@ -157,7 +157,7 @@ namespace NODES {
 				Vec2();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Vec3 : Node {
 				PORT_DATA_I i_x;
@@ -168,7 +168,7 @@ namespace NODES {
 				Vec3();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Vec4 : Node {
 				PORT_DATA_I i_x;
@@ -180,7 +180,7 @@ namespace NODES {
 				Vec4();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Quat : Node {
 				PORT_DATA_I i_w;
@@ -192,7 +192,7 @@ namespace NODES {
 				Quat();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Mat2 : Node {
 				PORT_DATA_I i_a;
@@ -202,7 +202,7 @@ namespace NODES {
 				Mat2();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Mat3 : Node {
 				PORT_DATA_I i_a;
@@ -213,7 +213,7 @@ namespace NODES {
 				Mat3();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 			struct Mat4 : Node {
 				PORT_DATA_I i_a;
@@ -225,7 +225,7 @@ namespace NODES {
 				Mat4();
 
 				void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-				Variable getData(const Port* port) const override;
+				const Ptr_S<Variable> getData(const Port* port) const override;
 			};
 		}
 	}

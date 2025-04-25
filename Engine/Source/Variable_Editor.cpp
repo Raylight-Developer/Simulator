@@ -49,10 +49,10 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 		}
 
 		auto var_container_enums = new GUI::Options(this);
-		var_container_enums->addItems({ "Single", "Vector"});
+		var_container_enums->addItems({ "Single", "List"});
 		switch (FILE.variables[item->text()].container) {
 			case VAR_CONTAINER::NONE  : var_container_enums->setCurrentIndex(0); break;
-			case VAR_CONTAINER::VECTOR: var_container_enums->setCurrentIndex(1); break;
+			case VAR_CONTAINER::LIST: var_container_enums->setCurrentIndex(1); break;
 		}
 
 		details->addWidget(new GUI::Linear_Contents(this, { new GUI::Label(this, "Type:"), var_type_enums }));
@@ -63,8 +63,8 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 			const QString name = item->text();
 			const auto type = FILE.variables[name].type;
 			switch (index) {
-				case 0: var = Variable(type, VAR_CONTAINER::NONE  ); break;
-				case 1: var = Variable(type, VAR_CONTAINER::VECTOR); break;
+				case 0: var = Variable(type, VAR_CONTAINER::NONE); break;
+				case 1: var = Variable(type, VAR_CONTAINER::LIST); break;
 			}
 			updateVar(name, var);
 		});
