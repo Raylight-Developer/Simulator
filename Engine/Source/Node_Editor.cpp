@@ -539,7 +539,7 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 					auto existing = static_cast<NODES::VARIABLE::Get*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
-					existing->setVar(name);
+					existing->h_setVar(name);
 				}
 				else if (under_mouse->type() == static_cast<int>(NODES::Node_Type::VARIABLE_SET)) {
 					auto existing = static_cast<NODES::VARIABLE::Set*>(under_mouse);

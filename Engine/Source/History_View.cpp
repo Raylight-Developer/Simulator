@@ -15,6 +15,7 @@ History_View::History_View(QWidget* parent) :
 	addWidget(splitter);
 
 	SESSION->history.group_undo_stack.onItemAddedCallback(this, [this](const U32& item) {
+		auto hitory = SESSION->history;
 		undo->clear();
 		U64 counter = 0;
 		for (U64 i = 0; i < SESSION->history.group_undo_stack.size(); i++) {

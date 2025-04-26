@@ -21,7 +21,7 @@ NODES::VARIABLE::Set::Set() :
 }
 
 void NODES::VARIABLE::Set::h_setVar(const QString name) {
-	H_PUSH(make_shared<Set_Variable>(this, this->var, name));
+	H_PUSH(make_shared<Set_Variable>(static_pointer_cast<Set>(shared_from_this()), this->var, name));
 }
 
 void NODES::VARIABLE::Set::setVar(const QString name) {
@@ -49,7 +49,7 @@ Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) {
 	return make_shared<Variable>(FILE.variables[var]);
 }
 
-NODES::VARIABLE::Set::Set_Variable::Set_Variable(Set* node, const QString& from, const QString& to):
+NODES::VARIABLE::Set::Set_Variable::Set_Variable(Ptr_S<Set> node, const QString& from, const QString& to) :
 	CORE::CMD("Set Variable"),
 	node(node),
 	from(from),

@@ -6,8 +6,8 @@ Window::Window() {
 	setMouseTracking(true);
 
 	session = new Session();
-	Session::initialize(session);
 	session->window = this;
+	Session::initialize(session);
 
 	shelf = new Node_Shelf(this);
 	timeline = new Timeline(this);

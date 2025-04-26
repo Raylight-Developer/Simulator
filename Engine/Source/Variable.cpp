@@ -137,7 +137,7 @@ Variable::Variable(const VAR::Type& type, const VAR::Container& container) :
 		case VAR::Type::DOUBLE: data = 0.0                 ; break;
 		case VAR::Type::INT   : data = 0LL                 ; break;
 		case VAR::Type::BOOL  : data = false               ; break;
-		case VAR::Type::STRING: data = ""                  ; break;
+		case VAR::Type::STRING: data = QString()           ; break;
 		case VAR::Type::VEC2  : data = F64_V2(0)           ; break;
 		case VAR::Type::VEC3  : data = F64_V3(0)           ; break;
 		case VAR::Type::VEC4  : data = F64_V4(0)           ; break;

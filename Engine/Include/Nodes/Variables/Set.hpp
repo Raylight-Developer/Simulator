@@ -25,10 +25,10 @@ namespace NODES {
 			Ptr_S<Variable> getData(const Port* port) override;
 
 			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
-				Set* node;
+				Ptr_S<Set> node;
 				QString from, to;
 
-				Set_Variable(Set* node, const QString& from, const QString& to);
+				Set_Variable(Ptr_S<Set> node, const QString& from, const QString& to);
 
 				void execute() const final override;
 				void undo() final override;
