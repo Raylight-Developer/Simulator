@@ -20,7 +20,7 @@ struct Node_Editor : GUI::Graphics_View {
 	Ptr_U<NODE::Connection> lifting_connection;
 	Ptr_U<NODE::Connection> creating_connection;
 
-	vector<Node*> selection;
+	CORE::Stack<Node*> selection;
 
 	Node_Editor(QWidget* parent = nullptr);
 	~Node_Editor();

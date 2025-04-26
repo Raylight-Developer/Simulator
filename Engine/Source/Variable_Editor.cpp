@@ -23,7 +23,7 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 	connect(add_var, &GUI::Button::pressed, [this, list]() {
 		const QString var_name = QInputDialog::getText(nullptr, "Add Variable", "Enter Variable ID:");
 		if (!var_name.isEmpty() and !FILE.variables.contains(var_name)) {
-			FILE.variables[var_name] = Variable(VAR_TYPE::INT);
+			FILE.variables[var_name] = Variable(VAR_TYPE::NONE);
 			list->addItem(var_name);
 		}
 	});

@@ -101,7 +101,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					Node* node = static_cast<Node*>(item);
 					if (!node->isSelected()) {
 						node->setSelected(true);
-						selection.push_back(node);
+						selection.push(node);
 					}
 				}
 			}
@@ -199,6 +199,7 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 		if (auto item = scene->itemAt(mapToScene(event->pos()), transform())) {
 			const int type = item->type();
 			// TODO escape key cancel creating conn or lifting conn
+			// TODO better shift/multi behavior and grow current selection further
 			if (IS_PORT(type)) {
 				if (type == Graphics_Item_Type::E_DATA_I) {
 					auto port_r = static_cast<NODE::PORT::Data_I*>(item);
@@ -242,10 +243,11 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 				if (event->modifiers() & Qt::KeyboardModifier::ShiftModifier) {
 					if (!node->isSelected()) {
 						node->setSelected(true);
-						selection.push_back(node);
+						selection.push(node);
 					}
 					else {
 						node->setSelected(false);
+						selection.remove(node);
 					}
 				}
 				else {
@@ -254,24 +256,24 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 							item->setSelected(false);
 						}
 						selection.clear();
+
+						selection.push(node);
 						node->setSelected(true);
-						selection.push_back(node);
 					}
 				}
-			}
-			//else if (QGraphicsProxyWidget* proxyWidget = qgraphicsitem_cast<QGraphicsProxyWidget*>(item)) {
-			//	QApplication::sendEvent(proxyWidget->widget(), event);
-			//}
-			else {
-				for (auto item : selection) {
-					item->setSelected(false);
+				node->update();
+
+				l_mouse_down = mapToScene(event->pos());
+				node_move_start_pos.clear();
+				for (Node* node : selection) {
+					node_move_start_pos[node] = node->pos();
 				}
-				selection.clear();
 			}
 		}
 		else {
 			for (Node* node : selection) {
 				node->setSelected(false);
+				node->update();
 			}
 			selection.clear();
 
@@ -279,11 +281,6 @@ void Node_Editor::mousePressEvent(QMouseEvent* event) {
 			selection_start = mapToScene(event->pos());
 			selection_rect->setRect(QRectF(selection_start, QSizeF(0,0)));
 			selection_rect->show();
-		}
-		l_mouse_down = mapToScene(event->pos());
-		node_move_start_pos.clear();
-		for (Node* node : selection) {
-			node_move_start_pos[node] = node->pos();
 		}
 	}
 	GUI::Graphics_View::mousePressEvent(event);
@@ -535,13 +532,13 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
-				if (under_mouse->type() == static_cast<int>(NODES::Node_Type::VARIABLE_GET)) {
+				if (under_mouse and under_mouse->type() == Graphics_Item_Type::E_NODE and static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_GET) {
 					auto existing = static_cast<NODES::VARIABLE::Get*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
 				}
-				else if (under_mouse->type() == static_cast<int>(NODES::Node_Type::VARIABLE_SET)) {
+				else if (under_mouse and under_mouse->type() == Graphics_Item_Type::E_NODE and static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_SET) {
 					auto existing = static_cast<NODES::VARIABLE::Set*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
@@ -773,11 +770,11 @@ void Node_Editor::Connect::execute() const {
 }
 
 void Node_Editor::Connect::undo() {
-	if (port_r->type() == Graphics_Item_Type::E_DATA_I) {
+	if (port_r->connected() and port_r->type() == Graphics_Item_Type::E_DATA_I) {
 		auto d_port_r = static_cast<NODE::PORT::Data_I*>(port_r);
 		d_port_r->disconnect();
 	}
-	else {
+	else if (port_l->connected()) {
 		auto d_port_l = static_cast<NODE::PORT::Exec_O*>(port_l);
 		d_port_l->disconnect();
 	}

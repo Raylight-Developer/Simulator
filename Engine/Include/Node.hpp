@@ -52,7 +52,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	virtual void loadDetail() {}
 	static void load(File* file, const Token_Array& tokens);
 
-	int type() const override;
+	int type() const final override;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 	QRectF boundingRect() const override;
 };
@@ -85,7 +85,7 @@ namespace NODE {
 		Connection(Port* source_port);
 		Connection(Port* port_l, Port* port_r);
 
-		int type() const override;
+		int type() const final override;
 		void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		QRectF boundingRect() const override;
 
@@ -120,7 +120,7 @@ namespace NODE {
 
 			Ptr_S<Variable> getData();
 
-			int type() const override;
+			int type() const final override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -144,7 +144,7 @@ namespace NODE {
 
 			Ptr_S<Variable> getData();
 
-			int type() const override;
+			int type() const final override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -162,7 +162,7 @@ namespace NODE {
 
 			void exec() const;
 
-			int type() const override;
+			int type() const final override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 
@@ -177,7 +177,7 @@ namespace NODE {
 			void disconnect() final override;
 			bool connected() const final override;
 
-			int type() const override;
+			int type() const final override;
 			void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
 		};
 	}
