@@ -59,8 +59,40 @@ struct Variable {
 
 	Variable(const VAR::Type& type, const VAR::Container& container = VAR::Container::NONE);
 
+	void save(CORE::Lace& lace) const;
+	static Variable load(const Tokens& tokens);
+
 	template <typename T>
 	inline T* get() {
 		return any_cast<T>(&data);
 	}
 };
+
+namespace VAR {
+	static const vector<pair<VAR::Type, string_view>> type_enum_str_map {{
+		{ VAR::Type::NONE   , "NONE"   },
+		{ VAR::Type::DOUBLE , "DOUBLE" },
+		{ VAR::Type::INT    , "INT"    },
+		{ VAR::Type::BOOL   , "BOOL"   },
+		{ VAR::Type::STRING , "STRING" },
+		{ VAR::Type::VEC2   , "VEC2"   },
+		{ VAR::Type::VEC3   , "VEC3"   },
+		{ VAR::Type::VEC4   , "VEC4"   },
+		{ VAR::Type::COLOR  , "COLOR"  },
+		{ VAR::Type::QUAT   , "QUAT"   },
+		{ VAR::Type::MAT2   , "MAT2"   },
+		{ VAR::Type::MAT3   , "MAT3"   },
+		{ VAR::Type::MAT4   , "MAT4"   }
+	}};
+
+	string toString(const VAR::Type& value);
+	VAR::Type toType(const string_view& name);
+
+	static const vector<pair<VAR::Container, string_view>> container_enum_str_map {{
+		{ VAR::Container::NONE , "NONE" },
+		{ VAR::Container::LIST , "LIST" }
+	}};
+
+	string toString(const VAR::Container& value);
+	VAR::Container toContainer(const string_view& name);
+}

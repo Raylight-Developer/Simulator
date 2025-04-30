@@ -25,6 +25,7 @@
 #define LOG this->session->log
 #define FLUSH this->session->flush()
 #define PRINT(msg) this->session->printer msg; printf(this->session->printer.str().c_str()); this->session->printer.clear()
+#define SESSION this->session
 
 using Port = NODE::Port;
 using Data_I = NODE::PORT::Data_I;

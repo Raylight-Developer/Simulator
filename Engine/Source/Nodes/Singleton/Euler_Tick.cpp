@@ -31,7 +31,7 @@ Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) {
 	return nullptr;
 }
 
-void NODES::SINGLETON::Euler_Tick::loadDetail() {
+void NODES::SINGLETON::Euler_Tick::loadDetail(const Token_Array& tokens) {
 	FILE.euler_tick = static_pointer_cast<Euler_Tick>(shared_from_this());
 	FILE.node_singletons.push(shared_from_this());
 }

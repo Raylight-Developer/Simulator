@@ -4,7 +4,12 @@
 
 struct Script : SCRIPT {
 	PORT_EXEC_I exec_in;
+	PORT_DATA_I move_speed;
+
 	PORT_EXEC_O exec_out;
+
+	Color out_color;
+	F32_V2 car_pos;
 
 	Script(Session* session);
 

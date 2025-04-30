@@ -249,20 +249,34 @@ namespace NODES {
 namespace NODES {
 	static const unordered_map<Node_Type, function<Ptr_S<Node>()>> node_get_map = {
 		{ Node_Type::NONE                 , []() { return nullptr; }},
-		{ Node_Type::VARIABLE_CONSTANT    , []() { return make_shared<VARIABLE::Constant>();    }},
-		{ Node_Type::VARIABLE_GET         , []() { return make_shared<VARIABLE::Get>();         }},
-		{ Node_Type::VARIABLE_SET         , []() { return make_shared<VARIABLE::Set>();         }},
-		{ Node_Type::SINGLETON_EULER_TICK , []() { return make_shared<SINGLETON::Euler_Tick>(); }},
-		{ Node_Type::SINGLETON_RESET      , []() { return make_shared<SINGLETON::Reset>();      }}
+		{ Node_Type::VARIABLE_CONSTANT    , []() { return make_shared<VARIABLE::Constant>();           }},
+		{ Node_Type::VARIABLE_GET         , []() { return make_shared<VARIABLE::Get>();                }},
+		{ Node_Type::VARIABLE_SET         , []() { return make_shared<VARIABLE::Set>();                }},
+		{ Node_Type::SINGLETON_BACKGROUND , []() { return make_shared<SINGLETON::Background>();        }},
+		{ Node_Type::SINGLETON_EULER_TICK , []() { return make_shared<SINGLETON::Euler_Tick>();        }},
+		{ Node_Type::SINGLETON_2D_CAMERA  , []() { return make_shared<SINGLETON::Camera_2D>();         }},
+		{ Node_Type::SINGLETON_3D_CAMERA  , []() { return make_shared<SINGLETON::Camera_3D>();         }},
+		{ Node_Type::SINGLETON_RESET      , []() { return make_shared<SINGLETON::Reset>();             }},
+		{ Node_Type::RENDER_2D_RECTANGLE  , []() { return make_shared<RENDERING::DIM_2D::Rectangle>(); }},
+		{ Node_Type::RENDER_2D_TRIANGLE   , []() { return make_shared<RENDERING::DIM_2D::Triangle>();  }},
+		{ Node_Type::RENDER_2D_CIRCLE     , []() { return make_shared<RENDERING::DIM_2D::Circle>();    }},
+		{ Node_Type::RENDER_2D_LINE       , []() { return make_shared<RENDERING::DIM_2D::Line>();      }}
 	};
 
 	static const vector<pair<Node_Type, string_view>> enum_str_map {{
-		{ Node_Type::NONE                 , "NONE"                  },
-		{ Node_Type::VARIABLE_CONSTANT    , "VARIABLE::CONSTANT"    },
-		{ Node_Type::VARIABLE_GET         , "VARIABLE::GET"         },
-		{ Node_Type::VARIABLE_SET         , "VARIABLE::SET"         },
-		{ Node_Type::SINGLETON_EULER_TICK , "SINGLETON::EULER_TICK" },
-		{ Node_Type::SINGLETON_RESET      , "SINGLETON::RESET"      }
+		{ Node_Type::NONE                 , "NONE"                     },
+		{ Node_Type::VARIABLE_CONSTANT    , "VARIABLE::CONSTANT"       },
+		{ Node_Type::VARIABLE_GET         , "VARIABLE::GET"            },
+		{ Node_Type::VARIABLE_SET         , "VARIABLE::SET"            },
+		{ Node_Type::SINGLETON_BACKGROUND , "SINGLETON::BACKGROUND"    },
+		{ Node_Type::SINGLETON_EULER_TICK , "SINGLETON::EULER_TICK"    },
+		{ Node_Type::SINGLETON_2D_CAMERA  , "SINGLETON::2D_CAMERA"     },
+		{ Node_Type::SINGLETON_3D_CAMERA  , "SINGLETON::3D_CAMERA"     },
+		{ Node_Type::SINGLETON_RESET      , "SINGLETON::RESET"         },
+		{ Node_Type::RENDER_2D_RECTANGLE  , "RENDERING::2D::RECTANGLE" },
+		{ Node_Type::RENDER_2D_TRIANGLE   , "RENDERING::2D::TRIANGLE"  },
+		{ Node_Type::RENDER_2D_CIRCLE     , "RENDERING::2D::CIRCLE"    },
+		{ Node_Type::RENDER_2D_LINE       , "RENDERING::2D::LINE"      }
 	}};
 
 	string toString(const Node_Type& value);

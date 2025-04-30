@@ -44,13 +44,15 @@ struct Node : Self<Node>, QGraphicsItem {
 	Node(const NODES::Node_Type& node_type, const QString& label);
 	~Node();
 
+	// TODO linker error if virtual functions are defined in Node.cpp
+
 	virtual void exec(const NODE::Port* port) {}
 	virtual Ptr_S<Variable> getData(const NODE::Port* port) { return nullptr; };
 
 	void save(CORE::Lace& lace, const U64& index) const;
-	virtual void saveDetail(CORE::Lace& lace) const;
-	virtual void loadDetail() {}
 	static void load(File* file, const Token_Array& tokens);
+	virtual void saveDetail(CORE::Lace& lace) const {};
+	virtual void loadDetail(const Token_Array& tokens) {};
 
 	int type() const final override;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
@@ -212,6 +214,10 @@ namespace NODES {
 		VARIABLE_CONSTANT    = QGraphicsItem::UserType + 12,
 		VARIABLE_GET         = QGraphicsItem::UserType + 13,
 		VARIABLE_SET         = QGraphicsItem::UserType + 14,
-		SCRIPT               = QGraphicsItem::UserType + 15
+		SCRIPT               = QGraphicsItem::UserType + 15,
+		RENDER_2D_RECTANGLE  = QGraphicsItem::UserType + 16,
+		RENDER_2D_TRIANGLE   = QGraphicsItem::UserType + 17,
+		RENDER_2D_CIRCLE     = QGraphicsItem::UserType + 18,
+		RENDER_2D_LINE       = QGraphicsItem::UserType + 19,
 	};
 }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
 	const int res = app->exec();
 
-	window->session->file.saveFile("./Resources/Default_Save.sim");
+	window->session->file.saveFile("./Resources/Test.sim");
 
 	LOGL(NL NL NL << SUCCESS("Shutdown") NL NL NL);
 

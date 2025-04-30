@@ -1,4 +1,4 @@
-#include "Nodes/Variables/Constant.hpp"
+﻿#include "Nodes/Variables/Constant.hpp"
 
 #include "Session.hpp"
 
@@ -37,6 +37,25 @@ NODES::VARIABLE::Constant::Constant() :
 		h_setType(static_cast<VAR_TYPE>(index));
 		H_GROUP(1);
 	});
+}
+
+Ptr_S<Variable> NODES::VARIABLE::Constant::getData(const Port* port) {
+	return make_shared<Variable>(value);
+}
+
+void NODES::VARIABLE::Constant::saveDetail(CORE::Lace& lace) const {
+	lace NL << "┌Data";
+	lace++;
+	lace NL;
+	value.save(lace);
+	lace--;
+	lace NL << "└Data";
+}
+
+void NODES::VARIABLE::Constant::loadDetail(const Token_Array& tokens) {
+	const auto temp_value = Variable::load(tokens[0]);
+	setType(temp_value.type);
+	setValue(temp_value);
 }
 
 void NODES::VARIABLE::Constant::h_setType(const VAR_TYPE& type) {
@@ -731,10 +750,6 @@ void NODES::VARIABLE::Constant::setValue(const Variable& variable) {
 			break;
 		}
 	}
-}
-
-Ptr_S<Variable> NODES::VARIABLE::Constant::getData(const Port* port) {
-	return make_shared<Variable>(value);
 }
 
 NODES::VARIABLE::Constant::Set_Type::Set_Type(Ptr_S<Constant> node, const VAR_TYPE& from, const VAR_TYPE& to, const Variable& from_val) :

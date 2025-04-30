@@ -4,7 +4,7 @@
 #include "OpenGL.hpp"
 
 NODES::RENDERING::DIM_2D::Triangle::Triangle() :
-	Node(Node_Type::NONE, "Tri")
+	Node(Node_Type::RENDER_2D_TRIANGLE, "Tri")
 {
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(100);

@@ -36,13 +36,17 @@ void Viewport::f_tickUpdate() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	switch (SESSION->playback_mode) {
 		case Playback_Mode::REALTIME: {
-			FILE.euler_tick->exec(delta_time > 0.25 ? 0.25 : delta_time);
-			SESSION->hook.current_frame++;
+			if (FILE.euler_tick) {
+				FILE.euler_tick->exec(delta_time > 0.25 ? 0.25 : delta_time);
+				SESSION->hook.current_frame++;
+			}
 			break;
 		}
 		case Playback_Mode::PLAYING: {
-			FILE.euler_tick->exec(fixed_delta_time);
-			SESSION->hook.current_frame++;
+			if (FILE.euler_tick) {
+				FILE.euler_tick->exec(fixed_delta_time);
+				SESSION->hook.current_frame++;
+			}
 			break;
 		}
 		case Playback_Mode::O_STOPPED: {
@@ -52,7 +56,9 @@ void Viewport::f_tickUpdate() {
 			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			FILE.euler_tick->exec(1.0 / SESSION->samples);
+			if (FILE.euler_tick) {
+				FILE.euler_tick->exec(1.0 / SESSION->samples);
+			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			SESSION->playback_mode = Playback_Mode::STOPPED;
@@ -65,7 +71,9 @@ void Viewport::f_tickUpdate() {
 			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			FILE.reset->exec();
+			if (FILE.reset) {
+				FILE.reset->exec();
+			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			SESSION->playback_mode = Playback_Mode::RESET;

@@ -551,9 +551,6 @@ void Node::save(CORE::Lace& lace, const U64& index) const {
 	lace NL << "└Node";
 }
 
-void Node::saveDetail(CORE::Lace& lace) const {
-}
-
 void Node::load(File* file, const Token_Array& tokens) {
 	const string  r_label = f_join(tokens[0], 4);
 	const U64     r_ptr   = stoU64(tokens[1][1]);
@@ -563,7 +560,6 @@ void Node::load(File* file, const Token_Array& tokens) {
 	const NODES::Node_Type r_node_type  = NODES::toEnum(r_type);
 
 	Ptr_S<Node> node = NODES::node_get_map.at(r_node_type)();
-	node->loadDetail();
 
 	if (node) {
 		node->label = qstr(r_label);
@@ -574,8 +570,8 @@ void Node::load(File* file, const Token_Array& tokens) {
 		file->pointer_map.set(r_ptr, to_U(node.get()));
 		file->nodes.push(node);
 
-		Token_Array inputs  = File::getBlock("┌In" , "└In" , tokens);
-		Token_Array outputs = File::getBlock("┌Out", "└Out", tokens);
+		Token_Array inputs  = File::getBlock("┌In(" , "└In" , tokens);
+		Token_Array outputs = File::getBlock("┌Out(", "└Out", tokens);
 
 		for (U64 i = 0; i < inputs.size(); i++) {
 			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs[i]));
@@ -583,5 +579,8 @@ void Node::load(File* file, const Token_Array& tokens) {
 		for (U64 i = 0; i < outputs.size(); i++) {
 			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs[i]));
 		}
+
+		Token_Array detail_data = File::getBlock("┌Data", "└Data", tokens);
+		node->loadDetail(detail_data);
 	}
 }

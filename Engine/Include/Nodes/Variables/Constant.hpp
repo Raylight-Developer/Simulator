@@ -21,13 +21,16 @@ namespace NODES {
 
 			Constant();
 
+			Ptr_S<Variable> getData(const Port* port) override;
+
+			void saveDetail(CORE::Lace& lace) const override;
+			void loadDetail(const Token_Array& tokens) override;
+
 			void h_setType(const VAR_TYPE& type);
 			void setType(const VAR_TYPE& type);
 
 			void h_setValue(const Variable& variable);
 			void setValue(const Variable& variable);
-
-			Ptr_S<Variable> getData(const Port* port) override;
 
 			struct Set_Type : Self<Set_Type>, CORE::CMD {
 				Ptr_S<Constant> node;

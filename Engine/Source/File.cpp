@@ -124,9 +124,9 @@ void File::loadNodeGroups(const Token_Array& token_data) {
 void File::loadNodeTree(const Token_Array& token_data) {
 	LOGL(<< MSG_BLUE("[Node-Tree]"));
 	LOG++;
-	const CORE::Stack<Token_Array> nodes_data = getBlocks("┌Node", "└Node", token_data, true);
-	for (const Token_Array& node_data : nodes_data) {
-		Node::load(this, node_data);
+	const CORE::Stack<Token_Array> node_data = getBlocks("┌Node", "└Node", token_data, true);
+	for (const Token_Array& data : node_data) {
+		Node::load(this,data);
 	}
 	LOG--;
 }
@@ -134,6 +134,29 @@ void File::loadNodeTree(const Token_Array& token_data) {
 void File::loadBuild(const Token_Array& token_data) {
 	LOGL(<< MSG_BLUE("[Build]"));
 	LOG++;
+
+	{
+		const CORE::Stack<Token_Array> connection_data = getBlocks("┌Node-Exec", "└Node-Exec", token_data, false);
+		for (const Token_Array& data : connection_data) {
+			for (const Tokens& conn : data) {
+				auto data_o = reinterpret_cast<NODE::PORT::Exec_O*>(pointer_map.getVal(stoU64(conn[1])));
+				auto data_i = reinterpret_cast<NODE::PORT::Exec_I*>(pointer_map.getVal(stoU64(conn[4])));
+				data_o->connect(data_i);
+			}
+		}
+	}
+
+	{
+		const CORE::Stack<Token_Array> connection_data = getBlocks("┌Node-Data", "└Node-Data", token_data, false);
+		for (const Token_Array& data : connection_data) {
+			for (const Tokens& conn : data) {
+				auto data_o = reinterpret_cast<NODE::PORT::Data_O*>(pointer_map.getVal(stoU64(conn[1])));
+				auto data_i = reinterpret_cast<NODE::PORT::Data_I*>(pointer_map.getVal(stoU64(conn[4])));
+				data_i->connect(data_o);
+			}
+		}
+	}
+
 	LOG--;
 }
 
@@ -193,6 +216,34 @@ void File::saveNodeTree(CORE::Lace& lace) {
 void File::saveBuild(CORE::Lace& lace) {
 	lace NL << "┌Build";
 	lace++;
+	lace NL << "┌Node-Data";
+	lace++;
+	for (const Ptr_S<Node>& node : nodes) {
+		for (Port* port : node->inputs) {
+			if (port->connected()) {
+				if (port->type() == Graphics_Item_Type::E_DATA_I) {
+					auto d_port = static_cast<NODE::PORT::Data_I*>(port);
+					lace NL PTR(d_port->connection->getDataO()) << " - " PTR(port);
+				}
+			}
+		}
+	}
+	lace--;
+	lace NL << "└Node-Data";
+	lace NL << "┌Node-Exec";
+	lace++;
+	for (const Ptr_S<Node>& node : nodes) {
+		for (Port* port : node->outputs) {
+			if (port->connected()) {
+				if (port->type() == Graphics_Item_Type::E_EXEC_O) {
+					auto d_port = static_cast<NODE::PORT::Exec_O*>(port);
+					lace NL PTR(port) << " - " PTR(d_port->connection->getExecI());
+				}
+			}
+		}
+	}
+	lace--;
+	lace NL << "└Node-Exec";
 	lace--;
 	lace NL << "└Build";
 }

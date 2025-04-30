@@ -34,7 +34,7 @@ Window::Window() {
 	main_splitter->addWidget(history_view);
 	main_splitter->setSizes({ 2000, 400 });
 
-	session->file.loadFile("./Resources/Default.sim");
+	session->file.loadFile("./Resources/Test.sim");
 
 	setCentralWidget(main_splitter);
 	showMaximized();

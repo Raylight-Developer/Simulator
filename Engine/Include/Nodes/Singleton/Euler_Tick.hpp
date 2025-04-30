@@ -20,7 +20,7 @@ namespace NODES {
 			void exec(const F64& delta);
 
 			Ptr_S<Variable> getData(const Port* port) override;
-			void loadDetail() override;
+			void loadDetail(const Token_Array& tokens) override;
 		};
 	}
 }
