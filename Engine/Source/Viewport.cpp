@@ -21,8 +21,13 @@ Viewport::Viewport() :
 
 	window_time(0.0),
 	delta_time(0.01666666),
-	fixed_delta_time(0.01666666)
+	playback_delta_time(0.01666666)
 {
+	QSurfaceFormat format;
+	format.setSwapInterval(0);
+	QSurfaceFormat::setDefaultFormat(format);
+	setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+
 	setMouseTracking(true);
 	SESSION->viewport = this;
 	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
@@ -44,7 +49,7 @@ void Viewport::f_tickUpdate() {
 		}
 		case Playback_Mode::PLAYING: {
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(fixed_delta_time);
+				FILE.euler_tick->exec(playback_delta_time);
 				SESSION->hook.current_frame++;
 			}
 			break;
@@ -73,6 +78,9 @@ void Viewport::f_tickUpdate() {
 
 			if (FILE.reset) {
 				FILE.reset->exec();
+			}
+			if (FILE.euler_tick) {
+				FILE.euler_tick->runtime = 0.0;
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -125,8 +133,8 @@ void Viewport::f_compile() {
 	gl_data["FRAME -1 FBT"] = 0;
 	gl_data["FRAME 0 FBO"] = 0;
 	gl_data["FRAME 0 FBT"] = 0;
-	OpenGL::createFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution);
-	OpenGL::createFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution);
+	OpenGL::createFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
+	OpenGL::createFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
 }
 
 void Viewport::f_pipeline() {
@@ -147,7 +155,7 @@ void Viewport::f_guiUpdate() {
 		frame_counter = 0;
 	}
 
-	if (SESSION->playback_mode == Playback_Mode::REALTIME or SESSION->playback_mode == Playback_Mode::PLAYING) {
+	if (SESSION->playback_mode == Playback_Mode::REALTIME || SESSION->playback_mode == Playback_Mode::PLAYING) {
 		QPainter painter(this);
 		if (frame_count >= 60) {
 			painter.setPen(QColor(50, 255, 50));
@@ -210,12 +218,12 @@ void Viewport::resizeGL(int w, int h) {
 
 	glViewport(0, 0, resolution.x, resolution.y);
 
-	OpenGL::resizeFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution);
-	OpenGL::resizeFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution);
+	OpenGL::resizeFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
+	OpenGL::resizeFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event) {
-	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
+	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = false;
 	}
 	SESSION->hook.input_down[qtKey(event->button())] = false;
@@ -223,7 +231,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event) {
 
 void Viewport::mousePressEvent(QMouseEvent* event) {
 	last_mouse = p_to_d(event->pos());
-	if (event->button() == Qt::MouseButton::RightButton or event->button() == Qt::MouseButton::MiddleButton) {
+	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = true;
 	}
 	SESSION->hook.input_down[qtKey(event->button())] = true;

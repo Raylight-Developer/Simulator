@@ -44,12 +44,8 @@ Ptr_S<Variable> NODES::VARIABLE::Constant::getData(const Port* port) {
 }
 
 void NODES::VARIABLE::Constant::saveDetail(CORE::Lace& lace) const {
-	lace NL << "┌Data";
-	lace++;
 	lace NL;
 	value.save(lace);
-	lace--;
-	lace NL << "└Data";
 }
 
 void NODES::VARIABLE::Constant::loadDetail(const Token_Array& tokens) {
@@ -78,12 +74,13 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 	current_var_type = type;
 	value = Variable(type);
 
+	// TODO editingFinished really inconsistent
 	switch (type) {
 		case VAR_TYPE::DOUBLE: {
 			auto input = new GUI::Double_Input();
 			input->setFixedSize(100, 20);
 			input->setPlaceholderText(qstr(*value.get<F64>()));
-			QObject::connect(input, &GUI::Double_Input::textChanged, [this](const QString val) { h_setValue(Variable(val.toDouble())); H_GROUP(1); });
+			QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input](){ const QString val = input->text(); h_setValue(Variable(val.toDouble())); H_GROUP(1); });
 
 			PROXY(input);
 			proxy_input->setPos(20, 30);
@@ -95,7 +92,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 			auto input = new GUI::Int_Input();
 			input->setFixedSize(100, 20);
 			input->setPlaceholderText(qstr(*value.get<I64>()));
-			QObject::connect(input, &GUI::Int_Input::textChanged, [this](const QString val) { h_setValue(Variable(to_I64(val.toInt()))); H_GROUP(1); });
+			QObject::connect(input, &GUI::Int_Input::editingFinished, [this, input](){ const QString val = input->text(); h_setValue(Variable(to_I64(val.toInt()))); H_GROUP(1); });
 
 			PROXY(input);
 			proxy_input->setPos(20, 30);
@@ -123,7 +120,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 			auto input = new GUI::Value_Input();
 			input->setFixedSize(160, 20);
 			input->setPlaceholderText(*value.get<QString>());
-			QObject::connect(input, &GUI::Value_Input::textChanged, [this](const QString val) { h_setValue(Variable(val)); H_GROUP(1); });
+			QObject::connect(input, &GUI::Value_Input::editingFinished, [this, input](){ const QString val = input->text(); h_setValue(Variable(val)); H_GROUP(1); });
 
 			PROXY(input);
 			proxy_input->setPos(20, 30);
@@ -137,24 +134,26 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 
 			const auto val = *value.get<F64_V2>();
 
-			auto input_x = new GUI::Double_Input();
-			input_x->setFixedSize(100, 20);
-			input_x->setPlaceholderText(qstr(val.x));
-			QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V2>(); h_setValue(Variable(F64_V2(val.toDouble(), original->y))); H_GROUP(1); });
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.x));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V2>(); h_setValue(Variable(F64_V2(val.toDouble(), original->y))); H_GROUP(1); });
 
-			PROXY(input_x);
-			proxy_input_x->setPos(20, 30);
+				PROXY(input);
+				proxy_input->setPos(20, 30);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.y));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V2>(); h_setValue(Variable(F64_V2(original->x, val.toDouble()))); H_GROUP(1); });
 
-			auto input_y = new GUI::Double_Input();
-			input_y->setFixedSize(100, 20);
-			input_y->setPlaceholderText(qstr(val.y));
-			QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V2>(); h_setValue(Variable(F64_V2(original->x, val.toDouble()))); H_GROUP(1); });
-
-			PROXY(input_y);
-			proxy_input_y->setPos(20, 50);
-
-			proxies.push(proxy_input_x);
-			proxies.push(proxy_input_y);
+				PROXY(input);
+				proxy_input->setPos(20, 50);
+				proxies.push(proxy_input);
+			}
 			break;
 		}
 		case VAR_TYPE::VEC3: {
@@ -163,33 +162,36 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 
 			const auto val = *value.get<F64_V3>();
 
-			auto input_x = new GUI::Double_Input();
-			input_x->setFixedSize(100, 20);
-			input_x->setPlaceholderText(qstr(val.x));
-			QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(val.toDouble(), original->y, original->z))); H_GROUP(1); });
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.x));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(val.toDouble(), original->y, original->z))); H_GROUP(1); });
 
-			PROXY(input_x);
-			proxy_input_x->setPos(20, 30);
+				PROXY(input);
+				proxy_input->setPos(20, 30);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.y));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(original->x, val.toDouble(), original->z))); H_GROUP(1); });
 
-			auto input_y = new GUI::Double_Input();
-			input_y->setFixedSize(100, 20);
-			input_y->setPlaceholderText(qstr(val.y));
-			QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(original->x, val.toDouble(), original->z))); H_GROUP(1); });
+				PROXY(input);
+				proxy_input->setPos(20, 50);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.z));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(original->x, original->y, val.toDouble()))); H_GROUP(1); });
 
-			PROXY(input_y);
-			proxy_input_y->setPos(20, 50);
-
-			auto input_z = new GUI::Double_Input();
-			input_z->setFixedSize(100, 20);
-			input_z->setPlaceholderText(qstr(val.z));
-			QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V3>(); h_setValue(Variable(F64_V3(original->x, original->y, val.toDouble()))); H_GROUP(1); });
-
-			PROXY(input_z);
-			proxy_input_z->setPos(20, 70);
-
-			proxies.push(proxy_input_x);
-			proxies.push(proxy_input_y);
-			proxies.push(proxy_input_z);
+				PROXY(input);
+				proxy_input->setPos(20, 70);
+				proxies.push(proxy_input);
+			}
 			break;
 		}
 		case VAR_TYPE::VEC4: {
@@ -198,42 +200,46 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 
 			const auto val = *value.get<F64_V4>();
 
-			auto input_x = new GUI::Double_Input();
-			input_x->setFixedSize(100, 20);
-			input_x->setPlaceholderText(qstr(val.x));
-			QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(val.toDouble(), original->y, original->z, original->w))); H_GROUP(1); });
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.x));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(val.toDouble(), original->y, original->z, original->w))); H_GROUP(1); });
 
-			PROXY(input_x);
-			proxy_input_x->setPos(20, 30);
+				PROXY(input);
+				proxy_input->setPos(20, 30);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.y));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, val.toDouble(), original->z, original->w))); H_GROUP(1); });
 
-			auto input_y = new GUI::Double_Input();
-			input_y->setFixedSize(100, 20);
-			input_y->setPlaceholderText(qstr(val.y));
-			QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, val.toDouble(), original->z, original->w))); H_GROUP(1); });
+				PROXY(input);
+				proxy_input->setPos(20, 50);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.z));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, original->y, val.toDouble(), original->w))); H_GROUP(1); });
 
-			PROXY(input_y);
-			proxy_input_y->setPos(20, 50);
+				PROXY(input);
+				proxy_input->setPos(20, 70);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.w));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, original->y, original->z, val.toDouble()))); H_GROUP(1); });
 
-			auto input_z = new GUI::Double_Input();
-			input_z->setFixedSize(100, 20);
-			input_z->setPlaceholderText(qstr(val.z));
-			QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, original->y, val.toDouble(), original->z))); H_GROUP(1); });
-
-			PROXY(input_z);
-			proxy_input_z->setPos(20, 70);
-
-			auto input_w = new GUI::Double_Input();
-			input_w->setFixedSize(100, 20);
-			input_w->setPlaceholderText(qstr(val.w));
-			QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_V4(original->x, original->y, original->z, val.toDouble()))); H_GROUP(1); });
-
-			PROXY(input_w);
-			proxy_input_w->setPos(20, 90);
-
-			proxies.push(proxy_input_x);
-			proxies.push(proxy_input_y);
-			proxies.push(proxy_input_z);
-			proxies.push(proxy_input_w);
+				PROXY(input);
+				proxy_input->setPos(20, 90);
+				proxies.push(proxy_input);
+			}
 			break;
 		}
 		case VAR_TYPE::COLOR: {
@@ -242,42 +248,46 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 
 			const auto val = *value.get<Color>();
 
-			auto input_x = new GUI::Double_Input(0.0, 1.0, 5);
-			input_x->setFixedSize(100, 20);
-			input_x->setPlaceholderText(qstr(val.r()));
-			QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); h_setValue(Variable(Color(val.toDouble(), original->g(), original->b(), original->a()))); H_GROUP(1); });
+			{
+				auto input = new GUI::Double_Input(0.0, 1.0, 5);
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.r()));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<Color>(); h_setValue(Variable(Color(val.toDouble(), original->g(), original->b(), original->a()))); H_GROUP(1); });
 
-			PROXY(input_x);
-			proxy_input_x->setPos(20, 30);
+				PROXY(input);
+				proxy_input->setPos(20, 30);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input(0.0, 1.0, 5);
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.g()));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), val.toDouble(), original->b(), original->a()))); H_GROUP(1); });
 
-			auto input_y = new GUI::Double_Input(0.0, 1.0, 5);
-			input_y->setFixedSize(100, 20);
-			input_y->setPlaceholderText(qstr(val.g()));
-			QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), val.toDouble(), original->b(), original->a()))); H_GROUP(1); });
+				PROXY(input);
+				proxy_input->setPos(20, 50);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input(0.0, 1.0, 5);
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.b()));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), original->g(), val.toDouble(), original->a()))); H_GROUP(1); });
 
-			PROXY(input_y);
-			proxy_input_y->setPos(20, 50);
+				PROXY(input);
+				proxy_input->setPos(20, 70);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input(0.0, 1.0, 5);
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.a()));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), original->g(), original->b(), val.toDouble()))); H_GROUP(1); });
 
-			auto input_z = new GUI::Double_Input(0.0, 1.0, 5);
-			input_z->setFixedSize(100, 20);
-			input_z->setPlaceholderText(qstr(val.b()));
-			QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), original->g(), val.toDouble(), original->a()))); H_GROUP(1); });
-
-			PROXY(input_z);
-			proxy_input_z->setPos(20, 70);
-
-			auto input_w = new GUI::Double_Input(0.0, 1.0, 5);
-			input_w->setFixedSize(100, 20);
-			input_w->setPlaceholderText(qstr(val.a()));
-			QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<Color>(); h_setValue(Variable(Color(original->r(), original->g(), original->b(), val.toDouble()))); H_GROUP(1); });
-
-			PROXY(input_w);
-			proxy_input_w->setPos(20, 90);
-
-			proxies.push(proxy_input_x);
-			proxies.push(proxy_input_y);
-			proxies.push(proxy_input_z);
-			proxies.push(proxy_input_w);
+				PROXY(input);
+				proxy_input->setPos(20, 90);
+				proxies.push(proxy_input);
+			}
 			break;
 		}
 		case VAR_TYPE::QUAT: {
@@ -286,42 +296,46 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 
 			const auto val = *value.get<F64_Quat>();
 
-			auto input_w = new GUI::Double_Input();
-			input_w->setFixedSize(100, 20);
-			input_w->setPlaceholderText(qstr(val.w));
-			QObject::connect(input_w, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(val.toDouble(), original->x, original->y, original->z))); H_GROUP(1); });
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.w));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(val.toDouble(), original->x, original->y, original->z))); H_GROUP(1); });
 
-			PROXY(input_w);
-			proxy_input_w->setPos(20, 30);
+				PROXY(input);
+				proxy_input->setPos(20, 30);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.x));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, val.toDouble(), original->y, original->z))); H_GROUP(1); });
 
-			auto input_x = new GUI::Double_Input();
-			input_x->setFixedSize(100, 20);
-			input_x->setPlaceholderText(qstr(val.x));
-			QObject::connect(input_x, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, val.toDouble(), original->y, original->z))); H_GROUP(1); });
+				PROXY(input);
+				proxy_input->setPos(20, 50);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.y));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, original->x, val.toDouble(), original->z))); H_GROUP(1); });
 
-			PROXY(input_x);
-			proxy_input_x->setPos(20, 50);
+				PROXY(input);
+				proxy_input->setPos(20, 70);
+				proxies.push(proxy_input);
+			}
+			{
+				auto input = new GUI::Double_Input();
+				input->setFixedSize(100, 20);
+				input->setPlaceholderText(qstr(val.z));
+				QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, original->x, original->y, val.toDouble()))); H_GROUP(1); });
 
-			auto input_y = new GUI::Double_Input();
-			input_y->setFixedSize(100, 20);
-			input_y->setPlaceholderText(qstr(val.y));
-			QObject::connect(input_y, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, original->x, val.toDouble(), original->z))); H_GROUP(1); });
-
-			PROXY(input_y);
-			proxy_input_y->setPos(20, 70);
-
-			auto input_z = new GUI::Double_Input();
-			input_z->setFixedSize(100, 20);
-			input_z->setPlaceholderText(qstr(val.z));
-			QObject::connect(input_z, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = value.get<F64_V4>(); h_setValue(Variable(F64_Quat(original->w, original->x, original->y, val.toDouble()))); H_GROUP(1); });
-
-			PROXY(input_z);
-			proxy_input_z->setPos(20, 90);
-
-			proxies.push(proxy_input_w);
-			proxies.push(proxy_input_x);
-			proxies.push(proxy_input_y);
-			proxies.push(proxy_input_z);
+				PROXY(input);
+				proxy_input->setPos(20, 90);
+				proxies.push(proxy_input);
+			}
 			break;
 		}
 		case VAR_TYPE::MAT2: {
@@ -331,44 +345,50 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 			const auto val = *value.get<F64_M2>();
 
 			{
-				auto input_xx = new GUI::Double_Input();
-				input_xx->setFixedSize(50, 20);
-				input_xx->setPlaceholderText(qstr(val[0][0]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(F64_V2(val.toDouble(), original[0][1]), original[1]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(50, 20);
+					input->setPlaceholderText(qstr(val[0][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(F64_V2(val.toDouble(), original[0][1]), original[1]))); H_GROUP(1); });
 
-				PROXY(input_xx);
-				proxy_input_xx->setPos(20, 30);
+					PROXY(input);
+					proxy_input->setPos(20, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(50, 20);
+					input->setPlaceholderText(qstr(val[0][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(F64_V2(original[0][0], val.toDouble()), original[1]))); H_GROUP(1); });
 
-				auto input_xy = new GUI::Double_Input();
-				input_xy->setFixedSize(50, 20);
-				input_xy->setPlaceholderText(qstr(val[0][1]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(F64_V2(original[0][0], val.toDouble()), original[1]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(20, 50);
+					proxies.push(proxy_input);
+				}
 
-				PROXY(input_xy);
-				proxy_input_xy->setPos(20, 50);
-
-				proxies.push(proxy_input_xx);
-				proxies.push(proxy_input_xy);
 			}
 			{
-				auto input_yx = new GUI::Double_Input();
-				input_yx->setFixedSize(50, 20);
-				input_yx->setPlaceholderText(qstr(val[1][0]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(original[0], F64_V2(val.toDouble(), original[0][1])))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(50, 20);
+					input->setPlaceholderText(qstr(val[1][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(original[0], F64_V2(val.toDouble(), original[0][1])))); H_GROUP(1); });
 
-				PROXY(input_yx);
-				proxy_input_yx->setPos(70, 30);
+					PROXY(input);
+					proxy_input->setPos(70, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(50, 20);
+					input->setPlaceholderText(qstr(val[1][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(original[0], F64_V2(original[0][0], val.toDouble())))); H_GROUP(1); });
 
-				auto input_yy = new GUI::Double_Input();
-				input_yy->setFixedSize(50, 20);
-				input_yy->setPlaceholderText(qstr(val[1][1]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M2>(); h_setValue(Variable(F64_M2(original[0], F64_V2(original[0][0], val.toDouble())))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(70, 50);
+					proxies.push(proxy_input);
+				}
 
-				PROXY(input_yy);
-				proxy_input_yy->setPos(70, 50);
-
-				proxies.push(proxy_input_yx);
-				proxies.push(proxy_input_yy);
 			}
 			break;
 		}
@@ -381,91 +401,100 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 			const auto val = *value.get<F64_M3>();
 
 			{
-				auto input_xx = new GUI::Double_Input();
-				input_xx->setFixedSize(40, 20);
-				input_xx->setPlaceholderText(qstr(val[0][0]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(val.toDouble(), original[0][1], original[0][2]), original[1], original[2]))); H_GROUP(1); });
 
-				PROXY(input_xx);
-				proxy_input_xx->setPos(20, 30);
+					PROXY(input);
+					proxy_input->setPos(20, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2]))); H_GROUP(1); });
 
-				auto input_xy = new GUI::Double_Input();
-				input_xy->setFixedSize(40, 20);
-				input_xy->setPlaceholderText(qstr(val[0][1]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(original[0][0], val.toDouble(), original[0][2]), original[1], original[2]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(20, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(original[0][0], original[0][1], val.toDouble()), original[1], original[2]))); H_GROUP(1); });
 
-				PROXY(input_xy);
-				proxy_input_xy->setPos(20, 50);
-
-				auto input_xz = new GUI::Double_Input();
-				input_xz->setFixedSize(40, 20);
-				input_xz->setPlaceholderText(qstr(val[0][2]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(F64_V3(original[0][0], original[0][1], val.toDouble()), original[1], original[2]))); H_GROUP(1); });
-
-				PROXY(input_xz);
-				proxy_input_xz->setPos(20, 70);
-
-				proxies.push(proxy_input_xx);
-				proxies.push(proxy_input_xy);
-				proxies.push(proxy_input_xz);
+					PROXY(input);
+					proxy_input->setPos(20, 70);
+					proxies.push(proxy_input);
+				}
 			}
 			{
-				auto input_yx = new GUI::Double_Input();
-				input_yx->setFixedSize(40, 20);
-				input_yx->setPlaceholderText(qstr(val[1][0]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(val.toDouble(), original[0][1], original[0][2]), original[2]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(val.toDouble(), original[0][1], original[0][2]), original[2]))); H_GROUP(1); });
 
-				PROXY(input_yx);
-				proxy_input_yx->setPos(60, 30);
+					PROXY(input);
+					proxy_input->setPos(60, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(original[0][0], val.toDouble(), original[0][2]), original[2]))); H_GROUP(1); });
 
-				auto input_yy = new GUI::Double_Input();
-				input_yy->setFixedSize(40, 20);
-				input_yy->setPlaceholderText(qstr(val[1][1]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(original[0][0], val.toDouble(), original[0][2]), original[2]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(60, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(original[0][0], original[0][1], val.toDouble()), original[2]))); H_GROUP(1); });
 
-				PROXY(input_yy);
-				proxy_input_yy->setPos(60, 50);
-
-				auto input_yz = new GUI::Double_Input();
-				input_yz->setFixedSize(40, 20);
-				input_yz->setPlaceholderText(qstr(val[1][2]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], F64_V3(original[0][0], original[0][1], val.toDouble()), original[2]))); H_GROUP(1); });
-
-				PROXY(input_yz);
-				proxy_input_yz->setPos(60, 70);
-
-				proxies.push(proxy_input_yx);
-				proxies.push(proxy_input_yy);
-				proxies.push(proxy_input_yz);
+					PROXY(input);
+					proxy_input->setPos(60, 70);
+					proxies.push(proxy_input);
+				}
 			}
 			{
-				auto input_zx = new GUI::Double_Input();
-				input_zx->setFixedSize(40, 20);
-				input_zx->setPlaceholderText(qstr(val[2][0]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(val.toDouble(), original[0][1], original[0][2])))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(val.toDouble(), original[0][1], original[0][2])))); H_GROUP(1); });
 
-				PROXY(input_zx);
-				proxy_input_zx->setPos(100, 30);
+					PROXY(input);
+					proxy_input->setPos(100, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], val.toDouble(), original[0][2])))); H_GROUP(1); });
 
-				auto input_zy = new GUI::Double_Input();
-				input_zy->setFixedSize(40, 20);
-				input_zy->setPlaceholderText(qstr(val[2][1]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], val.toDouble(), original[0][2])))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(100, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], original[0][1], val.toDouble())))); H_GROUP(1); });
 
-				PROXY(input_zy);
-				proxy_input_zy->setPos(100, 50);
-
-				auto input_zz = new GUI::Double_Input();
-				input_zz->setFixedSize(40, 20);
-				input_zz->setPlaceholderText(qstr(val[2][2]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M3>(); h_setValue(Variable(F64_M3(original[0], original[1], F64_V3(original[0][0], original[0][1], val.toDouble())))); H_GROUP(1); });
-
-				PROXY(input_zz);
-				proxy_input_zz->setPos(100, 70);
-
-				proxies.push(proxy_input_zx);
-				proxies.push(proxy_input_zy);
-				proxies.push(proxy_input_zz);
+					PROXY(input);
+					proxy_input->setPos(100, 70);
+					proxies.push(proxy_input);
+				}
 			}
 			break;
 		}
@@ -478,156 +507,172 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 			const auto val = *value.get<F64_M4>();
 
 			{
-				auto input_xx = new GUI::Double_Input();
-				input_xx->setFixedSize(40, 20);
-				input_xx->setPlaceholderText(qstr(val[0][0]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
 
-				PROXY(input_xx);
-				proxy_input_xx->setPos(20, 30);
+					PROXY(input);
+					proxy_input->setPos(20, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
 
-				auto input_xy = new GUI::Double_Input();
-				input_xy->setFixedSize(40, 20);
-				input_xy->setPlaceholderText(qstr(val[0][1]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(20, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
 
-				PROXY(input_xy);
-				proxy_input_xy->setPos(20, 50);
+					PROXY(input);
+					proxy_input->setPos(20, 70);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[0][3]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3]))); H_GROUP(1); });
 
-				auto input_xz = new GUI::Double_Input();
-				input_xz->setFixedSize(40, 20);
-				input_xz->setPlaceholderText(qstr(val[0][2]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[1], original[2], original[3]))); H_GROUP(1); });
-
-				PROXY(input_xz);
-				proxy_input_xz->setPos(20, 70);
-
-				auto input_xw = new GUI::Double_Input();
-				input_xw->setFixedSize(40, 20);
-				input_xw->setPlaceholderText(qstr(val[0][3]));
-				QObject::connect(input_xx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[1], original[2], original[3]))); H_GROUP(1); });
-
-				PROXY(input_xw);
-				proxy_input_xw->setPos(20, 90);
-
-				proxies.push(proxy_input_xx);
-				proxies.push(proxy_input_xy);
-				proxies.push(proxy_input_xz);
-				proxies.push(proxy_input_xw);
+					PROXY(input);
+					proxy_input->setPos(20, 90);
+					proxies.push(proxy_input);
+				}
 			}
 			{
-				auto input_yx = new GUI::Double_Input();
-				input_yx->setFixedSize(40, 20);
-				input_yx->setPlaceholderText(qstr(val[1][0]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[2], original[3]))); H_GROUP(1); });
 
-				PROXY(input_yx);
-				proxy_input_yx->setPos(60, 30);
+					PROXY(input);
+					proxy_input->setPos(60, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3]))); H_GROUP(1); });
 
-				auto input_yy = new GUI::Double_Input();
-				input_yy->setFixedSize(40, 20);
-				input_yy->setPlaceholderText(qstr(val[1][1]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[2], original[3]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(60, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3]))); H_GROUP(1); });
 
-				PROXY(input_yy);
-				proxy_input_yy->setPos(60, 50);
+					PROXY(input);
+					proxy_input->setPos(60, 70);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[1][3]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3]))); H_GROUP(1); });
 
-				auto input_yz = new GUI::Double_Input();
-				input_yz->setFixedSize(40, 20);
-				input_yz->setPlaceholderText(qstr(val[1][2]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[2], original[3]))); H_GROUP(1); });
-
-				PROXY(input_yz);
-				proxy_input_yz->setPos(60, 70);
-
-				auto input_yw = new GUI::Double_Input();
-				input_yw->setFixedSize(40, 20);
-				input_yw->setPlaceholderText(qstr(val[1][3]));
-				QObject::connect(input_yx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[2], original[3]))); H_GROUP(1); });
-
-				PROXY(input_yw);
-				proxy_input_yw->setPos(60, 90);
-
-				proxies.push(proxy_input_yx);
-				proxies.push(proxy_input_yy);
-				proxies.push(proxy_input_yz);
-				proxies.push(proxy_input_yw);
+					PROXY(input);
+					proxy_input->setPos(60, 90);
+					proxies.push(proxy_input);
+				}
 			}
 			{
-				auto input_zx = new GUI::Double_Input();
-				input_zx->setFixedSize(40, 20);
-				input_zx->setPlaceholderText(qstr(val[2][0]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3]))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3]), original[3]))); H_GROUP(1); });
 
-				PROXY(input_zx);
-				proxy_input_zx->setPos(100, 30);
+					PROXY(input);
+					proxy_input->setPos(100, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3]))); H_GROUP(1); });
 
-				auto input_zy = new GUI::Double_Input();
-				input_zy->setFixedSize(40, 20);
-				input_zy->setPlaceholderText(qstr(val[2][1]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3]), original[3]))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(100, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3]))); H_GROUP(1); });
 
-				PROXY(input_zy);
-				proxy_input_zy->setPos(100, 50);
+					PROXY(input);
+					proxy_input->setPos(100, 70);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[2][3]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3]))); H_GROUP(1); });
 
-				auto input_zz = new GUI::Double_Input();
-				input_zz->setFixedSize(40, 20);
-				input_zz->setPlaceholderText(qstr(val[2][2]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3]), original[3]))); H_GROUP(1); });
-
-				PROXY(input_zz);
-				proxy_input_zz->setPos(100, 70);
-
-				auto input_zw = new GUI::Double_Input();
-				input_zw->setFixedSize(40, 20);
-				input_zw->setPlaceholderText(qstr(val[2][3]));
-				QObject::connect(input_zx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble()), original[3]))); H_GROUP(1); });
-
-				PROXY(input_zw);
-				proxy_input_zw->setPos(100, 90);
-
-				proxies.push(proxy_input_zx);
-				proxies.push(proxy_input_zy);
-				proxies.push(proxy_input_zz);
-				proxies.push(proxy_input_zw);
+					PROXY(input);
+					proxy_input->setPos(100, 90);
+					proxies.push(proxy_input);
+				}
 			}
 			{
-				auto input_wx = new GUI::Double_Input();
-				input_wx->setFixedSize(40, 20);
-				input_wx->setPlaceholderText(qstr(val[3][0]));
-				QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3])))); H_GROUP(1); });
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[3][0]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(val.toDouble(), original[0][1], original[0][2], original[0][3])))); H_GROUP(1); });
 
-				PROXY(input_wx);
-				proxy_input_wx->setPos(140, 30);
+					PROXY(input);
+					proxy_input->setPos(140, 30);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[3][1]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3])))); H_GROUP(1); });
 
-				auto input_wy = new GUI::Double_Input();
-				input_wy->setFixedSize(40, 20);
-				input_wy->setPlaceholderText(qstr(val[3][1]));
-				QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], val.toDouble(), original[0][2], original[0][3])))); H_GROUP(1); });
+					PROXY(input);
+					proxy_input->setPos(140, 50);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[3][2]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3])))); H_GROUP(1); });
 
-				PROXY(input_wy);
-				proxy_input_wy->setPos(140, 50);
+					PROXY(input);
+					proxy_input->setPos(140, 70);
+					proxies.push(proxy_input);
+				}
+				{
+					auto input = new GUI::Double_Input();
+					input->setFixedSize(40, 20);
+					input->setPlaceholderText(qstr(val[3][3]));
+					QObject::connect(input, &GUI::Double_Input::editingFinished, [this, input]() { const QString val = input->text(); const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble())))); H_GROUP(1); });
 
-				auto input_wz = new GUI::Double_Input();
-				input_wz->setFixedSize(40, 20);
-				input_wz->setPlaceholderText(qstr(val[3][2]));
-				QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], val.toDouble(), original[0][3])))); H_GROUP(1); });
-
-				PROXY(input_wz);
-				proxy_input_wz->setPos(140, 70);
-
-				auto input_ww = new GUI::Double_Input();
-				input_ww->setFixedSize(40, 20);
-				input_ww->setPlaceholderText(qstr(val[3][3]));
-				QObject::connect(input_wx, &GUI::Double_Input::textChanged, [this](const QString val) { const auto original = *value.get<F64_M4>(); h_setValue(Variable(F64_M4(original[0], original[1], original[2], F64_V4(original[0][0], original[0][1], original[0][2], val.toDouble())))); H_GROUP(1); });
-
-				PROXY(input_ww);
-				proxy_input_ww->setPos(140, 90);
-
-				proxies.push(proxy_input_wx);
-				proxies.push(proxy_input_wy);
-				proxies.push(proxy_input_wz);
-				proxies.push(proxy_input_ww);
+					PROXY(input);
+					proxy_input->setPos(140, 90);
+					proxies.push(proxy_input);
+				}
 			}
 			break;
 		}

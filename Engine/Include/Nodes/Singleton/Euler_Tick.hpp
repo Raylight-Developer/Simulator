@@ -10,6 +10,8 @@ namespace NODES {
 	namespace SINGLETON {
 		struct Euler_Tick : Node {
 			F64 delta;
+			F64 runtime;
+
 			PORT_EXEC_O exec_out;
 			PORT_DATA_O o_delta;
 			PORT_DATA_O o_calls;
@@ -20,6 +22,7 @@ namespace NODES {
 			void exec(const F64& delta);
 
 			Ptr_S<Variable> getData(const Port* port) override;
+
 			void loadDetail(const Token_Array& tokens) override;
 		};
 	}

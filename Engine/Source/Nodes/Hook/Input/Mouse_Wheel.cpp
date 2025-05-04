@@ -3,7 +3,7 @@
 #include "Session.hpp"
 
 NODES::HOOK::INPUT::Mouse_Wheel::Mouse_Wheel() :
-	Node(Node_Type::NONE, "Mouse Wheel")
+	Node(Node_Type::HOOK_INPUT_MOUSE_WHEEL, "Mouse Wheel")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);

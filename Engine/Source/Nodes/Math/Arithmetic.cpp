@@ -1,7 +1,7 @@
 #include "Nodes/Math/Arithmetic.hpp"
 
 NODES::MATH::Arithmetic::Arithmetic() :
-	Node(Node_Type::NONE, "Arithmetic")
+	Node(Node_Type::MATH_ARITHMETIC, "Arithmetic")
 {
 	rect.setWidth(120);
 	rect.setHeight(80);
@@ -26,4 +26,12 @@ Ptr_S<Variable> NODES::MATH::Arithmetic::getData(const Port* port) {
 		case 3: return make_shared<Variable>(*i_a->GET_DATA(F64) / *i_b->GET_DATA(F64));
 	}
 	return nullptr;
+}
+
+void NODES::MATH::Arithmetic::saveDetail(CORE::Lace& lace) const {
+	lace << enums->currentText();
+}
+
+void NODES::MATH::Arithmetic::loadDetail(const Token_Array& tokens) {
+	enums->setCurrentText(qstr(tokens[0][0]));
 }

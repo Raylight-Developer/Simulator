@@ -5,7 +5,8 @@
 
 NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
 	Node(Node_Type::SCRIPT, id),
-	session(session)
+	session(session),
+	path("")
 {}
 
 NODES::SCRIPT::Script::~Script() {
@@ -41,6 +42,7 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 		Script* (*getInstance)(Session*) = (Script * (*)(Session*))script_address;
 		script = getInstance(SESSION);
 		if (script) {
+			script->path = dll_path;
 			//script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
 			//script->session = &SESSION;
 
@@ -86,4 +88,8 @@ void NODES::SCRIPT::Script::exec(const PORT::Exec_I* port) {
 
 Ptr_S<Variable> NODES::SCRIPT::Script::getData(const PORT::Data_O* port) {
 	return nullptr;
+}
+
+void NODES::SCRIPT::Script::saveDetail(CORE::Lace& lace) const {
+	lace NL << path;
 }

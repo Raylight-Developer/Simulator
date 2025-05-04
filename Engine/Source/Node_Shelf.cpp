@@ -22,12 +22,13 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 		}
 	});
 
+	auto tree_default = new GUI::Tree_Item(tree->user_scripts, "Included", 1);
 	#ifdef _DEBUG
-		auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script.dll"}});
-		auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script-OpenGL_Test.dll"}});
+		auto test_item = new GUI::Tree_Item(tree_default, "Test", 2, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script.dll"}});
+		auto gl_test_item = new GUI::Tree_Item(tree_default, "GL Test", 2, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Debug/Script-OpenGL_Test.dll"}});
 	#else
-		auto test_item = new GUI::Tree_Item(tree->user_scripts, "Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script.dll"}});
-		auto gl_test_item = new GUI::Tree_Item(tree->user_scripts, "GL Test", 1, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script-OpenGL_Test.dll"}});
+		auto test_item = new GUI::Tree_Item(tree_default, "Test", 2, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script.dll"}});
+		auto gl_test_item = new GUI::Tree_Item(tree_default, "GL Test", 2, {{1000, "SCRIPT"}, {1001, "D:/Coding/Simulator/x64/Release/Script-OpenGL_Test.dll"}});
 	#endif
 }
 

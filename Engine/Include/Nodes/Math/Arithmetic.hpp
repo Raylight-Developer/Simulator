@@ -19,6 +19,9 @@ namespace NODES {
 
 			Ptr_S<Variable> getData(const Port* port) override;
 
+			void saveDetail(CORE::Lace& lace) const override;
+			void loadDetail(const Token_Array& tokens) override;
+
 			struct Set_Mode : Self<Set_Mode>, CORE::CMD {
 				//TODO
 				void execute() const final override;

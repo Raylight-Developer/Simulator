@@ -126,7 +126,7 @@ void File::loadNodeTree(const Token_Array& token_data) {
 	LOG++;
 	const CORE::Stack<Token_Array> node_data = getBlocks("┌Node", "└Node", token_data, true);
 	for (const Token_Array& data : node_data) {
-		Node::load(this,data);
+		Node::load(this, data);
 	}
 	LOG--;
 }
@@ -180,7 +180,15 @@ void File::saveHeader(CORE::Lace& lace) {
 void File::saveScripts(CORE::Lace& lace) {
 	lace NL << "┌Scripts( " << scripts.size() << " )";
 	lace++;
-
+	U64 i = 0;
+	for (const auto script : scripts) {
+		lace NL << "┌Script [ " << i << " ]";
+		lace++;
+		lace NL PTR(script);
+		lace--;
+		lace NL << "└Script";
+		i++;
+	}
 	lace--;
 	lace NL << "└Scripts";
 }

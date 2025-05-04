@@ -1,7 +1,7 @@
 #include "Nodes/Math/Trigonometry.hpp"
 
 NODES::MATH::Trigonometry::Trigonometry() :
-	Node(Node_Type::NONE, "Trigonometry")
+	Node(Node_Type::MATH_TRIGONOMETRIC, "Trigonometry")
 {
 	rect.setWidth(140);
 	rect.setHeight(60);
@@ -37,4 +37,12 @@ Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) {
 		case 14: return make_shared<Variable>(1.0 / sinh(x));
 	}
 	return in->getData();
+}
+
+void NODES::MATH::Trigonometry::saveDetail(CORE::Lace& lace) const {
+	lace << enums->currentText();
+}
+
+void NODES::MATH::Trigonometry::loadDetail(const Token_Array& tokens) {
+	enums->setCurrentText(qstr(tokens[0][0]));
 }
