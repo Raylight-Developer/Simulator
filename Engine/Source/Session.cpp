@@ -32,8 +32,8 @@ Session::Session() :
 	major_version(0),
 	minor_version(0),
 	patch_version(1),
-	file(File()),
 	hook(Hook()),
+	file(File()),
 	gl(nullptr),
 	window(nullptr),
 	viewport(nullptr)

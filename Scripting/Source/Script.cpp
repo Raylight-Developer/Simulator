@@ -5,11 +5,11 @@ Script::Script(Session* session) : SCRIPT("Test Script", session) {
 }
 
 void Script::onLoad() {
-	PRINT(NL << "Loaded Test Script");
+	LOGL(<< "Loaded Test Script");
 }
 
 void Script::onUnload() {
-	PRINT(NL << "Unloaded Test Script");
+	LOGL(<< "Unloaded Test Script");
 }
 
 void Script::exec(const Exec_I* port) {

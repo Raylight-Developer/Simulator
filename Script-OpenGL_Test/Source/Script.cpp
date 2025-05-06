@@ -5,7 +5,7 @@ Script::Script(Session* session) : SCRIPT("OpenGL Script", session) {
 }
 
 void Script::onLoad() {
-	PRINT(NL << "Loaded OpenGL Script");
+	LOGL(<< "Loaded OpenGL Script");
 
 	header_color = QColor(75, 25, 25);
 	rect.setWidth(140);
@@ -21,7 +21,7 @@ void Script::onLoad() {
 }
 
 void Script::onUnload() {
-	PRINT(NL << "Unloaded OpenGL Script");
+	LOGL(<< "Unloaded OpenGL Script");
 	Session::destroy();
 }
 

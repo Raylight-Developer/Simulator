@@ -33,8 +33,11 @@ Window::Window() {
 	main_splitter->addWidget(v_splitter);
 	main_splitter->addWidget(history_view);
 	main_splitter->setSizes({ 2000, 400 });
-
-	session->file.loadFile("./Resources/Test.sim");
+#ifdef NDEBUG
+	session->file.loadFile("./Resources/Test-Release.sim");
+#else
+	session->file.loadFile("./Resources/Test-Debug.sim");
+#endif
 
 	setCentralWidget(main_splitter);
 	showMaximized();

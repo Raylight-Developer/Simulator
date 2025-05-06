@@ -1,4 +1,4 @@
 /.vs
 /x64
-Engine/Resources/Default_Save.sim
-Engine/Resources/Test.sim
+Engine/Resources/Test-Debug.sim
+Engine/Resources/Test-Release.sim

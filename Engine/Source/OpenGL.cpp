@@ -66,7 +66,7 @@ bool OpenGL::checkShaderCompilation(const GLuint& shader, const string& shader_c
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
-		PRINT(NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Shader Compilation Failed: ");
+		LOGL(NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Shader Compilation Failed: ");
 		printShaderErrorWithContext(shader_code, infoLog);
 		return false;
 	}
@@ -79,7 +79,7 @@ bool OpenGL::checkProgramLinking(const GLuint& program) {
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetProgramInfoLog(program, sizeof(infoLog), nullptr, infoLog);
-		PRINT(NL NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Program Linking Failed: " << infoLog);
+		LOGL(NL << ANSI_RED << "[OpenGL]" ANSI_RESET << " Program Linking Failed: " << infoLog);
 		return false;
 	}
 	return true;

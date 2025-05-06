@@ -10,11 +10,12 @@ struct Session;
 
 namespace NODES {
 	namespace SCRIPT {
+
 		struct Script : Node {
 			Session* session;
 
 			Script(const QString& id, Session* session);
-			~Script();
+			virtual ~Script();
 
 			void execAllDownstream() const;
 

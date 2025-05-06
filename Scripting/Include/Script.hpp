@@ -19,7 +19,7 @@ struct Script : SCRIPT {
 
 	/* OPTIONAL
 	Handles node execution on trigger of const Exec_I* port.
-	User should manually handle downstream Exec_Output execution from here, otherwise ei_exec a slightly more expensive: execAllDownstream().
+	User should manually handle downstream Exec_Output execution from here, otherwise call a minimally more expensive but automatic: execAllDownstream().
 	*/
 	void exec(const Exec_I* port) override;
 

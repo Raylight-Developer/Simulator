@@ -43,8 +43,6 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 		script = getInstance(SESSION);
 		if (script) {
 			script->path = dll_path;
-			//script->session = new SCRIPT_LAYER::SL_Session(script, &SESSION);
-			//script->session = &SESSION;
 
 			FILE.scripts.push(script);
 			FILE.dlls[script] = script_addr;
