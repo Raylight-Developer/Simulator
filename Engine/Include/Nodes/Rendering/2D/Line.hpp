@@ -10,13 +10,13 @@ namespace NODES {
 	namespace RENDERING {
 		namespace DIM_2D {
 			struct Line : Node {
-				PORT_EXEC_I exec_in;
-				PORT_EXEC_O exec_out;
+				PORT_EXEC_I ei_exec;
+				PORT_DATA_I di_vert_a;
+				PORT_DATA_I di_vert_b;
+				PORT_DATA_I di_width;
+				PORT_DATA_I di_color;
 
-				PORT_DATA_I vert_a;
-				PORT_DATA_I vert_b;
-				PORT_DATA_I width;
-				PORT_DATA_I color;
+				PORT_EXEC_O eo_exec;
 
 				Line();
 

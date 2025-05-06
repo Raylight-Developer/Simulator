@@ -22,6 +22,9 @@ enum struct Playback_Mode {
 
 struct Hook {
 	F64_V2 viewport_resolution;
+	F64_V2 camera_pos_2d;
+	F64 camera_zoom_2d;
+
 	F64_V2 mouse_pos;
 	bool mouse_on_screen;
 	T_V2<I32> mouse_wheel;

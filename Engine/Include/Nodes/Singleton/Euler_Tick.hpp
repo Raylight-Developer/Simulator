@@ -9,13 +9,13 @@ using namespace NODE;
 namespace NODES {
 	namespace SINGLETON {
 		struct Euler_Tick : Node {
+			PORT_EXEC_O eo_exec;
+			PORT_DATA_O do_delta;
+			PORT_DATA_O do_calls;
+			PORT_DATA_O do_runtime;
+
 			F64 delta;
 			F64 runtime;
-
-			PORT_EXEC_O exec_out;
-			PORT_DATA_O o_delta;
-			PORT_DATA_O o_calls;
-			PORT_DATA_O o_runtime;
 
 			Euler_Tick();
 

@@ -44,7 +44,5 @@ struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 	void mouseReleaseEvent(QMouseEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent* event) override;
-	void keyReleaseEvent(QKeyEvent* event) override;
-	void keyPressEvent(QKeyEvent* event) override;
 	void wheelEvent(QWheelEvent* event) override;
 };

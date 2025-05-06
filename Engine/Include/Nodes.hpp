@@ -63,6 +63,23 @@ namespace NODES::CONTAINER {
 	}
 }
 
+namespace NODES::CONTAINER::LIST {
+	struct Access;
+	struct Insert;
+	struct Modify;
+	struct Remove;
+	struct Clear;
+	struct Push;
+	struct Size;
+}
+#include "Nodes/Container/List/Access.hpp"
+#include "Nodes/Container/List/Insert.hpp"
+#include "Nodes/Container/List/Modify.hpp"
+#include "Nodes/Container/List/Remove.hpp"
+#include "Nodes/Container/List/Clear.hpp"
+#include "Nodes/Container/List/Push.hpp"
+#include "Nodes/Container/List/Size.hpp"
+
 namespace NODES::BOOLEAN {
 	enum struct Type { SWITCH, AND, OR, NOT };
 	struct Compare;
@@ -71,28 +88,19 @@ namespace NODES::BOOLEAN {
 #include "Nodes/Boolean/Compare.hpp"
 #include "Nodes/Boolean/Select.hpp"
 
-namespace NODES::CONTAINER::LIST {
-	struct Access;
-	struct Insert;
-	struct Remove;
-	struct Clear;
-	struct Push;
-	struct Size;
-}
-#include "Nodes/Container/List/Access.hpp"
-#include "Nodes/Container/List/Insert.hpp"
-#include "Nodes/Container/List/Remove.hpp"
-#include "Nodes/Container/List/Clear.hpp"
-#include "Nodes/Container/List/Push.hpp"
-#include "Nodes/Container/List/Size.hpp"
-
 namespace NODES::EXEC {
-	struct Subsample;
+	namespace LOOP {
+		struct Subsample;
+		struct While;
+		struct For;
+	}
 	struct If_Else;
 	struct If;
 	enum struct Type { SEQUENCE, COUNTER, START, TICK, FOR_INDEX, FOR_ELEMENT, WHILE };
 }
-#include "Nodes/Exec/Subsample.hpp"
+#include "Nodes/Exec/Loop/Subsample.hpp"
+#include "Nodes/Exec/Loop/While.hpp"
+#include "Nodes/Exec/Loop/For.hpp"
 #include "Nodes/Exec/If_Else.hpp"
 #include "Nodes/Exec/If.hpp"
 
@@ -255,9 +263,18 @@ namespace NODES {
 		{ Node_Type::VARIABLE_SET          , []() { return make_shared<VARIABLE::Set>();                }},
 		{ Node_Type::MATH_TRIGONOMETRIC    , []() { return make_shared<MATH::Trigonometry>();           }},
 		{ Node_Type::MATH_ARITHMETIC       , []() { return make_shared<MATH::Arithmetic>();             }},
+		{ Node_Type::CONTAINER_LIST_ACCESS , []() { return make_shared<CONTAINER::LIST::Access>();      }},
+		{ Node_Type::CONTAINER_LIST_INSERT , []() { return make_shared<CONTAINER::LIST::Insert>();      }},
+		{ Node_Type::CONTAINER_LIST_MODIFY , []() { return make_shared<CONTAINER::LIST::Modify>();      }},
+		{ Node_Type::CONTAINER_LIST_REMOVE , []() { return make_shared<CONTAINER::LIST::Remove>();      }},
+		{ Node_Type::CONTAINER_LIST_CLEAR  , []() { return make_shared<CONTAINER::LIST::Clear>();       }},
+		{ Node_Type::CONTAINER_LIST_PUSH   , []() { return make_shared<CONTAINER::LIST::Push>();        }},
+		{ Node_Type::CONTAINER_LIST_SIZE   , []() { return make_shared<CONTAINER::LIST::Size>();        }},
 		{ Node_Type::BOOLEAN_COMPARE       , []() { return make_shared<BOOLEAN::Compare>();             }},
 		{ Node_Type::BOOLEAN_SELECT        , []() { return make_shared<BOOLEAN::Select>();              }},
-		{ Node_Type::EXEC_SUBSAMPLE        , []() { return make_shared<EXEC::Subsample>();              }},
+		{ Node_Type::EXEC_LOOP_SUBSAMPLE   , []() { return make_shared<EXEC::LOOP::Subsample>();        }},
+		{ Node_Type::EXEC_LOOP_WHILE       , []() { return make_shared<EXEC::LOOP::While>();            }},
+		{ Node_Type::EXEC_LOOP_FOR         , []() { return make_shared<EXEC::LOOP::For>();              }},
 		{ Node_Type::EXEC_IF_ELSE          , []() { return make_shared<EXEC::If_Else>();                }},
 		{ Node_Type::EXEC_IF               , []() { return make_shared<EXEC::If>();                     }},
 		{ Node_Type::HOOK_INPUT_MOUSE_WHEEL, []() { return make_shared<HOOK::INPUT::Mouse_Wheel>();     }},
@@ -284,9 +301,18 @@ namespace NODES {
 		{ Node_Type::VARIABLE_SET          , "VARIABLE::SET"            },
 		{ Node_Type::MATH_TRIGONOMETRIC    , "MATH::TRIGONOMETRIC"      },
 		{ Node_Type::MATH_ARITHMETIC       , "MATH::ARITHMETIC"         },
+		{ Node_Type::CONTAINER_LIST_ACCESS , "CONTAINER::LIST::ACCESS"  },
+		{ Node_Type::CONTAINER_LIST_INSERT , "CONTAINER::LIST::INSERT"  },
+		{ Node_Type::CONTAINER_LIST_MODIFY , "CONTAINER::LIST::MODIFY"  },
+		{ Node_Type::CONTAINER_LIST_REMOVE , "CONTAINER::LIST::REMOVE"  },
+		{ Node_Type::CONTAINER_LIST_CLEAR  , "CONTAINER::LIST::CLEAR"   },
+		{ Node_Type::CONTAINER_LIST_PUSH   , "CONTAINER::LIST::PUSH"    },
+		{ Node_Type::CONTAINER_LIST_SIZE   , "CONTAINER::LIST::SIZE"    },
 		{ Node_Type::BOOLEAN_COMPARE       , "BOOLEAN::COMPARE"         },
 		{ Node_Type::BOOLEAN_SELECT        , "BOOLEAN::SELECT"          },
-		{ Node_Type::EXEC_SUBSAMPLE        , "EXEC::SUBSAMPLE"          },
+		{ Node_Type::EXEC_LOOP_SUBSAMPLE   , "EXEC::LOOP::SUBSAMPLE"    },
+		{ Node_Type::EXEC_LOOP_WHILE       , "EXEC::LOOP::WHILE"        },
+		{ Node_Type::EXEC_LOOP_FOR         , "EXEC::LOOP::FOR"          },
 		{ Node_Type::EXEC_IF_ELSE          , "EXEC::IF_ELSE"            },
 		{ Node_Type::EXEC_IF               , "EXEC::IF"                 },
 		{ Node_Type::HOOK_INPUT_MOUSE_WHEEL, "HOOK::INPUT::MOUSE_WHEEL" },

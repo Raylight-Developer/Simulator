@@ -10,10 +10,10 @@ namespace NODES {
 	namespace CONTAINER {
 		namespace LIST {
 			struct Access : Node {
-				PORT_DATA_I list;
-				PORT_DATA_I index;
+				PORT_DATA_I di_list;
+				PORT_DATA_I di_index;
 
-				PORT_DATA_O value;
+				PORT_DATA_O do_value;
 
 				GUI::Options* var_type;
 

@@ -9,7 +9,7 @@ NODES::VARIABLE::Constant::Constant() :
 	rect.setHeight(60);
 
 	current_var_type = VAR_TYPE::NONE;
-	out = DATA_O("", VAR_TYPE::NONE);
+	do_var = DATA_O("", VAR_TYPE::NONE);
 	value = Variable();
 
 	var_type = new GUI::Options();
@@ -20,14 +20,14 @@ NODES::VARIABLE::Constant::Constant() :
 	proxy_var_type->setPos(20, 30);
 	
 	expanded = rect;
-	out->onConnection = [this](Port* port, Connection* conn) {
+	do_var->onConnection = [this](Port* port, Connection* conn) {
 		rect = expanded;
 		rect.setHeight(rect.height() - 20);
 		proxy_var_type->setVisible(false);
 		return true;
 	};
-	out->onDisconnection = [this](Port* port) {
-		if (not out->connected()) {
+	do_var->onDisconnection = [this](Port* port) {
+		if (not do_var->connected()) {
 			rect = expanded;
 			proxy_var_type->setVisible(true);
 		}
@@ -69,7 +69,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 		proxy_var_type->setPos(20, 50);
 	}
 	rect.setWidth(140);
-	out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+	do_var->rect.moveCenter(rect.topRight() + QPointF(0, 40));
 
 	current_var_type = type;
 	value = Variable(type);
@@ -115,7 +115,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 		}
 		case VAR_TYPE::STRING: {
 			rect.setWidth(200);
-			out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+			do_var->rect.moveCenter(rect.topRight() + QPointF(0, 40));
 
 			auto input = new GUI::Value_Input();
 			input->setFixedSize(160, 20);
@@ -394,7 +394,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 		}
 		case VAR_TYPE::MAT3: {
 			rect.setWidth(160);
-			out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+			do_var->rect.moveCenter(rect.topRight() + QPointF(0, 40));
 			rect.setHeight(120);
 			proxy_var_type->setPos(20, 90);
 
@@ -500,7 +500,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 		}
 		case VAR_TYPE::MAT4: {
 			rect.setWidth(200);
-			out->rect.moveCenter(rect.topRight() + QPointF(0, 40));
+			do_var->rect.moveCenter(rect.topRight() + QPointF(0, 40));
 			rect.setHeight(140);
 			proxy_var_type->setPos(20, 110);
 
@@ -679,7 +679,7 @@ void NODES::VARIABLE::Constant::setType(const VAR_TYPE& type) {
 	}
 
 	expanded = rect;
-	out->setType(current_var_type, VAR_CONTAINER::NONE);
+	do_var->setType(current_var_type, VAR_CONTAINER::NONE);
 
 	var_type->blockSignals(true);
 	var_type->setCurrentIndex(static_cast<int>(current_var_type));

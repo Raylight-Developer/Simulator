@@ -9,9 +9,10 @@ using namespace NODE;
 namespace NODES {
 	namespace EXEC {
 		struct If : Node {
-			PORT_EXEC_I in;
-			PORT_DATA_I condition;
-			PORT_EXEC_O out;
+			PORT_EXEC_I ei_exec;
+			PORT_DATA_I di_cond;
+
+			PORT_EXEC_O eo_exec;
 
 			If();
 

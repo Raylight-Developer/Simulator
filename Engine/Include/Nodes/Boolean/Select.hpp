@@ -9,10 +9,11 @@ using namespace NODE;
 namespace NODES {
 	namespace BOOLEAN {
 		struct Select : Node {
-			PORT_DATA_I condition;
-			PORT_DATA_I i_true;
-			PORT_DATA_I i_false;
-			PORT_DATA_O out;
+			PORT_DATA_I di_cond;
+			PORT_DATA_I di_true;
+			PORT_DATA_I di_false;
+
+			PORT_DATA_O do_res;
 
 			Select();
 

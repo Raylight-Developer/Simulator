@@ -11,10 +11,10 @@ void Script::onLoad() {
 	rect.setWidth(140);
 	rect.setHeight(80);
 
-	exec_in  = EXEC_I("");
-	move_speed = DATA_I("Speed", Variable(1.0));
+	ei_exec       = EXEC_I("");
+	di_move_speed = DATA_I("Speed", Variable(1.0));
 
-	exec_out = EXEC_O("");
+	eo_exec = EXEC_O("");
 
 	out_color = Color(1, 1, 1, 1);
 	car_pos = F64_V2(0, 0);
@@ -39,7 +39,7 @@ void Script::exec(const Exec_I* port) {
 		out_color = Color(0, 0, 1, 1);
 	}
 
-	const F64 speed = SESSION->viewport->delta_time * (*move_speed->GET_DATA(F64));
+	const F64 speed = SESSION->viewport->delta_time * (*di_move_speed->GET_DATA(F64));
 
 	if (SESSION->hook.input_down["A"]) {
 		car_pos.x -= speed;
@@ -55,7 +55,7 @@ void Script::exec(const Exec_I* port) {
 	}
 
 	render();
-	exec_out->exec();
+	eo_exec->exec();
 }
 
 void Script::render() {

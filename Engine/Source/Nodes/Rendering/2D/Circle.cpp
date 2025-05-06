@@ -10,23 +10,23 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 	rect.setWidth(100);
 	rect.setHeight(120);
 
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
+	ei_exec   = EXEC_I("");
+	di_center = DATA_I("Center", Variable(F64_V2(0, 0)));
+	di_radius = DATA_I("Radius", Variable(50.0));
+	di_color  = DATA_I("Color" , Variable(Color(1, 1, 1, 1)));
 
-	center = DATA_I("Center", Variable(F64_V2(0, 0)));
-	radius = DATA_I("Radius", Variable(50.0));
-	color  = DATA_I("Color" , Variable(Color(1, 1, 1, 1)));
+	eo_exec = EXEC_O("");
 }
 
 void NODES::RENDERING::DIM_2D::Circle::render() {
-	const auto u_center = to_F32(*center->GET_DATA(F64_V2));
-	const auto u_radius = to_F32(*radius->GET_DATA(F64));
-	const auto u_color  = *color->GET_DATA(Color);
+	const auto u_center = to_F32(*di_center->GET_DATA(F64_V2));
+	const auto u_radius = to_F32(*di_radius->GET_DATA(F64));
+	const auto u_color  = *di_color->GET_DATA(Color);
 
 	RENDER::Dim_2D::Circle(u_center, u_radius, u_color);
 }
 
 void NODES::RENDERING::DIM_2D::Circle::exec(const Port* port) {
 	render();
-	exec_out->exec();
+	eo_exec->exec();
 }

@@ -9,8 +9,8 @@ using namespace NODE;
 namespace NODES {
 	namespace SINGLETON {
 		struct Reset : Node {
-			PORT_EXEC_O exec_out;
-			PORT_DATA_O bool_out;
+			PORT_EXEC_O eo_exec;
+			PORT_DATA_O do_bool;
 
 			Reset();
 

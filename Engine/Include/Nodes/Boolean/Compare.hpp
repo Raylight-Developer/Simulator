@@ -9,9 +9,10 @@ using namespace NODE;
 namespace NODES {
 	namespace BOOLEAN {
 		struct Compare : Node {
-			PORT_DATA_I in_a;
-			PORT_DATA_I in_b;
-			PORT_DATA_O out;
+			PORT_DATA_I di_a;
+			PORT_DATA_I di_b;
+
+			PORT_DATA_O do_res;
 
 			GUI::Options* enums;
 

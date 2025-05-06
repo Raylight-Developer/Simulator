@@ -9,21 +9,19 @@ using namespace NODE;
 namespace NODES {
 	namespace CONTAINER {
 		namespace LIST {
-			struct Insert : Node {
+			struct Modify : Node {
 				PORT_EXEC_I ei_exec;
 				PORT_DATA_I di_list;
 				PORT_DATA_I di_index;
 				PORT_DATA_I di_value;
 
 				PORT_EXEC_O eo_exec;
-				PORT_DATA_O do_list_pass;
-
-				Insert();
 
 				GUI::Options* var_type;
 
+				Modify();
+
 				void exec(const Port* port) override;
-				Ptr_S<Variable> getData(const Port* port) override;
 			};
 		}
 	}

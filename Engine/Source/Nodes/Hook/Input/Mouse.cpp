@@ -9,7 +9,7 @@ NODES::HOOK::INPUT::Mouse::Mouse() :
 	rect.setHeight(80);
 
 	button = "Left";
-	is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
+	do_is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
 
 	buttons = new GUI::Options();
 	buttons->setFixedSize(80, 20);

@@ -9,10 +9,10 @@ NODES::SINGLETON::Camera_3D::Camera_3D() :
 	rect.setWidth(100);
 	rect.setHeight(60);
 
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
+	ei_exec = EXEC_I("");
+	eo_exec = EXEC_O("");
 }
 
 void NODES::SINGLETON::Camera_3D::exec(const Port* port) {
-	exec_out->exec();
+	eo_exec->exec();
 }

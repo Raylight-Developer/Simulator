@@ -9,8 +9,9 @@ using namespace NODE;
 namespace NODES {
 	namespace MATH {
 		struct Trigonometry : Node {
-			PORT_DATA_I in;
-			PORT_DATA_O out;
+			PORT_DATA_I di_value;
+
+			PORT_DATA_O do_res;
 
 			GUI::Options* enums;
 

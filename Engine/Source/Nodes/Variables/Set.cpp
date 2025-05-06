@@ -8,10 +8,11 @@ NODES::VARIABLE::Set::Set() :
 	rect.setWidth(120);
 	rect.setHeight(80);
 
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
-	in  = DATA_I("", VAR_TYPE::NONE);
-	out = DATA_O("", VAR_TYPE::NONE);
+	ei_exec  = EXEC_I("");
+	di_value = DATA_I("", VAR_TYPE::NONE);
+
+	eo_exec       = EXEC_O("");
+	do_value_pass = DATA_O("", VAR_TYPE::NONE);
 
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
@@ -29,20 +30,23 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 	label->setText(var);
 	if (name != "") {
 		const Variable& var_ref = FILE.variables[var];
-		in ->setType(var_ref.type, var_ref.container);
-		out->setType(var_ref.type, var_ref.container);
+		di_value->setType(var_ref.type, var_ref.container);
+		do_value_pass->setType(var_ref.type, var_ref.container);
 	}
 	else {
-		in ->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
-		out->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
+		di_value->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
+		do_value_pass->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 	}
 }
 
 void NODES::VARIABLE::Set::exec(const Port* port) {
-	if (in->connected()) {
-		FILE.variables[var] = *in->getData();
+	node_error = false;
+	if (!di_value->connected()) {
+		node_error = true;
+		return;
 	}
-	exec_out->exec();
+	FILE.variables[var] = *di_value->getData();
+	eo_exec->exec();
 }
 
 Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) {

@@ -3,6 +3,9 @@
 #include "Session.hpp"
 #include "OpenGL.hpp"
 
+constexpr F64 MS_15 = 1.0 / 15.0;
+constexpr F64 MS_60 = 1.0 / 60.0;
+
 Viewport::Viewport() :
 	QOpenGLWidget(),
 
@@ -20,8 +23,8 @@ Viewport::Viewport() :
 	last_mouse(current_mouse),
 
 	window_time(0.0),
-	delta_time(0.01666666),
-	playback_delta_time(0.01666666)
+	delta_time(MS_60),
+	playback_delta_time(MS_60)
 {
 	QSurfaceFormat format;
 	format.setSwapInterval(0);
@@ -42,7 +45,7 @@ void Viewport::f_tickUpdate() {
 	switch (SESSION->playback_mode) {
 		case Playback_Mode::REALTIME: {
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(delta_time > 0.25 ? 0.25 : delta_time);
+				FILE.euler_tick->exec(delta_time > MS_15 ? MS_15 : delta_time);
 				SESSION->hook.current_frame++;
 			}
 			break;
@@ -226,7 +229,6 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = false;
 	}
-	SESSION->hook.input_down[qtKey(event->button())] = false;
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event) {
@@ -234,7 +236,6 @@ void Viewport::mousePressEvent(QMouseEvent* event) {
 	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
 		move_2d = true;
 	}
-	SESSION->hook.input_down[qtKey(event->button())] = true;
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event) {
@@ -248,14 +249,6 @@ void Viewport::mouseMoveEvent(QMouseEvent* event) {
 	SESSION->hook.mouse_pos = current_mouse;
 }
 
-void Viewport::keyReleaseEvent(QKeyEvent* event) {
-	//SESSION->hook.input_down[qtKey(event->key())] = false;
-}
-
-void Viewport::keyPressEvent(QKeyEvent* event) {
-	//SESSION->hook.input_down[qtKey(event->key())] = true;
-}
-
 void Viewport::wheelEvent(QWheelEvent* event) {
 	const QPoint scrollAmount = event->angleDelta();
 	if (scrollAmount.y() > 0) {
@@ -264,6 +257,4 @@ void Viewport::wheelEvent(QWheelEvent* event) {
 	else {
 		zoom_2d /= 1.1;
 	}
-	SESSION->hook.mouse_wheel.x = scrollAmount.x();
-	SESSION->hook.mouse_wheel.y = scrollAmount.y();
 }

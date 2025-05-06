@@ -9,10 +9,10 @@ using namespace NODE;
 namespace NODES {
 	namespace SINGLETON {
 		struct Background : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
+			PORT_EXEC_I ei_exec;
+			PORT_DATA_I di_color;
 
-			PORT_DATA_I color_in;
+			PORT_EXEC_O eo_exec;
 
 			Background();
 

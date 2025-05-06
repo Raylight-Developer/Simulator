@@ -7,19 +7,19 @@
 using namespace NODE;
 
 namespace NODES {
-	namespace CONTAINER {
-		namespace LIST {
-			struct Remove : Node {
+	namespace EXEC {
+		namespace LOOP {
+			struct For : Node {
 				PORT_EXEC_I ei_exec;
-				PORT_DATA_I di_list;
-				PORT_DATA_I di_index;
+				PORT_DATA_I di_count;
 
-				PORT_EXEC_O eo_exec;
-				PORT_DATA_O do_list_pass;
+				PORT_EXEC_O eo_finished;
+				PORT_EXEC_O eo_for;
+				PORT_DATA_O do_i;
 
-				GUI::Options* var_type;
+				I64 for_i;
 
-				Remove();
+				For();
 
 				void exec(const Port* port) override;
 				Ptr_S<Variable> getData(const Port* port) override;

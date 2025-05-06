@@ -80,6 +80,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		{
 			auto access = new GUI::Tree_Item(tree_list, "Access", 2, { { 1000, "CONTAINER LIST ACCESS" } });
 			auto insert = new GUI::Tree_Item(tree_list, "Insert", 2, { { 1000, "CONTAINER LIST INSERT" } });
+			auto modify = new GUI::Tree_Item(tree_list, "Modify", 2, { { 1000, "CONTAINER LIST MODIFY" } });
 			auto remove = new GUI::Tree_Item(tree_list, "Remove", 2, { { 1000, "CONTAINER LIST REMOVE" } });
 			auto clear  = new GUI::Tree_Item(tree_list, "Clear" , 2, { { 1000, "CONTAINER LIST CLEAR"  } });
 			auto push   = new GUI::Tree_Item(tree_list, "Push"  , 2, { { 1000, "CONTAINER LIST PUSH"   } });
@@ -89,17 +90,22 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_exec = new GUI::Tree_Item(this, "Exec");
 	{
-		auto _if        = new GUI::Tree_Item(tree_exec, "If"       , 1, { { 1000, "EXEC IF"        } });
-		auto _if_else   = new GUI::Tree_Item(tree_exec, "If Else"  , 1, { { 1000, "EXEC IF ELSE"   } });
-		auto subsample  = new GUI::Tree_Item(tree_exec, "Subsample", 1, { { 1000, "EXEC SUBSAMPLE" } });
+		auto tree_loop = new GUI::Tree_Item(tree_exec, "Loop", 1);
+		{
+			auto subsample = new GUI::Tree_Item(tree_loop, "Subsample" , 2, { { 1000, "EXEC LOOP SUBSAMPLE" } });
+			auto _while    = new GUI::Tree_Item(tree_loop, "While"     , 2, { { 1000, "EXEC LOOP WHILE"     } });
+			auto _for      = new GUI::Tree_Item(tree_loop, "For"       , 2, { { 1000, "EXEC LOOP FOR"       } });
+		}
+		auto _if_else    = new GUI::Tree_Item(tree_exec, "If Else"    , 1, { { 1000, "EXEC IF ELSE"    } });
+		auto _if         = new GUI::Tree_Item(tree_exec, "If"         , 1, { { 1000, "EXEC IF"         } });
 	}
 
 	auto tree_singleton = new GUI::Tree_Item(this, "Singletons");
 	{
 		auto background = new GUI::Tree_Item(tree_singleton, "Render Background", 1, { { 1000, "SINGLETON BACKGROUND" } });
+		auto euler_tick = new GUI::Tree_Item(tree_singleton, "Euler Tick"       , 1, { { 1000, "SINGLETON EULER TICK" } });
 		auto camera_2d  = new GUI::Tree_Item(tree_singleton, "Camera 2D"        , 1, { { 1000, "SINGLETON 2D CAMERA"  } });
 		auto camera_3d  = new GUI::Tree_Item(tree_singleton, "Camera 3D"        , 1, { { 1000, "SINGLETON 3D CAMERA"  } });
-		auto euler_tick = new GUI::Tree_Item(tree_singleton, "Euler Tick"       , 1, { { 1000, "SINGLETON EULER TICK" } });
 		auto reset      = new GUI::Tree_Item(tree_singleton, "Reset Scene"      , 1, { { 1000, "SINGLETON RESET"      } });
 	}
 
@@ -112,7 +118,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 			auto mouse_pos   = new GUI::Tree_Item(tree_inputs, "Mouse Pos"  , 2, { { 1000, "HOOK INPUT MOUSE POS"   } });
 			auto mouse_wheel = new GUI::Tree_Item(tree_inputs, "Mouse Wheel", 2, { { 1000, "HOOK INPUT MOUSE WHEEL" } });
 		}
-		auto display = new GUI::Tree_Item(tree_hooks, "Resolution", 1, { { 1000, "HOOK DISPLAY" } });
+		auto display = new GUI::Tree_Item(tree_hooks, "Display", 1, { { 1000, "HOOK DISPLAY" } });
 	}
 
 	auto tree_render = new GUI::Tree_Item(this, "Rendering");

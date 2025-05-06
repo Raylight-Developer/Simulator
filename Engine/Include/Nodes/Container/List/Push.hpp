@@ -10,12 +10,12 @@ namespace NODES {
 	namespace CONTAINER {
 		namespace LIST {
 			struct Push : Node {
-				PORT_EXEC_I call;
-				PORT_DATA_I list;
-				PORT_DATA_I value;
+				PORT_EXEC_I ei_exec;
+				PORT_DATA_I di_list;
+				PORT_DATA_I di_value;
 
-				PORT_EXEC_O call_pass;
-				PORT_DATA_O list_pass;
+				PORT_EXEC_O eo_exec;
+				PORT_DATA_O do_list_pass;
 
 				Push();
 

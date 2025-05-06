@@ -9,9 +9,10 @@ using namespace NODE;
 namespace NODES {
 	namespace MATH {
 		struct Arithmetic : Node {
-			PORT_DATA_I i_a;
-			PORT_DATA_I i_b;
-			PORT_DATA_O out;
+			PORT_DATA_I di_a;
+			PORT_DATA_I di_b;
+
+			PORT_DATA_O do_res;
 
 			GUI::Options* enums;
 

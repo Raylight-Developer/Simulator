@@ -436,6 +436,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "CONTAINER LIST INSERT") {
 				node = make_shared<NODES::CONTAINER::LIST::Insert>();
 			}
+			else if (type == "CONTAINER LIST MODIFY") {
+				node = make_shared<NODES::CONTAINER::LIST::Modify>();
+			}
 			else if (type == "CONTAINER LIST REMOVE") {
 				node = make_shared<NODES::CONTAINER::LIST::Remove>();
 			}
@@ -448,14 +451,20 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "CONTAINER LIST SIZE") {
 				node = make_shared<NODES::CONTAINER::LIST::Size>();
 			}
+			else if (type == "EXEC LOOP SUBSAMPLE") {
+				node = make_shared<NODES::EXEC::LOOP::Subsample>();
+			}
+			else if (type == "EXEC LOOP WHILE") {
+				node = make_shared<NODES::EXEC::LOOP::While>();
+			}
+			else if (type == "EXEC LOOP FOR") {
+				node = make_shared<NODES::EXEC::LOOP::For>();
+			}
 			else if (type == "EXEC IF") {
 				node = make_shared<NODES::EXEC::If>();
 			}
 			else if (type == "EXEC IF ELSE") {
 				node = make_shared<NODES::EXEC::If_Else>();
-			}
-			else if (type == "EXEC SUBSAMPLE") {
-				node = make_shared<NODES::EXEC::Subsample>();
 			}
 			else if (type == "HOOK INPUT KEY") {
 				node = make_shared<NODES::HOOK::INPUT::Key>();

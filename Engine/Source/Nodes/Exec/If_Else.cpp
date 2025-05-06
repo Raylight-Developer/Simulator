@@ -6,17 +6,17 @@ NODES::EXEC::If_Else::If_Else() :
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	in = EXEC_I("");
-	condition = DATA_I("", Variable(false));
-	out_a = EXEC_O("True");
-	out_b = EXEC_O("False");
+	ei_exec = EXEC_I("");
+	di_cond = DATA_I("", Variable(false));
+	eo_true = EXEC_O("True");
+	eo_false = EXEC_O("False");
 }
 
 void NODES::EXEC::If_Else::exec(const Port* port) {
-	if (*condition->GET_DATA(bool)) {
-		out_a->exec();
+	if (*di_cond->GET_DATA(bool)) {
+		eo_true->exec();
 	}
 	else {
-		out_b->exec();
+		eo_false->exec();
 	}
 }

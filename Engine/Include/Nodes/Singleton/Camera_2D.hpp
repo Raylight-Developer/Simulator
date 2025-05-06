@@ -9,11 +9,11 @@ using namespace NODE;
 namespace NODES {
 	namespace SINGLETON {
 		struct Camera_2D : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
+			PORT_EXEC_I ei_exec;
+			PORT_DATA_I di_center;
+			PORT_DATA_I di_zoom;
 
-			PORT_DATA_I center;
-			PORT_DATA_I zoom;
+			PORT_EXEC_O eo_exec;
 
 			Camera_2D();
 

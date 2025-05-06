@@ -9,7 +9,7 @@ NODES::HOOK::INPUT::Key::Key() :
 	rect.setHeight(80);
 
 	key = "A";
-	is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
+	do_is_down = DATA_O("Is Down", VAR_TYPE::BOOL);
 
 	keys = new GUI::Options();
 	keys->setFixedSize(80, 20);

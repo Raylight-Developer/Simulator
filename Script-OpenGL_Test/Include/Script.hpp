@@ -3,10 +3,10 @@
 #include "Script_Include.hpp"
 
 struct Script : SCRIPT {
-	PORT_EXEC_I exec_in;
-	PORT_DATA_I move_speed;
+	PORT_EXEC_I ei_exec;
+	PORT_DATA_I di_move_speed;
 
-	PORT_EXEC_O exec_out;
+	PORT_EXEC_O eo_exec;
 
 	Color out_color;
 	F32_V2 car_pos;

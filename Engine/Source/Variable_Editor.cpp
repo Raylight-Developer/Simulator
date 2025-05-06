@@ -70,21 +70,21 @@ void Variable_Editor::updateVar(const QString& name, const Variable& var) const 
 	for (Ptr_S<Node> node : FILE.variable_refs[name]) {
 		if (node->node_type == NODES::Node_Type::VARIABLE_GET) {
 			auto node_def = static_pointer_cast<NODES::VARIABLE::Get>(node);
-			if (node_def->out->connected()) {
-				node_def->out->disconnect();
+			if (node_def->do_var->connected()) {
+				node_def->do_var->disconnect();
 			}
-			node_def->out->setType(var.type, var.container);
+			node_def->do_var->setType(var.type, var.container);
 		}
 		else if (node->node_type == NODES::Node_Type::VARIABLE_SET) {
 			auto node_def = static_pointer_cast<NODES::VARIABLE::Set>(node);
-			if (node_def->in->connected()) {
-				node_def->in->disconnect();
+			if (node_def->di_value->connected()) {
+				node_def->di_value->disconnect();
 			}
-			if (node_def->out->connected()) {
-				node_def->out->disconnect();
+			if (node_def->do_value_pass->connected()) {
+				node_def->do_value_pass->disconnect();
 			}
-			node_def->in ->setType(var.type, var.container);
-			node_def->out->setType(var.type, var.container);
+			node_def->di_value->setType(var.type, var.container);
+			node_def->do_value_pass->setType(var.type, var.container);
 		}
 	}
 }

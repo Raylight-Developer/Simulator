@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Exec\Loop\For.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Modify.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Access.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Clear.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Insert.cpp" />
@@ -54,11 +56,13 @@
     <ClCompile Include="Source\Viewport.cpp" />
     <ClCompile Include="Source\Timeline.cpp" />
     <ClCompile Include="Source\Variable_Editor.cpp" />
-    <ClCompile Include="Source\Nodes\Exec\Subsample.cpp" />
+    <ClCompile Include="Source\Nodes\Exec\Loop\Subsample.cpp" />
     <ClCompile Include="Source\Nodes\Rendering\2D\Triangle.cpp" />
     <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp" />
+    <ClCompile Include="Source\Nodes\Exec\Loop\While.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Nodes\Exec\Loop\For.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Access.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Clear.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Insert.hpp" />
@@ -94,7 +98,7 @@
     <ClInclude Include="Include\Timeline.hpp" />
     <ClInclude Include="Include\Variable_Editor.hpp" />
     <ClInclude Include="Include\Input.hpp" />
-    <ClInclude Include="Include\Nodes\Exec\Subsample.hpp" />
+    <ClInclude Include="Include\Nodes\Exec\Loop\Subsample.hpp" />
     <ClInclude Include="Include\Nodes\Rendering\2D\Line.hpp" />
     <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp" />
     <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp" />
@@ -106,6 +110,8 @@
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Pos.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse_Wheel.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Modify.hpp" />
+    <ClInclude Include="Include\Nodes\Exec\Loop\While.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>

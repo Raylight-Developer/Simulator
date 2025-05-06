@@ -34,6 +34,7 @@ enum Graphics_Item_Type {
 struct Node : Self<Node>, QGraphicsItem {
 	const NODES::Node_Type node_type;
 	QColor header_color;
+	bool node_error;
 	QString label;
 	QRectF rect;
 
@@ -44,7 +45,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	Node(const NODES::Node_Type& node_type, const QString& label);
 	~Node();
 
-	// TODO linker error if virtual functions are defined in Node.cpp
+	// TODO linker error if virtual functions are defined ei_exec Node.cpp
 
 	virtual void exec(const NODE::Port* port) {}
 	virtual Ptr_S<Variable> getData(const NODE::Port* port) { return nullptr; };
@@ -212,9 +213,18 @@ namespace NODES {
 		VARIABLE_SET           ,
 		MATH_TRIGONOMETRIC     ,
 		MATH_ARITHMETIC        ,
+		CONTAINER_LIST_ACCESS  ,
+		CONTAINER_LIST_INSERT  ,
+		CONTAINER_LIST_MODIFY  ,
+		CONTAINER_LIST_REMOVE  ,
+		CONTAINER_LIST_CLEAR   ,
+		CONTAINER_LIST_PUSH    ,
+		CONTAINER_LIST_SIZE    ,
 		BOOLEAN_COMPARE        ,
 		BOOLEAN_SELECT         ,
-		EXEC_SUBSAMPLE         ,
+		EXEC_LOOP_SUBSAMPLE    ,
+		EXEC_LOOP_WHILE        ,
+		EXEC_LOOP_FOR          ,
 		EXEC_IF_ELSE           ,
 		EXEC_IF                ,
 		HOOK_INPUT_MOUSE_WHEEL ,

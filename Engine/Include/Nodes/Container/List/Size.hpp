@@ -10,9 +10,9 @@ namespace NODES {
 	namespace CONTAINER {
 		namespace LIST {
 			struct Size : Node {
-				PORT_DATA_I list;
+				PORT_DATA_I di_list;
 
-				PORT_DATA_O size;
+				PORT_DATA_O do_size;
 
 				GUI::Options* var_type;
 

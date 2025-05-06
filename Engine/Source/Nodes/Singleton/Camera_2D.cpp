@@ -9,15 +9,15 @@ NODES::SINGLETON::Camera_2D::Camera_2D() :
 	rect.setWidth(100);
 	rect.setHeight(100);
 
-	exec_in  = EXEC_I("");
-	exec_out = EXEC_O("");
+	ei_exec  = EXEC_I("");
+	di_center = DATA_I("Color", Variable(F64_V2(0,0)));
+	di_zoom   = DATA_I("Color", Variable(1.0));
 
-	center = DATA_I("Color", Variable(F64_V2(0,0)));
-	zoom   = DATA_I("Color", Variable(1.0));
+	eo_exec = EXEC_O("");
 }
 
 void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = *center->GET_DATA(F64_V2);
-	SESSION->viewport->zoom_2d = *zoom->GET_DATA(F64);
-	exec_out->exec();
+	SESSION->viewport->center_2d = *di_center->GET_DATA(F64_V2);
+	SESSION->viewport->zoom_2d = *di_zoom->GET_DATA(F64);
+	eo_exec->exec();
 }

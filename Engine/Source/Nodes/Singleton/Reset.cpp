@@ -8,12 +8,12 @@ NODES::SINGLETON::Reset::Reset() :
 	rect.setWidth(80);
 	rect.setHeight(80);
 
-	exec_out = EXEC_O("Once");
-	bool_out = DATA_O("True", VAR_TYPE::BOOL);
+	eo_exec = EXEC_O("Once");
+	do_bool = DATA_O("True", VAR_TYPE::BOOL);
 }
 
 void NODES::SINGLETON::Reset::exec() {
-	exec_out->exec();
+	eo_exec->exec();
 }
 
 Ptr_S<Variable> NODES::SINGLETON::Reset::getData(const Port* port) {

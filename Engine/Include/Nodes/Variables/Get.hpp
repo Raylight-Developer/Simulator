@@ -9,7 +9,8 @@ using namespace NODE;
 namespace NODES {
 	namespace VARIABLE {
 		struct Get : Node {
-			PORT_DATA_O out;
+			PORT_DATA_O do_var;
+
 			GUI::Label* label;
 			QString var;
 

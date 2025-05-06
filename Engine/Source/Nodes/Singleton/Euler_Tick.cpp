@@ -8,10 +8,10 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 	rect.setWidth(100);
 	rect.setHeight(120);
 
-	exec_out  = EXEC_O("Tick");
-	o_delta   = DATA_O("Delta", VAR_TYPE::DOUBLE);
-	o_calls   = DATA_O("Calls", VAR_TYPE::INT);
-	o_runtime = DATA_O("Runtime", VAR_TYPE::DOUBLE);
+	eo_exec    = EXEC_O("Tick");
+	do_delta   = DATA_O("Delta", VAR_TYPE::DOUBLE);
+	do_calls   = DATA_O("Calls", VAR_TYPE::INT);
+	do_runtime = DATA_O("Runtime", VAR_TYPE::DOUBLE);
 
 	delta = 0;
 	runtime = 0.0;
@@ -20,15 +20,15 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 void NODES::SINGLETON::Euler_Tick::exec(const F64& _delta) {
 	delta = _delta;
 	runtime += delta;
-	exec_out->exec();
+	eo_exec->exec();
 }
 
 Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) {
-	if (port == o_delta.get())
+	if (port == do_delta.get())
 		return make_shared<Variable>(delta);
-	if (port == o_calls.get())
+	if (port == do_calls.get())
 		return make_shared<Variable>(static_cast<I64>(SESSION->hook.current_frame));
-	if (port == o_runtime.get())
+	if (port == do_runtime.get())
 		return make_shared<Variable>(runtime);
 	return nullptr;
 }

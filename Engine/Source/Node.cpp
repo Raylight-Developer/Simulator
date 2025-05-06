@@ -6,7 +6,8 @@ Node::Node() :
 	QGraphicsItem(),
 	node_type(NODES::Node_Type::NONE),
 	label("NODE"),
-	rect(QRectF(0, 0, 200, 200))
+	rect(QRectF(0, 0, 200, 200)),
+	node_error(false)
 {
 	setZValue(1);
 	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
@@ -17,7 +18,8 @@ Node::Node(const NODES::Node_Type& node_type, const QString& label) :
 	QGraphicsItem(),
 	node_type(node_type),
 	label(label),
-	rect(QRectF(0, 0, 200, 200))
+	rect(QRectF(0, 0, 200, 200)),
+	node_error(false)
 {
 	setZValue(1);
 	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
@@ -37,8 +39,13 @@ void Node::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
 	if (isSelected()) {
 		painter->setPen(QPen(QColor(255, 140, 80), 2.0));
 	}
-
-	painter->setBrush(QColor(40, 40, 40));
+	if (node_error) {
+		painter->setPen(QPen(QColor(200, 40, 40), 2.0));
+		painter->setBrush(QColor(120, 40, 40));
+	}
+	else {
+		painter->setBrush(QColor(40, 40, 40));
+	}
 	painter->drawRoundedRect(rect, 5, 5);
 
 	painter->setBrush(header_color);

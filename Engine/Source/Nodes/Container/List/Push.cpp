@@ -1,18 +1,18 @@
 #include "Nodes/Container/List/Push.hpp"
 
 NODES::CONTAINER::LIST::Push::Push() :
-	Node(Node_Type::NONE, "Push")
+	Node(Node_Type::CONTAINER_LIST_PUSH, "Push")
 {
 	header_color = QColor(25, 25, 75);
 	rect.setWidth(120);
 	rect.setHeight(100);
 
-	call = EXEC_I("");
-	list = DATA_I_C("List", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
-	value = DATA_I("Index", VAR_TYPE::NONE);
+	ei_exec = EXEC_I("");
+	di_list = DATA_I_C("List", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
+	di_value = DATA_I("Index", VAR_TYPE::NONE);
 
-	call_pass = EXEC_O("");
-	list_pass = DATA_O_C("", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
+	eo_exec = EXEC_O("");
+	do_list_pass = DATA_O_C("", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
 
 	var_type = new GUI::Options();
 	var_type->setFixedSize(100, 20);
@@ -22,66 +22,72 @@ NODES::CONTAINER::LIST::Push::Push() :
 	proxy_var_type->setPos(10, 30);
 
 	QObject::connect(var_type, &GUI::Options::currentIndexChanged, [this](int index) {
-		value    ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::NONE);
-		list     ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
-		list_pass->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
+		di_value    ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::NONE);
+		di_list     ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
+		do_list_pass->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
 	});
 }
 
 void NODES::CONTAINER::LIST::Push::exec(const Port* port) {
+	node_error = false;
+	if (!(di_list->connected() && di_value->connected())) {
+		eo_exec->exec();
+		node_error = true;
+		return;
+	}
 	switch (var_type->currentIndex()) {
 		case 1: {
-			list->GET_LIST(F64)->push(*value->GET_DATA(F64));
+			di_list->GET_LIST(F64)->push(*di_value->GET_DATA(F64));
 			break;
 		}
 		case 2: {
-			list->GET_LIST(I64)->push(*value->GET_DATA(I64));
+			di_list->GET_LIST(I64)->push(*di_value->GET_DATA(I64));
 			break;
 		}
 		case 3: {
-			list->GET_LIST(bool)->push(*value->GET_DATA(bool));
+			di_list->GET_LIST(bool)->push(*di_value->GET_DATA(bool));
 			break;
 		}
 		case 4: {
-			list->GET_LIST(QString)->push(*value->GET_DATA(QString));
+			di_list->GET_LIST(QString)->push(*di_value->GET_DATA(QString));
 			break;
 		}
 		case 5: {
-			list->GET_LIST(F64_V2)->push(*value->GET_DATA(F64_V2));
+			di_list->GET_LIST(F64_V2)->push(*di_value->GET_DATA(F64_V2));
 			break;
 		}
 		case 6: {
-			list->GET_LIST(F64_V3)->push(*value->GET_DATA(F64_V3));
+			di_list->GET_LIST(F64_V3)->push(*di_value->GET_DATA(F64_V3));
 			break;
 		}
 		case 7: {
-			list->GET_LIST(F64_V4)->push(*value->GET_DATA(F64_V4));
+			di_list->GET_LIST(F64_V4)->push(*di_value->GET_DATA(F64_V4));
 			break;
 		}
 		case 8: {
-			list->GET_LIST(Color)->push(*value->GET_DATA(Color));
+			di_list->GET_LIST(Color)->push(*di_value->GET_DATA(Color));
 			break;
 		}
 		case 9: {
-			list->GET_LIST(F64_Quat)->push(*value->GET_DATA(F64_Quat));
+			di_list->GET_LIST(F64_Quat)->push(*di_value->GET_DATA(F64_Quat));
 			break;
 		}
 		case 10: {
-			list->GET_LIST(F64_M2)->push(*value->GET_DATA(F64_M2));
+			di_list->GET_LIST(F64_M2)->push(*di_value->GET_DATA(F64_M2));
 			break;
 		}
 		case 11: {
-			list->GET_LIST(F64_M3)->push(*value->GET_DATA(F64_M3));
+			di_list->GET_LIST(F64_M3)->push(*di_value->GET_DATA(F64_M3));
 			break;
 		}
 		case 12: {
-			list->GET_LIST(F64_M4)->push(*value->GET_DATA(F64_M4));
+			di_list->GET_LIST(F64_M4)->push(*di_value->GET_DATA(F64_M4));
 			break;
 		}
 	}
-	call_pass->exec();
+	eo_exec->exec();
 }
 
 Ptr_S<Variable> NODES::CONTAINER::LIST::Push::getData(const Port* port) {
-	return list->getData();
+	return di_list->getData();
 }

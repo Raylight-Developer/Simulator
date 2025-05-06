@@ -10,11 +10,13 @@ namespace NODES {
 	namespace HOOK {
 		namespace INPUT {
 			struct Key : Node {
-				Key();
-				string key;
-				PORT_DATA_O is_down;
+				PORT_DATA_O do_is_down;
 
 				GUI::Options* keys;
+
+				string key;
+
+				Key();
 
 				Ptr_S<Variable> getData(const Port* port) override;
 			};

@@ -8,7 +8,7 @@ NODES::VARIABLE::Get::Get() :
 	rect.setWidth(120);
 	rect.setHeight(60);
 
-	out = DATA_O("", VAR_TYPE::NONE);
+	do_var = DATA_O("", VAR_TYPE::NONE);
 
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
@@ -23,7 +23,7 @@ void NODES::VARIABLE::Get::h_setVar(const QString name) {
 
 void NODES::VARIABLE::Get::setVar(const QString name) {
 	var = name;
-	out->setType(FILE.variables[var].type, FILE.variables[var].container);
+	do_var->setType(FILE.variables[var].type, FILE.variables[var].container);
 	label->setText(var);
 }
 

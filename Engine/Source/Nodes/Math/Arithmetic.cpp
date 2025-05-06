@@ -6,9 +6,9 @@ NODES::MATH::Arithmetic::Arithmetic() :
 	rect.setWidth(120);
 	rect.setHeight(80);
 
-	i_a = DATA_I("A", Variable(0.0));
-	i_b = DATA_I("B", Variable(0.0));
-	out = DATA_O("", VAR_TYPE::DOUBLE);
+	di_a = DATA_I("A", Variable(0.0));
+	di_b = DATA_I("B", Variable(0.0));
+	do_res = DATA_O("", VAR_TYPE::DOUBLE);
 
 	enums = new GUI::Options();
 	enums->setFixedSize(80, 20);
@@ -20,10 +20,10 @@ NODES::MATH::Arithmetic::Arithmetic() :
 
 Ptr_S<Variable> NODES::MATH::Arithmetic::getData(const Port* port) {
 	switch (enums->currentIndex()) {
-		case 0: return make_shared<Variable>(*i_a->GET_DATA(F64) + *i_b->GET_DATA(F64));
-		case 1: return make_shared<Variable>(*i_a->GET_DATA(F64) - *i_b->GET_DATA(F64));
-		case 2: return make_shared<Variable>(*i_a->GET_DATA(F64) * *i_b->GET_DATA(F64));
-		case 3: return make_shared<Variable>(*i_a->GET_DATA(F64) / *i_b->GET_DATA(F64));
+		case 0: return make_shared<Variable>(*di_a->GET_DATA(F64) + *di_b->GET_DATA(F64));
+		case 1: return make_shared<Variable>(*di_a->GET_DATA(F64) - *di_b->GET_DATA(F64));
+		case 2: return make_shared<Variable>(*di_a->GET_DATA(F64) * *di_b->GET_DATA(F64));
+		case 3: return make_shared<Variable>(*di_a->GET_DATA(F64) / *di_b->GET_DATA(F64));
 	}
 	return nullptr;
 }

@@ -6,8 +6,8 @@ NODES::MATH::Trigonometry::Trigonometry() :
 	rect.setWidth(140);
 	rect.setHeight(60);
 
-	in = DATA_I("", VAR_TYPE::DOUBLE);
-	out = DATA_O("", VAR_TYPE::DOUBLE);
+	di_value = DATA_I("", VAR_TYPE::DOUBLE);
+	do_res = DATA_O("", VAR_TYPE::DOUBLE);
 
 	enums = new GUI::Options();
 	enums->setFixedSize(100, 20);
@@ -18,7 +18,7 @@ NODES::MATH::Trigonometry::Trigonometry() :
 }
 
 Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) {
-	const F64 x = *in->GET_DATA(F64);
+	const F64 x = *di_value->GET_DATA(F64);
 	switch (enums->currentIndex()) {
 		case  0: return make_shared<Variable>(sin(x));
 		case  1: return make_shared<Variable>(cos(x));
@@ -36,7 +36,7 @@ Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) {
 		case 13: return make_shared<Variable>(1.0 / cosh(x));
 		case 14: return make_shared<Variable>(1.0 / sinh(x));
 	}
-	return in->getData();
+	return di_value->getData();
 }
 
 void NODES::MATH::Trigonometry::saveDetail(CORE::Lace& lace) const {

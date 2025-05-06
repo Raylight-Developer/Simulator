@@ -8,12 +8,12 @@ NODES::HOOK::INPUT::Mouse_Pos::Mouse_Pos() :
 	rect.setWidth(100);
 	rect.setHeight(80);
 
-	screen_pos   = DATA_O("Pos", VAR_TYPE::VEC2);
-	is_on_screen = DATA_O("Valid", VAR_TYPE::BOOL);
+	do_screen_pos   = DATA_O("Pos", VAR_TYPE::VEC2);
+	do_is_on_screen = DATA_O("Valid", VAR_TYPE::BOOL);
 }
 
 Ptr_S<Variable> NODES::HOOK::INPUT::Mouse_Pos::getData(const Port* port) {
-	if (port == screen_pos.get()) {
+	if (port == do_screen_pos.get()) {
 		return make_shared<Variable>(SESSION->hook.mouse_pos);
 	}
 	return make_shared<Variable>(SESSION->hook.mouse_on_screen);

@@ -10,9 +10,10 @@ namespace NODES {
 	namespace HOOK {
 		namespace INPUT {
 			struct Mouse_Wheel : Node {
+				PORT_DATA_O do_angle_x;
+				PORT_DATA_O do_angle_y;
+
 				Mouse_Wheel();
-				PORT_DATA_O angle_x;
-				PORT_DATA_O angle_y;
 
 				Ptr_S<Variable> getData(const Port* port) override;
 			};

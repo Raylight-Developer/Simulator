@@ -9,10 +9,12 @@ using namespace NODE;
 namespace NODES {
 	namespace VARIABLE {
 		struct Set : Node {
-			PORT_EXEC_I exec_in;
-			PORT_EXEC_O exec_out;
-			PORT_DATA_I in;
-			PORT_DATA_O out;
+			PORT_EXEC_I ei_exec;
+			PORT_DATA_I di_value;
+
+			PORT_EXEC_O eo_exec;
+			PORT_DATA_O do_value_pass;
+
 			GUI::Label* label;
 			QString var;
 
