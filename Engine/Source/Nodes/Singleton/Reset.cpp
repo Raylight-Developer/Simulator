@@ -22,5 +22,5 @@ Ptr_S<Variable> NODES::SINGLETON::Reset::getData(const Port* port) {
 
 void NODES::SINGLETON::Reset::loadDetail(const Token_Array& tokens) {
 	FILE.reset = static_pointer_cast<Reset>(shared_from_this());
-	FILE.node_singletons.push(shared_from_this());
+	FILE.node_singletons.push(FILE.reset);
 }

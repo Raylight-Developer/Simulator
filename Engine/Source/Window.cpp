@@ -8,6 +8,7 @@ Window::Window() {
 	session = new Session();
 	session->window = this;
 	Session::initialize(session);
+	session->hook.pixel_ratio = devicePixelRatio();
 
 	shelf = new Node_Shelf(this);
 	timeline = new Timeline(this);

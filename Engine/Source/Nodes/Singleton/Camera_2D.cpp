@@ -17,7 +17,7 @@ NODES::SINGLETON::Camera_2D::Camera_2D() :
 }
 
 void NODES::SINGLETON::Camera_2D::exec(const Port* port) {
-	SESSION->viewport->center_2d = *di_center->GET_DATA(F64_V2);
-	SESSION->viewport->zoom_2d = *di_zoom->GET_DATA(F64);
+	SESSION->hook.camera_pos_2d  = *di_center->GET_DATA(F64_V2);
+	SESSION->hook.camera_zoom_2d = *di_zoom->GET_DATA(F64);
 	eo_exec->exec();
 }

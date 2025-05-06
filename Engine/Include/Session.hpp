@@ -24,6 +24,8 @@ struct Hook {
 	F64_V2 viewport_resolution;
 	F64_V2 camera_pos_2d;
 	F64 camera_zoom_2d;
+	F64 pixel_ratio;
+	F64 delta_time;
 
 	F64_V2 mouse_pos;
 	bool mouse_on_screen;
@@ -32,6 +34,12 @@ struct Hook {
 
 	Timestamp playback_start;
 	U64 current_frame;
+
+	CORE::UMap<void*, function<void(const F64_V2&)>> onWheel;
+	CORE::UMap<void*, function<void(const string&)>> onKeyUp;
+	CORE::UMap<void*, function<void(const string&)>> onKeyDown;
+	CORE::UMap<void*, function<void()>> onReset;
+	CORE::UMap<void*, function<void(const F64&)>> onTick;
 
 	Hook();
 };

@@ -15,15 +15,7 @@ Viewport::Viewport() :
 	resolution(T_V2<U64>(3840U, 2160U)),
 	aspect_ratio(to_F64(resolution.x) / to_F64(resolution.y)),
 
-	center_2d(F64_V2(0.0, 0.0)),
-	zoom_2d(1.0),
-	move_2d(false),
-
-	current_mouse(F64_V2(to_F64(resolution.x / 2ULL), to_F64(resolution.y / 2ULL))),
-	last_mouse(current_mouse),
-
 	window_time(0.0),
-	delta_time(MS_60),
 	playback_delta_time(MS_60)
 {
 	QSurfaceFormat format;
@@ -44,13 +36,20 @@ void Viewport::f_tickUpdate() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	switch (SESSION->playback_mode) {
 		case Playback_Mode::REALTIME: {
+			const F64 delta = SESSION->hook.delta_time > MS_15 ? MS_15 : SESSION->hook.delta_time;
+			for (auto& [k, f] : SESSION->hook.onTick) {
+				f(delta);
+			}
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(delta_time > MS_15 ? MS_15 : delta_time);
+				FILE.euler_tick->exec(delta);
 				SESSION->hook.current_frame++;
 			}
 			break;
 		}
 		case Playback_Mode::PLAYING: {
+			for (auto& [k, f] : SESSION->hook.onTick) {
+				f(playback_delta_time);
+			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(playback_delta_time);
 				SESSION->hook.current_frame++;
@@ -65,7 +64,7 @@ void Viewport::f_tickUpdate() {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(1.0 / SESSION->samples);
+				FILE.euler_tick->exec(playback_delta_time);
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -79,6 +78,9 @@ void Viewport::f_tickUpdate() {
 			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			for (auto& [k, f] : SESSION->hook.onReset) {
+				f();
+			}
 			if (FILE.reset) {
 				FILE.reset->exec();
 			}
@@ -183,9 +185,9 @@ void Viewport::f_inputLoop() {
 
 void Viewport::f_timings() {
 	current_time = chrono::high_resolution_clock::now();
-	delta_time = chrono::duration<double>(current_time - last_time).count();
+	SESSION->hook.delta_time = chrono::duration<double>(current_time - last_time).count();
 	last_time = current_time;
-	window_time += delta_time;
+	window_time += SESSION->hook.delta_time;
 }
 
 void Viewport::f_frameUpdate() {
@@ -206,6 +208,9 @@ void Viewport::paintGL() {
 	f_frameUpdate();
 	f_guiUpdate();
 
+	SESSION->hook.mouse_wheel.x = 0.0;
+	SESSION->hook.mouse_wheel.y = 0.0;
+
 	update();
 }
 
@@ -225,36 +230,12 @@ void Viewport::resizeGL(int w, int h) {
 	OpenGL::resizeFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
 }
 
-void Viewport::mouseReleaseEvent(QMouseEvent* event) {
-	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
-		move_2d = false;
-	}
-}
-
-void Viewport::mousePressEvent(QMouseEvent* event) {
-	last_mouse = p_to_d(event->pos());
-	if (event->button() == Qt::MouseButton::RightButton || event->button() == Qt::MouseButton::MiddleButton) {
-		move_2d = true;
-	}
-}
-
-void Viewport::mouseMoveEvent(QMouseEvent* event) {
-	current_mouse = p_to_d(event->pos());
-	if (move_2d) {
-		const F64_V2 delta = last_mouse - p_to_d(event->pos());
-		center_2d += F64_V2(-delta.x, delta.y) / zoom_2d;
-		last_mouse = p_to_d(event->pos());
-	}
-
-	SESSION->hook.mouse_pos = current_mouse;
-}
-
 void Viewport::wheelEvent(QWheelEvent* event) {
 	const QPoint scrollAmount = event->angleDelta();
-	if (scrollAmount.y() > 0) {
-		zoom_2d *= 1.1;
-	}
-	else {
-		zoom_2d /= 1.1;
+	SESSION->hook.mouse_wheel.x = scrollAmount.x();
+	SESSION->hook.mouse_wheel.y = scrollAmount.y();
+
+	for (auto& [k, f] : SESSION->hook.onWheel) {
+		f(p_to_d(scrollAmount));
 	}
 }

@@ -7,7 +7,6 @@ Script::Script(Session* session) : SCRIPT("OpenGL Script", session) {
 void Script::onLoad() {
 	LOGL(<< "Loaded OpenGL Script");
 
-	header_color = QColor(75, 25, 25);
 	rect.setWidth(140);
 	rect.setHeight(80);
 
@@ -39,7 +38,7 @@ void Script::exec(const Exec_I* port) {
 		out_color = Color(0, 0, 1, 1);
 	}
 
-	const F64 speed = SESSION->viewport->delta_time * (*di_move_speed->GET_DATA(F64));
+	const F64 speed = SESSION->hook.delta_time * (*di_move_speed->GET_DATA(F64));
 
 	if (SESSION->hook.input_down["A"]) {
 		car_pos.x -= speed;

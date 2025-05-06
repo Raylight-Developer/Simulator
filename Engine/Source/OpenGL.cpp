@@ -408,8 +408,8 @@ void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, 
 	const GLuint Shader = SESSION->viewport->gl_data["2D Line Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
 	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
 
@@ -430,8 +430,8 @@ void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color
 	const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
 	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
 	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
@@ -457,8 +457,8 @@ void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& 
 	const GLuint Shader = SESSION->viewport->gl_data["2D Triangle Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
 	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
 
@@ -491,8 +491,8 @@ void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32
 	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
 	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
 
@@ -517,8 +517,8 @@ void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2&
 	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
 	GL->glUseProgram(Shader);
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->viewport->center_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->viewport->zoom_2d));
+	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
 	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
 

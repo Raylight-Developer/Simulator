@@ -18,8 +18,13 @@ void Session::destroy() {
 }
 
 Hook::Hook() {
-	viewport_resolution = F64_V2(1920, 1080);
-	mouse_pos = F64_V2(980, 540);
+	viewport_resolution = F64_V2(1920.0, 1080.0);
+	camera_pos_2d = F64_V2(0.0, 0.0);
+	camera_zoom_2d = 1.0;
+	pixel_ratio = 1.0;
+	delta_time = 1.0 / 60.0;
+
+	mouse_pos = F64_V2(980.0, 540.0);
 	mouse_on_screen = false;
 	mouse_wheel = { 0, 0 };
 

@@ -7,7 +7,9 @@ NODES::SCRIPT::Script::Script(const QString& id, Session* session) :
 	Node(Node_Type::SCRIPT, id),
 	session(session),
 	path("")
-{}
+{
+	header_color = QColor(25, 75, 25);
+}
 
 NODES::SCRIPT::Script::~Script() {
 }
@@ -70,6 +72,15 @@ void NODES::SCRIPT::Script::execAllDownstream() const {
 			static_cast<const PORT::Exec_O*>(port)->exec();
 		}
 	}
+}
+
+bool NODES::SCRIPT::Script::missingInputs() const {
+	for (const Port* port : inputs) {
+		if (!port->connected()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void NODES::SCRIPT::Script::exec(const Port* port) {

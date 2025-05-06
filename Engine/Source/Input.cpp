@@ -26,7 +26,13 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 					H_REDO;
 					return false;
 				}
-				SESSION->hook.input_down[qtKey(key_event->key())] = true;
+
+				const auto key = qtKey(key_event->key());
+
+				SESSION->hook.input_down[key] = false;
+				for (auto& [k, f] : SESSION->hook.onKeyDown) {
+					f(key);
+				}
 			}
 			break;
 		}
@@ -36,26 +42,45 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 				return false;
 			}
 			keys_held.remove(key_event->key());
-			SESSION->hook.input_down[qtKey(key_event->key())] = false;
+			const auto key = qtKey(key_event->key());
+
+			SESSION->hook.input_down[key] = false;
+			for (auto& [k, f] : SESSION->hook.onKeyUp) {
+				f(key);
+			}
+			break;
+		}
+		case QEvent::MouseButtonPress: {
+			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
+			const auto button = qtKey(mouse_event->button());
+
+			SESSION->hook.input_down[button] = true;
+			for (auto& [k, f] : SESSION->hook.onKeyDown) {
+				f(button);
+			}
+			break;
+		}
+		case QEvent::MouseButtonRelease: {
+			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
+			const auto button = qtKey(mouse_event->button());
+
+			SESSION->hook.input_down[button] = false;
+			for (auto& [k, f] : SESSION->hook.onKeyUp) {
+				f(button);
+			}
 			break;
 		}
 		case QEvent::MouseMove: {
+			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			if (SESSION->window->viewport->underMouse()) {
 				SESSION->hook.mouse_on_screen = true;
 			}
 			else {
 				SESSION->hook.mouse_on_screen = false;
 			}
-			break;
-		}
-		case QEvent::Wheel: {
-			QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
-			const QPoint scrollAmount = wheel_event->angleDelta();
-			SESSION->hook.mouse_wheel.x = scrollAmount.x();
-			SESSION->hook.mouse_wheel.y = scrollAmount.y();
+			SESSION->hook.mouse_pos = p_to_d(mouse_event->position()) * SESSION->hook.pixel_ratio;
 			break;
 		}
 	}
-
 	return QObject::eventFilter(obj, event);
 }

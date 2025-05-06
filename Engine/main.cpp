@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 
 	auto window = new Window();
 
-	Input* input = new Input();
+	auto input = new Input();
 	app->installEventFilter(input);
 
 	const int res = app->exec();

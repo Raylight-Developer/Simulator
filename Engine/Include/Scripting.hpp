@@ -18,6 +18,7 @@ namespace NODES {
 			virtual ~Script();
 
 			void execAllDownstream() const;
+			bool missingInputs() const;
 
 			void exec(const Port* port) final override;
 			Ptr_S<Variable> getData(const Port* port) final override;
