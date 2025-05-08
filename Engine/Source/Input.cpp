@@ -29,7 +29,7 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 
 				const auto key = qtKey(key_event->key());
 
-				SESSION->hook.input_down[key] = false;
+				SESSION->hook.input_down[key] = true;
 				for (auto& [k, f] : SESSION->hook.onKeyDown) {
 					f(key);
 				}

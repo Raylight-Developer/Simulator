@@ -17,29 +17,32 @@ void Script::onLoad() {
 
 	out_color = Color(1, 1, 1, 1);
 	car_pos = F64_V2(0, 0);
+
+
+	SESSION->hook.onKeyDown[this] = [this](const string& key) {
+		if (key == "1") {
+			out_color = Color(1, 1, 1, 1);
+		}
+		else if (key == "2") {
+			out_color = Color(1, 0, 0, 1);
+		}
+		else if (key == "3") {
+			out_color = Color(0, 1, 0, 1);
+		}
+		else if (key == "4") {
+			out_color = Color(0, 0, 1, 1);
+		}
+	};
 }
 
 void Script::onUnload() {
+	SESSION->hook.onKeyDown.remove(this);
+
 	LOGL(<< "Unloaded OpenGL Script");
-	Session::destroy();
 }
 
 void Script::exec(const Exec_I* port) {
-	if (SESSION->hook.input_down["1"]) {
-		out_color = Color(1, 1, 1, 1);
-	}
-	else if (SESSION->hook.input_down["2"]) {
-		out_color = Color(1, 0, 0, 1);
-	}
-	else if (SESSION->hook.input_down["3"]) {
-		out_color = Color(0, 1, 0, 1);
-	}
-	else if (SESSION->hook.input_down["4"]) {
-		out_color = Color(0, 0, 1, 1);
-	}
-
 	const F64 speed = SESSION->hook.delta_time * (*di_move_speed->GET_DATA(F64));
-
 	if (SESSION->hook.input_down["A"]) {
 		car_pos.x -= speed;
 	}

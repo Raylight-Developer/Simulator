@@ -46,6 +46,7 @@ struct Node : Self<Node>, QGraphicsItem {
 	~Node();
 
 	// TODO linker error if virtual functions are defined ei_exec Node.cpp
+	// TODO resizable nodes
 
 	virtual void exec(const NODE::Port* port) {}
 	virtual Ptr_S<Variable> getData(const NODE::Port* port) { return nullptr; };

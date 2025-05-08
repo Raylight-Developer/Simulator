@@ -29,9 +29,9 @@ struct Node_Editor : GUI::Graphics_View {
 
 	void mouseReleaseEvent(QMouseEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override; // TODO Fix sticky nodes become unmovable and non deletable
-	void mouseMoveEvent(QMouseEvent* event) override;
+	void mouseMoveEvent(QMouseEvent* event) override; // TODO move view on connection drag
 	void keyPressEvent(QKeyEvent* event) override;
-	void wheelEvent(QWheelEvent* event) override;
+	void wheelEvent(QWheelEvent* event) override; // TODO zoom relative to mouse
 
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;

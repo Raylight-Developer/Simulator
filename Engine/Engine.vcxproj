@@ -234,7 +234,7 @@
       <Command>"lib.exe" /out:"$(OutDir)/Engine.lib" "$(IntermediateOutputPath)*.obj"
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL_Test /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL-Spaceship /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -269,7 +269,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p
       <Command>"lib.exe" /out:"$(OutDir)/Engine.lib" "$(IntermediateOutputPath)*.obj"
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL_Test /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL-Spaceship /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
