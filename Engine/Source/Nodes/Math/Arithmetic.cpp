@@ -29,7 +29,7 @@ Ptr_S<Variable> NODES::MATH::Arithmetic::getData(const Port* port) {
 }
 
 void NODES::MATH::Arithmetic::saveDetail(CORE::Lace& lace) const {
-	lace << enums->currentText();
+	lace NL << enums->currentText();
 }
 
 void NODES::MATH::Arithmetic::loadDetail(const Token_Array& tokens) {

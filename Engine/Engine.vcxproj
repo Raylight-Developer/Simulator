@@ -11,6 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Quat.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat2.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat3.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat4.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Convert\I64_To_F64.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Init.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Create.cpp" />
     <ClCompile Include="Source\Nodes\Exec\Loop\For.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Modify.cpp" />
     <ClCompile Include="Source\Nodes\Container\List\Access.cpp" />
@@ -31,7 +39,6 @@
     <ClCompile Include="Source\Nodes\Boolean\Select.cpp" />
     <ClCompile Include="Source\Nodes\Exec\If.cpp" />
     <ClCompile Include="Source\Nodes\Exec\If_Else.cpp" />
-    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp" />
     <ClCompile Include="Source\Nodes\Singleton\Background.cpp" />
     <ClCompile Include="Source\Nodes\Variables\Constant.cpp" />
     <ClCompile Include="Source\Nodes\Variables\Get.cpp" />
@@ -60,8 +67,13 @@
     <ClCompile Include="Source\Nodes\Rendering\2D\Triangle.cpp" />
     <ClCompile Include="Source\Nodes\Math\Trigonometry.cpp" />
     <ClCompile Include="Source\Nodes\Exec\Loop\While.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec2.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec3.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Nodes\Cast\Convert\I64_To_F64.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Create.hpp" />
     <ClInclude Include="Include\Nodes\Exec\Loop\For.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Access.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Clear.hpp" />
@@ -103,7 +115,6 @@
     <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp" />
     <ClInclude Include="Include\Nodes\Rendering\2D\Triangle.hpp" />
     <ClInclude Include="Include\Nodes\Variables\Set.hpp" />
-    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp" />
     <ClInclude Include="Include\Nodes\Boolean\Select.hpp" />
     <ClInclude Include="Include\Nodes\Math\Trigonometry.hpp" />
     <ClInclude Include="Include\Nodes\Hook\Input\Key.hpp" />
@@ -112,6 +123,15 @@
     <ClInclude Include="Include\Nodes\Hook\Input\Mouse.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Modify.hpp" />
     <ClInclude Include="Include\Nodes\Exec\Loop\While.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Init.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat2.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat3.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat4.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec2.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec3.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec4.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Quat.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>

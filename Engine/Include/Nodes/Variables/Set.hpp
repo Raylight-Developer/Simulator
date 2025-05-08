@@ -26,6 +26,9 @@ namespace NODES {
 			void exec(const Port* port) override;
 			Ptr_S<Variable> getData(const Port* port) override;
 
+			void saveDetail(CORE::Lace& lace) const override;
+			void loadDetail(const Token_Array& tokens) override;
+
 			struct Set_Variable : Self<Set_Variable>, CORE::CMD {
 				Ptr_S<Set> node;
 				QString from, to;

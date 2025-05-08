@@ -8,15 +8,15 @@ NODES::EXEC::LOOP::Subsample::Subsample() :
 	rect.setWidth(160);
 	rect.setHeight(140);
 
-	ei_exec   = EXEC_I("");
-	di_delta  = DATA_I("Delta", Variable(0.004166666));
-	di_count  = DATA_I("Samples", Variable(4LL));
+	ei_exec  = EXEC_I("");
+	di_delta = DATA_I("Delta", Variable(0.004166666));
+	di_count = DATA_I("Samples", Variable(4LL));
 
-	eo_finished    = EXEC_O("Finished");
-	eo_sample = EXEC_O("Tick");
-	do_delta     = DATA_O("Delta", VAR_TYPE::DOUBLE);
-	do_calls     = DATA_O("Calls", VAR_TYPE::INT);
-	do_runtime   = DATA_O("Runtime", VAR_TYPE::DOUBLE);
+	eo_finished = EXEC_O("Finished");
+	eo_sample   = EXEC_O("Tick");
+	do_delta    = DATA_O("Delta", VAR_TYPE::DOUBLE);
+	do_calls    = DATA_O("Calls", VAR_TYPE::INT);
+	do_runtime  = DATA_O("Runtime", VAR_TYPE::DOUBLE);
 
 	calls = 0;
 }

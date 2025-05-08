@@ -62,6 +62,9 @@ struct Variable {
 	void save(CORE::Lace& lace) const;
 	static Variable load(const Tokens& tokens);
 
+	QString str() const;
+	string getSingleVar() const;
+
 	template <typename T>
 	inline T* get() {
 		return any_cast<T>(&data);

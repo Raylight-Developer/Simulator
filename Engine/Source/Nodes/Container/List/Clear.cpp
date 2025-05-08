@@ -89,3 +89,11 @@ void NODES::CONTAINER::LIST::Clear::exec(const Port* port) {
 Ptr_S<Variable> NODES::CONTAINER::LIST::Clear::getData(const Port* port) {
 	return di_list->getData();
 }
+
+void NODES::CONTAINER::LIST::Clear::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Clear::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
+}

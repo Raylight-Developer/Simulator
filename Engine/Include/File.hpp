@@ -10,12 +10,12 @@ struct File {
 	CORE::BiMap<U64, U64> pointer_map;
 
 	Ptr_S<NODES::SINGLETON::Euler_Tick> euler_tick;
-	Ptr_S<NODES::SINGLETON::Reset> reset;
+	Ptr_S<NODES::SINGLETON::Init> init;
 	
 	CORE::Stack<Ptr_S<Node>> nodes;
 	CORE::Stack<Ptr_S<Node>> node_singletons;
 
-	CORE::UMap<QString, Variable> variables;
+	CORE::UMap<QString, Ptr_S<Variable>> variables;
 	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;
 
 	CORE::Stack<NODES::SCRIPT::Script*> scripts;

@@ -40,7 +40,7 @@ Ptr_S<Variable> NODES::MATH::Trigonometry::getData(const Port* port) {
 }
 
 void NODES::MATH::Trigonometry::saveDetail(CORE::Lace& lace) const {
-	lace << enums->currentText();
+	lace NL << enums->currentText();
 }
 
 void NODES::MATH::Trigonometry::loadDetail(const Token_Array& tokens) {

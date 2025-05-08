@@ -93,3 +93,11 @@ void NODES::CONTAINER::LIST::Insert::exec(const Port* port) {
 Ptr_S<Variable> NODES::CONTAINER::LIST::Insert::getData(const Port* port) {
 	return di_list->getData();
 }
+
+void NODES::CONTAINER::LIST::Insert::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Insert::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
+}

@@ -91,3 +91,11 @@ void NODES::CONTAINER::LIST::Remove::exec(const Port* port) {
 Ptr_S<Variable> NODES::CONTAINER::LIST::Remove::getData(const Port* port) {
 	return di_list->getData();
 }
+
+void NODES::CONTAINER::LIST::Remove::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Remove::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
+}

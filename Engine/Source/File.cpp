@@ -112,6 +112,12 @@ void File::loadScripts(const Token_Array& token_data) {
 void File::loadVariables(const Token_Array& token_data) {
 	LOGL(<< MSG_BLUE("[Variables]"));
 	LOG++;
+	const CORE::Stack<Token_Array> var_data = getBlocks("┌Variable", "└Variable", token_data, false);
+	for (const Token_Array& data : var_data) {
+		const QString var_name = qstr(f_join(data[0]));
+		variables[var_name] = make_shared<Variable>(Variable::load(data[1]));
+		SESSION->window->variable_editor->list->addItem(var_name);
+	}
 	LOG--;
 }
 
@@ -196,7 +202,17 @@ void File::saveScripts(CORE::Lace& lace) {
 void File::saveVariables(CORE::Lace& lace) {
 	lace NL << "┌Variables( " << variables.size() << " )";
 	lace++;
-
+	U64 i = 0;
+	for (const auto& [var_name, var] : variables) {
+		lace NL << "┌Variable [ " << i << " ]";
+		lace++;
+		lace NL << var_name;
+		lace NL;
+		var->save(lace);
+		lace--;
+		lace NL << "└Variable";
+		i++;
+	}
 	lace--;
 	lace NL << "└Variables";
 }

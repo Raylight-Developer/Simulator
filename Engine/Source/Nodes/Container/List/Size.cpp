@@ -76,3 +76,11 @@ Ptr_S<Variable> NODES::CONTAINER::LIST::Size::getData(const Port* port) {
 	}
 	return make_shared<Variable>(0LL);
 }
+
+void NODES::CONTAINER::LIST::Size::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Size::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
+}

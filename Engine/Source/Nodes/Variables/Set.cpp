@@ -21,6 +21,31 @@ NODES::VARIABLE::Set::Set() :
 	proxy_label->setPos(20, 30);
 }
 
+void NODES::VARIABLE::Set::exec(const Port* port) {
+	node_error = false;
+	if (!di_value->connected()) {
+		node_error = true;
+		return;
+	}
+	FILE.variables[var] = di_value->getData();
+	eo_exec->exec();
+}
+
+Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) {
+	return FILE.variables[var];
+}
+
+void NODES::VARIABLE::Set::saveDetail(CORE::Lace& lace) const {
+	lace NL << var;
+}
+
+void NODES::VARIABLE::Set::loadDetail(const Token_Array& tokens) {
+	if (!tokens.empty()) {
+		setVar(qstr(f_join(tokens[0])));
+		FILE.variable_refs[var].push(shared_from_this());
+	}
+}
+
 void NODES::VARIABLE::Set::h_setVar(const QString name) {
 	H_PUSH(make_shared<Set_Variable>(static_pointer_cast<Set>(shared_from_this()), this->var, name));
 }
@@ -29,28 +54,14 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 	var = name;
 	label->setText(var);
 	if (name != "") {
-		const Variable& var_ref = FILE.variables[var];
-		di_value->setType(var_ref.type, var_ref.container);
-		do_value_pass->setType(var_ref.type, var_ref.container);
+		const Variable* var_ref = FILE.variables[var].get();
+		di_value->setType(var_ref->type, var_ref->container);
+		do_value_pass->setType(var_ref->type, var_ref->container);
 	}
 	else {
 		di_value->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 		do_value_pass->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 	}
-}
-
-void NODES::VARIABLE::Set::exec(const Port* port) {
-	node_error = false;
-	if (!di_value->connected()) {
-		node_error = true;
-		return;
-	}
-	FILE.variables[var] = *di_value->getData();
-	eo_exec->exec();
-}
-
-Ptr_S<Variable> NODES::VARIABLE::Set::getData(const Port* port) {
-	return make_shared<Variable>(FILE.variables[var]);
 }
 
 NODES::VARIABLE::Set::Set_Variable::Set_Variable(Ptr_S<Set> node, const QString& from, const QString& to) :

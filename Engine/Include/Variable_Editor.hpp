@@ -10,6 +10,8 @@ namespace Varialbe_Editor {
 }
 
 struct Variable_Editor : GUI::Linear_Contents {
+	Varialbe_Editor::List* list;
+
 	Variable_Editor(QWidget* parent);
 
 	void updateVar(const QString& name, const Variable& var) const;

@@ -51,11 +51,11 @@ Timeline::Timeline(QWidget* parent) :
 		SESSION->hook.playback_start = NOW;
 		SESSION->hook.current_frame = 0;
 
-		for (auto& [k, f] : SESSION->hook.onReset) {
+		for (auto& [k, f] : SESSION->hook.onInit) {
 			f();
 		}
-		if (FILE.reset) {
-			FILE.reset->exec();
+		if (FILE.init) {
+			FILE.init->exec();
 		}
 		if (FILE.euler_tick) {
 			FILE.euler_tick->runtime = 0.0;

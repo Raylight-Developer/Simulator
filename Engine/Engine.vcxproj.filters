@@ -46,9 +46,6 @@
     <ClInclude Include="Include\Scripting.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Nodes\Singleton\Reset.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Nodes\Rendering\2D\Rectangle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -145,6 +142,17 @@
     <ClInclude Include="Include\Nodes\Container\List\Modify.hpp" />
     <ClInclude Include="Include\Nodes\Exec\Loop\For.hpp" />
     <ClInclude Include="Include\Nodes\Exec\Loop\While.hpp" />
+    <ClInclude Include="Include\Nodes\Container\List\Create.hpp" />
+    <ClInclude Include="Include\Nodes\Singleton\Init.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Convert\I64_To_F64.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec2.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec3.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec4.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat2.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat3.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat4.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Quat.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -216,9 +224,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Nodes\Rendering\2D\Rectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Nodes\Singleton\Reset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Scripting.cpp">
@@ -296,5 +301,16 @@
     <ClCompile Include="Source\Nodes\Container\List\Modify.cpp" />
     <ClCompile Include="Source\Nodes\Exec\Loop\For.cpp" />
     <ClCompile Include="Source\Nodes\Exec\Loop\While.cpp" />
+    <ClCompile Include="Source\Nodes\Container\List\Create.cpp" />
+    <ClCompile Include="Source\Nodes\Singleton\Init.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Convert\I64_To_F64.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec2.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec3.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec4.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat2.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat3.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat4.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Quat.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
   </ItemGroup>
 </Project>

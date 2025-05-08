@@ -78,11 +78,11 @@ void Viewport::f_tickUpdate() {
 			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			for (auto& [k, f] : SESSION->hook.onReset) {
+			for (auto& [k, f] : SESSION->hook.onInit) {
 				f();
 			}
-			if (FILE.reset) {
-				FILE.reset->exec();
+			if (FILE.init) {
+				FILE.init->exec();
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->runtime = 0.0;
@@ -180,9 +180,6 @@ void Viewport::f_guiUpdate() {
 	}
 }
 
-void Viewport::f_inputLoop() {
-}
-
 void Viewport::f_timings() {
 	current_time = chrono::high_resolution_clock::now();
 	SESSION->hook.delta_time = chrono::duration<double>(current_time - last_time).count();
@@ -197,12 +194,15 @@ void Viewport::f_frameUpdate() {
 void Viewport::initializeGL() {
 	initializeOpenGLFunctions();
 	f_pipeline();
+
+	if (FILE.init) {
+		FILE.init->exec();
+	}
 	start_time = chrono::high_resolution_clock::now();
 }
 
 void Viewport::paintGL() {
 	f_timings();
-	f_inputLoop();
 	f_tickUpdate();
 
 	f_frameUpdate();

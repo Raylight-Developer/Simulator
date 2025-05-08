@@ -2,6 +2,8 @@
 
 Script::Script(Session* session) : SCRIPT("Camera Controller", session) {
 	SCRIPT_INIT;
+	// TODO zoom under mouse
+	// TODO sensitivity input
 }
 
 void Script::onLoad() {
@@ -34,7 +36,7 @@ void Script::onLoad() {
 			panning = true;
 		}
 	};
-	SESSION->hook.onReset[this] = [this]() {
+	SESSION->hook.onInit[this] = [this]() {
 		SESSION->hook.camera_pos_2d = F64_V2(0.0, 0.0);
 		SESSION->hook.camera_zoom_2d = 1.0;
 	};
@@ -44,7 +46,7 @@ void Script::onUnload() {
 	SESSION->hook.onWheel.remove(this);
 	SESSION->hook.onKeyUp.remove(this);
 	SESSION->hook.onKeyDown.remove(this);
-	SESSION->hook.onReset.remove(this);
+	SESSION->hook.onInit.remove(this);
 	LOGL(<< "Unloaded Camera Controller Script");
 }
 

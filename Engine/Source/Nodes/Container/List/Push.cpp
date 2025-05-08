@@ -9,7 +9,7 @@ NODES::CONTAINER::LIST::Push::Push() :
 
 	ei_exec = EXEC_I("");
 	di_list = DATA_I_C("List", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
-	di_value = DATA_I("Index", VAR_TYPE::NONE);
+	di_value = DATA_I("Value", VAR_TYPE::NONE);
 
 	eo_exec = EXEC_O("");
 	do_list_pass = DATA_O_C("", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
@@ -90,4 +90,12 @@ void NODES::CONTAINER::LIST::Push::exec(const Port* port) {
 
 Ptr_S<Variable> NODES::CONTAINER::LIST::Push::getData(const Port* port) {
 	return di_list->getData();
+}
+
+void NODES::CONTAINER::LIST::Push::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Push::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
 }

@@ -38,7 +38,8 @@ struct Hook {
 	CORE::UMap<void*, function<void(const F64_V2&)>> onWheel;
 	CORE::UMap<void*, function<void(const string&)>> onKeyUp;
 	CORE::UMap<void*, function<void(const string&)>> onKeyDown;
-	CORE::UMap<void*, function<void()>> onReset;
+
+	CORE::UMap<void*, function<void()>> onInit;
 	CORE::UMap<void*, function<void(const F64&)>> onTick;
 
 	Hook();

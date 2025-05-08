@@ -241,6 +241,7 @@ void NODE::PORT::Data_I::connect(Data_O* port) {
 	if (onConnection) {
 		onConnection(this, connection.get());
 	}
+	setToolTip("Upstream Data");
 }
 
 void NODE::PORT::Data_I::disconnect() {
@@ -254,11 +255,13 @@ void NODE::PORT::Data_I::disconnect() {
 	if (onDisconnection) {
 		onDisconnection(this);
 	}
+	setToolTip(variable->str());
 }
 
 void NODE::PORT::Data_I::setType(const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) {
 	variable = make_shared<Variable>(var_type, var_container);
 	color = VAR::toColor(var_type);
+	setToolTip(variable->str());
 	update();
 }
 

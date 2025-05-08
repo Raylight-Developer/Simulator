@@ -19,6 +19,9 @@ namespace NODES {
 				Size();
 				
 				Ptr_S<Variable> getData(const Port* port) override;
+
+				void saveDetail(CORE::Lace& lace) const override;
+				void loadDetail(const Token_Array& tokens) override;
 			};
 		}
 	}

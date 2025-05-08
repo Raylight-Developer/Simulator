@@ -53,7 +53,8 @@ void NODES::CONTAINER::LIST::Modify::exec(const Port* port) {
 			break;
 		}
 		case 5: {
-			di_list->GET_LIST(F64_V2)->set(list_index, *di_value->GET_DATA(F64_V2));
+			auto list = di_list->GET_LIST(F64_V2);
+			list->set(list_index, *di_value->GET_DATA(F64_V2));
 			break;
 		}
 		case 6: {
@@ -86,4 +87,12 @@ void NODES::CONTAINER::LIST::Modify::exec(const Port* port) {
 		}
 	}
 	eo_exec->exec();
+}
+
+void NODES::CONTAINER::LIST::Modify::saveDetail(CORE::Lace& lace) const {
+	lace NL << var_type->currentText();
+}
+
+void NODES::CONTAINER::LIST::Modify::loadDetail(const Token_Array& tokens) {
+	var_type->setCurrentText(qstr(tokens[0][0]));
 }

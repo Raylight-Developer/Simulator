@@ -368,6 +368,8 @@ void Node_Editor::wheelEvent(QWheelEvent* event) {
 		}
 	}
 
+	// TODO relative to mouse
+
 	GUI::Graphics_View::wheelEvent(event);
 	viewport()->update();
 }
@@ -397,32 +399,38 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "VARIABLE GET") {
 				node = make_shared<NODES::VARIABLE::Get>();
 			}
+			else if (type == "CAST CONVERT I64 TO F64") {
+				node = make_shared<NODES::CAST::CONVERT::I64_To_F64>();
+			}
+			else if (type == "CAST MAKE VEC2") {
+				node = make_shared<NODES::CAST::MAKE::Vec2>();
+			}
+			else if (type == "CAST MAKE VEC3") {
+				node = make_shared<NODES::CAST::MAKE::Vec3>();
+			}
+			else if (type == "CAST MAKE VEC4") {
+				node = make_shared<NODES::CAST::MAKE::Vec4>();
+			}
+			else if (type == "CAST MAKE COLOR") {
+				node = make_shared<NODES::CAST::MAKE::Color>();
+			}
+			else if (type == "CAST MAKE QUAT") {
+				node = make_shared<NODES::CAST::MAKE::Quat>();
+			}
+			else if (type == "CAST MAKE MAT2") {
+				node = make_shared<NODES::CAST::MAKE::Mat2>();
+			}
+			else if (type == "CAST MAKE MAT3") {
+				node = make_shared<NODES::CAST::MAKE::Mat3>();
+			}
+			else if (type == "CAST MAKE MAT4") {
+				node = make_shared<NODES::CAST::MAKE::Mat4>();
+			}
 			else if (type == "MATH ARITHMETIC") {
 				node = make_shared<NODES::MATH::Arithmetic>();
 			}
 			else if (type == "MATH TRIGONOMETRY") {
 				node = make_shared<NODES::MATH::Trigonometry>();
-			}
-			else if (type == "MAKE VEC2") {
-				node = make_shared<NODES::CAST::MAKE::Vec2>();
-			}
-			else if (type == "MAKE VEC3") {
-				node = make_shared<NODES::CAST::MAKE::Vec3>();
-			}
-			else if (type == "MAKE VEC4") {
-				node = make_shared<NODES::CAST::MAKE::Vec4>();
-			}
-			else if (type == "MAKE QUAT") {
-				node = make_shared<NODES::CAST::MAKE::Quat>();
-			}
-			else if (type == "MAKE MAT2") {
-				node = make_shared<NODES::CAST::MAKE::Mat2>();
-			}
-			else if (type == "MAKE MAT3") {
-				node = make_shared<NODES::CAST::MAKE::Mat3>();
-			}
-			else if (type == "MAKE MAT4") {
-				node = make_shared<NODES::CAST::MAKE::Mat4>();
 			}
 			else if (type == "BOOLEAN COMPARISON") {
 				node = make_shared<NODES::BOOLEAN::Compare>();
@@ -432,6 +440,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "CONTAINER LIST ACCESS") {
 				node = make_shared<NODES::CONTAINER::LIST::Access>();
+			}
+			else if (type == "CONTAINER LIST CREATE") {
+				node = make_shared<NODES::CONTAINER::LIST::Create>();
 			}
 			else if (type == "CONTAINER LIST INSERT") {
 				node = make_shared<NODES::CONTAINER::LIST::Insert>();
@@ -530,12 +541,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 						FILE.euler_tick = static_pointer_cast<NODES::SINGLETON::Euler_Tick>(node);
 					}
 				}
-				else if (type == "SINGLETON RESET") {
-					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_RESET)
+				else if (type == "SINGLETON INIT") {
+					bool exists = NODE_EXISTS(NODES::Node_Type::SINGLETON_INIT)
 					if (!exists) {
-						node = make_shared<NODES::SINGLETON::Reset>();
+						node = make_shared<NODES::SINGLETON::Init>();
 						FILE.node_singletons.push(node);
-						FILE.reset = static_pointer_cast<NODES::SINGLETON::Reset>(node);
+						FILE.init = static_pointer_cast<NODES::SINGLETON::Init>(node);
 					}
 				}
 			}
