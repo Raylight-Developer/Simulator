@@ -695,103 +695,103 @@ void NODES::VARIABLE::Constant::setValue(const Variable& variable) {
 
 	switch (value.type) {
 		case VAR_TYPE::DOUBLE: {
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(*value.get<F64>()));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(*value.get<F64>()));
 			break;
 		}
 		case VAR_TYPE::INT: {
-			static_cast<GUI::Int_Input*>(proxies[0]->widget())->setTextInl(qstr(*value.get<I64>()));
+			static_cast<GUI::Int_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(*value.get<I64>()));
 			break;
 		}
 		case VAR_TYPE::BOOL: {
-			static_cast<GUI::Toggle*>(proxies[0]->widget())->setCheckedInl(*value.get<bool>());
+			static_cast<GUI::Toggle*>(proxies.ptr(0)->widget())->setCheckedInl(*value.get<bool>());
 			break;
 		}
 		case VAR_TYPE::STRING: {
-			static_cast<GUI::Value_Input*>(proxies[0]->widget())->setTextInl(*value.get<QString>());
+			static_cast<GUI::Value_Input*>(proxies.ptr(0)->widget())->setTextInl(*value.get<QString>());
 			break;
 		}
 		case VAR_TYPE::VEC2: {
 			const auto val = *value.get<F64_V2>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val.x));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val.y));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val.x));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val.y));
 			break;
 		}
 		case VAR_TYPE::VEC3: {
 			const auto val = *value.get<F64_V3>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val.x));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val.y));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val.z));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val.x));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val.y));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val.z));
 			break;
 		}
 		case VAR_TYPE::VEC4: {
 			const auto val = *value.get<F64_V4>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val.x));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val.y));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val.z));
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val.w));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val.x));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val.y));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val.z));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val.w));
 			break;
 		}
 		case VAR_TYPE::COLOR: {
 			const auto val = *value.get<Color>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val.r()));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val.g()));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val.b()));
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val.a()));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val.r()));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val.g()));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val.b()));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val.a()));
 			break;
 		}
 		case VAR_TYPE::QUAT: {
 			const auto val = *value.get<F64_Quat>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val.w));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val.x));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val.y));
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val.z));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val.w));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val.x));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val.y));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val.z));
 			break;
 		}
 		case VAR_TYPE::MAT2: {
 			const auto val = *value.get<F64_M2>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val[0][0]));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val[0][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val[0][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val[0][1]));
 	
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val[1][0]));
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val[1][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val[1][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val[1][1]));
 			break;
 		}
 		case VAR_TYPE::MAT3: {
 			const auto val = *value.get<F64_M3>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val[0][0]));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val[0][1]));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val[0][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val[0][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val[0][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val[0][2]));
 	
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val[1][0]));
-			static_cast<GUI::Double_Input*>(proxies[4]->widget())->setTextInl(qstr(val[1][1]));
-			static_cast<GUI::Double_Input*>(proxies[5]->widget())->setTextInl(qstr(val[1][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val[1][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(4)->widget())->setTextInl(qstr(val[1][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(5)->widget())->setTextInl(qstr(val[1][2]));
 	
-			static_cast<GUI::Double_Input*>(proxies[6]->widget())->setTextInl(qstr(val[2][0]));
-			static_cast<GUI::Double_Input*>(proxies[7]->widget())->setTextInl(qstr(val[2][1]));
-			static_cast<GUI::Double_Input*>(proxies[8]->widget())->setTextInl(qstr(val[2][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(6)->widget())->setTextInl(qstr(val[2][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(7)->widget())->setTextInl(qstr(val[2][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(8)->widget())->setTextInl(qstr(val[2][2]));
 			break;
 		}
 		case VAR_TYPE::MAT4: {
 			const auto val = *value.get<F64_M4>();
-			static_cast<GUI::Double_Input*>(proxies[0]->widget())->setTextInl(qstr(val[0][0]));
-			static_cast<GUI::Double_Input*>(proxies[1]->widget())->setTextInl(qstr(val[0][1]));
-			static_cast<GUI::Double_Input*>(proxies[2]->widget())->setTextInl(qstr(val[0][2]));
-			static_cast<GUI::Double_Input*>(proxies[3]->widget())->setTextInl(qstr(val[0][3]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(0)->widget())->setTextInl(qstr(val[0][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(1)->widget())->setTextInl(qstr(val[0][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(2)->widget())->setTextInl(qstr(val[0][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(3)->widget())->setTextInl(qstr(val[0][3]));
 	
-			static_cast<GUI::Double_Input*>(proxies[4]->widget())->setTextInl(qstr(val[1][0]));
-			static_cast<GUI::Double_Input*>(proxies[5]->widget())->setTextInl(qstr(val[1][1]));
-			static_cast<GUI::Double_Input*>(proxies[6]->widget())->setTextInl(qstr(val[1][2]));
-			static_cast<GUI::Double_Input*>(proxies[7]->widget())->setTextInl(qstr(val[1][3]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(4)->widget())->setTextInl(qstr(val[1][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(5)->widget())->setTextInl(qstr(val[1][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(6)->widget())->setTextInl(qstr(val[1][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(7)->widget())->setTextInl(qstr(val[1][3]));
 	
-			static_cast<GUI::Double_Input*>(proxies[ 8]->widget())->setTextInl(qstr(val[2][0]));
-			static_cast<GUI::Double_Input*>(proxies[ 9]->widget())->setTextInl(qstr(val[2][1]));
-			static_cast<GUI::Double_Input*>(proxies[10]->widget())->setTextInl(qstr(val[2][2]));
-			static_cast<GUI::Double_Input*>(proxies[11]->widget())->setTextInl(qstr(val[2][3]));
+			static_cast<GUI::Double_Input*>(proxies.ptr( 8)->widget())->setTextInl(qstr(val[2][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr( 9)->widget())->setTextInl(qstr(val[2][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(10)->widget())->setTextInl(qstr(val[2][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(11)->widget())->setTextInl(qstr(val[2][3]));
 	
-			static_cast<GUI::Double_Input*>(proxies[12]->widget())->setTextInl(qstr(val[3][0]));
-			static_cast<GUI::Double_Input*>(proxies[13]->widget())->setTextInl(qstr(val[3][1]));
-			static_cast<GUI::Double_Input*>(proxies[14]->widget())->setTextInl(qstr(val[3][2]));
-			static_cast<GUI::Double_Input*>(proxies[15]->widget())->setTextInl(qstr(val[3][3]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(12)->widget())->setTextInl(qstr(val[3][0]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(13)->widget())->setTextInl(qstr(val[3][1]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(14)->widget())->setTextInl(qstr(val[3][2]));
+			static_cast<GUI::Double_Input*>(proxies.ptr(15)->widget())->setTextInl(qstr(val[3][3]));
 			break;
 		}
 	}

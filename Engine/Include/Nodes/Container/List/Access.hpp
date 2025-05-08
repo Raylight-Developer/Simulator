@@ -14,6 +14,7 @@ namespace NODES {
 				PORT_DATA_I di_index;
 
 				PORT_DATA_O do_value;
+				PORT_DATA_O do_index_pass;
 
 				GUI::Options* var_type;
 

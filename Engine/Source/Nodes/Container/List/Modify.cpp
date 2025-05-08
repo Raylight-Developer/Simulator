@@ -13,6 +13,9 @@ NODES::CONTAINER::LIST::Modify::Modify() :
 	di_value = DATA_I("Value", VAR_TYPE::NONE);
 
 	eo_exec  = EXEC_O("");
+	do_list_pass  = DATA_O_C("", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
+	do_index_pass = DATA_O("", VAR_TYPE::INT);
+	do_value_pass = DATA_O("", VAR_TYPE::NONE);
 
 	var_type = new GUI::Options();
 	var_type->setFixedSize(100, 20);
@@ -24,6 +27,8 @@ NODES::CONTAINER::LIST::Modify::Modify() :
 	QObject::connect(var_type, &GUI::Options::currentIndexChanged, [this](int index) {
 		di_list ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
 		di_value->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::NONE);
+		do_list_pass ->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::LIST);
+		do_value_pass->setType(static_cast<VAR_TYPE>(index), VAR_CONTAINER::NONE);
 	});
 }
 
@@ -87,6 +92,19 @@ void NODES::CONTAINER::LIST::Modify::exec(const Port* port) {
 		}
 	}
 	eo_exec->exec();
+}
+
+Ptr_S<Variable> NODES::CONTAINER::LIST::Modify::getData(const Port* port) {
+	if (port == do_list_pass.get()) {
+		di_list->getData();
+	}
+	else if (port == do_index_pass.get()) {
+		return di_index->getData();
+	}
+	else if (port == do_value_pass.get()) {
+		return di_value->getData();
+	}
+	return nullptr;
 }
 
 void NODES::CONTAINER::LIST::Modify::saveDetail(CORE::Lace& lace) const {

@@ -23,12 +23,12 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(undo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inverse(counter)->info), 1);
+					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inverse(counter)->info));
+				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
 				counter++;
 			}
 		}
@@ -41,12 +41,12 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(undo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inverse(counter)->info), 1);
+					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inverse(counter)->info));
+				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
 				counter++;
 			}
 		}
@@ -63,13 +63,13 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(redo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.redo_stack.inverse(counter)->info), 1);
+					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.redo_stack.inv_ref(counter)->info), 1);
 					val->setFlags(val->flags() & ~ Qt::ItemFlag::ItemIsSelectable);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(redo, qstr(SESSION->history.redo_stack.inverse(counter)->info));
+				auto val = new GUI::Tree_Item(redo, qstr(SESSION->history.redo_stack.inv_ref(counter)->info));
 				val->setFlags(val->flags() & ~ Qt::ItemFlag::ItemIsSelectable);
 				counter++;
 			}
@@ -83,13 +83,13 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(redo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.redo_stack.inverse(counter)->info), 1);
+					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.redo_stack.inv_ref(counter)->info), 1);
 					val->setFlags(val->flags() & ~ Qt::ItemFlag::ItemIsSelectable);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(redo, qstr(SESSION->history.redo_stack.inverse(counter)->info));
+				auto val = new GUI::Tree_Item(redo, qstr(SESSION->history.redo_stack.inv_ref(counter)->info));
 				val->setFlags(val->flags() & ~ Qt::ItemFlag::ItemIsSelectable);
 				counter++;
 			}

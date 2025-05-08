@@ -45,7 +45,7 @@ void Node::load(File* file, const Token_Array& tokens) {
 
 	Ptr_S<Node> node = NODES::node_get_map.at(r_node_type)();
 
-	if (node == nullptr and r_node_type == NODES::Node_Type::SCRIPT) {
+	if (node == nullptr && r_node_type == NODES::Node_Type::SCRIPT) {
 		Token_Array detail_data = File::getBlock("┌Data", "└Data", tokens);
 		const string script_path = f_join(detail_data[0]);
 
@@ -65,10 +65,10 @@ void Node::load(File* file, const Token_Array& tokens) {
 		Token_Array outputs = File::getBlock("┌Out(", "└Out", tokens);
 
 		for (U64 i = 0; i < inputs.size(); i++) {
-			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs[i]));
+			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs.ref(i)));
 		}
 		for (U64 i = 0; i < outputs.size(); i++) {
-			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs[i]));
+			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs.ref(i)));
 		}
 
 		Token_Array detail_data = File::getBlock("┌Data", "└Data", tokens);

@@ -368,8 +368,6 @@ void Node_Editor::wheelEvent(QWheelEvent* event) {
 		}
 	}
 
-	// TODO relative to mouse
-
 	GUI::Graphics_View::wheelEvent(event);
 	viewport()->update();
 }
@@ -842,7 +840,7 @@ void Node_Editor::Disconnect::undo() {
 	switch (type) {
 		case Graphics_Item_Type::E_DATA_I: {
 			auto port_r = static_cast<NODE::PORT::Data_I*>(port);
-			editor_ptr->connectPorts(connections[0], port_r);
+			editor_ptr->connectPorts(connections.ptr(0), port_r);
 			break;
 		}
 		case Graphics_Item_Type::E_DATA_O: {
@@ -854,7 +852,7 @@ void Node_Editor::Disconnect::undo() {
 		}
 		case Graphics_Item_Type::E_EXEC_O: {
 			auto port_l = static_cast<NODE::PORT::Exec_O*>(port);
-			editor_ptr->connectPorts(port_l, connections[0]);
+			editor_ptr->connectPorts(port_l, connections.ptr(0));
 			break;
 		}
 		case Graphics_Item_Type::E_EXEC_I: {

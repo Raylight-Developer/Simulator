@@ -11,6 +11,7 @@ NODES::CONTAINER::LIST::Access::Access() :
 	di_index = DATA_I("Index", VAR_TYPE::INT);
 
 	do_value = DATA_O("", VAR_TYPE::NONE);
+	do_index_pass = DATA_O("", VAR_TYPE::INT);
 
 	var_type = new GUI::Options();
 	var_type->setFixedSize(100, 20);
@@ -26,6 +27,9 @@ NODES::CONTAINER::LIST::Access::Access() :
 }
 
 Ptr_S<Variable> NODES::CONTAINER::LIST::Access::getData(const Port* port) {
+	if (port == do_index_pass.get()) {
+		return do_index_pass->getData();
+	}
 	node_error = false;
 	if (!(di_list->connected() && di_index->connected() && do_value->connected())) {
 		node_error = true;
