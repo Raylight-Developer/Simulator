@@ -8,7 +8,7 @@ NODES::CONTAINER::LIST::Access::Access() :
 	rect.setHeight(80);
 
 	di_list  = DATA_I_C("", VAR_TYPE::NONE, VAR_CONTAINER::LIST);
-	di_index = DATA_I("Index", VAR_TYPE::INT);
+	di_index = DATA_I("Index", Variable(0LL));
 
 	do_value = DATA_O("", VAR_TYPE::NONE);
 	do_index_pass = DATA_O("", VAR_TYPE::INT);
@@ -30,63 +30,19 @@ Ptr_S<Variable> NODES::CONTAINER::LIST::Access::getData(const Port* port) {
 	if (port == do_index_pass.get()) {
 		return do_index_pass->getData();
 	}
+	auto list_data = di_list->getData();
+	auto index_data = di_index->getData();
+
+	auto error_var = make_shared<Variable>(static_cast<VAR_TYPE>(var_type->currentIndex()));
+
 	node_error = false;
-	if (!(di_list->connected() && di_index->connected() && do_value->connected())) {
+	if (!(di_list->connected() && di_index->connected()) || list_data->empty()) {
 		node_error = true;
-		return nullptr;
+		return error_var;
 	}
-	const I64 list_index = *di_index->GET_DATA(I64);
-	switch (var_type->currentIndex()) {
-		case 1: {
-			auto list_data = di_list->GET_LIST(F64);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 2: {
-			auto list_data = di_list->GET_LIST(I64);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 3: {
-			auto list_data = di_list->GET_LIST(bool);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 4: {
-			auto list_data = di_list->GET_LIST(QString);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 5: {
-			auto list_data = di_list->GET_LIST(F64_V2);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 6: {
-			auto list_data = di_list->GET_LIST(F64_V3);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 7: {
-			auto list_data = di_list->GET_LIST(F64_V4);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 8: {
-			auto list_data = di_list->GET_LIST(Color);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 9: {
-			auto list_data = di_list->GET_LIST(F64_Quat);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 10: {
-			auto list_data = di_list->GET_LIST(F64_M2);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 11: {
-			auto list_data = di_list->GET_LIST(F64_M3);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-		case 12: {
-			auto list_data = di_list->GET_LIST(F64_M4);
-			return make_shared<Variable>(list_data->cpy(list_index));
-		}
-	}
-	return nullptr;
+
+	const U64 list_index = to_U64(*index_data->CAST(I64));
+	return make_shared<Variable>(list_data->listAtIndex(list_index));
 }
 
 void NODES::CONTAINER::LIST::Access::saveDetail(CORE::Lace& lace) const {

@@ -24,57 +24,15 @@ NODES::CONTAINER::LIST::Size::Size() :
 }
 
 Ptr_S<Variable> NODES::CONTAINER::LIST::Size::getData(const Port* port) {
-	switch (var_type->currentIndex()) {
-		case 1: {
-			auto list_data = di_list->GET_LIST(F64);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 2: {
-			auto list_data = di_list->GET_LIST(I64);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 3: {
-			auto list_data = di_list->GET_LIST(bool);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 4: {
-			auto list_data = di_list->GET_LIST(QString);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 5: {
-			auto list_data = di_list->GET_LIST(F64_V2);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 6: {
-			auto list_data = di_list->GET_LIST(F64_V3);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 7: {
-			auto list_data = di_list->GET_LIST(F64_V4);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 8: {
-			auto list_data = di_list->GET_LIST(Color);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 9: {
-			auto list_data = di_list->GET_LIST(F64_Quat);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 10: {
-			auto list_data = di_list->GET_LIST(F64_M2);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 11: {
-			auto list_data = di_list->GET_LIST(F64_M3);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
-		case 12: {
-			auto list_data = di_list->GET_LIST(F64_M4);
-			return make_shared<Variable>(to_I64(list_data->size()));
-		}
+	auto list_data = di_list->getData();
+
+	node_error = false;
+	if (!di_list->connected() || list_data->empty()) {
+		node_error = true;
+		return make_shared<Variable>(0LL);
 	}
-	return make_shared<Variable>(0LL);
+
+	return make_shared<Variable>(to_I64(list_data->listSize()));
 }
 
 void NODES::CONTAINER::LIST::Size::saveDetail(CORE::Lace& lace) const {

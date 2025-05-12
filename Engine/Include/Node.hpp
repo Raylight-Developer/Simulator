@@ -205,6 +205,9 @@ namespace NODE {
 #define GET_DATA(type) getData()->get<type>()
 #define GET_LIST(type) getData()->get<CORE::Stack< type >>()
 
+#define CAST(type) get<type>()
+#define CAST_L(type) get<CORE::Stack< type >>()
+
 namespace NODES {
 	enum struct Node_Type {
 		NONE                    = QGraphicsItem::UserType + 1,

@@ -29,62 +29,16 @@ NODES::CONTAINER::LIST::Push::Push() :
 }
 
 void NODES::CONTAINER::LIST::Push::exec(const Port* port) {
+	auto list_data = di_list->getData();
+	auto value_data = di_value->getData();
+
 	node_error = false;
-	if (!(di_list->connected() && di_value->connected())) {
-		eo_exec->exec();
+	if (!(di_list->connected() && di_value->connected()) || list_data->empty()) {
 		node_error = true;
 		return;
 	}
-	switch (var_type->currentIndex()) {
-		case 1: {
-			di_list->GET_LIST(F64)->push(*di_value->GET_DATA(F64));
-			break;
-		}
-		case 2: {
-			di_list->GET_LIST(I64)->push(*di_value->GET_DATA(I64));
-			break;
-		}
-		case 3: {
-			di_list->GET_LIST(bool)->push(*di_value->GET_DATA(bool));
-			break;
-		}
-		case 4: {
-			di_list->GET_LIST(QString)->push(*di_value->GET_DATA(QString));
-			break;
-		}
-		case 5: {
-			di_list->GET_LIST(F64_V2)->push(*di_value->GET_DATA(F64_V2));
-			break;
-		}
-		case 6: {
-			di_list->GET_LIST(F64_V3)->push(*di_value->GET_DATA(F64_V3));
-			break;
-		}
-		case 7: {
-			di_list->GET_LIST(F64_V4)->push(*di_value->GET_DATA(F64_V4));
-			break;
-		}
-		case 8: {
-			di_list->GET_LIST(Color)->push(*di_value->GET_DATA(Color));
-			break;
-		}
-		case 9: {
-			di_list->GET_LIST(F64_Quat)->push(*di_value->GET_DATA(F64_Quat));
-			break;
-		}
-		case 10: {
-			di_list->GET_LIST(F64_M2)->push(*di_value->GET_DATA(F64_M2));
-			break;
-		}
-		case 11: {
-			di_list->GET_LIST(F64_M3)->push(*di_value->GET_DATA(F64_M3));
-			break;
-		}
-		case 12: {
-			di_list->GET_LIST(F64_M4)->push(*di_value->GET_DATA(F64_M4));
-			break;
-		}
-	}
+
+	list_data->listPush(*value_data.get());
 	eo_exec->exec();
 }
 

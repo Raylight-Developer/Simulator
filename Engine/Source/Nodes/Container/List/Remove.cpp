@@ -28,63 +28,17 @@ NODES::CONTAINER::LIST::Remove::Remove() :
 }
 
 void NODES::CONTAINER::LIST::Remove::exec(const Port* port) {
+	auto list_data = di_list->getData();
+	auto index_data = di_index->getData();
+
 	node_error = false;
-	if (!(di_list->connected() && di_index->connected())) {
-		eo_exec->exec();
+	if (!(di_list->connected()) || list_data->empty()) {
 		node_error = true;
 		return;
 	}
+
 	const U64 list_index = to_U64(*di_index->GET_DATA(I64));
-	switch (var_type->currentIndex()) {
-		case 1: {
-			di_list->GET_LIST(F64)->remove(list_index);
-			break;
-		}
-		case 2: {
-			di_list->GET_LIST(I64)->remove(list_index);
-			break;
-		}
-		case 3: {
-			di_list->GET_LIST(bool)->remove(list_index);
-			break;
-		}
-		case 4: {
-			di_list->GET_LIST(QString)->remove(list_index);
-			break;
-		}
-		case 5: {
-			di_list->GET_LIST(F64_V2)->remove(list_index);
-			break;
-		}
-		case 6: {
-			di_list->GET_LIST(F64_V3)->remove(list_index);
-			break;
-		}
-		case 7: {
-			di_list->GET_LIST(F64_V4)->remove(list_index);
-			break;
-		}
-		case 8: {
-			di_list->GET_LIST(Color)->remove(list_index);
-			break;
-		}
-		case 9: {
-			di_list->GET_LIST(F64_Quat)->remove(list_index);
-			break;
-		}
-		case 10: {
-			di_list->GET_LIST(F64_M2)->remove(list_index);
-			break;
-		}
-		case 11: {
-			di_list->GET_LIST(F64_M3)->remove(list_index);
-			break;
-		}
-		case 12: {
-			di_list->GET_LIST(F64_M4)->remove(list_index);
-			break;
-		}
-	}
+	list_data->listRemove(list_index);
 	eo_exec->exec();
 }
 

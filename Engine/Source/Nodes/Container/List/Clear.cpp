@@ -27,62 +27,15 @@ NODES::CONTAINER::LIST::Clear::Clear() :
 }
 
 void NODES::CONTAINER::LIST::Clear::exec(const Port* port) {
+	auto list_data = di_list->getData();
+
 	node_error = false;
-	if (!di_list->connected()) {
-		eo_exec->exec();
+	if (!di_list->connected() || list_data->empty()) {
 		node_error = true;
 		return;
 	}
-	switch (var_type->currentIndex()) {
-		case 1: {
-			di_list->GET_LIST(F64)->clear();
-			break;
-		}
-		case 2: {
-			di_list->GET_LIST(I64)->clear();
-			break;
-		}
-		case 3: {
-			di_list->GET_LIST(bool)->clear();
-			break;
-		}
-		case 4: {
-			di_list->GET_LIST(QString)->clear();
-			break;
-		}
-		case 5: {
-			di_list->GET_LIST(F64_V2)->clear();
-			break;
-		}
-		case 6: {
-			di_list->GET_LIST(F64_V3)->clear();
-			break;
-		}
-		case 7: {
-			di_list->GET_LIST(F64_V4)->clear();
-			break;
-		}
-		case 8: {
-			di_list->GET_LIST(Color)->clear();
-			break;
-		}
-		case 9: {
-			di_list->GET_LIST(F64_Quat)->clear();
-			break;
-		}
-		case 10: {
-			di_list->GET_LIST(F64_M2)->clear();
-			break;
-		}
-		case 11: {
-			di_list->GET_LIST(F64_M3)->clear();
-			break;
-		}
-		case 12: {
-			di_list->GET_LIST(F64_M4)->clear();
-			break;
-		}
-	}
+
+	list_data->listClear();
 	eo_exec->exec();
 }
 

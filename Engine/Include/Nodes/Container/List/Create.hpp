@@ -17,6 +17,8 @@ namespace NODES {
 
 				PORT_EXEC_O eo_exec;
 				PORT_DATA_O do_list_pass;
+				PORT_DATA_O do_size_pass;
+				PORT_DATA_O do_initial_value_pass;
 
 				Create();
 

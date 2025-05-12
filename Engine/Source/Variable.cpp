@@ -67,62 +67,62 @@ Variable::Variable(const F64_M4& data) :
 	data(data)
 {}
 
-Variable::Variable(const CORE::Stack<F64>& data) :
+Variable::Variable(const vector<F64>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::DOUBLE),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<I64>& data) :
+Variable::Variable(const vector<I64>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::INT),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<bool>& data) :
+Variable::Variable(const vector<bool>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::BOOL),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<QString>& data) :
+Variable::Variable(const vector<QString>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::STRING),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_V2>& data) :
+Variable::Variable(const vector<F64_V2>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::VEC2),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_V3>& data) :
+Variable::Variable(const vector<F64_V3>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::VEC3),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_V4>& data) :
+Variable::Variable(const vector<F64_V4>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::VEC4),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<Color>& data) :
+Variable::Variable(const vector<Color>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::COLOR),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_Quat>& data) :
+Variable::Variable(const vector<F64_Quat>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::QUAT),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_M2>& data) :
+Variable::Variable(const vector<F64_M2>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::MAT2),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_M3>& data) :
+Variable::Variable(const vector<F64_M3>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::MAT3),
 	data(data)
 {}
-Variable::Variable(const CORE::Stack<F64_M4>& data) :
+Variable::Variable(const vector<F64_M4>& data) :
 	container(VAR::Container::LIST),
 	type(VAR::Type::MAT4),
 	data(data)
@@ -153,19 +153,19 @@ Variable::Variable(const VAR::Type& type, const VAR::Container& container) :
 		}
 		case VAR::Container::LIST: {
 			switch (type) {
-				case VAR::Type::NONE  : data = nullptr                ; break;
-				case VAR::Type::DOUBLE: data = CORE::Stack<F64>()     ; break;
-				case VAR::Type::INT   : data = CORE::Stack<I64>()     ; break;
-				case VAR::Type::BOOL  : data = CORE::Stack<bool>()    ; break;
-				case VAR::Type::STRING: data = CORE::Stack<QString>() ; break;
-				case VAR::Type::VEC2  : data = CORE::Stack<F64_V2>()  ; break;
-				case VAR::Type::VEC3  : data = CORE::Stack<F64_V3>()  ; break;
-				case VAR::Type::VEC4  : data = CORE::Stack<F64_V4>()  ; break;
-				case VAR::Type::COLOR : data = CORE::Stack<Color>()   ; break;
-				case VAR::Type::QUAT  : data = CORE::Stack<F64_Quat>(); break;
-				case VAR::Type::MAT2  : data = CORE::Stack<F64_M2>()  ; break;
-				case VAR::Type::MAT3  : data = CORE::Stack<F64_M3>()  ; break;
-				case VAR::Type::MAT4  : data = CORE::Stack<F64_M4>()  ; break;
+				case VAR::Type::NONE  : data = nullptr                             ; break;
+				case VAR::Type::DOUBLE: data = make_shared<vector<F64>>()     ; break;
+				case VAR::Type::INT   : data = make_shared<vector<I64>>()     ; break;
+				case VAR::Type::BOOL  : data = make_shared<vector<bool>>()    ; break;
+				case VAR::Type::STRING: data = make_shared<vector<QString>>() ; break;
+				case VAR::Type::VEC2  : data = make_shared<vector<F64_V2>>()  ; break;
+				case VAR::Type::VEC3  : data = make_shared<vector<F64_V3>>()  ; break;
+				case VAR::Type::VEC4  : data = make_shared<vector<F64_V4>>()  ; break;
+				case VAR::Type::COLOR : data = make_shared<vector<Color>>()   ; break;
+				case VAR::Type::QUAT  : data = make_shared<vector<F64_Quat>>(); break;
+				case VAR::Type::MAT2  : data = make_shared<vector<F64_M2>>()  ; break;
+				case VAR::Type::MAT3  : data = make_shared<vector<F64_M3>>()  ; break;
+				case VAR::Type::MAT4  : data = make_shared<vector<F64_M4>>()  ; break;
 			}
 			break;
 		}
@@ -187,98 +187,98 @@ void Variable::save(CORE::Lace& lace) const {
 					break;
 				}
 				case VAR::Type::DOUBLE: {
-					const auto list = any_cast<const CORE::Stack<F64>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::INT: {
-					const auto list = any_cast<const CORE::Stack<I64>>(&data);
+					const auto list = any_cast<Ptr_S<vector<I64>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::BOOL: {
-					const auto list = any_cast<const CORE::Stack<bool>>(&data);
+					const auto list = any_cast<Ptr_S<vector<bool>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace << (list->cpy(i) ? "True" : "False") << "|";
+						lace << (list->at(i) ? "True" : "False") << "|";
 					}
 					break;
 				}
 				case VAR::Type::STRING: {
-					const auto list = any_cast<const CORE::Stack<QString>>(&data);
+					const auto list = any_cast<Ptr_S<vector<QString>>>(data);
 					lace << list->size() << " )" NL << "|BREAK|";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace << list->cpy(i) << "|BREAK|";
+						lace << list->at(i) << "|BREAK|";
 					}
 					break;
 				}
 				case VAR::Type::VEC2: {
-					const auto list = any_cast<const CORE::Stack<F64_V2>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_V2>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::VEC3: {
-					const auto list = any_cast<const CORE::Stack<F64_V3>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_V3>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::VEC4: {
-					const auto list = any_cast<const CORE::Stack<F64_V4>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_V4>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::COLOR: {
-					const auto list = any_cast<const CORE::Stack<Color>>(&data);
+					const auto list = any_cast<Ptr_S<vector<Color>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace << list->cpy(i).rgba() << "|";
+						lace << list->at(i).rgba() << "|";
 					}
 					break;
 				}
 				case VAR::Type::QUAT: {
-					const auto list = any_cast<const CORE::Stack<F64_Quat>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::MAT2: {
-					const auto list = any_cast<const CORE::Stack<F64_M2>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_M2>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::MAT3: {
-					const auto list = any_cast<const CORE::Stack<F64_M3>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_M3>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
 				case VAR::Type::MAT4: {
-					const auto list = any_cast<const CORE::Stack<F64_M4>>(&data);
+					const auto list = any_cast<Ptr_S<vector<F64_M4>>>(data);
 					lace << list->size() << " ) |";
 					for (U64 i = 0; i < list->size(); i++) {
-						lace SP << list->cpy(i) << " |";
+						lace SP << list->at(i) << " |";
 					}
 					break;
 				}
@@ -296,6 +296,9 @@ Variable Variable::load(const Tokens& tokens) {
 	switch (var.container) {
 		case VAR::Container::NONE: {
 			switch (var.type) {
+				case VAR::Type::NONE: {
+					break;
+				}
 				case VAR::Type::DOUBLE: {
 					var.data = stoF64(tokens[4]);
 					break;
@@ -362,32 +365,35 @@ Variable Variable::load(const Tokens& tokens) {
 		case VAR::Container::LIST: {
 			const U64 size = stoU64(tokens[5]);
 			switch (var.type) {
+				case VAR::Type::NONE: {
+					break;
+				}
 				case VAR::Type::DOUBLE: {
-					auto data = CORE::Stack<F64>();
+					auto data = make_shared<vector<F64>>();
 					for (U64 i = 0; i < size; i += 2) {
-						data.push(stoF64(tokens[8 + i]));
+						data->push_back(stoF64(tokens[8 + i]));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::INT: {
-					auto data = CORE::Stack<I64>();
+					auto data = make_shared<vector<I64>>();
 					for (U64 i = 0; i < size; i += 2) {
-						data.push(stoI64(tokens[8 + i]));
+						data->push_back(stoI64(tokens[8 + i]));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::BOOL: {
-					auto data = CORE::Stack<bool>();
+					auto data = make_shared<vector<bool>>();
 					for (U64 i = 0; i < size; i += 2) {
-						data.push((tokens[8 + i] == "True" ? true : false));
+						data->push_back((tokens[8 + i] == "True" ? true : false));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::STRING: {
-					auto data = CORE::Stack<QString>();
+					auto data = make_shared<vector<QString>>();
 					// TODO test
 					const string delimiter = "|BREAK|";
 					const string input = f_join(Tokens(tokens.begin() + size, tokens.end()));
@@ -396,7 +402,7 @@ Variable Variable::load(const Tokens& tokens) {
 					size_t end;
 
 					while ((end = input.find(delimiter, start)) != std::string::npos) {
-						data.push(qstr(input.substr(start, end - start)));
+						data->push_back(qstr(input.substr(start, end - start)));
 						start = end + delimiter.size();
 					}
 
@@ -404,77 +410,77 @@ Variable Variable::load(const Tokens& tokens) {
 					break;
 				}
 				case VAR::Type::VEC2: {
-					auto data = CORE::Stack<F64_V2>();
+					auto data = make_shared<vector<F64_V2>>();
 					for (U64 i = 0; i < size; i += 3) {
-						data.push(F64_V2(stoF64(tokens[8 + i]), stoF64(tokens[9 + i])));
+						data->emplace_back((F64_V2(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]))));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::VEC3: {
-					auto data = CORE::Stack<F64_V3>();
+					auto data = make_shared<vector<F64_V3>>();
 					for (U64 i = 0; i < size; i += 4) {
-						var.data = F64_V3(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]));
+						data->emplace_back(F64_V3(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i])));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::VEC4: {
-					auto data = CORE::Stack<F64_V4>();
+					auto data = make_shared<vector<F64_V4>>();
 					for (U64 i = 0; i < size; i += 5) {
-						var.data = F64_V4(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i]));
+						data->emplace_back(F64_V4(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i])));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::COLOR: {
-					auto data = CORE::Stack<Color>();
+					auto data = make_shared<vector<Color>>();
 					for (U64 i = 0; i < size; i += 5) {
-						var.data = Color(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i]));
+						data->emplace_back(Color(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i])));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::QUAT: {
-					auto data = CORE::Stack<F64_Quat>();
+					auto data = make_shared<vector<F64_Quat>>();
 					for (U64 i = 0; i < size; i += 5) {
-						var.data = F64_Quat(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i]));
+						data->emplace_back(F64_Quat(stoF64(tokens[8 + i]), stoF64(tokens[9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i])));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::MAT2: {
-					auto data = CORE::Stack<F64_Quat>();
+					auto data = make_shared<vector<F64_M2>>();
 					for (U64 i = 0; i < size; i += 5) {
-						var.data = F64_M2(
+						data->emplace_back(F64_M2(
 							stoF64(tokens[ 8 + i]), stoF64(tokens[ 9 + i]),
 							stoF64(tokens[10 + i]), stoF64(tokens[11 + i])
-						);
+						));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::MAT3: {
-					auto data = CORE::Stack<F64_Quat>();
+					auto data = make_shared<vector<F64_M3>>();
 					for (U64 i = 0; i < size; i += 10) {
-						var.data = F64_M3(
+						data->emplace_back(F64_M3(
 							stoF64(tokens[ 8 + i]), stoF64(tokens[ 9 + i]), stoF64(tokens[10 + i]),
 							stoF64(tokens[11 + i]), stoF64(tokens[12 + i]), stoF64(tokens[13 + i]),
 							stoF64(tokens[14 + i]), stoF64(tokens[15 + i]), stoF64(tokens[16 + i])
-						);
+						));
 					}
 					var.data = data;
 					break;
 				}
 				case VAR::Type::MAT4: {
-					auto data = CORE::Stack<F64_Quat>();
+					auto data = make_shared<vector<F64_M4>>();
 					for (U64 i = 0; i < size; i += 17) {
-						var.data = F64_M4(
+						data->emplace_back(F64_M4(
 							stoF64(tokens[ 8 + i]), stoF64(tokens[ 9 + i]), stoF64(tokens[10 + i]), stoF64(tokens[11 + i]),
 							stoF64(tokens[12 + i]), stoF64(tokens[13 + i]), stoF64(tokens[14 + i]), stoF64(tokens[15 + i]),
 							stoF64(tokens[16 + i]), stoF64(tokens[17 + i]), stoF64(tokens[18 + i]), stoF64(tokens[19 + i]),
 							stoF64(tokens[20 + i]), stoF64(tokens[21 + i]), stoF64(tokens[22 + i]), stoF64(tokens[23 + i])
-						);
+						));
 					}
 					var.data = data;
 					break;
@@ -485,6 +491,569 @@ Variable Variable::load(const Tokens& tokens) {
 	}
 
 	return var;
+}
+
+bool Variable::empty() const {
+	return type == VAR::Type::NONE;
+}
+
+Variable Variable::listAtIndex(const U64& index) {
+	if (container != VAR::Container::LIST) {
+		return Variable();
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return Variable();
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			if (index >= cast_list->size()) return Variable();
+			return Variable(cast_list->at(index));
+		}
+	}
+	return Variable();
+}
+
+void Variable::listClear() {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			cast_list->clear();
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			cast_list->clear();
+			break;
+		}
+	}
+}
+
+void Variable::listCreate(const U64& size, const Variable& value) {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	listClear();
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			cast_list->assign(size, any_cast<F64>(value.data));
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			cast_list->assign(size, any_cast<I64>(value.data));
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			cast_list->assign(size, any_cast<bool>(value.data));
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			cast_list->assign(size, any_cast<QString>(value.data));
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			cast_list->assign(size, any_cast<F64_V2>(value.data));
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			cast_list->assign(size, any_cast<F64_V3>(value.data));
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			cast_list->assign(size, any_cast<F64_V4>(value.data));
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			cast_list->assign(size, any_cast<Color>(value.data));
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			cast_list->assign(size, any_cast<F64_Quat>(value.data));
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			cast_list->assign(size, any_cast<F64_M2>(value.data));
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			cast_list->assign(size, any_cast<F64_M3>(value.data));
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			cast_list->assign(size, any_cast<F64_M4>(value.data));
+			break;
+		}
+	}
+}
+
+void Variable::listInsert(const U64& index, const Variable& value) {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64>(value.data));
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<I64>(value.data));
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<bool>(value.data));
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<QString>(value.data));
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_V2>(value.data));
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_V3>(value.data));
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_V4>(value.data));
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<Color>(value.data));
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_Quat>(value.data));
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_M2>(value.data));
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_M3>(value.data));
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			cast_list->insert(cast_list->begin() + index, any_cast<F64_M4>(value.data));
+			break;
+		}
+	}
+}
+
+void Variable::listModify(const U64& index, const Variable& value) {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			(*cast_list)[index] = any_cast<F64>(value.data);
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			(*cast_list)[index] = any_cast<I64>(value.data);
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			(*cast_list)[index] = any_cast<bool>(value.data);
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			(*cast_list)[index] = any_cast<QString>(value.data);
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			(*cast_list)[index] = any_cast<F64_V2>(value.data);
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			(*cast_list)[index] = any_cast<F64_V3>(value.data);
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			(*cast_list)[index] = any_cast<F64_V4>(value.data);
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			(*cast_list)[index] = any_cast<Color>(value.data);
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			(*cast_list)[index] = any_cast<F64_Quat>(value.data);
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			(*cast_list)[index] = any_cast<F64_M2>(value.data);
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			(*cast_list)[index] = any_cast<F64_M3>(value.data);
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			(*cast_list)[index] = any_cast<F64_M4>(value.data);
+			break;
+		}
+	}
+}
+
+void Variable::listRemove(const U64& index) {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			cast_list->erase(cast_list->begin() + index);
+			break;
+		}
+	}
+}
+
+void Variable::listPush(const Variable& value) {
+	if (container != VAR::Container::LIST) {
+		return;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			cast_list->push_back(any_cast<F64>(value.data));
+			break;
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			cast_list->push_back(any_cast<I64>(value.data));
+			break;
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			cast_list->push_back(any_cast<bool>(value.data));
+			break;
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			cast_list->push_back(any_cast<QString>(value.data));
+			break;
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			cast_list->push_back(any_cast<F64_V2>(value.data));
+			break;
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			cast_list->push_back(any_cast<F64_V3>(value.data));
+			break;
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			cast_list->push_back(any_cast<F64_V4>(value.data));
+			break;
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			cast_list->push_back(any_cast<Color>(value.data));
+			break;
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			cast_list->push_back(any_cast<F64_Quat>(value.data));
+			break;
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			cast_list->push_back(any_cast<F64_M2>(value.data));
+			break;
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			cast_list->push_back(any_cast<F64_M3>(value.data));
+			break;
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			cast_list->push_back(any_cast<F64_M4>(value.data));
+			break;
+		}
+	}
+}
+
+U64 Variable::listSize() const {
+	if (container != VAR::Container::LIST) {
+		return 0;
+	}
+	switch (type) {
+		case VAR::Type::NONE: {
+			return 0;
+		}
+		case VAR::Type::DOUBLE: {
+			auto cast_list = any_cast<Ptr_S<vector<F64>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::INT: {
+			auto cast_list = any_cast<Ptr_S<vector<I64>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::BOOL: {
+			auto cast_list = any_cast<Ptr_S<vector<bool>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::STRING: {
+			auto cast_list = any_cast<Ptr_S<vector<QString>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::VEC2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V2>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::VEC3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V3>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::VEC4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_V4>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::COLOR: {
+			auto cast_list = any_cast<Ptr_S<vector<Color>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::QUAT: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_Quat>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::MAT2: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M2>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::MAT3: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M3>>>(data);
+			return cast_list->size();
+		}
+		case VAR::Type::MAT4: {
+			auto cast_list = any_cast<Ptr_S<vector<F64_M4>>>(data);
+			return cast_list->size();
+		}
+	}
+	return 0;
 }
 
 QString Variable::str() const {

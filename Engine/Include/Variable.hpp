@@ -44,23 +44,34 @@ struct Variable {
 	Variable(const F64_M3&   data);
 	Variable(const F64_M4&   data);
 
-	Variable(const CORE::Stack<F64>&      data);
-	Variable(const CORE::Stack<I64>&      data);
-	Variable(const CORE::Stack<bool>&     data);
-	Variable(const CORE::Stack<QString>&  data);
-	Variable(const CORE::Stack<F64_V2>&   data);
-	Variable(const CORE::Stack<F64_V3>&   data);
-	Variable(const CORE::Stack<F64_V4>&   data);
-	Variable(const CORE::Stack<Color>&    data);
-	Variable(const CORE::Stack<F64_Quat>& data);
-	Variable(const CORE::Stack<F64_M2>&   data);
-	Variable(const CORE::Stack<F64_M3>&   data);
-	Variable(const CORE::Stack<F64_M4>&   data);
+	Variable(const vector<F64>&      data);
+	Variable(const vector<I64>&      data);
+	Variable(const vector<bool>&     data);
+	Variable(const vector<QString>&  data);
+	Variable(const vector<F64_V2>&   data);
+	Variable(const vector<F64_V3>&   data);
+	Variable(const vector<F64_V4>&   data);
+	Variable(const vector<Color>&    data);
+	Variable(const vector<F64_Quat>& data);
+	Variable(const vector<F64_M2>&   data);
+	Variable(const vector<F64_M3>&   data);
+	Variable(const vector<F64_M4>&   data);
 
 	Variable(const VAR::Type& type, const VAR::Container& container = VAR::Container::NONE);
 
 	void save(CORE::Lace& lace) const;
 	static Variable load(const Tokens& tokens);
+
+	bool empty() const;
+
+	Variable listAtIndex(const U64& index);
+	void listClear();
+	void listCreate(const U64& size, const Variable& value);
+	void listInsert(const U64& index, const Variable& value);
+	void listModify(const U64& index, const Variable& value);
+	void listRemove(const U64& index);
+	void listPush(const Variable& value);
+	U64 listSize() const;
 
 	QString str() const;
 	string getSingleVar() const;
