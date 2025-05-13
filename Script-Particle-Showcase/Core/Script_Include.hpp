@@ -10,21 +10,10 @@
 #include "Viewport.hpp"
 #include "Scripting.hpp"
 
-#undef GL
-#undef LOG
-#undef FLUSH
-#undef PRINT
-#undef SESSION
-
 #define SCRIPT NODES::SCRIPT::Script
 #define SCRIPT_INIT Session::initialize(this->session);
 
 #define EXPORT(cls_name) extern "C" __declspec(dllexport) cls_name* scriptInstance(Session* session) { return new cls_name(session); }
-
-#define GL this->session->gl
-#define LOG this->session->log
-#define FLUSH this->session->flushLog()
-#define SESSION this->session
 
 using Port = NODE::Port;
 using Data_I = NODE::PORT::Data_I;

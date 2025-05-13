@@ -15,8 +15,7 @@ Viewport::Viewport() :
 	resolution(T_V2<U64>(3840U, 2160U)),
 	aspect_ratio(to_F64(resolution.x) / to_F64(resolution.y)),
 
-	window_time(0.0),
-	playback_delta_time(MS_60)
+	window_time(0.0)
 {
 	QSurfaceFormat format;
 	format.setSwapInterval(0);
@@ -34,7 +33,7 @@ Viewport::~Viewport() {
 void Viewport::f_tickUpdate() {
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
-	switch (SESSION->playback_mode) {
+	switch (SESSION->hook.playback_mode) {
 		case Playback_Mode::REALTIME: {
 			const F64 delta = SESSION->hook.delta_time > MS_15 ? MS_15 : SESSION->hook.delta_time;
 			for (auto& [k, f] : SESSION->hook.onTick) {
@@ -48,10 +47,10 @@ void Viewport::f_tickUpdate() {
 		}
 		case Playback_Mode::PLAYING: {
 			for (auto& [k, f] : SESSION->hook.onTick) {
-				f(playback_delta_time);
+				f(SESSION->hook.playback_delta_time);
 			}
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(playback_delta_time);
+				FILE.euler_tick->exec(SESSION->hook.playback_delta_time);
 				SESSION->hook.current_frame++;
 			}
 			break;
@@ -64,11 +63,11 @@ void Viewport::f_tickUpdate() {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(playback_delta_time);
+				FILE.euler_tick->exec(SESSION->hook.playback_delta_time);
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			SESSION->playback_mode = Playback_Mode::STOPPED;
+			SESSION->hook.playback_mode = Playback_Mode::STOPPED;
 			break;
 		}
 		case Playback_Mode::O_RESET: {
@@ -89,7 +88,7 @@ void Viewport::f_tickUpdate() {
 			}
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			SESSION->playback_mode = Playback_Mode::RESET;
+			SESSION->hook.playback_mode = Playback_Mode::RESET;
 			break;
 		}
 		case Playback_Mode::STOPPED: {
@@ -160,7 +159,7 @@ void Viewport::f_guiUpdate() {
 		frame_counter = 0;
 	}
 
-	if (SESSION->playback_mode == Playback_Mode::REALTIME || SESSION->playback_mode == Playback_Mode::PLAYING) {
+	if (SESSION->hook.playback_mode == Playback_Mode::REALTIME || SESSION->hook.playback_mode == Playback_Mode::PLAYING) {
 		QPainter painter(this);
 		if (frame_count >= 60) {
 			painter.setPen(QColor(50, 255, 50));

@@ -12,22 +12,22 @@ void Script::onLoad() {
 
 	eo_exec = EXEC_O("");
 
-	count = 16;
+	count = 64;
 	radius = 10.0;
 	terminal = 50.0;
 	restitution = 0.95;
 	gravity = F64_V2(0.0, -9.81);
 
-	x_bounds = F64_V2(-600, 600);
+	x_bounds = F64_V2(-640, 640);
 	y_bounds = F64_V2(-400, 400);
 
 	SESSION->hook.onInit[this] = [this]() {
 		positions.clear();
-		positions.reserve(16);
+		positions.reserve(count);
 		const F64 spacing = 1.1;
-		const F64 halfSize = (radius * 2.0 - 1) * spacing / 2.0;
-		for (int y = 0; y < 4; ++y) {
-			for (int x = 0; x < 4; ++x) {
+		const F64 halfSize = (radius * 2.0 - 1) * spacing * 0.5;
+		for (int y = 0; y < 8; ++y) {
+			for (int x = 0; x < 8; ++x) {
 				const F64 px = x * spacing - halfSize;
 				const F64 py = y * spacing - halfSize;
 				positions.emplace(px, py);
@@ -35,7 +35,7 @@ void Script::onLoad() {
 		}
 
 		velocities.clear();
-		velocities.assign(16, F64_V2(0.0, 0.0));
+		velocities.assign(count, F64_V2(0.0, 0.0));
 	};
 
 	LOGL(<< "Loaded Particle Showcase Script");
@@ -47,8 +47,12 @@ void Script::onUnload() {
 	LOGL(<< "Unloaded Particle Showcase Script");
 }
 
+constexpr F64 MS_60FPS = 1.0 / 60.0;
+
 void Script::exec(const Exec_I* port) {
-	const F64 delta_time = SESSION->hook.delta_time * 25.0;
+	const F64 delta_time = (SESSION->hook.playback_mode == Playback_Mode::REALTIME) ?
+		((SESSION->hook.delta_time > MS_60FPS ? MS_60FPS : SESSION->hook.delta_time) * 25.0) :
+		(SESSION->hook.playback_delta_time);
 
 	// Euler Integration O(n)
 	for (U32 i = 0; i < count; ++i) {
@@ -127,10 +131,11 @@ void Script::exec(const Exec_I* port) {
 		RENDER::Dim_2D::Circle(pos, radius);
 	}
 
-	RENDER::Dim_2D::Line(F64_V2(x_bounds.x, y_bounds.x), F64_V2(x_bounds.y, y_bounds.x), 5.0);
-	RENDER::Dim_2D::Line(F64_V2(x_bounds.x, y_bounds.y), F64_V2(x_bounds.y, y_bounds.y), 5.0);
-	RENDER::Dim_2D::Line(F64_V2(x_bounds.x, y_bounds.x), F64_V2(x_bounds.x, y_bounds.y), 5.0);
-	RENDER::Dim_2D::Line(F64_V2(x_bounds.y, y_bounds.x), F64_V2(x_bounds.y, y_bounds.y), 5.0);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x, y_bounds.x - 2.5), F64_V2(x_bounds.y, y_bounds.x - 2.5), 5.0);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x, y_bounds.y + 2.5), F64_V2(x_bounds.y, y_bounds.y + 2.5), 5.0);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 2.5, y_bounds.x), F64_V2(x_bounds.x - 2.5, y_bounds.y), 5.0);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.y + 2.5, y_bounds.x), F64_V2(x_bounds.y + 2.5, y_bounds.y), 5.0);
+
 	eo_exec->exec();
 }
 

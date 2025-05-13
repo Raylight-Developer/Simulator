@@ -28,8 +28,11 @@ Hook::Hook() {
 	mouse_on_screen = false;
 	mouse_wheel = { 0, 0 };
 
+	playback_delta_time = 1.0 / 60.0;
 	playback_start = NOW;
+	playback_mode = Playback_Mode::REALTIME;
 	current_frame = 0;
+	samples = 60;
 }
 
 Session::Session() :
@@ -42,7 +45,4 @@ Session::Session() :
 	gl(nullptr),
 	window(nullptr),
 	viewport(nullptr)
-{
-	samples = 60;
-	playback_mode = Playback_Mode::REALTIME;
-}
+{}

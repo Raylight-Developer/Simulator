@@ -33,7 +33,10 @@ struct Hook {
 	CORE::UMap<string, bool> input_down;
 
 	Timestamp playback_start;
+	F64 playback_delta_time;
 	U64 current_frame;
+	I64 samples;
+	Playback_Mode playback_mode;
 
 	CORE::UMap<void*, function<void(const F64_V2&)>> onWheel;
 	CORE::UMap<void*, function<void(const string&)>> onKeyUp;
@@ -46,19 +49,15 @@ struct Hook {
 };
 
 struct Session : CORE::Session {
-	U16 major_version, minor_version, patch_version;
 	static Session* session_ptr;
-
 	static void initialize(Session* session);
-
 	static void destroy();
+
+	U16 major_version, minor_version, patch_version;
 
 	QOpenGLFunctions_4_5_Core* gl;
 	Window* window;
 	Viewport* viewport;
-
-	I64 samples;
-	Playback_Mode playback_mode;
 
 	Hook hook;
 	File file;
@@ -81,6 +80,5 @@ struct Session : CORE::Session {
 
 #define LOGL(msg) LOG NL msg; FLUSH
 
-#define PRINT(msg) SESSION->printer msg; printf(SESSION->printer.str().c_str()); SESSION->printer.clear()
 #define FILE SESSION->file
 #define GL SESSION->gl

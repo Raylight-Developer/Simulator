@@ -13,7 +13,6 @@ struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 	Timestamp start_time;
 	Timestamp last_time;
 	F64 window_time;
-	F64 playback_delta_time;
 
 	unordered_map<string, GLuint> gl_data;
 

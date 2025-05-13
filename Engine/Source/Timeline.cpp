@@ -30,16 +30,16 @@ Timeline::Timeline(QWidget* parent) :
 	setFixedHeight(24);
 
 	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop]() {
-		if (SESSION->playback_mode == Playback_Mode::PLAYING) {
-			SESSION->playback_mode = Playback_Mode::O_STOPPED;
+		if (SESSION->hook.playback_mode == Playback_Mode::PLAYING) {
+			SESSION->hook.playback_mode = Playback_Mode::O_STOPPED;
 			start_stop->setText("🔄");
 		}
-		else if (SESSION->playback_mode == Playback_Mode::STOPPED) {
-			SESSION->playback_mode = Playback_Mode::O_RESET;
+		else if (SESSION->hook.playback_mode == Playback_Mode::STOPPED) {
+			SESSION->hook.playback_mode = Playback_Mode::O_RESET;
 			start_stop->setText("⏯");
 		}
-		else if (SESSION->playback_mode == Playback_Mode::RESET) {
-			SESSION->playback_mode = Playback_Mode::PLAYING;
+		else if (SESSION->hook.playback_mode == Playback_Mode::RESET) {
+			SESSION->hook.playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
 
 			SESSION->hook.playback_start = NOW;
@@ -64,7 +64,7 @@ Timeline::Timeline(QWidget* parent) :
 
 	connect(mode, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, mode, reset_realtime](bool checked) {
 		if (checked) {
-			SESSION->playback_mode = Playback_Mode::REALTIME;
+			SESSION->hook.playback_mode = Playback_Mode::REALTIME;
 			SESSION->hook.playback_start = NOW;
 			SESSION->hook.current_frame = 0;
 			mode->setText("Mode: Realtime");
@@ -75,7 +75,7 @@ Timeline::Timeline(QWidget* parent) :
 		}
 		else {
 			mode->setText("Mode: Playback");
-			SESSION->playback_mode = Playback_Mode::O_RESET;
+			SESSION->hook.playback_mode = Playback_Mode::O_RESET;
 			start_stop->setText("⏯");
 			start_stop->show();
 			samples_label->show();
@@ -85,8 +85,8 @@ Timeline::Timeline(QWidget* parent) :
 	});
 
 	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
-		SESSION->samples = value.toInt();
-		SESSION->viewport->playback_delta_time = 1.0 / SESSION->samples;
+		SESSION->hook.samples = value.toInt();
+		SESSION->hook.playback_delta_time = 1.0 / SESSION->hook.samples;
 	});
 
 	mode->toggle();
