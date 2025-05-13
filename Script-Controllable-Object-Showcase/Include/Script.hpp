@@ -13,10 +13,10 @@ struct Script : SCRIPT {
 
 	Script(Session* session);
 
-	void onLoad() override;
-	void onUnload() override;
+	void onLoad() final override;
+	void onUnload() final override;
 
-	void exec(const Exec_I* port) override;
+	void exec(const Exec_I* port) final override;
 
 	void render();
 };

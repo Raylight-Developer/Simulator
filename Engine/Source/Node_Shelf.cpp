@@ -28,10 +28,16 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 		}
 	});
 
-	auto tree_default = new GUI::Tree_Item(tree->user_scripts, "Included", 1);
+	auto tree_included = new GUI::Tree_Item(tree->user_scripts, "Included", 1);
+	{
+		auto camera = new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Camera-Controller.dll" } });
+	}
 
-	auto opengl = new GUI::Tree_Item(tree_default, "GL Test"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-OpenGL_Test.dll"       } });
-	auto camera = new GUI::Tree_Item(tree_default, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Camera-Controller.dll" } });
+	auto tree_showcase = new GUI::Tree_Item(tree->user_scripts, "Showcase", 1);
+	{
+		auto controllable = new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Controllable-Object-Showcase.dll" } });
+		auto particles    = new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Particle-Showcase.dll"            } });
+	}
 }
 
 NODE_SHELF::Tree::Tree(Node_Shelf* parent) :

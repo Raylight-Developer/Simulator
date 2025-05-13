@@ -7,8 +7,16 @@ struct Script : SCRIPT {
 
 	PORT_EXEC_O eo_exec;
 
-	bool panning;
-	F64_V2 last_pos;
+	CORE::Stack<F64_V2> positions;
+	CORE::Stack<F64_V2> velocities;
+	F64_V2 gravity;
+	F64 restitution;
+	F64 terminal;
+	F64 radius;
+	U32 count;
+
+	F64_V2 x_bounds;
+	F64_V2 y_bounds;
 
 	Script(Session* session);
 

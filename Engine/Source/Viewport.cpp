@@ -195,6 +195,9 @@ void Viewport::initializeGL() {
 	initializeOpenGLFunctions();
 	f_pipeline();
 
+	for (auto& [k, f] : SESSION->hook.onInit) {
+		f();
+	}
 	if (FILE.init) {
 		FILE.init->exec();
 	}

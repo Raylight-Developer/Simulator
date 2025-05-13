@@ -13,16 +13,21 @@ void Script::onUnload() {
 }
 
 void Script::exec(const Exec_I* port) {
+	node_error = false; // To clear Highlight
+	if (missingInputs()) {
+		node_error = true; // Will Highlight Node
+		return;
+	}
+
 	execAllDownstream();
 }
 
 Ptr_S<Variable>Script::getData(const Data_O* port) {
+	node_error = false; // To clear Highlight
 	if (missingInputs()) {
 		node_error = true; // Will Highlight Node
-	}
-	else {
-		node_error = false; // To clear Highlight
+		return make_shared<Variable>();
 	}
 
-	return nullptr;
+	return make_shared<Variable>();
 }

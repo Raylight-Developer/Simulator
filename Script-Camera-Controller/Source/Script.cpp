@@ -7,8 +7,6 @@ Script::Script(Session* session) : SCRIPT("Camera Controller", session) {
 }
 
 void Script::onLoad() {
-	LOGL(<< "Loaded Camera Controller Script");
-
 	rect.setWidth(180);
 	rect.setHeight(60);
 
@@ -40,6 +38,8 @@ void Script::onLoad() {
 		SESSION->hook.camera_pos_2d = F64_V2(0.0, 0.0);
 		SESSION->hook.camera_zoom_2d = 1.0;
 	};
+
+	LOGL(<< "Loaded Camera Controller Script");
 }
 
 void Script::onUnload() {
@@ -47,6 +47,7 @@ void Script::onUnload() {
 	SESSION->hook.onKeyUp.remove(this);
 	SESSION->hook.onKeyDown.remove(this);
 	SESSION->hook.onInit.remove(this);
+
 	LOGL(<< "Unloaded Camera Controller Script");
 }
 

@@ -234,8 +234,11 @@
       <Command>"lib.exe" /out:"$(OutDir)/Engine.lib" "$(IntermediateOutputPath)*.obj"
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL-Spaceship /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -269,8 +272,11 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p
       <Command>"lib.exe" /out:"$(OutDir)/Engine.lib" "$(IntermediateOutputPath)*.obj"
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-OpenGL-Spaceship /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

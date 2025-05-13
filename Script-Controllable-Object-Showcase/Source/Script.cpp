@@ -1,11 +1,10 @@
 #include "Script.hpp"
 
-Script::Script(Session* session) : SCRIPT("OpenGL Script", session) {
+Script::Script(Session* session) : SCRIPT("Controllable", session) {
 	SCRIPT_INIT;
 }
 
 void Script::onLoad() {
-	LOGL(<< "Loaded OpenGL Script");
 
 	rect.setWidth(140);
 	rect.setHeight(80);
@@ -33,12 +32,14 @@ void Script::onLoad() {
 			out_color = Color(0, 0, 1, 1);
 		}
 	};
+
+	LOGL(<< "Loaded Controllable Object Script");
 }
 
 void Script::onUnload() {
 	SESSION->hook.onKeyDown.remove(this);
 
-	LOGL(<< "Unloaded OpenGL Script");
+	LOGL(<< "Unloaded Controllable Object Script");
 }
 
 void Script::exec(const Exec_I* port) {
