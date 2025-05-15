@@ -41,6 +41,7 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 	loadDLL(script_addr, dll_path);
 	FARPROC script_address = GetProcAddress(script_addr, "scriptInstance");
 	if (script_address) {
+		LOG++;
 		Script* (*getInstance)(Session*) = (Script * (*)(Session*))script_address;
 		script = getInstance(SESSION);
 		if (script) {
@@ -50,6 +51,7 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 			FILE.dlls[script] = script_addr;
 			script->onLoad();
 		}
+		LOG--;
 	}
 	return script;
 }

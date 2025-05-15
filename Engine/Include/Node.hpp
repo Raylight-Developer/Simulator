@@ -216,6 +216,7 @@ namespace NODES {
 		VARIABLE_GET            ,
 		VARIABLE_SET            ,
 		CAST_CONVERT_I64_TO_F64 ,
+		CAST_BREAK_VEC2         ,
 		CAST_MAKE_COLOR         ,
 		CAST_MAKE_VEC2          ,
 		CAST_MAKE_VEC3          ,

@@ -400,6 +400,12 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "CAST CONVERT I64 TO F64") {
 				node = make_shared<NODES::CAST::CONVERT::I64_To_F64>();
 			}
+			else if (type == "CAST BREAK VEC2") {
+				node = make_shared<NODES::CAST::BREAK::Vec2>();
+			}
+			else if (type == "CAST MAKE COLOR") {
+				node = make_shared<NODES::CAST::MAKE::Color>();
+			}
 			else if (type == "CAST MAKE VEC2") {
 				node = make_shared<NODES::CAST::MAKE::Vec2>();
 			}
@@ -408,9 +414,6 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type == "CAST MAKE VEC4") {
 				node = make_shared<NODES::CAST::MAKE::Vec4>();
-			}
-			else if (type == "CAST MAKE COLOR") {
-				node = make_shared<NODES::CAST::MAKE::Color>();
 			}
 			else if (type == "CAST MAKE QUAT") {
 				node = make_shared<NODES::CAST::MAKE::Quat>();

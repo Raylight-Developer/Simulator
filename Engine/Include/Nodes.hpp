@@ -26,10 +26,18 @@ namespace NODES::CAST {
 		struct Mat4;
 	}
 	namespace BREAK {
-
+		struct Color;
+		struct Vec2;
+		struct Vec3;
+		struct Vec4;
+		struct Quat;
+		struct Mat2;
+		struct Mat3;
+		struct Mat4;
 	}
 }
 #include "Nodes/Cast/Convert/I64_To_F64.hpp"
+#include "Nodes/Cast/Break/Break_Vec2.hpp"
 #include "Nodes/Cast/Make/Make_Color.hpp"
 #include "Nodes/Cast/Make/Make_Vec2.hpp"
 #include "Nodes/Cast/Make/Make_Vec3.hpp"
@@ -194,6 +202,7 @@ namespace NODES {
 		{ Node_Type::VARIABLE_GET            , []() { return make_shared<VARIABLE::Get>();                }},
 		{ Node_Type::VARIABLE_SET            , []() { return make_shared<VARIABLE::Set>();                }},
 		{ Node_Type::CAST_CONVERT_I64_TO_F64 , []() { return make_shared<CAST::CONVERT::I64_To_F64>();    }},
+		{ Node_Type::CAST_BREAK_VEC2         , []() { return make_shared<CAST::BREAK::Vec2>();            }},
 		{ Node_Type::CAST_MAKE_COLOR         , []() { return make_shared<CAST::MAKE::Color>();            }},
 		{ Node_Type::CAST_MAKE_VEC2          , []() { return make_shared<CAST::MAKE::Vec2>();             }},
 		{ Node_Type::CAST_MAKE_VEC3          , []() { return make_shared<CAST::MAKE::Vec3>();             }},
@@ -242,6 +251,7 @@ namespace NODES {
 		{ Node_Type::VARIABLE_GET            , "VARIABLE::GET"             },
 		{ Node_Type::VARIABLE_SET            , "VARIABLE::SET"             },
 		{ Node_Type::CAST_CONVERT_I64_TO_F64 , "CAST::CONVERT::I64_TO_F64" },
+		{ Node_Type::CAST_BREAK_VEC2         , "CAST::BREAK::VEC2"         },
 		{ Node_Type::CAST_MAKE_COLOR         , "CAST::MAKE::COLOR"         },
 		{ Node_Type::CAST_MAKE_VEC2          , "CAST::MAKE::VEC2"          },
 		{ Node_Type::CAST_MAKE_VEC3          , "CAST::MAKE::VEC3"          },

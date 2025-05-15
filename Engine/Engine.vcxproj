@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Quat.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat2.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Nodes\Cast\Break\Break_Vec2.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Convert\I64_To_F64.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Create.hpp" />
     <ClInclude Include="Include\Nodes\Exec\Loop\For.hpp" />

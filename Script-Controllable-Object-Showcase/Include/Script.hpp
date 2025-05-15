@@ -7,9 +7,14 @@ struct Script : SCRIPT {
 	PORT_DATA_I di_move_speed;
 
 	PORT_EXEC_O eo_exec;
+	PORT_DATA_O do_obj_pos;
+	PORT_DATA_O do_obj_vel;
+	PORT_DATA_O do_obj_rad;
 
 	Color out_color;
-	F32_V2 car_pos;
+	F64_V2 obj_pos;
+	F64_V2 obj_vel;
+	F64 obj_rad;
 
 	Script(Session* session);
 
@@ -17,6 +22,7 @@ struct Script : SCRIPT {
 	void onUnload() final override;
 
 	void exec(const Exec_I* port) final override;
+	Ptr_S<Variable> getData(const Data_O* port) final override;
 
 	void render();
 };

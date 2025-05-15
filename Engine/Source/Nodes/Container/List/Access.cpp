@@ -28,7 +28,7 @@ NODES::CONTAINER::LIST::Access::Access() :
 
 Ptr_S<Variable> NODES::CONTAINER::LIST::Access::getData(const Port* port) {
 	if (port == do_index_pass.get()) {
-		return do_index_pass->getData();
+		return di_index->getData();
 	}
 	auto list_data = di_list->getData();
 	auto index_data = di_index->getData();

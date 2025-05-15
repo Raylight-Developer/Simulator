@@ -61,20 +61,20 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 		{
 			auto i64_to_f64 = new GUI::Tree_Item(tree_convert, "Int -> Double", 2, { { 1000, "CAST CONVERT I64 TO F64" } });
 		}
-		auto tree_make = new GUI::Tree_Item(tree_cast, "Make", 1);
-		{
-			auto vec2  = new GUI::Tree_Item(tree_make, "Vec 2", 2, { { 1000, "CAST MAKE VEC2"  } });
-			auto vec3  = new GUI::Tree_Item(tree_make, "Vec 3", 2, { { 1000, "CAST MAKE VEC3"  } });
-			auto vec4  = new GUI::Tree_Item(tree_make, "Vec 4", 2, { { 1000, "CAST MAKE VEC4"  } });
-			auto color = new GUI::Tree_Item(tree_make, "Color", 2, { { 1000, "CAST MAKE COLOR" } });
-			auto quat  = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "CAST MAKE QUAT"  } });
-			auto mat2  = new GUI::Tree_Item(tree_make, "Mat 2", 2, { { 1000, "CAST MAKE MAT2"  } });
-			auto mat3  = new GUI::Tree_Item(tree_make, "Mat 3", 2, { { 1000, "CAST MAKE MAT3"  } });
-			auto mat4  = new GUI::Tree_Item(tree_make, "Mat 4", 2, { { 1000, "CAST MAKE MAT4"  } });
-		}
 		auto tree_break = new GUI::Tree_Item(tree_cast, "Break", 1);
 		{
-
+			auto vec2  = new GUI::Tree_Item(tree_break, "Vec2", 2, { { 1000, "CAST BREAK VEC2"  } });
+		}
+		auto tree_make = new GUI::Tree_Item(tree_cast, "Make", 1);
+		{
+			auto color = new GUI::Tree_Item(tree_make, "Color", 2, { { 1000, "CAST MAKE COLOR" } });
+			auto vec2  = new GUI::Tree_Item(tree_make, "Vec2" , 2, { { 1000, "CAST MAKE VEC2"  } });
+			auto vec3  = new GUI::Tree_Item(tree_make, "Vec3" , 2, { { 1000, "CAST MAKE VEC3"  } });
+			auto vec4  = new GUI::Tree_Item(tree_make, "Vec4" , 2, { { 1000, "CAST MAKE VEC4"  } });
+			auto quat  = new GUI::Tree_Item(tree_make, "Quat" , 2, { { 1000, "CAST MAKE QUAT"  } });
+			auto mat2  = new GUI::Tree_Item(tree_make, "Mat2" , 2, { { 1000, "CAST MAKE MAT2"  } });
+			auto mat3  = new GUI::Tree_Item(tree_make, "Mat3" , 2, { { 1000, "CAST MAKE MAT3"  } });
+			auto mat4  = new GUI::Tree_Item(tree_make, "Mat4" , 2, { { 1000, "CAST MAKE MAT4"  } });
 		}
 	}
 

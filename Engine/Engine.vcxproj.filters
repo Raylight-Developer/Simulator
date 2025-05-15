@@ -153,6 +153,7 @@
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Mat4.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Quat.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
+    <ClInclude Include="Include\Nodes\Cast\Break\Break_Vec2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -312,5 +313,6 @@
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Mat4.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Quat.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
+    <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
   </ItemGroup>
 </Project>

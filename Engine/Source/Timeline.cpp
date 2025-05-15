@@ -86,7 +86,7 @@ Timeline::Timeline(QWidget* parent) :
 
 	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
 		SESSION->hook.samples = value.toInt();
-		SESSION->hook.playback_delta_time = 1.0 / SESSION->hook.samples;
+		SESSION->hook.playback_delta_time = 1.0 / to_F64(SESSION->hook.samples);
 	});
 
 	mode->toggle();
