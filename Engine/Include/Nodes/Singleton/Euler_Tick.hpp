@@ -15,7 +15,6 @@ namespace NODES {
 			PORT_DATA_O do_runtime;
 
 			F64 delta;
-			F64 runtime;
 
 			Euler_Tick();
 

@@ -31,75 +31,116 @@ Viewport::~Viewport() {
 }
 
 void Viewport::f_tickUpdate() {
-	glClearColor(0, 0, 0, 1);
-	glClear(GL_COLOR_BUFFER_BIT);
 	switch (SESSION->hook.playback_mode) {
 		case Playback_Mode::REALTIME: {
 			const F64 delta = SESSION->hook.delta_time > MS_15 ? MS_15 : SESSION->hook.delta_time;
-			for (auto& [k, f] : SESSION->hook.onTick) {
+			{
+				glViewport(0, 0, resolution.x, resolution.y);
+				glClearColor(0, 0, 0, 1);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				const GLuint Shader = gl_data["BG Shader"];
+				glUseProgram(Shader);
+
+				glBindVertexArray(gl_data["Screen VAO"]);
+
+				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SESSION->hook.exec_time));
+				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SESSION->hook.current_frame));
+				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(delta));
+				glUniform2f (glGetUniformLocation(Shader, "iResolution"), to_F32(resolution.x), to_F32(resolution.y));
+
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+				glBindVertexArray(0);
+				glUseProgram(0);
+			}
+			for (const auto& [k, f] : SESSION->hook.onTick) {
 				f(delta);
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(delta);
 				SESSION->hook.current_frame++;
 			}
+			for (const auto& func : SESSION->gl_3d_callbacks) {
+				func();
+			}
+			SESSION->gl_3d_callbacks.clear();
+			for (const auto& func : SESSION->gl_2d_callbacks) {
+				func();
+			}
+			SESSION->gl_2d_callbacks.clear();
 			break;
 		}
 		case Playback_Mode::PLAYING: {
-			for (auto& [k, f] : SESSION->hook.onTick) {
+			{
+				glViewport(0, 0, resolution.x, resolution.y);
+				glClearColor(0, 0, 0, 1);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				const GLuint Shader = gl_data["BG Shader"];
+				glUseProgram(Shader);
+
+				glBindVertexArray(gl_data["Screen VAO"]);
+
+				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SESSION->hook.exec_time));
+				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SESSION->hook.current_frame));
+				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(SESSION->hook.playback_delta_time));
+				glUniform2ui(glGetUniformLocation(Shader, "iResolution"), to_U32(resolution.x), to_U32(resolution.y));
+
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+				glBindVertexArray(0);
+				glUseProgram(0);
+			}
+
+			for (const auto& [k, f] : SESSION->hook.onTick) {
 				f(SESSION->hook.playback_delta_time);
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(SESSION->hook.playback_delta_time);
 				SESSION->hook.current_frame++;
 			}
-			break;
-		}
-		case Playback_Mode::O_STOPPED: {
-			glBindFramebuffer(GL_FRAMEBUFFER, gl_data["FRAME -1 FBO"]);
-
-			glViewport(0, 0, resolution.x, resolution.y);
-			glClearColor(0, 0, 0, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(SESSION->hook.playback_delta_time);
+			for (const auto& func : SESSION->gl_3d_callbacks) {
+				func();
 			}
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			SESSION->hook.playback_mode = Playback_Mode::STOPPED;
-			break;
-		}
-		case Playback_Mode::O_RESET: {
-			glBindFramebuffer(GL_FRAMEBUFFER, gl_data["FRAME 0 FBO"]);
-
-			glViewport(0, 0, resolution.x, resolution.y);
-			glClearColor(0, 0, 0, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			for (auto& [k, f] : SESSION->hook.onInit) {
-				f();
+			SESSION->gl_3d_callbacks.clear();
+			for (const auto& func : SESSION->gl_2d_callbacks) {
+				func();
 			}
-			if (FILE.init) {
-				FILE.init->exec();
-			}
-			if (FILE.euler_tick) {
-				FILE.euler_tick->runtime = 0.0;
-			}
+			SESSION->gl_2d_callbacks.clear();
 
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			SESSION->hook.playback_mode = Playback_Mode::RESET;
+			{
+				const GLuint Shader = gl_data["Paused Shader"];
+				glUseProgram(Shader);
+
+				glBindVertexArray(gl_data["Screen VAO"]);
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, gl_data["Screen Tex"]);
+				glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, resolution.x, resolution.y);
+
+				glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
+
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+				glBindVertexArray(0);
+				glUseProgram(0);
+			}
 			break;
 		}
 		case Playback_Mode::STOPPED: {
-			const GLuint Shader = gl_data["FBO Shader"];
+			glViewport(0, 0, resolution.x, resolution.y);
+			glClearColor(0, 0, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			const GLuint Shader = gl_data["Paused Shader"];
 			glUseProgram(Shader);
 
-			glBindVertexArray(gl_data["FBO VAO"]);
+			glBindVertexArray(gl_data["Screen VAO"]);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, gl_data["FRAME -1 FBT"]);
-			glUniform1ui(glGetUniformLocation(Shader, "uFboTexture"), 0);
+			glBindTexture(GL_TEXTURE_2D, gl_data["Screen Tex"]);
+			glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -108,37 +149,33 @@ void Viewport::f_tickUpdate() {
 			break;
 		}
 		case Playback_Mode::RESET: {
-			const GLuint Shader = gl_data["FBO Shader"];
-			glUseProgram(Shader);
-
-			glBindVertexArray(gl_data["FBO VAO"]);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, gl_data["FRAME 0 FBT"]);
-			glUniform1ui(glGetUniformLocation(Shader, "uFboTexture"), 0);
-
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-			glBindVertexArray(0);
-			glUseProgram(0);
+			glViewport(0, 0, resolution.x, resolution.y);
+			glClearColor(0, 0, 0, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
 			break;
 		}
 	}
 }
 
 void Viewport::f_compile() {
-	RENDER::INIT::Fbo();
+	RENDER::INIT::Screen();
 	RENDER::Dim_2D::INIT::Line();
 	RENDER::Dim_2D::INIT::Circle();
 	RENDER::Dim_2D::INIT::Triangle();
 	RENDER::Dim_2D::INIT::Rectangle();
-
-	gl_data["FRAME -1 FBO"] = 0;
-	gl_data["FRAME -1 FBT"] = 0;
-	gl_data["FRAME 0 FBO"] = 0;
-	gl_data["FRAME 0 FBT"] = 0;
-	OpenGL::createFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
-	OpenGL::createFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/Paused.frag");
+		if (confirm) {
+			gl_data["Paused Shader"] = confirm.data;
+		}
+	}
+	{
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
+		if (confirm) {
+			gl_data["BG Shader"] = confirm.data;
+		}
+	}
+	OpenGL::createTex(&gl_data["Screen Tex"], resolution, GL_LINEAR);
 }
 
 void Viewport::f_pipeline() {
@@ -228,8 +265,7 @@ void Viewport::resizeGL(int w, int h) {
 
 	glViewport(0, 0, resolution.x, resolution.y);
 
-	OpenGL::resizeFbo(&gl_data["FRAME -1 FBO"], &gl_data["FRAME -1 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
-	OpenGL::resizeFbo(&gl_data["FRAME 0 FBO"], &gl_data["FRAME 0 FBT"], resolution, GL_UNSIGNED_BYTE, GL_LINEAR);
+	OpenGL::resizeTex(&gl_data["Screen Tex"], resolution);
 }
 
 void Viewport::wheelEvent(QWheelEvent* event) {

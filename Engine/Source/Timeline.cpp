@@ -1,6 +1,8 @@
 ﻿#include "Timeline.hpp"
 
+#include "Viewport.hpp"
 #include "Session.hpp"
+#include "OpenGL.hpp"
 
 //⏮⏭⏹⏯⏩⏪⏺⏏🔁🔀🔃🔄ℹ⏴⏵
 
@@ -29,27 +31,43 @@ Timeline::Timeline(QWidget* parent) :
 	addWidget(samples);
 	setFixedHeight(24);
 
-	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop]() {
+	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop, reset_realtime]() {
 		if (SESSION->hook.playback_mode == Playback_Mode::PLAYING) {
-			SESSION->hook.playback_mode = Playback_Mode::O_STOPPED;
-			start_stop->setText("🔄");
+			SESSION->hook.playback_mode = Playback_Mode::STOPPED;
+			start_stop->setText("⏩");
+			on_stopped = NOW;
+
+			reset_realtime->show();
 		}
 		else if (SESSION->hook.playback_mode == Playback_Mode::STOPPED) {
-			SESSION->hook.playback_mode = Playback_Mode::O_RESET;
-			start_stop->setText("⏯");
+			SESSION->hook.playback_mode = Playback_Mode::PLAYING;
+			start_stop->setText("⏹");
+			reset_realtime->hide();
+
+			SESSION->hook.playback_start += NOW - on_stopped;
 		}
 		else if (SESSION->hook.playback_mode == Playback_Mode::RESET) {
 			SESSION->hook.playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
+			reset_realtime->hide();
 
 			SESSION->hook.playback_start = NOW;
 			SESSION->hook.current_frame = 0;
 		}
 	});
 
-	connect(reset_realtime, &GUI::Square_Button::pressed, [this]() {
-		SESSION->hook.playback_start = NOW;
-		SESSION->hook.current_frame = 0;
+	connect(reset_realtime, &GUI::Square_Button::pressed, [this, reset_realtime, start_stop]() {
+		if (SESSION->hook.playback_mode == Playback_Mode::REALTIME) {
+			SESSION->hook.playback_start = NOW;
+			SESSION->hook.current_frame = 0;
+		}
+		else {
+			SESSION->hook.playback_mode = Playback_Mode::RESET;
+			SESSION->hook.playback_start = NOW;
+			SESSION->hook.current_frame = 0;
+			reset_realtime->hide();
+			start_stop->setText("⏯");
+		}
 
 		for (auto& [k, f] : SESSION->hook.onInit) {
 			f();
@@ -57,9 +75,7 @@ Timeline::Timeline(QWidget* parent) :
 		if (FILE.init) {
 			FILE.init->exec();
 		}
-		if (FILE.euler_tick) {
-			FILE.euler_tick->runtime = 0.0;
-		}
+		SESSION->hook.exec_time = 0.0;
 	});
 
 	connect(mode, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, mode, reset_realtime](bool checked) {
@@ -75,12 +91,22 @@ Timeline::Timeline(QWidget* parent) :
 		}
 		else {
 			mode->setText("Mode: Playback");
-			SESSION->hook.playback_mode = Playback_Mode::O_RESET;
+			SESSION->hook.playback_mode = Playback_Mode::RESET;
 			start_stop->setText("⏯");
 			start_stop->show();
 			samples_label->show();
 			samples->show();
 			reset_realtime->hide();
+
+			{
+				for (auto& [k, f] : SESSION->hook.onInit) {
+					f();
+				}
+				if (FILE.init) {
+					FILE.init->exec();
+				}
+				SESSION->hook.exec_time = 0.0;
+			}
 		}
 	});
 

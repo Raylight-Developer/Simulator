@@ -23,6 +23,7 @@ Hook::Hook() {
 	camera_zoom_2d = 1.0;
 	pixel_ratio = 1.0;
 	delta_time = 1.0 / 60.0;
+	exec_time = 0.0;
 
 	mouse_pos = F64_V2(980.0, 540.0);
 	mouse_on_screen = false;

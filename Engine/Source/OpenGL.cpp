@@ -135,38 +135,16 @@ void OpenGL::bindRenderLayer(const GLuint& program_id, const GLuint& unit, const
 	GL->glBindTextureUnit(unit, id);
 }
 
-void OpenGL::createHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type) {
-	GL->glGenFramebuffers(1, FBO);
-	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
+void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& filter) {
+	*FBO = 0;
+	*FBT = 0;
 
-	GL->glGenRenderbuffers(1, RBO);
-	GL->glBindRenderbuffer(GL_RENDERBUFFER, *RBO);
-	GL->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, resolution.x, resolution.y); // 4x MSAA
-	GL->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, *RBO);
-
-	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void OpenGL::resizeHQFbo(GLuint* FBO, GLuint* RBO, const T_V2<U64>& resolution, const GLuint& type) {
-	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
-
-	GL->glDeleteRenderbuffers(1, RBO);
-
-	GL->glGenRenderbuffers(1, RBO);
-	GL->glBindRenderbuffer(GL_RENDERBUFFER, *RBO);
-	GL->glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, resolution.x, resolution.y); // 4x MSAA
-	GL->glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, *RBO);
-
-	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type, const GLuint& filter) {
 	GL->glGenFramebuffers(1, FBO);
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
 
 	GL->glGenTextures(1, FBT);
 	GL->glBindTexture(GL_TEXTURE_2D, *FBT);
-	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resolution.x, resolution.y, 0, GL_RGBA, type, nullptr);
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, resolution.x, resolution.y, 0, GL_RGBA, GL_FLOAT, nullptr);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -175,17 +153,25 @@ void OpenGL::createFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, co
 
 	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
 
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	GL->glDrawBuffers(1, drawBuffers);
+
+	GLenum status = GL->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		std::cerr << "Framebuffer incomplete: " << std::hex << status << std::endl;
+	}
+
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void OpenGL::resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& type, const GLuint& filter) {
+void OpenGL::resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, const GLuint& filter) {
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
 
 	GL->glDeleteTextures(1, FBT);
 
 	GL->glGenTextures(1, FBT);
 	GL->glBindTexture(GL_TEXTURE_2D, *FBT);
-	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, resolution.x, resolution.y, 0, GL_RGBA, type, nullptr);
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, resolution.x, resolution.y, 0, GL_RGBA, GL_FLOAT, nullptr);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -193,21 +179,46 @@ void OpenGL::resizeFbo(GLuint* FBO, GLuint* FBT, const T_V2<U64>& resolution, co
 
 	GL->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *FBT, 0);
 
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	GL->glDrawBuffers(1, drawBuffers);
+
+	GLenum status = GL->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		std::cerr << "Framebuffer incomplete: " << std::hex << status << std::endl;
+	}
+
 	GL->glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void RENDER::INIT::Fbo() {
-	const auto confirm = OpenGL::f_compileFragShader("./Shaders/FBO.vert", "./Shaders/FBO.frag");
-	if (confirm) {
-		SESSION->viewport->gl_data["FBO Shader"] = confirm.data;
-	}
+void OpenGL::createTex(GLuint* TEX, const T_V2<U64>& resolution, const GLuint& filter) {
+	GL->glGenTextures(1, TEX);
+	GL->glBindTexture(GL_TEXTURE_2D, *TEX);
 
-	SESSION->viewport->gl_data["FBO VAO"] = 0;
-	SESSION->viewport->gl_data["FBO VBO"] = 0;
-	SESSION->viewport->gl_data["FBO EBO"] = 0;
-	GLuint* VAO = &SESSION->viewport->gl_data["FBO VAO"];
-	GLuint* VBO = &SESSION->viewport->gl_data["FBO VBO"];
-	GLuint* EBO = &SESSION->viewport->gl_data["FBO EBO"];
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	GL->glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void OpenGL::resizeTex(GLuint* TEX, const T_V2<U64>& resolution) {
+	GL->glBindTexture(GL_TEXTURE_2D, *TEX);
+
+	GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+	GL->glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void RENDER::INIT::Screen() {
+	SESSION->viewport->gl_data["Screen VAO"] = 0;
+	SESSION->viewport->gl_data["Screen VBO"] = 0;
+	SESSION->viewport->gl_data["Screen EBO"] = 0;
+	GLuint* VAO = &SESSION->viewport->gl_data["Screen VAO"];
+	GLuint* VBO = &SESSION->viewport->gl_data["Screen VBO"];
+	GLuint* EBO = &SESSION->viewport->gl_data["Screen EBO"];
 
 	const GLfloat vertices[16] = {
 		-1, -1, 0, 0,
@@ -387,37 +398,39 @@ void RENDER::Dim_2D::INIT::Rectangle() {
 }
 
 void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
-	F32_V2 lineDir = glm::normalize(v2 - v1);
-	F32_V2 perpDir = F32_V2(-lineDir.y, lineDir.x);
-	const F32 halfWidth = width * 0.5f;
-	F32_V2 n1 = v1 + perpDir * halfWidth;
-	F32_V2 n2 = v1 - perpDir * halfWidth;
-	F32_V2 n4 = v2 + perpDir * halfWidth;
-	F32_V2 n3 = v2 - perpDir * halfWidth;
+	GL_2D_FUNC.push_back([v1, v2, width, color]() {
+		const F32_V2 lineDir = glm::normalize(v2 - v1);
+		const F32_V2 perpDir = F32_V2(-lineDir.y, lineDir.x);
+		const F32 halfWidth = width * 0.5f;
+		const F32_V2 n1 = v1 + perpDir * halfWidth;
+		const F32_V2 n2 = v1 - perpDir * halfWidth;
+		const F32_V2 n4 = v2 + perpDir * halfWidth;
+		const F32_V2 n3 = v2 - perpDir * halfWidth;
 
-	const GLfloat vertices[8] = {
-		n1.x, n1.y,
-		n2.x, n2.y,
-		n3.x, n3.y,
-		n4.x, n4.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Line VBO"]);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		const GLfloat vertices[8] = {
+			n1.x, n1.y,
+			n2.x, n2.y,
+			n3.x, n3.y,
+			n4.x, n4.y
+		};
+		GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Line VBO"]);
+		GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	// Render
-	const GLuint Shader = SESSION->viewport->gl_data["2D Line Shader"];
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+		// Render
+		const GLuint Shader = SESSION->viewport->gl_data["2D Line Shader"];
+		GL->glUseProgram(Shader);
+		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
+		GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Line VAO"]);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		GL->glBindVertexArray(SESSION->viewport->gl_data["2D Line VAO"]);
+		GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+	});
 }
 
 void RENDER::Dim_2D::RoundedLine(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
@@ -427,104 +440,156 @@ void RENDER::Dim_2D::RoundedLine(const F32_V2& v1, const F32_V2& v2, const F32& 
 }
 
 void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color& color) {
-	const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+	GL_2D_FUNC.push_back([center, radius, color]() {
+		const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
+		GL->glUseProgram(Shader);
+		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uRadius"), radius);
+		GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uPosition"), 1, glm::value_ptr(center));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uRadius"), radius);
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Circle VAO"]);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		GL->glBindVertexArray(SESSION->viewport->gl_data["2D Circle VAO"]);
+		GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+	});
 }
 
 void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const Color& color) {
-	const GLfloat vertices[6] = {
-		v1.x, v1.y,
-		v2.x, v2.y,
-		v3.x, v3.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Triangle VBO"]);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	GL_2D_FUNC.push_back([v1, v2, v3, color]() {
+		const GLfloat vertices[6] = {
+			v1.x, v1.y,
+			v2.x, v2.y,
+			v3.x, v3.y
+		};
+		GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Triangle VBO"]);
+		GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	// Render
-	const GLuint Shader = SESSION->viewport->gl_data["2D Triangle Shader"];
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+		// Render
+		const GLuint Shader = SESSION->viewport->gl_data["2D Triangle Shader"];
+		GL->glUseProgram(Shader);
+		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
+		GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor"), 1, glm::value_ptr(color.rgba_32()));
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Triangle VAO"]);
-	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
+		GL->glBindVertexArray(SESSION->viewport->gl_data["2D Triangle VAO"]);
+		GL->glDrawArrays(GL_TRIANGLES, 0, 3);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+	});
 }
 
 void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32& height, const Color& color) {
-	const auto h_w = width * 0.5;
-	const auto h_h = height * 0.5;
+	GL_2D_FUNC.push_back([center, width, height, color]() {
+		const auto h_w = width * 0.5;
+		const auto h_h = height * 0.5;
 
-	const auto v1 = F32_V2(center.x - h_w, center.y - h_h);
-	const auto v2 = F32_V2(center.x - h_w, center.y + h_h);
-	const auto v3 = F32_V2(center.x + h_w, center.y - h_h);
-	const auto v4 = F32_V2(center.x + h_w, center.y + h_h);
+		const auto v1 = F32_V2(center.x - h_w, center.y - h_h);
+		const auto v2 = F32_V2(center.x - h_w, center.y + h_h);
+		const auto v3 = F32_V2(center.x + h_w, center.y - h_h);
+		const auto v4 = F32_V2(center.x + h_w, center.y + h_h);
 
-	const GLfloat vertices[8] = {
-		v1.x, v1.y,
-		v2.x, v2.y,
-		v3.x, v3.y,
-		v4.x, v4.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		const GLfloat vertices[8] = {
+			v1.x, v1.y,
+			v2.x, v2.y,
+			v3.x, v3.y,
+			v4.x, v4.y
+		};
+		GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
+		GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	// Render
-	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+		// Render
+		const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
+		GL->glUseProgram(Shader);
+		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+		GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
+		GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+	});
 }
 
 void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const F32_V2& v4, const Color& color) {
-	const GLfloat vertices[8] = {
-		v1.x, v1.y,
-		v2.x, v2.y,
-		v3.x, v3.y,
-		v4.x, v4.y
-	};
-	GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
-	GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+	GL_2D_FUNC.push_back([v1, v2, v3, v4, color]() {
+		const GLfloat vertices[8] = {
+			v1.x, v1.y,
+			v2.x, v2.y,
+			v3.x, v3.y,
+			v4.x, v4.y
+		};
+		GL->glBindBuffer(GL_ARRAY_BUFFER, SESSION->viewport->gl_data["2D Rectangle VBO"]);
+		GL->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-	// Render
-	const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
-	GL->glUseProgram(Shader);
-	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
-	GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+		// Render
+		const GLuint Shader = SESSION->viewport->gl_data["2D Rectangle Shader"];
+		GL->glUseProgram(Shader);
+		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+		GL->glUniform2fv(GL->glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+		GL->glUniform1f (GL->glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
 
-	GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
+		GL->glUniform4fv(GL->glGetUniformLocation(Shader, "uColor" ), 1, glm::value_ptr(color.rgba_32()));
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		GL->glBindVertexArray(SESSION->viewport->gl_data["2D Rectangle VAO"]);
+		GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	GL->glBindVertexArray(0);
-	GL->glUseProgram(0);
+		GL->glBindVertexArray(0);
+		GL->glUseProgram(0);
+	});
+}
+
+void RENDER::Dim_3D::INIT::Sphere() {
+	GL_2D_FUNC.push_back([]() {
+		const auto confirm = OpenGL::f_compileFragShader("./Shaders/3D/Sphere.vert", "./Shaders/3D/Sphere.frag");
+		if (confirm) {
+			SESSION->viewport->gl_data["2D Circle Shader"] = confirm.data;
+		}
+
+		SESSION->viewport->gl_data["3D Sphere VAO"] = 0;
+		SESSION->viewport->gl_data["3D Sphere VBO"] = 0;
+		SESSION->viewport->gl_data["3D Sphere EBO"] = 0;
+		GLuint* VAO = &SESSION->viewport->gl_data["3D Sphere VAO"];
+		GLuint* VBO = &SESSION->viewport->gl_data["3D Sphere VBO"];
+		GLuint* EBO = &SESSION->viewport->gl_data["3D Sphere EBO"];
+
+		const GLfloat vertices[8] = {
+			-1, -1,
+			-1,  1,
+			 1,  1,
+			 1, -1
+		};
+		const GLuint indices[6] = {
+			0, 1, 2,
+			0, 2, 3
+		};
+		GL->glGenVertexArrays(1, VAO);
+		GL->glGenBuffers(1, VBO);
+		GL->glGenBuffers(1, EBO);
+
+		GL->glBindVertexArray(*VAO);
+
+		GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+		GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
+		GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
+		GL->glEnableVertexAttribArray(0);
+
+		GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GL->glBindVertexArray(0);
+	});
 }

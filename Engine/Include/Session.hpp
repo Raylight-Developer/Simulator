@@ -13,10 +13,8 @@ struct Viewport;
 
 enum struct Playback_Mode {
 	REALTIME,
-	O_STOPPED,
 	STOPPED,
 	PLAYING,
-	O_RESET,
 	RESET
 };
 
@@ -26,6 +24,7 @@ struct Hook {
 	F64 camera_zoom_2d;
 	F64 pixel_ratio;
 	F64 delta_time;
+	F64 exec_time;
 
 	F64_V2 mouse_pos;
 	bool mouse_on_screen;
@@ -55,9 +54,11 @@ struct Session : CORE::Session {
 
 	U16 major_version, minor_version, patch_version;
 
-	QOpenGLFunctions_4_5_Core* gl;
 	Window* window;
 	Viewport* viewport;
+	QOpenGLFunctions_4_5_Core* gl;
+	vector<function<void()>> gl_2d_callbacks;
+	vector<function<void()>> gl_3d_callbacks;
 
 	Hook hook;
 	File file;
@@ -82,3 +83,5 @@ struct Session : CORE::Session {
 
 #define FILE SESSION->file
 #define GL SESSION->gl
+#define GL_2D_FUNC SESSION->gl_2d_callbacks
+#define GL_3D_FUNC SESSION->gl_3d_callbacks
