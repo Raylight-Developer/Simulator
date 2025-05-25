@@ -6,10 +6,10 @@ uniform vec4  uColor;
 uniform float uRadius;
 uniform vec2  uPosition;
 
-in vec2 vFragCoord;
+in vec2 vTexCoord;
 
 void main() {
-	float dist = distance(vFragCoord, uPosition);
+	float dist = distance(vTexCoord, uPosition);
 	if (dist > 1.0) {
 		discard;
 	}

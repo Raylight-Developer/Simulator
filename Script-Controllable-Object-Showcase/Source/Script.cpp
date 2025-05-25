@@ -17,9 +17,9 @@ void Script::onLoad() {
 	do_obj_rad = DATA_O("Rad", VAR_TYPE::DOUBLE);
 
 	out_color = Color(1, 1, 1, 1);
-	obj_pos = F64_V2(0, -100);
+	obj_pos = F64_V2(0, -10);
 	obj_vel = F64_V2(0, 0);
-	obj_rad = 40.0;
+	obj_rad = 10.0;
 
 	SESSION->hook.onKeyDown[this] = [this](const string& key) {
 		if (key == "1") {

@@ -1,40 +1,63 @@
 #version 460 core
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
-uniform mat4 uView;
-uniform mat4 uProjection;
+in vec2 vTexCoord;
 
-uniform vec4  uColor;
-uniform float uRadius;
-uniform vec3  uPosition;
-uniform vec3  uLightDir;
-uniform vec3  uCameraPos;
+layout(std430, binding = 0) buffer Spheres {
+	vec4 spheres[];
+};
+layout(std430, binding = 1) buffer Colors {
+	vec4 colors[];
+};
 
-in vec3  vWorldCenter;
-in vec2  vFragCoord;
-in float vRadius;
+uniform uint uCount;
+uniform uvec2 uResolution;
+
+bool intersectSphere(vec3 rayOrigin, vec3 rayDir, vec3 center, float radius, out float t, out vec3 hitNormal) {
+	vec3 oc = rayOrigin - center;
+	float b = dot(oc, rayDir);
+	float c = dot(oc, oc) - radius * radius;
+	float h = b * b - c;
+	if (h < 0.0) return false;
+	h = sqrt(h);
+	t = -b - h;
+	if (t < 0.0) t = -b + h;
+	if (t < 0.0) return false;
+
+	vec3 hitPoint = rayOrigin + t * rayDir;
+	hitNormal = normalize(hitPoint - center);
+	return true;
+}
 
 void main() {
-	float r2 = dot(vQuadCoord, vQuadCoord);
-	if (r2 > 1.0) {
-		discard; // Outside circle
+	vec3 uLightDir = normalize(vec3(1, 1 ,-1));
+
+	vec2 uv = vTexCoord * 2.0 - 1.0; // Convert from [0,1] to [-1,1]
+	uv.x *= float(uResolution.x) / float(uResolution.y); // Correct aspect ratio
+
+	vec3 rayOrigin = vec3(0.0, 0.0, 250.0);
+	vec3 rayDir = normalize(vec3(uv, -1.0));
+
+	float minT = 1e9;
+	vec4 finalColor = vec4(0);
+
+	for (int i = 0; i < uCount; ++i) {
+		vec3 center = spheres[i].xyz;
+		float radius = spheres[i].w;
+
+		float t;
+		vec3 normal;
+		if (intersectSphere(rayOrigin, rayDir, center, radius, t, normal)) {
+			if (t < minT) {
+				minT = t;
+				float diff = max(dot(normal, normalize(-uLightDir)), 0.0);
+				vec3 baseColor = colors[i].rgb;
+				finalColor = vec4(baseColor * diff, colors[i].a);
+				finalColor = vec4(0,1,0,1);
+			}
+		}
 	}
 
-	// Reconstruct normal from quad position (screen-space unit circle)
-	float z = sqrt(1.0 - r2);
-	vec3 localNormal = normalize(vec3(vQuadCoord, z)); // Local sphere normal
-
-	// Transform local normal to world space
-	// Since billboard is axis-aligned (XY), normal is valid in world space directly
-
-	float diff = max(dot(localNormal, normalize(uLightDir)), 0.0);
-
-	fragColor = uColor * diff;
-
-	vec3 fragPos = vWorldCenter + localNormal * uRadius;
-	vec4 clipPos = uProjection * uView * vec4(fragPos, 1.0);
-	float ndcDepth = clipPos.z / clipPos.w;        // [-1, 1]
-	float depth = ndcDepth * 0.5 + 0.5;             // [0, 1]
-	gl_FragDepth = depth;
+	fragColor = finalColor;
 }

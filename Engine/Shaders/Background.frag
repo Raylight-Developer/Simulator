@@ -5,6 +5,9 @@ uniform int   iFrame;
 uniform float iTimeDelta;
 uniform vec2  iResolution;
 
+uniform float uZoom;
+uniform vec2  uCenter;
+
 in vec2 vTexCoord;
 
 out vec4 fragColor;
@@ -61,6 +64,15 @@ vec3 palette_b( float t ) {
 
 void main() {
 	vec2 fragCoord = gl_FragCoord.xy;
+
+	vec2 worldPos = (gl_FragCoord.xy - iResolution * 0.5) / uZoom - uCenter;
+	vec2 minBound = vec2(-60.0, -40.0);
+	vec2 maxBound = vec2( 60.0,  40.0);
+	bool inside = all(greaterThanEqual(worldPos, minBound)) && all(lessThanEqual(worldPos, maxBound));
+	if (inside) {
+		fragColor = vec4(0.4, 0.4, 0.4, 1);
+		return;
+	}
 
 //	vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;
 //	vec3 ro = vec3(0.,0.,-50.);

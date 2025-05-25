@@ -551,45 +551,65 @@ void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2&
 }
 
 void RENDER::Dim_3D::INIT::Sphere() {
-	GL_2D_FUNC.push_back([]() {
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/3D/Sphere.vert", "./Shaders/3D/Sphere.frag");
-		if (confirm) {
-			SESSION->viewport->gl_data["2D Circle Shader"] = confirm.data;
-		}
+	const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/3D/Sphere.frag");
+	if (confirm) {
+		SESSION->viewport->gl_data["3D Sphere Shader"] = confirm.data;
+	}
 
-		SESSION->viewport->gl_data["3D Sphere VAO"] = 0;
-		SESSION->viewport->gl_data["3D Sphere VBO"] = 0;
-		SESSION->viewport->gl_data["3D Sphere EBO"] = 0;
-		GLuint* VAO = &SESSION->viewport->gl_data["3D Sphere VAO"];
-		GLuint* VBO = &SESSION->viewport->gl_data["3D Sphere VBO"];
-		GLuint* EBO = &SESSION->viewport->gl_data["3D Sphere EBO"];
+	SPHERE::center_radius = new vector<F32_V4>();
+	SPHERE::color = new vector<F32_V4>();
 
-		const GLfloat vertices[8] = {
-			-1, -1,
-			-1,  1,
-			 1,  1,
-			 1, -1
-		};
-		const GLuint indices[6] = {
-			0, 1, 2,
-			0, 2, 3
-		};
-		GL->glGenVertexArrays(1, VAO);
-		GL->glGenBuffers(1, VBO);
-		GL->glGenBuffers(1, EBO);
+	{
+		SESSION->viewport->gl_data["SSBO 0"] = 0;
+		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
+		GL->glGenBuffers(1, SSBO);
+		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, *SSBO);
+	}
+	{
+		SESSION->viewport->gl_data["SSBO 1"] = 0;
+		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 1"];
+		GL->glGenBuffers(1, SSBO);
+		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, *SSBO);
+	}
+}
 
-		GL->glBindVertexArray(*VAO);
+void RENDER::Dim_3D::Sphere(const F32_V3& center, const F32& radius, const Color& color) {
+	SPHERE::center_radius->push_back(F32_V4(center, radius));
+	SPHERE::color->push_back(color.rgba_32());
+}
 
-		GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
-		GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+void RENDER::Dim_3D::renderSphere() {
+	const GLuint Shader = SESSION->viewport->gl_data["3D Sphere Shader"];
+	GL->glUseProgram(Shader);
 
-		GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-		GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	{
+		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
+		const U64 size = SPHERE::center_radius->size() * sizeof(F32_V4);
+		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
+		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, *SSBO);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::center_radius->data(), GL_DYNAMIC_DRAW);
+	}
+	{
+		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 1"];
+		const U64 size = SPHERE::color->size() * sizeof(F32_V4);
+		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
+		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, *SSBO);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::color->data(), GL_DYNAMIC_DRAW);
+	}
+	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
+	GL->glUniform1ui(GL->glGetUniformLocation(Shader, "uCount"), to_U32(SPHERE::center_radius->size()));
 
-		GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-		GL->glEnableVertexAttribArray(0);
+	GL->glBindVertexArray(SESSION->viewport->gl_data["Screen VAO"]);
 
-		GL->glBindBuffer(GL_ARRAY_BUFFER, 0);
-		GL->glBindVertexArray(0);
-	});
+	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	GL->glBindVertexArray(0);
+	GL->glUseProgram(0);
+
+	SPHERE::center_radius->clear();
+	SPHERE::color->clear();
 }

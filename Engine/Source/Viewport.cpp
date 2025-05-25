@@ -33,7 +33,7 @@ Viewport::~Viewport() {
 void Viewport::f_tickUpdate() {
 	switch (SESSION->hook.playback_mode) {
 		case Playback_Mode::REALTIME: {
-			const F64 delta = SESSION->hook.delta_time > MS_15 ? MS_15 : SESSION->hook.delta_time;
+			const F64 delta = min(SESSION->hook.delta_time, MS_15);
 			{
 				glViewport(0, 0, resolution.x, resolution.y);
 				glClearColor(0, 0, 0, 1);
@@ -49,11 +49,17 @@ void Viewport::f_tickUpdate() {
 				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(delta));
 				glUniform2f (glGetUniformLocation(Shader, "iResolution"), to_F32(resolution.x), to_F32(resolution.y));
 
+				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 				glBindVertexArray(0);
 				glUseProgram(0);
 			}
+
+			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 1.0);
+
 			for (const auto& [k, f] : SESSION->hook.onTick) {
 				f(delta);
 			}
@@ -65,6 +71,7 @@ void Viewport::f_tickUpdate() {
 				func();
 			}
 			SESSION->gl_3d_callbacks.clear();
+			RENDER::Dim_3D::renderSphere();
 			for (const auto& func : SESSION->gl_2d_callbacks) {
 				func();
 			}
@@ -87,11 +94,16 @@ void Viewport::f_tickUpdate() {
 				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(SESSION->hook.playback_delta_time));
 				glUniform2ui(glGetUniformLocation(Shader, "iResolution"), to_U32(resolution.x), to_U32(resolution.y));
 
+				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
+				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 				glBindVertexArray(0);
 				glUseProgram(0);
 			}
+
+			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 0.5);
 
 			for (const auto& [k, f] : SESSION->hook.onTick) {
 				f(SESSION->hook.playback_delta_time);
@@ -104,6 +116,7 @@ void Viewport::f_tickUpdate() {
 				func();
 			}
 			SESSION->gl_3d_callbacks.clear();
+			RENDER::Dim_3D::renderSphere();
 			for (const auto& func : SESSION->gl_2d_callbacks) {
 				func();
 			}
@@ -163,6 +176,8 @@ void Viewport::f_compile() {
 	RENDER::Dim_2D::INIT::Circle();
 	RENDER::Dim_2D::INIT::Triangle();
 	RENDER::Dim_2D::INIT::Rectangle();
+
+	RENDER::Dim_3D::INIT::Sphere();
 	{
 		const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/Paused.frag");
 		if (confirm) {
@@ -180,6 +195,17 @@ void Viewport::f_compile() {
 
 void Viewport::f_pipeline() {
 	GL = this;
+
+//#ifdef _DEBUG
+//	glEnable(GL_DEBUG_OUTPUT);
+//	glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+//		LOGL(<< "[OpenGL Debug] (" << id << "): " << message);
+//
+//		if (severity == GL_DEBUG_SEVERITY_HIGH) {
+//			LOGL(<< " --> SEVERITY: HIGH");
+//		}
+//	}, nullptr);
+//#endif
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);

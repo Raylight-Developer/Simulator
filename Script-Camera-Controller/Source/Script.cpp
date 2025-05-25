@@ -36,7 +36,7 @@ void Script::onLoad() {
 	};
 	SESSION->hook.onInit[this] = [this]() {
 		SESSION->hook.camera_pos_2d = F64_V2(0.0, 0.0);
-		SESSION->hook.camera_zoom_2d = SESSION->hook.pixel_ratio * 0.5;
+		SESSION->hook.camera_zoom_2d = SESSION->hook.pixel_ratio * 5.0;
 	};
 
 	LOGL(<< "Loaded Camera Controller Script");
