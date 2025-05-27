@@ -10,6 +10,11 @@ struct Script : SCRIPT {
 	bool panning;
 	F64_V2 last_pos;
 
+	bool alt_pressed;
+	bool mode_3d;
+	bool orbiting;
+	bool first_person;
+
 	Script(Session* session);
 
 	void onLoad() final override;

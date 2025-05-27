@@ -63,6 +63,9 @@ vec3 palette_b( float t ) {
 }
 
 void main() {
+	fragColor = vec4(0);
+	return;
+
 	vec2 fragCoord = gl_FragCoord.xy;
 
 	vec2 worldPos = (gl_FragCoord.xy - iResolution * 0.5) / uZoom - uCenter;

@@ -24,16 +24,16 @@ Viewport::Viewport() :
 
 	setMouseTracking(true);
 	SESSION->viewport = this;
-	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
+	SIM_HOOK.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
 }
 
 Viewport::~Viewport() {
 }
 
 void Viewport::f_tickUpdate() {
-	switch (SESSION->hook.playback_mode) {
+	switch (SIM_HOOK.playback_mode) {
 		case Playback_Mode::REALTIME: {
-			const F64 delta = min(SESSION->hook.delta_time, MS_15);
+			const F64 delta = min(SIM_HOOK.delta_time, MS_15);
 			{
 				glViewport(0, 0, resolution.x, resolution.y);
 				glClearColor(0, 0, 0, 1);
@@ -44,13 +44,13 @@ void Viewport::f_tickUpdate() {
 
 				glBindVertexArray(gl_data["Screen VAO"]);
 
-				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SESSION->hook.exec_time));
-				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SESSION->hook.current_frame));
+				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SIM_HOOK.exec_time));
+				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SIM_HOOK.current_frame));
 				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(delta));
 				glUniform2f (glGetUniformLocation(Shader, "iResolution"), to_F32(resolution.x), to_F32(resolution.y));
 
-				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
-				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SIM_HOOK.camera_zoom_2d));
+				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_pos_2d)));
 
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -60,12 +60,12 @@ void Viewport::f_tickUpdate() {
 
 			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 1.0);
 
-			for (const auto& [k, f] : SESSION->hook.onTick) {
+			for (const auto& [k, f] : SIM_HOOK.onTick) {
 				f(delta);
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(delta);
-				SESSION->hook.current_frame++;
+				SIM_HOOK.current_frame++;
 			}
 			for (const auto& func : SESSION->gl_3d_callbacks) {
 				func();
@@ -89,13 +89,13 @@ void Viewport::f_tickUpdate() {
 
 				glBindVertexArray(gl_data["Screen VAO"]);
 
-				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SESSION->hook.exec_time));
-				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SESSION->hook.current_frame));
-				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(SESSION->hook.playback_delta_time));
+				glUniform1f (glGetUniformLocation(Shader, "iTime"), to_F32(SIM_HOOK.exec_time));
+				glUniform1ui(glGetUniformLocation(Shader, "iFrame"), to_U32(SIM_HOOK.current_frame));
+				glUniform1f (glGetUniformLocation(Shader, "iTimedelta"), to_F32(SIM_HOOK.playback_delta_time));
 				glUniform2ui(glGetUniformLocation(Shader, "iResolution"), to_U32(resolution.x), to_U32(resolution.y));
 
-				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SESSION->hook.camera_zoom_2d));
-				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SESSION->hook.camera_pos_2d)));
+				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SIM_HOOK.camera_zoom_2d));
+				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_pos_2d)));
 
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -105,12 +105,12 @@ void Viewport::f_tickUpdate() {
 
 			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 0.5);
 
-			for (const auto& [k, f] : SESSION->hook.onTick) {
-				f(SESSION->hook.playback_delta_time);
+			for (const auto& [k, f] : SIM_HOOK.onTick) {
+				f(SIM_HOOK.playback_delta_time);
 			}
 			if (FILE.euler_tick) {
-				FILE.euler_tick->exec(SESSION->hook.playback_delta_time);
-				SESSION->hook.current_frame++;
+				FILE.euler_tick->exec(SIM_HOOK.playback_delta_time);
+				SIM_HOOK.current_frame++;
 			}
 			for (const auto& func : SESSION->gl_3d_callbacks) {
 				func();
@@ -222,8 +222,14 @@ void Viewport::f_guiUpdate() {
 		frame_counter = 0;
 	}
 
-	if (SESSION->hook.playback_mode == Playback_Mode::REALTIME || SESSION->hook.playback_mode == Playback_Mode::PLAYING) {
+	if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
 		QPainter painter(this);
+
+		for (const auto& [k, f] : SIM_HOOK.onGuiRender) {
+			f(&painter);
+		}
+
+		//TODO move to script
 		if (frame_count >= 60) {
 			painter.setPen(QColor(50, 255, 50));
 		}
@@ -244,9 +250,9 @@ void Viewport::f_guiUpdate() {
 
 void Viewport::f_timings() {
 	current_time = chrono::high_resolution_clock::now();
-	SESSION->hook.delta_time = chrono::duration<double>(current_time - last_time).count();
+	SIM_HOOK.delta_time = chrono::duration<double>(current_time - last_time).count();
 	last_time = current_time;
-	window_time += SESSION->hook.delta_time;
+	window_time += SIM_HOOK.delta_time;
 }
 
 void Viewport::f_frameUpdate() {
@@ -257,7 +263,7 @@ void Viewport::initializeGL() {
 	initializeOpenGLFunctions();
 	f_pipeline();
 
-	for (auto& [k, f] : SESSION->hook.onInit) {
+	for (auto& [k, f] : SIM_HOOK.onInit) {
 		f();
 	}
 	if (FILE.init) {
@@ -273,8 +279,8 @@ void Viewport::paintGL() {
 	f_frameUpdate();
 	f_guiUpdate();
 
-	SESSION->hook.mouse_wheel.x = 0.0;
-	SESSION->hook.mouse_wheel.y = 0.0;
+	SIM_HOOK.mouse_wheel.x = 0.0;
+	SIM_HOOK.mouse_wheel.y = 0.0;
 
 	update();
 }
@@ -287,7 +293,7 @@ void Viewport::resizeGL(int w, int h) {
 	resolution = T_V2<U64>(to_U64(p_w), to_U64(p_h));
 	aspect_ratio = to_F64(resolution.x) / to_F64(resolution.y);
 
-	SESSION->hook.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
+	SIM_HOOK.viewport_resolution = F64_V2(to_F64(resolution.x), to_F64(resolution.y));
 
 	glViewport(0, 0, resolution.x, resolution.y);
 
@@ -296,10 +302,10 @@ void Viewport::resizeGL(int w, int h) {
 
 void Viewport::wheelEvent(QWheelEvent* event) {
 	const QPoint scrollAmount = event->angleDelta();
-	SESSION->hook.mouse_wheel.x = scrollAmount.x();
-	SESSION->hook.mouse_wheel.y = scrollAmount.y();
+	SIM_HOOK.mouse_wheel.x = scrollAmount.x();
+	SIM_HOOK.mouse_wheel.y = scrollAmount.y();
 
-	for (auto& [k, f] : SESSION->hook.onWheel) {
+	for (auto& [k, f] : SIM_HOOK.onWheel) {
 		f(p_to_d(scrollAmount));
 	}
 }

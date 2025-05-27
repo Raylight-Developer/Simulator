@@ -32,57 +32,57 @@ Timeline::Timeline(QWidget* parent) :
 	setFixedHeight(24);
 
 	connect(start_stop, &GUI::Square_Button::pressed, [this, start_stop, reset_realtime]() {
-		if (SESSION->hook.playback_mode == Playback_Mode::PLAYING) {
-			SESSION->hook.playback_mode = Playback_Mode::STOPPED;
+		if (SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+			SIM_HOOK.playback_mode = Playback_Mode::STOPPED;
 			start_stop->setText("⏩");
 			on_stopped = NOW;
 
 			reset_realtime->show();
 		}
-		else if (SESSION->hook.playback_mode == Playback_Mode::STOPPED) {
-			SESSION->hook.playback_mode = Playback_Mode::PLAYING;
+		else if (SIM_HOOK.playback_mode == Playback_Mode::STOPPED) {
+			SIM_HOOK.playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
 			reset_realtime->hide();
 
-			SESSION->hook.playback_start += NOW - on_stopped;
+			SIM_HOOK.playback_start += NOW - on_stopped;
 		}
-		else if (SESSION->hook.playback_mode == Playback_Mode::RESET) {
-			SESSION->hook.playback_mode = Playback_Mode::PLAYING;
+		else if (SIM_HOOK.playback_mode == Playback_Mode::RESET) {
+			SIM_HOOK.playback_mode = Playback_Mode::PLAYING;
 			start_stop->setText("⏹");
 			reset_realtime->hide();
 
-			SESSION->hook.playback_start = NOW;
-			SESSION->hook.current_frame = 0;
+			SIM_HOOK.playback_start = NOW;
+			SIM_HOOK.current_frame = 0;
 		}
 	});
 
 	connect(reset_realtime, &GUI::Square_Button::pressed, [this, reset_realtime, start_stop]() {
-		if (SESSION->hook.playback_mode == Playback_Mode::REALTIME) {
-			SESSION->hook.playback_start = NOW;
-			SESSION->hook.current_frame = 0;
+		if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME) {
+			SIM_HOOK.playback_start = NOW;
+			SIM_HOOK.current_frame = 0;
 		}
 		else {
-			SESSION->hook.playback_mode = Playback_Mode::RESET;
-			SESSION->hook.playback_start = NOW;
-			SESSION->hook.current_frame = 0;
+			SIM_HOOK.playback_mode = Playback_Mode::RESET;
+			SIM_HOOK.playback_start = NOW;
+			SIM_HOOK.current_frame = 0;
 			reset_realtime->hide();
 			start_stop->setText("⏯");
 		}
 
-		for (auto& [k, f] : SESSION->hook.onInit) {
+		for (auto& [k, f] : SIM_HOOK.onInit) {
 			f();
 		}
 		if (FILE.init) {
 			FILE.init->exec();
 		}
-		SESSION->hook.exec_time = 0.0;
+		SIM_HOOK.exec_time = 0.0;
 	});
 
 	connect(mode, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, mode, reset_realtime](bool checked) {
 		if (checked) {
-			SESSION->hook.playback_mode = Playback_Mode::REALTIME;
-			SESSION->hook.playback_start = NOW;
-			SESSION->hook.current_frame = 0;
+			SIM_HOOK.playback_mode = Playback_Mode::REALTIME;
+			SIM_HOOK.playback_start = NOW;
+			SIM_HOOK.current_frame = 0;
 			mode->setText("Mode: Realtime");
 			start_stop->hide();
 			samples_label->hide();
@@ -91,7 +91,7 @@ Timeline::Timeline(QWidget* parent) :
 		}
 		else {
 			mode->setText("Mode: Playback");
-			SESSION->hook.playback_mode = Playback_Mode::RESET;
+			SIM_HOOK.playback_mode = Playback_Mode::RESET;
 			start_stop->setText("⏯");
 			start_stop->show();
 			samples_label->show();
@@ -99,20 +99,20 @@ Timeline::Timeline(QWidget* parent) :
 			reset_realtime->hide();
 
 			{
-				for (auto& [k, f] : SESSION->hook.onInit) {
+				for (auto& [k, f] : SIM_HOOK.onInit) {
 					f();
 				}
 				if (FILE.init) {
 					FILE.init->exec();
 				}
-				SESSION->hook.exec_time = 0.0;
+				SIM_HOOK.exec_time = 0.0;
 			}
 		}
 	});
 
 	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
-		SESSION->hook.samples = value.toInt();
-		SESSION->hook.playback_delta_time = 1.0 / to_F64(SESSION->hook.samples);
+		SIM_HOOK.samples = value.toInt();
+		SIM_HOOK.playback_delta_time = 1.0 / to_F64(SIM_HOOK.samples);
 	});
 
 	mode->toggle();

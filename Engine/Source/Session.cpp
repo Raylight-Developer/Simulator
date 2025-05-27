@@ -36,6 +36,13 @@ Hook::Hook() {
 	samples = 60;
 }
 
+F64 Hook::getDeltaTime() const {
+	if (playback_mode == Playback_Mode::REALTIME) {
+		return delta_time;
+	}
+	return playback_delta_time;
+}
+
 Session::Session() :
 	CORE::Session(),
 	major_version(0),

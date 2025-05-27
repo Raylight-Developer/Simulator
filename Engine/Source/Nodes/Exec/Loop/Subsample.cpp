@@ -42,5 +42,5 @@ Ptr_S<Variable> NODES::EXEC::LOOP::Subsample::getData(const Port* port) {
 	if (port == do_calls.get()) {
 		return make_shared<Variable>(calls);
 	}
-	return make_shared<Variable>(chrono::duration<F64>(NOW - SESSION->hook.playback_start).count());
+	return make_shared<Variable>(chrono::duration<F64>(NOW - SIM_HOOK.playback_start).count());
 }

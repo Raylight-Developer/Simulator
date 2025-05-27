@@ -29,8 +29,8 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 
 				const auto key = qtKey(key_event->key());
 
-				SESSION->hook.input_down[key] = true;
-				for (auto& [k, f] : SESSION->hook.onKeyDown) {
+				SIM_HOOK.input_down[key] = true;
+				for (auto& [k, f] : SIM_HOOK.onKeyDown) {
 					f(key);
 				}
 			}
@@ -44,8 +44,8 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			keys_held.remove(key_event->key());
 			const auto key = qtKey(key_event->key());
 
-			SESSION->hook.input_down[key] = false;
-			for (auto& [k, f] : SESSION->hook.onKeyUp) {
+			SIM_HOOK.input_down[key] = false;
+			for (auto& [k, f] : SIM_HOOK.onKeyUp) {
 				f(key);
 			}
 			break;
@@ -54,8 +54,8 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			const auto button = qtKey(mouse_event->button());
 
-			SESSION->hook.input_down[button] = true;
-			for (auto& [k, f] : SESSION->hook.onKeyDown) {
+			SIM_HOOK.input_down[button] = true;
+			for (auto& [k, f] : SIM_HOOK.onKeyDown) {
 				f(button);
 			}
 			break;
@@ -64,8 +64,8 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			const auto button = qtKey(mouse_event->button());
 
-			SESSION->hook.input_down[button] = false;
-			for (auto& [k, f] : SESSION->hook.onKeyUp) {
+			SIM_HOOK.input_down[button] = false;
+			for (auto& [k, f] : SIM_HOOK.onKeyUp) {
 				f(button);
 			}
 			break;
@@ -73,12 +73,12 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 		case QEvent::MouseMove: {
 			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			if (SESSION->window->viewport->underMouse()) {
-				SESSION->hook.mouse_on_screen = true;
+				SIM_HOOK.mouse_on_screen = true;
 			}
 			else {
-				SESSION->hook.mouse_on_screen = false;
+				SIM_HOOK.mouse_on_screen = false;
 			}
-			SESSION->hook.mouse_pos = p_to_d(mouse_event->position()) * SESSION->hook.pixel_ratio;
+			SIM_HOOK.mouse_pos = p_to_d(mouse_event->position()) * SIM_HOOK.pixel_ratio;
 			break;
 		}
 	}

@@ -7,6 +7,7 @@
 #include "Nodes.hpp"
 #include "Window.hpp"
 #include "Variable.hpp"
+#include "3D_Camera.hpp"
 #include "Scripting.hpp"
 
 struct Viewport;
@@ -26,6 +27,8 @@ struct Hook {
 	F64 delta_time;
 	F64 exec_time;
 
+	Camera_3D camera_3d;
+
 	F64_V2 mouse_pos;
 	bool mouse_on_screen;
 	T_V2<I32> mouse_wheel;
@@ -43,8 +46,11 @@ struct Hook {
 
 	CORE::UMap<void*, function<void()>> onInit;
 	CORE::UMap<void*, function<void(const F64&)>> onTick;
+	CORE::UMap<void*, function<void(QPainter*)>> onGuiRender;
 
 	Hook();
+
+	F64 getDeltaTime() const;
 };
 
 struct Session : CORE::Session {
@@ -70,6 +76,7 @@ struct Session : CORE::Session {
 };
 
 #define SESSION Session::session_ptr
+#define SIM_HOOK SESSION->hook
 
 #define H_BUFFER_GROUP(count) SESSION->history.buffer_group(count)
 #define H_PUSH(command) SESSION->history.execute(command)

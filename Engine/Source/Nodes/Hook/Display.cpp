@@ -16,10 +16,10 @@ NODES::HOOK::Display::Display() :
 
 Ptr_S<Variable> NODES::HOOK::Display::getData(const Port* port) {
 	if (port == do_resolution.get()) {
-		return make_shared<Variable>(SESSION->hook.viewport_resolution);
+		return make_shared<Variable>(SIM_HOOK.viewport_resolution);
 	}
 	else if (port == do_camera_pos.get()) {
-		return make_shared<Variable>(SESSION->hook.camera_pos_2d);
+		return make_shared<Variable>(SIM_HOOK.camera_pos_2d);
 	}
-	return make_shared<Variable>(SESSION->hook.camera_zoom_2d);
+	return make_shared<Variable>(SIM_HOOK.camera_zoom_2d);
 }

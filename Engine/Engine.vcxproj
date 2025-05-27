@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\3D_Camera.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Quat.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\3D_Camera.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Break\Break_Vec2.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Convert\I64_To_F64.hpp" />
     <ClInclude Include="Include\Nodes\Container\List\Create.hpp" />

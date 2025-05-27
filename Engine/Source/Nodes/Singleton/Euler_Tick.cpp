@@ -18,7 +18,7 @@ NODES::SINGLETON::Euler_Tick::Euler_Tick() :
 
 void NODES::SINGLETON::Euler_Tick::exec(const F64& _delta) {
 	delta = _delta;
-	SESSION->hook.exec_time += delta;
+	SIM_HOOK.exec_time += delta;
 	eo_exec->exec();
 }
 
@@ -27,9 +27,9 @@ Ptr_S<Variable> NODES::SINGLETON::Euler_Tick::getData(const Port* port) {
 		return make_shared<Variable>(delta);
 	}
 	else if (port == do_calls.get()) {
-		return make_shared<Variable>(static_cast<I64>(SESSION->hook.current_frame));
+		return make_shared<Variable>(static_cast<I64>(SIM_HOOK.current_frame));
 	}
-	return make_shared<Variable>(SESSION->hook.exec_time);
+	return make_shared<Variable>(SIM_HOOK.exec_time);
 }
 
 void NODES::SINGLETON::Euler_Tick::loadDetail(const Token_Array& tokens) {

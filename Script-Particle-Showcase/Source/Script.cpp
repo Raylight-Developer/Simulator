@@ -29,7 +29,7 @@ void Script::onLoad() {
 	x_bounds = F64_V2(-60, 60);
 	y_bounds = F64_V2(-40, 40);
 
-	SESSION->hook.onInit[this] = [this]() {
+	SIM_HOOK.onInit[this] = [this]() {
 		positions.clear();
 		positions.assign(count, F64_V2(0.0, 0.0));
 
@@ -41,7 +41,7 @@ void Script::onLoad() {
 }
 
 void Script::onUnload() {
-	SESSION->hook.onInit.remove(this);
+	SIM_HOOK.onInit.remove(this);
 
 	LOGL(<< "Unloaded Particle Showcase Script");
 }
@@ -50,11 +50,11 @@ constexpr F64 MS_60FPS = 1.0 / 60.0;
 
 void Script::exec(const Exec_I* port) {
 	F64 delta_time = MS_60FPS;
-	if (SESSION->hook.playback_mode == Playback_Mode::REALTIME) {
-		delta_time = min(SESSION->hook.delta_time, MS_60FPS) * 5.0;
+	if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME) {
+		delta_time = min(SIM_HOOK.delta_time, MS_60FPS) * 5.0;
 	}
 	else {
-		delta_time = SESSION->hook.playback_delta_time * 5.0;
+		delta_time = SIM_HOOK.playback_delta_time * 5.0;
 	}
 	delta_time /= samples;
 

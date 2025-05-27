@@ -21,7 +21,7 @@ void Script::onLoad() {
 	obj_vel = F64_V2(0, 0);
 	obj_rad = 10.0;
 
-	SESSION->hook.onKeyDown[this] = [this](const string& key) {
+	SIM_HOOK.onKeyDown[this] = [this](const string& key) {
 		if (key == "1") {
 			out_color = Color(1, 1, 1, 1);
 		}
@@ -40,24 +40,24 @@ void Script::onLoad() {
 }
 
 void Script::onUnload() {
-	SESSION->hook.onKeyDown.remove(this);
+	SIM_HOOK.onKeyDown.remove(this);
 
 	LOGL(<< "Unloaded Controllable Object Script");
 }
 
 void Script::exec(const Exec_I* port) {
-	const F64 speed = SESSION->hook.delta_time * (*di_move_speed->GET_DATA(F64));
+	const F64 speed = SIM_HOOK.delta_time * (*di_move_speed->GET_DATA(F64));
 	const F64_V2 last_obj_pos = obj_pos;
-	if (SESSION->hook.input_down["A"]) {
+	if (SIM_HOOK.input_down["A"]) {
 		obj_pos.x -= speed;
 	}
-	if (SESSION->hook.input_down["D"]) {
+	if (SIM_HOOK.input_down["D"]) {
 		obj_pos.x += speed;
 	}
-	if (SESSION->hook.input_down["W"]) {
+	if (SIM_HOOK.input_down["W"]) {
 		obj_pos.y += speed;
 	}
-	if (SESSION->hook.input_down["S"]) {
+	if (SIM_HOOK.input_down["S"]) {
 		obj_pos.y -= speed;
 	}
 
@@ -70,13 +70,13 @@ void Script::exec(const Exec_I* port) {
 void Script::render() {
 	Color u_color = out_color;
 
-	if (SESSION->hook.input_down["5"]) {
+	if (SIM_HOOK.input_down["5"]) {
 		u_color = Color(1, 1, 0, 1);
 	}
-	else if (SESSION->hook.input_down["6"]) {
+	else if (SIM_HOOK.input_down["6"]) {
 		u_color = Color(0, 1, 1, 1);
 	}
-	else if (SESSION->hook.input_down["7"]) {
+	else if (SIM_HOOK.input_down["7"]) {
 		u_color = Color(1, 0, 1, 1);
 	}
 	/* Car Render

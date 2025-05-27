@@ -14,7 +14,7 @@ NODES::HOOK::INPUT::Mouse_Wheel::Mouse_Wheel() :
 
 Ptr_S<Variable> NODES::HOOK::INPUT::Mouse_Wheel::getData(const Port* port) {
 	if (port == do_angle_x.get()) {
-		return make_shared<Variable>(static_cast<I64>(SESSION->hook.mouse_wheel.x));
+		return make_shared<Variable>(static_cast<I64>(SIM_HOOK.mouse_wheel.x));
 	}
-	return make_shared<Variable>(static_cast<I64>(SESSION->hook.mouse_wheel.y));
+	return make_shared<Variable>(static_cast<I64>(SIM_HOOK.mouse_wheel.y));
 }
