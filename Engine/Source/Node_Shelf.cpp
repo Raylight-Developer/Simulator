@@ -30,7 +30,8 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 
 	auto tree_included = new GUI::Tree_Item(tree->user_scripts, "Included", 1);
 	{
-		auto camera = new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Camera-Controller.dll" } });
+		auto camera  = new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Camera-Controller.dll" } });
+		auto gui_fps = new GUI::Tree_Item(tree_included, "GUI Fps"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-GUI-Fps.dll"           } });
 	}
 
 	auto tree_showcase = new GUI::Tree_Item(tree->user_scripts, "Showcase", 1);

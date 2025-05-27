@@ -29,9 +29,11 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 
 				const auto key = qtKey(key_event->key());
 
-				SIM_HOOK.input_down[key] = true;
-				for (auto& [k, f] : SIM_HOOK.onKeyDown) {
-					f(key);
+				if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+					SIM_HOOK.input_down[key] = true;
+					for (auto& [k, f] : SIM_HOOK.onKeyDown) {
+						f(key);
+					}
 				}
 			}
 			break;
@@ -44,9 +46,11 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			keys_held.remove(key_event->key());
 			const auto key = qtKey(key_event->key());
 
-			SIM_HOOK.input_down[key] = false;
-			for (auto& [k, f] : SIM_HOOK.onKeyUp) {
-				f(key);
+			if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+				SIM_HOOK.input_down[key] = false;
+				for (auto& [k, f] : SIM_HOOK.onKeyUp) {
+					f(key);
+				}
 			}
 			break;
 		}
@@ -54,9 +58,11 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			const auto button = qtKey(mouse_event->button());
 
-			SIM_HOOK.input_down[button] = true;
-			for (auto& [k, f] : SIM_HOOK.onKeyDown) {
-				f(button);
+			if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+				SIM_HOOK.input_down[button] = true;
+				for (auto& [k, f] : SIM_HOOK.onKeyDown) {
+					f(button);
+				}
 			}
 			break;
 		}
@@ -64,9 +70,11 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 			QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
 			const auto button = qtKey(mouse_event->button());
 
-			SIM_HOOK.input_down[button] = false;
-			for (auto& [k, f] : SIM_HOOK.onKeyUp) {
-				f(button);
+			if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+				SIM_HOOK.input_down[button] = false;
+				for (auto& [k, f] : SIM_HOOK.onKeyUp) {
+					f(button);
+				}
 			}
 			break;
 		}

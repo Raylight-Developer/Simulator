@@ -754,6 +754,9 @@ void Node_Editor::Delete_Node::execute() const {
 			port->disconnect();
 		}
 	}
+	if (node->node_type == NODES::Node_Type::SCRIPT) {
+		static_pointer_cast<NODES::SCRIPT::Script>(node)->onUnload();
+	}
 }
 
 void Node_Editor::Delete_Node::undo() {
@@ -777,6 +780,9 @@ void Node_Editor::Delete_Node::undo() {
 				break;
 			}
 		}
+	}
+	if (node->node_type == NODES::Node_Type::SCRIPT) {
+		static_pointer_cast<NODES::SCRIPT::Script>(node)->onLoad();
 	}
 }
 

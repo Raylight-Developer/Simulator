@@ -58,7 +58,7 @@ void Viewport::f_tickUpdate() {
 				glUseProgram(0);
 			}
 
-			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 1.0);
+			RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
 
 			for (const auto& [k, f] : SIM_HOOK.onTick) {
 				f(delta);
@@ -103,7 +103,7 @@ void Viewport::f_tickUpdate() {
 				glUseProgram(0);
 			}
 
-			RENDER::Dim_3D::Sphere(F32_V3(1.0, 1.0, 0.0), 0.5);
+			RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
 
 			for (const auto& [k, f] : SIM_HOOK.onTick) {
 				f(SIM_HOOK.playback_delta_time);
@@ -228,23 +228,6 @@ void Viewport::f_guiUpdate() {
 		for (const auto& [k, f] : SIM_HOOK.onGuiRender) {
 			f(&painter);
 		}
-
-		//TODO move to script
-		if (frame_count >= 60) {
-			painter.setPen(QColor(50, 255, 50));
-		}
-		else if (frame_count >= 48) {
-			painter.setPen(QColor(150, 255, 50));
-		}
-		else if (frame_count >= 24) {
-			painter.setPen(QColor(255, 150, 50));
-		}
-		else {
-			painter.setPen(QColor(255, 50, 50));
-		}
-		painter.drawText(20, 20, "FPS:");
-		painter.setPen(Qt::white);
-		painter.drawText(65, 20, QString::number(frame_count));
 	}
 }
 
@@ -301,11 +284,13 @@ void Viewport::resizeGL(int w, int h) {
 }
 
 void Viewport::wheelEvent(QWheelEvent* event) {
-	const QPoint scrollAmount = event->angleDelta();
-	SIM_HOOK.mouse_wheel.x = scrollAmount.x();
-	SIM_HOOK.mouse_wheel.y = scrollAmount.y();
+	if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+		const QPoint scrollAmount = event->angleDelta();
+		SIM_HOOK.mouse_wheel.x = scrollAmount.x();
+		SIM_HOOK.mouse_wheel.y = scrollAmount.y();
 
-	for (auto& [k, f] : SIM_HOOK.onWheel) {
-		f(p_to_d(scrollAmount));
+		for (auto& [k, f] : SIM_HOOK.onWheel) {
+			f(p_to_d(scrollAmount));
+		}
 	}
 }
