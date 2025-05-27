@@ -6,32 +6,21 @@
 void RENDER::INIT::Screen() {
 	SESSION->viewport->gl_data["Screen VAO"] = 0;
 	SESSION->viewport->gl_data["Screen VBO"] = 0;
-	SESSION->viewport->gl_data["Screen EBO"] = 0;
 	GLuint* VAO = &SESSION->viewport->gl_data["Screen VAO"];
 	GLuint* VBO = &SESSION->viewport->gl_data["Screen VBO"];
-	GLuint* EBO = &SESSION->viewport->gl_data["Screen EBO"];
 
-	const GLfloat vertices[16] = {
-		-1, -1, 0, 0,
-		-1,  1, 0, 1,
-		 1,  1, 1, 1,
-		 1, -1, 1, 0
-	};
-	const GLuint indices[6] = {
-		0, 1, 2,
-		0, 2, 3
+	const GLfloat vertices[12] = {
+		-1.0f, -1.0f, 0.0f, 0.0f, // Bottom-left
+		 3.0f, -1.0f, 2.0f, 0.0f, // Bottom-right
+		-1.0f,  3.0f, 0.0f, 2.0f, // Top-left
 	};
 	GL->glGenVertexArrays(1, VAO);
 	GL->glGenBuffers(1, VBO);
-	GL->glGenBuffers(1, EBO);
 
 	GL->glBindVertexArray(*VAO);
 
 	GL->glBindBuffer(GL_ARRAY_BUFFER, *VBO);
 	GL->glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	GL->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-	GL->glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	GL->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0);
 	GL->glEnableVertexAttribArray(0);
@@ -96,8 +85,8 @@ void RENDER::Dim_2D::INIT::Circle() {
 	const GLfloat vertices[8] = {
 		-1, -1,
 		-1,  1,
-		1,  1,
-		1, -1
+		 1,  1,
+		 1, -1
 	};
 	const GLuint indices[6] = {
 		0, 1, 2,
@@ -377,6 +366,8 @@ void RENDER::Dim_3D::renderSphere() {
 	const GLuint Shader = SESSION->viewport->gl_data["3D Sphere Shader"];
 	GL->glUseProgram(Shader);
 
+	GL->glBindVertexArray(SESSION->viewport->gl_data["Screen VAO"]);
+
 	{
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
 		const U64 size = SPHERE::center_radius->size() * sizeof(F32_V4);
@@ -397,9 +388,7 @@ void RENDER::Dim_3D::renderSphere() {
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraPos"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.position)));
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraVector"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.getForwardVec())));
 
-	GL->glBindVertexArray(SESSION->viewport->gl_data["Screen VAO"]);
-
-	GL->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	GL->glBindVertexArray(0);
 	GL->glUseProgram(0);

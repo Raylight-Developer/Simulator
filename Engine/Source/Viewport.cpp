@@ -52,7 +52,7 @@ void Viewport::f_tickUpdate() {
 				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SIM_HOOK.camera_zoom_2d));
 				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_pos_2d)));
 
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, 3);
 
 				glBindVertexArray(0);
 				glUseProgram(0);
@@ -97,7 +97,7 @@ void Viewport::f_tickUpdate() {
 				glUniform1f (glGetUniformLocation(Shader, "uZoom"), to_F32(SIM_HOOK.camera_zoom_2d));
 				glUniform2fv(glGetUniformLocation(Shader, "uCenter"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_pos_2d)));
 
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, 3);
 
 				glBindVertexArray(0);
 				glUseProgram(0);
@@ -134,7 +134,7 @@ void Viewport::f_tickUpdate() {
 
 				glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
 
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+				glDrawArrays(GL_TRIANGLES, 0, 3);
 
 				glBindVertexArray(0);
 				glUseProgram(0);
@@ -155,7 +155,7 @@ void Viewport::f_tickUpdate() {
 			glBindTexture(GL_TEXTURE_2D, render_tex.handle);
 			glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
 
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			glBindVertexArray(0);
 			glUseProgram(0);
