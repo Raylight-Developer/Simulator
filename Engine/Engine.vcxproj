@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Rendering.cpp" />
     <ClCompile Include="Source\3D_Camera.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Vec4.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Quat.hpp" />
+    <ClInclude Include="Include\Rendering.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>

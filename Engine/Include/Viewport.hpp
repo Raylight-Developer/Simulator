@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KL.hpp"
+#include "OpenGL.hpp"
 
 struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 	F64 aspect_ratio;
@@ -15,6 +16,7 @@ struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 	F64 window_time;
 
 	unordered_map<string, GLuint> gl_data;
+	OpenGL::Texture render_tex;
 
 	Viewport();
 	~Viewport();

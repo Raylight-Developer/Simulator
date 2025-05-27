@@ -1,7 +1,7 @@
 #include "Nodes/Rendering/2D/Circle.hpp"
 
 #include "Session.hpp"
-#include "OpenGL.hpp"
+#include "Rendering.hpp"
 
 NODES::RENDERING::DIM_2D::Circle::Circle() :
 	Node(Node_Type::RENDER_2D_CIRCLE, "Circle")

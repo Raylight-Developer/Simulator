@@ -1,7 +1,7 @@
 #include "Viewport.hpp"
 
 #include "Session.hpp"
-#include "OpenGL.hpp"
+#include "Rendering.hpp"
 
 constexpr F64 MS_15 = 1.0 / 15.0;
 constexpr F64 MS_60 = 1.0 / 60.0;
@@ -129,7 +129,7 @@ void Viewport::f_tickUpdate() {
 				glBindVertexArray(gl_data["Screen VAO"]);
 
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, gl_data["Screen Tex"]);
+				glBindTexture(GL_TEXTURE_2D, render_tex.handle);
 				glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, resolution.x, resolution.y);
 
 				glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
@@ -152,7 +152,7 @@ void Viewport::f_tickUpdate() {
 			glBindVertexArray(gl_data["Screen VAO"]);
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, gl_data["Screen Tex"]);
+			glBindTexture(GL_TEXTURE_2D, render_tex.handle);
 			glUniform1i(glGetUniformLocation(Shader, "uFbt"), 0);
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -179,18 +179,18 @@ void Viewport::f_compile() {
 
 	RENDER::Dim_3D::INIT::Sphere();
 	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/Paused.frag");
+		const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Paused.frag");
 		if (confirm) {
 			gl_data["Paused Shader"] = confirm.data;
 		}
 	}
 	{
-		const auto confirm = OpenGL::f_compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
+		const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
 		if (confirm) {
 			gl_data["BG Shader"] = confirm.data;
 		}
 	}
-	OpenGL::createTex(&gl_data["Screen Tex"], resolution, GL_LINEAR);
+	render_tex.init(resolution, GL_RGBA, GL_FLOAT);
 }
 
 void Viewport::f_pipeline() {
@@ -280,7 +280,7 @@ void Viewport::resizeGL(int w, int h) {
 
 	glViewport(0, 0, resolution.x, resolution.y);
 
-	OpenGL::resizeTex(&gl_data["Screen Tex"], resolution);
+	render_tex.resize(resolution);
 }
 
 void Viewport::wheelEvent(QWheelEvent* event) {

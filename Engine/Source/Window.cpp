@@ -16,12 +16,12 @@ Window::Window() {
 	history_view = new History_View(this);
 	variable_editor = new Variable_Editor(this);
 
-	viewport = new Viewport();
-
 	GUI::Splitter* splitter = new GUI::Splitter(this);
 	splitter->addWidget(shelf);
 	splitter->addWidget(node_editor);
 	splitter->addWidget(variable_editor);
+
+	viewport = new Viewport();
 
 	GUI::Splitter* v_splitter = new GUI::Splitter(this, true);
 	v_splitter->addWidget(timeline);

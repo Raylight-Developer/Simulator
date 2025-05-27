@@ -155,6 +155,7 @@
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Break\Break_Vec2.hpp" />
     <ClInclude Include="Include\3D_Camera.hpp" />
+    <ClInclude Include="Include\Rendering.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -316,5 +317,6 @@
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Color.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
     <ClCompile Include="Source\3D_Camera.cpp" />
+    <ClCompile Include="Source\Rendering.cpp" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
 #include "Session.hpp"
 #include "Viewport.hpp"
 #include "Scripting.hpp"
+#include "Rendering.hpp"
 
 #define SCRIPT NODES::SCRIPT::Script
 #define SCRIPT_INIT Session::initialize(this->session);
