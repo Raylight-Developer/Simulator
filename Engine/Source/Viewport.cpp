@@ -67,15 +67,19 @@ void Viewport::f_tickUpdate() {
 				FILE.euler_tick->exec(delta);
 				SIM_HOOK.current_frame++;
 			}
-			for (const auto& func : SESSION->gl_3d_callbacks) {
+			for (const auto& func : SESSION->gl_2d_a_callbacks) {
 				func();
 			}
-			SESSION->gl_3d_callbacks.clear();
+			SESSION->gl_2d_a_callbacks.clear();
+			//for (const auto& func : SESSION->gl_3d_callbacks) {
+			//	func();
+			//}
+			//SESSION->gl_3d_callbacks.clear();
 			RENDER::Dim_3D::renderSphere();
-			for (const auto& func : SESSION->gl_2d_callbacks) {
+			for (const auto& func : SESSION->gl_2d_b_callbacks) {
 				func();
 			}
-			SESSION->gl_2d_callbacks.clear();
+			SESSION->gl_2d_b_callbacks.clear();
 			break;
 		}
 		case Playback_Mode::PLAYING: {
@@ -112,15 +116,19 @@ void Viewport::f_tickUpdate() {
 				FILE.euler_tick->exec(SIM_HOOK.playback_delta_time);
 				SIM_HOOK.current_frame++;
 			}
-			for (const auto& func : SESSION->gl_3d_callbacks) {
+			for (const auto& func : SESSION->gl_2d_a_callbacks) {
 				func();
 			}
-			SESSION->gl_3d_callbacks.clear();
+			SESSION->gl_2d_a_callbacks.clear();
+			//for (const auto& func : SESSION->gl_3d_callbacks) {
+			//	func();
+			//}
+			//SESSION->gl_3d_callbacks.clear();
 			RENDER::Dim_3D::renderSphere();
-			for (const auto& func : SESSION->gl_2d_callbacks) {
+			for (const auto& func : SESSION->gl_2d_b_callbacks) {
 				func();
 			}
-			SESSION->gl_2d_callbacks.clear();
+			SESSION->gl_2d_b_callbacks.clear();
 
 			{
 				const GLuint Shader = gl_data["Paused Shader"];

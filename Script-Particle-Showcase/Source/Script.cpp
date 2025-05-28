@@ -120,10 +120,10 @@ void Script::exec(const Exec_I* port) {
 		RENDER::Dim_2D::Circle(positions.ref(i), radius, Color::HSV(hue, 1.0, 1.0));
 	}
 
-	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.x - 0.25), 0.5);
-	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.y + 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.y + 0.25), 0.5);
-	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.x - 0.25, y_bounds.y + 0.25), 0.5);
-	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.y + 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.y + 0.25), 0.5);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.x - 0.25), 0.5, Color(F64_V4(1.0)), false);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.y + 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.y + 0.25), 0.5, Color(F64_V4(1.0)), false);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.x - 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.x - 0.25, y_bounds.y + 0.25), 0.5, Color(F64_V4(1.0)), false);
+	RENDER::Dim_2D::RoundedLine(F64_V2(x_bounds.y + 0.25, y_bounds.x - 0.25), F64_V2(x_bounds.y + 0.25, y_bounds.y + 0.25), 0.5, Color(F64_V4(1.0)), false);
 
 	eo_exec->exec();
 }
@@ -163,7 +163,6 @@ void circleDynamicCollision(F64_V2& pos_a, F64_V2& pos_b, F64_V2& vel_a, F64_V2&
 	vel_a -= impulse * inv_mass_a;
 	vel_b += impulse * inv_mass_b;
 
-	// Positional correction
 	const F64 penetration = radii - ((dist2 == 0.0) ? 0.0 : glm::sqrt(dist2));
 	if (penetration > 0.01) {
 		const F64 percent = 0.85;
@@ -185,25 +184,17 @@ void circleStaticCollision(F64_V2& pos_a, const F64_V2& pos_b, F64_V2& vel_a, co
 
 	const F64_V2 normal = (dist2 == 0.0) ? randomUnitVector() : glm::normalize(delta);
 
-	// Include vel_b to get relative velocity
 	const F64_V2 rel_vel = vel_a - vel_b;
 	const F64 vel_along_normal = glm::dot(rel_vel, normal);
-	if (vel_along_normal > 0) {
-		return;
-	}
 
-	// Calculate impulse (only affects A)
 	const F64 j = -(1.0 + restitution) * vel_along_normal;
 	const F64 inv_mass_a = (mass_a > 0.0) ? 1.0 / mass_a : 0.0;
 
 	vel_a += j * normal * inv_mass_a;
 
-	// Positional correction (only A is moved)
 	const F64 penetration = radii - ((dist2 == 0.0) ? 0.0 : glm::sqrt(dist2));
 	if (penetration > 0) {
-		if (mass_a > 0) {
-			F64_V2 correction = (penetration / inv_mass_a) * normal;
-			pos_a += correction;
-		}
+		const F64_V2 correction = penetration * normal;
+		pos_a += correction;
 	}
 }

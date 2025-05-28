@@ -63,8 +63,9 @@ struct Session : CORE::Session {
 	Window* window;
 	Viewport* viewport;
 	QOpenGLFunctions_4_5_Core* gl;
-	vector<function<void()>> gl_2d_callbacks;
+	vector<function<void()>> gl_2d_a_callbacks;
 	vector<function<void()>> gl_3d_callbacks;
+	vector<function<void()>> gl_2d_b_callbacks;
 
 	Hook hook;
 	File file;
@@ -90,5 +91,6 @@ struct Session : CORE::Session {
 
 #define FILE SESSION->file
 #define GL SESSION->gl
-#define GL_2D_FUNC SESSION->gl_2d_callbacks
+#define GL_2D_A_FUNC SESSION->gl_2d_a_callbacks
 #define GL_3D_FUNC SESSION->gl_3d_callbacks
+#define GL_2D_B_FUNC SESSION->gl_2d_b_callbacks

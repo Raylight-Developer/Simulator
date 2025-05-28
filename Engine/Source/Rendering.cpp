@@ -177,8 +177,8 @@ void RENDER::Dim_2D::INIT::Rectangle() {
 	GL->glBindVertexArray(0);
 }
 
-void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
-	GL_2D_FUNC.push_back([v1, v2, width, color]() {
+void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color, const bool& in_front) {
+	auto fun = [v1, v2, width, color]() {
 		const F32_V2 lineDir = glm::normalize(v2 - v1);
 		const F32_V2 perpDir = F32_V2(-lineDir.y, lineDir.x);
 		const F32 halfWidth = width * 0.5f;
@@ -210,17 +210,23 @@ void RENDER::Dim_2D::Line(const F32_V2& v1, const F32_V2& v2, const F32& width, 
 
 		GL->glBindVertexArray(0);
 		GL->glUseProgram(0);
-		});
+	};
+	if (in_front) {
+		GL_2D_B_FUNC.push_back(fun);
+	}
+	else {
+		GL_2D_A_FUNC.push_back(fun);
+	}
 }
 
-void RENDER::Dim_2D::RoundedLine(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color) {
-	Line(v1, v2, width, color);
-	Circle(v1, width * 0.5, color);
-	Circle(v2, width * 0.5, color);
+void RENDER::Dim_2D::RoundedLine(const F32_V2& v1, const F32_V2& v2, const F32& width, const Color& color, const bool& in_front) {
+	Line(v1, v2, width, color, in_front);
+	Circle(v1, width * 0.5, color, in_front);
+	Circle(v2, width * 0.5, color, in_front);
 }
 
-void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color& color) {
-	GL_2D_FUNC.push_back([center, radius, color]() {
+void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color& color, const bool& in_front) {
+	auto fun = [center, radius, color]() {
 		const GLuint Shader = SESSION->viewport->gl_data["2D Circle Shader"];
 		GL->glUseProgram(Shader);
 		GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
@@ -236,11 +242,17 @@ void RENDER::Dim_2D::Circle(const F32_V2& center, const F32& radius, const Color
 
 		GL->glBindVertexArray(0);
 		GL->glUseProgram(0);
-		});
+	};
+	if (in_front) {
+		GL_2D_B_FUNC.push_back(fun);
+	}
+	else {
+		GL_2D_A_FUNC.push_back(fun);
+	}
 }
 
-void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const Color& color) {
-	GL_2D_FUNC.push_back([v1, v2, v3, color]() {
+void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const Color& color, const bool& in_front) {
+	auto fun = [v1, v2, v3, color]() {
 		const GLfloat vertices[6] = {
 			v1.x, v1.y,
 			v2.x, v2.y,
@@ -263,11 +275,17 @@ void RENDER::Dim_2D::Triangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& 
 
 		GL->glBindVertexArray(0);
 		GL->glUseProgram(0);
-		});
+	};
+	if (in_front) {
+		GL_2D_B_FUNC.push_back(fun);
+	}
+	else {
+		GL_2D_A_FUNC.push_back(fun);
+	}
 }
 
-void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32& height, const Color& color) {
-	GL_2D_FUNC.push_back([center, width, height, color]() {
+void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32& height, const Color& color, const bool& in_front) {
+	auto fun = [center, width, height, color]() {
 		const auto h_w = width * 0.5;
 		const auto h_h = height * 0.5;
 
@@ -299,11 +317,17 @@ void RENDER::Dim_2D::Rectangle(const F32_V2& center, const F32& width, const F32
 
 		GL->glBindVertexArray(0);
 		GL->glUseProgram(0);
-		});
+	};
+	if (in_front) {
+		GL_2D_B_FUNC.push_back(fun);
+	}
+	else {
+		GL_2D_A_FUNC.push_back(fun);
+	}
 }
 
-void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const F32_V2& v4, const Color& color) {
-	GL_2D_FUNC.push_back([v1, v2, v3, v4, color]() {
+void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2& v3, const F32_V2& v4, const Color& color, const bool& in_front) {
+	auto fun = [v1, v2, v3, v4, color]() {
 		const GLfloat vertices[8] = {
 			v1.x, v1.y,
 			v2.x, v2.y,
@@ -327,7 +351,13 @@ void RENDER::Dim_2D::Rectangle(const F32_V2& v1, const F32_V2& v2, const F32_V2&
 
 		GL->glBindVertexArray(0);
 		GL->glUseProgram(0);
-		});
+	};
+	if (in_front) {
+		GL_2D_B_FUNC.push_back(fun);
+	}
+	else {
+		GL_2D_A_FUNC.push_back(fun);
+	}
 }
 
 void RENDER::Dim_3D::INIT::Sphere() {
