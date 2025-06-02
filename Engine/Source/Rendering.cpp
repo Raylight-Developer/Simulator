@@ -119,10 +119,8 @@ void RENDER::Dim_2D::INIT::Triangle() {
 
 	SESSION->viewport->gl_data["2D Triangle VAO"] = 0;
 	SESSION->viewport->gl_data["2D Triangle VBO"] = 0;
-	SESSION->viewport->gl_data["2D Triangle EBO"] = 0;
 	GLuint* VAO = &SESSION->viewport->gl_data["2D Triangle VAO"];
 	GLuint* VBO = &SESSION->viewport->gl_data["2D Triangle VBO"];
-	GLuint* EBO = &SESSION->viewport->gl_data["2D Triangle EBO"];
 
 	const GLfloat vertices[6] = { 0 };
 	GL->glGenVertexArrays(1, VAO);
@@ -402,14 +400,14 @@ void RENDER::Dim_3D::renderSphere() {
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
 		const U64 size = SPHERE::center_radius->size() * sizeof(F32_V4);
 		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
-		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, *SSBO);
+		//GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, *SSBO);
 		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::center_radius->data(), GL_DYNAMIC_DRAW);
 	}
 	{
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 1"];
 		const U64 size = SPHERE::color->size() * sizeof(F32_V4);
 		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
-		GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, *SSBO);
+		//GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, *SSBO);
 		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::color->data(), GL_DYNAMIC_DRAW);
 	}
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
@@ -417,6 +415,7 @@ void RENDER::Dim_3D::renderSphere() {
 
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraPos"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.position)));
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraVector"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.getForwardVec())));
+	GL->glUniformMatrix4fv(GL->glGetUniformLocation(Shader, "uViewMatrix"), 1, false, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.getViewMatrix())));
 
 	GL->glDrawArrays(GL_TRIANGLES, 0, 3);
 

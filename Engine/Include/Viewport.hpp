@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 #include "OpenGL.hpp"
 
 struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {

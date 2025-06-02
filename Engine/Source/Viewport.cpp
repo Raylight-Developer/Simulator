@@ -193,11 +193,24 @@ void Viewport::f_compile() {
 		}
 	}
 	{
-		const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
-		if (confirm) {
+		const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", FILE.background_shader);
+		if (FILE.background_shader != "" && confirm) {
+			if (gl_data["BG Shader"] != 0) {
+				GL->glDeleteProgram(gl_data["BG Shader"]);
+			}
 			gl_data["BG Shader"] = confirm.data;
 		}
+		else {
+			if (gl_data["BG Shader"] != 0) {
+				GL->glDeleteProgram(gl_data["BG Shader"]);
+			}
+			const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
+			if (confirm) {
+				gl_data["BG Shader"] = confirm.data;
+			}
+		}
 	}
+
 	render_tex.init(resolution, GL_RGBA, GL_FLOAT);
 }
 

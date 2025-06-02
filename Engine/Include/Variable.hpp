@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 
 namespace VAR {
 	enum struct Type;

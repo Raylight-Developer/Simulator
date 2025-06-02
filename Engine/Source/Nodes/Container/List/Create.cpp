@@ -47,7 +47,7 @@ void NODES::CONTAINER::LIST::Create::exec(const Port* port) { // TODO refactor a
 
 	const I64 size = *size_data->CAST(I64);
 	if (size > 65'536) {
-		LOGL(<< ERROR("CONTAINER::LIST::CREATE Node Initializer size is larger than 2^16 (65'536)"));
+		LOGL(<< ERROR << "CONTAINER::LIST::CREATE Node Initializer size is larger than 2^16 (65'536)");
 		node_error = true;
 		return;
 	}

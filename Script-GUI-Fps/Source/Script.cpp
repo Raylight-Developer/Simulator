@@ -8,7 +8,7 @@ void Script::onLoad() {
 	rect.setWidth(60);
 	rect.setHeight(40);
 
-	SIM_HOOK.onGuiRender[this] = [this](QPainter* painter) {
+	SIM_HOOK.onGuiRender[this] = [](QPainter* painter) {
 		if (SESSION->viewport->frame_count >= 60) {
 			painter->setPen(QColor(50, 255, 50));
 		}

@@ -37,6 +37,39 @@ CORE::Confirm<GLuint> OpenGL::compileFragShader(const string& vert_file_path, co
 	return CORE::Confirm(shader_program);
 }
 
+CORE::Confirm<GLuint> OpenGL::compileFragShaderFromStr(const string& vert_file_path, const string& fragment_code) {
+	GLuint vert_shader = GL->glCreateShader(GL_VERTEX_SHADER);
+	const string vertex_code = loadFromFile(vert_file_path);
+	const char* vertex_code_cstr = vertex_code.c_str();
+	GL->glShaderSource(vert_shader, 1, &vertex_code_cstr, NULL);
+	GL->glCompileShader(vert_shader);
+
+	if (!checkShaderCompilation(vert_shader, vertex_code)) {
+		return CORE::Confirm<GLuint>();
+	}
+
+	GLuint frag_shader = GL->glCreateShader(GL_FRAGMENT_SHADER);
+	const char* fragment_code_cstr = fragment_code.c_str();
+	GL->glShaderSource(frag_shader, 1, &fragment_code_cstr, NULL);
+	GL->glCompileShader(frag_shader);
+
+	if (!checkShaderCompilation(frag_shader, fragment_code)) {
+		return CORE::Confirm<GLuint>();
+	}
+
+	GLuint shader_program =GL-> glCreateProgram();
+	GL->glAttachShader(shader_program, vert_shader);
+	GL->glAttachShader(shader_program, frag_shader);
+	GL->glLinkProgram(shader_program);
+
+	checkProgramLinking(shader_program);
+
+	GL->glDeleteShader(vert_shader);
+	GL->glDeleteShader(frag_shader);
+
+	return CORE::Confirm(shader_program);
+}
+
 CORE::Confirm<GLuint> OpenGL::compileCompShader(const string& comp_file_path) {
 	string compute_code = preprocessShader(comp_file_path);
 
@@ -86,7 +119,7 @@ bool OpenGL::checkShaderCompilation(const GLuint& shader, const string& shader_c
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
-		LOGL(NL NL << ERROR("[OpenGL]") << " Shader Compilation Failed: ");
+		LOGL(NL NL << ERROR << "[OpenGL] Shader Compilation Failed: ");
 		printShaderErrorWithContext(shader_code, infoLog);
 		return false;
 	}
@@ -99,7 +132,7 @@ bool OpenGL::checkProgramLinking(const GLuint& program) {
 	if (!success) {
 		GLchar infoLog[512];
 		GL->glGetProgramInfoLog(program, sizeof(infoLog), nullptr, infoLog);
-		LOGL(NL NL << ERROR("[OpenGL]") << " Program Linking Failed: " << infoLog);
+		LOGL(NL NL << ERROR << "[OpenGL] Program Linking Failed: " << infoLog);
 		return false;
 	}
 	return true;
@@ -131,7 +164,7 @@ void OpenGL::printShaderErrorWithContext(const string& shader_code, const string
 	for (U64 i = startLine; i < endLine; ++i) {
 		LOG NL << (i + 1) << ": " << lines[i];
 		if (i == lineNumber - 1) {
-			LOG NL << ANSI_RED << "^-- Error here: " ANSI_RESET << error_str;
+			LOG NL << ANSI_RED << "^^^^^^-- Error here: " ANSI_RESET << error_str;
 		}
 	}
 	LOG -= 1;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 
 #include "File.hpp"
 #include "Node.hpp"
@@ -69,6 +70,7 @@ struct Session : CORE::Session {
 
 	Hook hook;
 	File file;
+	CORE::History_Manager history;
 
 	Session();
 	~Session() = default;

@@ -4,7 +4,9 @@
 
 #define NULL_REF "*NULL"
 
-File::File() {}
+File::File() :
+	background_shader("")
+{}
 
 File::~File() {
 }
@@ -17,7 +19,32 @@ U64 File::ptrKey(const void* val) const {
 	return pointer_map.getKey(to_U(val));
 }
 
+void File::loadNewFile(const string& file_path) {
+	pointer_map.clear();
+
+	euler_tick.reset();
+	init.reset();
+
+	node_singletons.clear();
+	//for (auto node : nodes) {
+	//	node.reset();
+	//}
+	nodes.clear();
+
+	variables.clear();
+	variable_refs.clear();
+
+	for (auto script : scripts) {
+		NODES::SCRIPT::unloadScript(script);
+	}
+	scripts.clear();
+	dlls.clear();
+
+	loadFile(file_path);
+}
+
 void File::loadFile(const string& file_path) {
+	this->file_path = file_path;
 	LOGL(<< MSG_BLUE("[File]") >> "Loading ASCII File from:" >> file_path);
 	LOG++;
 	ifstream in_file(file_path, ios::binary);
@@ -58,7 +85,8 @@ void File::load(const Token_Array& token_data) {
 		{"└Variables"  , [this](const Token_Array& tokens) { loadVariables (tokens); }},
 		{"└Node-Groups", [this](const Token_Array& tokens) { loadNodeGroups(tokens); }},
 		{"└Node-Tree"  , [this](const Token_Array& tokens) { loadNodeTree  (tokens); }},
-		{"└Build"      , [this](const Token_Array& tokens) { loadBuild     (tokens); }}
+		{"└Build"      , [this](const Token_Array& tokens) { loadBuild     (tokens); }},
+		{"└Background" , [this](const Token_Array& tokens) { loadBackground(tokens); }}
 	};
 
 	Token_Array block_buffer;
@@ -86,14 +114,14 @@ void File::loadHeader(const Token_Array& token_data) {
 			const U16 file_minor_version = stoU16(version[1]);
 			const U16 file_patch_version = stoU16(version[2]);
 			if (SESSION->major_version != file_major_version or SESSION->minor_version != file_minor_version or SESSION->patch_version != file_patch_version) {
-				LOGL(<< WARNING("Version Mismatch: SYSTEM [" <<
+				LOGL(<< WARNING << "Version Mismatch: SYSTEM [" <<
 					SESSION->major_version << "." <<
 					SESSION->minor_version << "." <<
 					SESSION->patch_version << "] FILE [" <<
 					file_major_version << "." <<
 					file_minor_version << "." <<
 					file_patch_version << "]"
-				));
+				);
 			}
 
 
@@ -166,6 +194,37 @@ void File::loadBuild(const Token_Array& token_data) {
 	LOG--;
 }
 
+void File::loadBackground(const Token_Array& token_data) {
+	LOGL(<< MSG_BLUE("[Node-Tree]"));
+	LOG++;
+
+	string shader;
+	for (U64 i = 1; i < token_data.size() - 1; i++) {
+		shader += f_join(token_data[i]) + "\n";
+	}
+	background_shader = f_strip(shader);
+	if (GL) {
+		const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", background_shader);
+		if (background_shader != "" && confirm) {
+			if (SESSION->viewport->gl_data["BG Shader"] != 0) {
+				GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
+			}
+			SESSION->viewport->gl_data["BG Shader"] = confirm.data;
+		}
+		else {
+			if (SESSION->viewport->gl_data["BG Shader"] != 0) {
+				GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
+			}
+			const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
+			if (confirm) {
+				SESSION->viewport->gl_data["BG Shader"] = confirm.data;
+			}
+		}
+	}
+
+	LOG--;
+}
+
 void File::save(CORE::Lace& lace) {
 	saveHeader(lace);
 	saveScripts(lace);
@@ -173,6 +232,7 @@ void File::save(CORE::Lace& lace) {
 	saveNodeGroups(lace);
 	saveNodeTree(lace);
 	saveBuild(lace);
+	saveBackground(lace);
 }
 
 void File::saveHeader(CORE::Lace& lace) {
@@ -270,6 +330,12 @@ void File::saveBuild(CORE::Lace& lace) {
 	lace NL << "└Node-Exec";
 	lace--;
 	lace NL << "└Build";
+}
+
+void File::saveBackground(CORE::Lace& lace) {
+	lace NL << "┌Background";
+	lace NL << background_shader;
+	lace NL << "└Background";
 }
 
 Token_Array File::getBlock(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close) {

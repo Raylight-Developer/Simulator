@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 
 #include "Scripting.hpp"
 #include "Nodes.hpp"
@@ -31,7 +32,7 @@ struct Node_Editor : GUI::Graphics_View {
 	void mousePressEvent(QMouseEvent* event) override; // TODO Fix sticky nodes become unmovable and non deletable
 	void mouseMoveEvent(QMouseEvent* event) override; // TODO move view on connection drag
 	void keyPressEvent(QKeyEvent* event) override;
-	void wheelEvent(QWheelEvent* event) override; // TODO zoom relative to mouse
+	void wheelEvent(QWheelEvent* event) override;
 
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;

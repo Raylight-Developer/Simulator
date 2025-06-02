@@ -165,7 +165,7 @@ void circleDynamicCollision(F64_V2& pos_a, F64_V2& pos_b, F64_V2& vel_a, F64_V2&
 
 	const F64 penetration = radii - ((dist2 == 0.0) ? 0.0 : glm::sqrt(dist2));
 	if (penetration > 0.01) {
-		const F64 percent = 0.85;
+		const F64 percent = 0.95;
 		const F64_V2 correction = (penetration / (inv_mass_a + inv_mass_b)) * percent * normal;
 
 		pos_a -= correction * inv_mass_a;

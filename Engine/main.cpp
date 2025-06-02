@@ -25,13 +25,7 @@ int main(int argc, char *argv[]) {
 
 	const int res = app->exec();
 
-#ifdef NDEBUG
-	window->session->file.saveFile("./Resources/Test-Release.sim");
-#else
-	window->session->file.saveFile("./Resources/Test-Debug.sim");
-#endif
-
-	LOGL(NL NL NL << SUCCESS("Shutdown") NL NL NL);
+	LOGL(NL NL NL << SUCCESS << "Shutdown" NL NL NL);
 
 	return res;
 }

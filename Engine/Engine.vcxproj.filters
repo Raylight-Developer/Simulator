@@ -156,6 +156,7 @@
     <ClInclude Include="Include\Nodes\Cast\Break\Break_Vec2.hpp" />
     <ClInclude Include="Include\3D_Camera.hpp" />
     <ClInclude Include="Include\Rendering.hpp" />
+    <ClInclude Include="Include\Header.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -318,5 +319,6 @@
     <ClCompile Include="Source\Nodes\Cast\Break\Break_Vec2.cpp" />
     <ClCompile Include="Source\3D_Camera.cpp" />
     <ClCompile Include="Source\Rendering.cpp" />
+    <ClCompile Include="Source\Header.cpp" />
   </ItemGroup>
 </Project>

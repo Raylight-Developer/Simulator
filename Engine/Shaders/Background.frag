@@ -65,48 +65,5 @@ vec3 palette_b( float t ) {
 void main() {
 	vec2 fragCoord = gl_FragCoord.xy;
 
-	vec2 worldPos = (gl_FragCoord.xy - iResolution * 0.5) / uZoom - uCenter;
-	vec2 minBound = vec2(-60.0, -40.0);
-	vec2 maxBound = vec2( 60.0,  40.0);
-	bool inside = all(greaterThanEqual(worldPos, minBound)) && all(lessThanEqual(worldPos, maxBound));
-	if (inside) {
-		fragColor = vec4(0.4, 0.4, 0.4, 1);
-		return;
-	}
-
-//	vec2 uv = (fragCoord-(iResolution.xy/2.))/iResolution.x;
-//	vec3 ro = vec3(0.,0.,-50.);
-//	ro.xz = rotate(ro.xz,iTime);
-//	vec3 cf = normalize(-ro);
-//	vec3 cs = normalize(cross(cf,vec3(0.,1.,0.)));
-//	vec3 cu = normalize(cross(cf,cs));
-//	
-//	vec3 uuv = ro+cf*3. + uv.x*cs + uv.y*cu;
-//	
-//	vec3 rd = normalize(uuv-ro);
-//	
-//	vec4 col = rm(ro,rd);
-//
-//	fragColor = vec4(col.rgb, 0.1);
-
-	vec2 uv = (fragCoord * 2.0 - iResolution.xy) / iResolution.y;
-	vec2 uv0 = uv;
-	vec3 finalColor = vec3(0.0);
-
-	for (float i = 0.0; i < 4.0; i++) {
-		uv = fract(uv * 1.5) - 0.5;
-
-		float d = length(uv) * exp(-length(uv0));
-
-		vec3 col = palette_b(length(uv0) + i*.4 + iTime*.4);
-
-		d = sin(d*8. + iTime)/8.;
-		d = abs(d);
-
-		d = pow(0.01 / d, 1.2);
-
-		finalColor += col * d;
-	}
-
-	fragColor = clamp(mix(vec4(finalColor, 1.0), vec4(0,0,0,1), 0.9), 0.0, 0.075);
+	fragColor = vec4(0.0);
 }

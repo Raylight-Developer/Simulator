@@ -1,0 +1,64 @@
+┌Header
+ Version 0.0.1
+└Header
+┌Scripts( 0 )
+└Scripts
+┌Variables( 0 )
+└Variables
+┌Node-Groups( 0 )
+└Node-Groups
+┌Node-Tree( 0 )
+└Node-Tree
+┌Build
+ ┌Node-Data
+ └Node-Data
+ ┌Node-Exec
+ └Node-Exec
+└Build
+┌Background
+#version 460 core
+
+uniform float iTime;
+uniform int   iFrame;
+uniform float iTimeDelta;
+uniform vec2  iResolution;
+
+uniform float uZoom;
+uniform vec2  uCenter;
+
+in vec2 vTexCoord;
+
+out vec4 fragColor;
+
+void main() {
+	vec2 fragCoord = gl_FragCoord.xy;
+
+	vec2 v = iResolution.xy;
+	fragCoord = 0.2 * (fragCoord + fragCoord - v) / v.y;
+
+	vec4 z = vec4(1.0, 2.0, 3.0, 0.0);
+	fragColor = z;
+
+	for (float a = 0.5, t = iTime, i = 0.0; i < 19.0; ++i) {
+		// Compute v based on the evolving time and fragCoord
+		v = cos(++t - 7.0 * fragCoord * pow(a += 0.03, i)) - 5.0 * fragCoord;
+
+		// Matrix transformation of fragCoord
+		mat2 rotation = mat2(
+			cos(i + 0.02 * t), cos(i + 0.02 * t + 11.0),
+			cos(i + 0.02 * t + 33.0), cos(i + 0.02 * t)
+		);
+		fragCoord *= rotation;
+
+		// Update fragCoord using a mix of trigonometric functions
+		fragCoord += tanh(40.0 * dot(fragCoord, fragCoord) * cos(100.0 * fragCoord.yx + t)) / 200.0 + 0.2 * a * fragCoord + cos(4.0 / exp(dot(fragColor, fragColor) / 100.0) + t) / 300.0;
+
+		// Main color accumulation
+		float len = length((1.0 + i * dot(v, v)) * sin(1.5 * fragCoord / (0.5 - dot(fragCoord, fragCoord)) - 9.0 * fragCoord.yx + t));
+		fragColor += (1.0 + cos(z + t)) / len;
+	}
+
+	// Final color adjustment
+	fragColor = 25.6 / (min(fragColor, vec4(13.0)) + 164.0 / fragColor) - dot(fragCoord, fragCoord) / 250.0;
+}
+└Background

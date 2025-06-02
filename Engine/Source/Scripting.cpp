@@ -22,10 +22,10 @@ void NODES::SCRIPT::loadDLL(HINSTANCE& dynlib, const QString& dll_path) {
 	dynlib = LoadLibrary(file_path);
 	if (!dynlib) {
 		const unsigned int errorCode = static_cast<unsigned int>(GetLastError());
-		LOG NL <<"[DLL Loading] LoadLibrary " << ERROR("Failed") << " with error code : " << errorCode; FLUSH;
+		LOG NL <<"[DLL Loading] LoadLibrary " << ERROR << "Failed" << " with error code : " << errorCode; FLUSH;
 		exit(EXIT_FAILURE);
 	}
-	LOG NL << "[DLL Loading] " << SUCCESS("Loaded."); FLUSH;
+	LOG NL << "[DLL Loading] " << SUCCESS << "Loaded."; FLUSH;
 }
 
 void NODES::SCRIPT::unloadDLL(HINSTANCE& dynlib) {

@@ -20,6 +20,13 @@ void Script::onLoad() {
 	orbiting = false;
 	first_person = false;
 
+	SIM_HOOK.onInit[this] = []() {
+		SIM_HOOK.camera_pos_2d = F64_V2(0.0, 0.0);
+		SIM_HOOK.camera_zoom_2d = SIM_HOOK.pixel_ratio * 5.0;
+
+		SIM_HOOK.camera_3d.position = F64_V3(7.5, 2.5, 7.5);
+		SIM_HOOK.camera_3d.target   = F64_V3(0.0, 0.0, 0.0);
+	};
 	SIM_HOOK.onWheel[this] = [this](const F64_V2& angle) {
 		if (mode_3d) {
 
@@ -80,13 +87,6 @@ void Script::onLoad() {
 			mode_3d = true;
 		}
 	};
-	SIM_HOOK.onInit[this] = [this]() {
-		SIM_HOOK.camera_pos_2d = F64_V2(0.0, 0.0);
-		SIM_HOOK.camera_zoom_2d = SIM_HOOK.pixel_ratio * 5.0;
-
-		SIM_HOOK.camera_3d.position = F64_V3(7.5, 2.5, 7.5);
-		SIM_HOOK.camera_3d.target   = F64_V3(0.0, 0.0, 0.0);
-	};
 	SIM_HOOK.onGuiRender[this] = [this](QPainter* painter) {
 		painter->setPen(Qt::white);
 		if (mode_3d) {
@@ -101,10 +101,10 @@ void Script::onLoad() {
 }
 
 void Script::onUnload() {
+	SIM_HOOK.onInit.remove(this);
 	SIM_HOOK.onWheel.remove(this);
 	SIM_HOOK.onKeyUp.remove(this);
 	SIM_HOOK.onKeyDown.remove(this);
-	SIM_HOOK.onInit.remove(this);
 	SIM_HOOK.onGuiRender.remove(this);
 
 	LOGL(<< "Unloaded Camera Controller Script");

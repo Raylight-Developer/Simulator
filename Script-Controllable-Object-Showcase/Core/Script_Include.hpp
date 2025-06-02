@@ -3,6 +3,7 @@
 #include "pch.h"
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 
 #include "Node.hpp"
 #include "OpenGL.hpp"

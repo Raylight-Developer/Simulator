@@ -1,9 +1,11 @@
 #pragma once
 
 #include "KL.hpp"
+#include "KL_GUI.hpp"
 
 namespace OpenGL {
 	CORE::Confirm<GLuint> compileFragShader(const string& vert_file_path, const string& frag_file_path);
+	CORE::Confirm<GLuint> compileFragShaderFromStr(const string& vert_file_path, const string& fragment_code);
 	CORE::Confirm<GLuint> compileCompShader(const string& comp_file_path);
 	bool recompileFragShader(GLuint& handle, const string& vert_file_path, const string& frag_file_path);
 	bool recompileCompShader(GLuint& handle, const string& comp_file_path);
