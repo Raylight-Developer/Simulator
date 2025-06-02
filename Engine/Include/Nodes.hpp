@@ -168,7 +168,7 @@ namespace NODES::RENDERING {
 	}
 	namespace DIM_3D {
 		namespace PRIMITIVE {
-			enum struct Type { SPHERE, CYLINDER, CONE, TORUS, CUBOID };
+			struct Sphere;
 		}
 	}
 }
@@ -176,6 +176,8 @@ namespace NODES::RENDERING {
 #include "Nodes/Rendering/2D/Circle.hpp"
 #include "Nodes/Rendering/2D/Triangle.hpp"
 #include "Nodes/Rendering/2D/Rectangle.hpp"
+
+#include "Nodes/Rendering/3D/Sphere.hpp"
 
 /*
 #pragma once
@@ -241,7 +243,8 @@ namespace NODES {
 		{ Node_Type::RENDER_2D_RECTANGLE     , []() { return make_shared<RENDERING::DIM_2D::Rectangle>(); }},
 		{ Node_Type::RENDER_2D_TRIANGLE      , []() { return make_shared<RENDERING::DIM_2D::Triangle>();  }},
 		{ Node_Type::RENDER_2D_CIRCLE        , []() { return make_shared<RENDERING::DIM_2D::Circle>();    }},
-		{ Node_Type::RENDER_2D_LINE          , []() { return make_shared<RENDERING::DIM_2D::Line>();      }}
+		{ Node_Type::RENDER_2D_LINE          , []() { return make_shared<RENDERING::DIM_2D::Line>();      }},
+		{ Node_Type::RENDER_3D_SPHERE        , []() { return make_shared<RENDERING::DIM_3D::Sphere>();    }}
 	};
 
 	static const vector<pair<Node_Type, string_view>> enum_str_map {{
@@ -290,7 +293,8 @@ namespace NODES {
 		{ Node_Type::RENDER_2D_RECTANGLE     , "RENDERING::2D::RECTANGLE"  },
 		{ Node_Type::RENDER_2D_TRIANGLE      , "RENDERING::2D::TRIANGLE"   },
 		{ Node_Type::RENDER_2D_CIRCLE        , "RENDERING::2D::CIRCLE"     },
-		{ Node_Type::RENDER_2D_LINE          , "RENDERING::2D::LINE"       }
+		{ Node_Type::RENDER_2D_LINE          , "RENDERING::2D::LINE"       },
+		{ Node_Type::RENDER_3D_SPHERE        , "RENDERING::3D::SPHERE"     }
 	}};
 
 	string toString(const Node_Type& value);

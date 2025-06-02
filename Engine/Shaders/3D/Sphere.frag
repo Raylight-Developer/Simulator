@@ -62,7 +62,7 @@ void getRay(inout vec3 pos, inout vec3 dir, vec2 uv) {
 	float iCameraSensorWidth = 0.036;
 
 	uv = vTexCoord * 2.0 - 1.0; // Convert from [0,1] to [-1,1]
-	uv.x *= float(uResolution.x) / float(uResolution.y); // Correct aspect ratio
+	uv.y *= float(uResolution.y) / float(uResolution.x); // Correct aspect ratio
 
 	vec3 projection_center = uCameraPos + iCameraFocalLength * uCameraVector;
 	vec3 projection_u = normalize(cross(uCameraVector, vec3(0,1,0))) * iCameraSensorWidth;
@@ -77,9 +77,6 @@ void main() {
 	vec3 rayOrigin;
 	vec3 rayDir;
 	getRay(rayOrigin, rayDir, vTexCoord);
-
-	//fragColor = vec4(rayDir, 1);
-	//return;
 
 	float minT = 1e9;
 	vec4 finalColor = vec4(0);

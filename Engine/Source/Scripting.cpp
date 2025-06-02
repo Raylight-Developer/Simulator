@@ -38,7 +38,14 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 	Script* script = nullptr;
 	HINSTANCE script_addr = nullptr;
 
-	loadDLL(script_addr, dll_path);
+	QString true_dll_path = dll_path;
+#ifdef NDEBUG
+	true_dll_path.replace("$(CONFIGURATION)", "Release");
+#else
+	true_dll_path.replace("$(CONFIGURATION)", "Debug");
+#endif
+
+	loadDLL(script_addr, true_dll_path);
 	FARPROC script_address = GetProcAddress(script_addr, "scriptInstance");
 	if (script_address) {
 		LOG++;

@@ -39,11 +39,7 @@ Window::Window() {
 	main_container->addWidget(header);
 	main_container->addWidget(main_splitter);
 
-#ifdef NDEBUG
-	session->file.loadFile("./Resources/Test-Release.sim");
-#else
-	session->file.loadFile("./Resources/Test-Debug.sim");
-#endif
+	session->file.loadFile("./Resources/Test.sim");
 
 	setCentralWidget(main_container);
 	showMaximized();

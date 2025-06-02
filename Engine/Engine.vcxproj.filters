@@ -157,6 +157,7 @@
     <ClInclude Include="Include\3D_Camera.hpp" />
     <ClInclude Include="Include\Rendering.hpp" />
     <ClInclude Include="Include\Header.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\3D\Sphere.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -320,5 +321,6 @@
     <ClCompile Include="Source\3D_Camera.cpp" />
     <ClCompile Include="Source\Rendering.cpp" />
     <ClCompile Include="Source\Header.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\3D\Sphere.cpp" />
   </ItemGroup>
 </Project>

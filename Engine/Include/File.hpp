@@ -34,14 +34,14 @@ struct File {
 	void loadFile(const string& file_path);
 	bool saveFile(const string& file_path);
 
-	void load          (const Token_Array& token_data);
-	void loadHeader    (const Token_Array& token_data);
-	void loadScripts   (const Token_Array& token_data);
-	void loadVariables (const Token_Array& token_data);
-	void loadNodeGroups(const Token_Array& token_data);
-	void loadNodeTree  (const Token_Array& token_data);
-	void loadBuild     (const Token_Array& token_data);
-	void loadBackground(const Token_Array& token_data);
+	void load          (const Token_Array& token_data, const Tokens& line_data);
+	void loadHeader    (const Token_Array& token_data, const Tokens& line_data);
+	void loadScripts   (const Token_Array& token_data, const Tokens& line_data);
+	void loadVariables (const Token_Array& token_data, const Tokens& line_data);
+	void loadNodeGroups(const Token_Array& token_data, const Tokens& line_data);
+	void loadNodeTree  (const Token_Array& token_data, const Tokens& line_data);
+	void loadBuild     (const Token_Array& token_data, const Tokens& line_data);
+	void loadBackground(const Token_Array& token_data, const Tokens& line_data);
 
 	void save          (CORE::Lace& lace);
 	void saveHeader    (CORE::Lace& lace);

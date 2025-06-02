@@ -257,6 +257,7 @@ namespace NODES {
 		RENDER_2D_RECTANGLE     ,
 		RENDER_2D_TRIANGLE      ,
 		RENDER_2D_CIRCLE        ,
-		RENDER_2D_LINE          
+		RENDER_2D_LINE          ,
+		RENDER_3D_SPHERE
 	};
 }

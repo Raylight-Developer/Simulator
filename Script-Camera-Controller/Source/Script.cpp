@@ -2,8 +2,6 @@
 
 Script::Script(Session* session) : SCRIPT("Camera Controller", session) {
 	SCRIPT_INIT;
-	// TODO zoom under mouse
-	// TODO view_sensitivity input
 }
 
 void Script::onLoad() {
@@ -118,7 +116,7 @@ void Script::exec(const Exec_I* port) {
 		last_pos = SIM_HOOK.mouse_pos;
 
 		const F64 view_sensitivity = 0.25;
-		const F64 move_sensitivity = 5.0;
+		const F64 move_sensitivity = 2.5;
 		if (panning) {
 			SIM_HOOK.camera_pos_2d += F64_V2(-mouse_delta.x, mouse_delta.y) / SIM_HOOK.camera_zoom_2d;
 		}
@@ -126,7 +124,7 @@ void Script::exec(const Exec_I* port) {
 			SIM_HOOK.camera_3d.orbit(mouse_delta.y * view_sensitivity, -mouse_delta.x * view_sensitivity);
 		}
 		else if (first_person) {
-			SIM_HOOK.camera_3d.rotate(-mouse_delta.y * view_sensitivity, -mouse_delta.x * view_sensitivity);
+			SIM_HOOK.camera_3d.rotate(-mouse_delta.y * view_sensitivity * 0.5, -mouse_delta.x * view_sensitivity * 0.5);
 		}
 		if (mode_3d) {
 			if (SIM_HOOK.input_down["W"]) {

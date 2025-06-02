@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{4d567220-9fe9-4e46-9066-3ab50f3fd179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4d005fa3-9df4-4830-a129-8ab529dfc59c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal">
+      <UniqueIdentifier>{3551b8d9-95c8-4ee1-9ff4-5d6b273ad5b7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\pch.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Script.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\pch.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Script_Include.hpp">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\framework.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Script.hpp">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nanosvg.h" />
+  </ItemGroup>
+</Project>

@@ -2,12 +2,6 @@
 
 #include "Session.hpp"
 
-#ifdef _DEBUG
-const QString type = "Debug";
-#else
-const QString type = "Release";
-#endif
-
 Node_Shelf::Node_Shelf(QWidget* parent) :
 	GUI::Linear_Contents(parent, QBoxLayout::Direction::TopToBottom)
 {
@@ -30,14 +24,15 @@ Node_Shelf::Node_Shelf(QWidget* parent) :
 
 	auto tree_included = new GUI::Tree_Item(tree->user_scripts, "Included", 1);
 	{
-		auto camera  = new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Camera-Controller.dll" } });
-		auto gui_fps = new GUI::Tree_Item(tree_included, "GUI Fps"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-GUI-Fps.dll"           } });
+		auto camera  = new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll" } });
+		auto gui_fps = new GUI::Tree_Item(tree_included, "GUI Fps"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll"           } });
 	}
 
 	auto tree_showcase = new GUI::Tree_Item(tree->user_scripts, "Showcase", 1);
 	{
-		auto controllable = new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Controllable-Object-Showcase.dll" } });
-		auto particles    = new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/" + type + "/Script-Particle-Showcase.dll"            } });
+		auto controllable = new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Controllable-Object-Showcase.dll" } });
+		auto particles    = new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Particle-Showcase.dll"            } });
+		auto svg          = new GUI::Tree_Item(tree_showcase, "SVG"                , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-SVG-Art-Showcase.dll"            } });
 	}
 }
 
@@ -149,6 +144,9 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 			auto circle    = new GUI::Tree_Item(tree_2d, "Circle"   , 2, { { 1000, "RENDER 2D CIRCLE"    } });
 		}
 		auto tree_3d = new GUI::Tree_Item(tree_render, "3D Rendering", 1);
+		{
+			auto sphere = new GUI::Tree_Item(tree_3d, "Sphere" , 2, { { 1000, "RENDER 3D SPHERE" } });
+		}
 	}
 
 	expandAll();

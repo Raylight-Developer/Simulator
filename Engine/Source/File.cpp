@@ -20,6 +20,14 @@ U64 File::ptrKey(const void* val) const {
 }
 
 void File::loadNewFile(const string& file_path) {
+	SESSION->window->variable_editor->list->clear();
+	SESSION->window->node_editor->selection.clear();
+
+	SESSION->history.group_undo_stack.clear();
+	SESSION->history.group_redo_stack.clear();
+	SESSION->history.redo_stack.clear();
+	SESSION->history.undo_stack.clear();
+
 	pointer_map.clear();
 
 	euler_tick.reset();
@@ -54,16 +62,15 @@ void File::loadFile(const string& file_path) {
 	else {
 
 		Token_Array token_data;
+		Tokens line_data;
 		string line;
 		while (getline(in_file, line)) {
-			Tokens tokens = f_split(line);
-			if (!tokens.empty()) {
-				token_data.push_back(tokens);
-			}
+			token_data.push_back(f_split(line));
+			line_data.push_back(line);
 		}
 		in_file.close();
 		LOGL(<< MSG_GREEN("[File]") >> "Parsing...");
-		load(token_data);
+		load(token_data, line_data);
 	}
 	LOGL(<< MSG_GREEN("[File]") >> "Loaded");
 	LOG--;
@@ -75,35 +82,39 @@ bool File::saveFile(const string& file_path) {
 	return writeToFile(file_path, lace.str());
 }
 
-void File::load(const Token_Array& token_data) {
+void File::load(const Token_Array& token_data, const Tokens& line_data) {
 	LOG++;
 
-	const unordered_map<string, function<void(const Token_Array&)>> actions = {
-		{"└Header"       , [this](const Token_Array& tokens) { loadHeader    (tokens); }},
-		{"└Scripts"      , [this](const Token_Array& tokens) { loadScripts   (tokens); }},
-		{"└Variables"    , [this](const Token_Array& tokens) { loadVariables (tokens); }},
-		{"└Node-Groups"  , [this](const Token_Array& tokens) { loadNodeGroups(tokens); }},
-		{"└Node-Tree"    , [this](const Token_Array& tokens) { loadNodeTree  (tokens); }},
-		{"└Build"        , [this](const Token_Array& tokens) { loadBuild     (tokens); }},
-		{"└Background**" , [this](const Token_Array& tokens) { loadBackground(tokens); }}
+	const unordered_map<string, function<void(const Token_Array&, const Tokens&)>> actions = {
+		{"└Header"       , [this](const Token_Array& tokens, const Tokens& line_data) { loadHeader    (tokens, line_data); }},
+		{"└Scripts"      , [this](const Token_Array& tokens, const Tokens& line_data) { loadScripts   (tokens, line_data); }},
+		{"└Variables"    , [this](const Token_Array& tokens, const Tokens& line_data) { loadVariables (tokens, line_data); }},
+		{"└Node-Groups"  , [this](const Token_Array& tokens, const Tokens& line_data) { loadNodeGroups(tokens, line_data); }},
+		{"└Node-Tree"    , [this](const Token_Array& tokens, const Tokens& line_data) { loadNodeTree  (tokens, line_data); }},
+		{"└Build"        , [this](const Token_Array& tokens, const Tokens& line_data) { loadBuild     (tokens, line_data); }},
+		{"└Background**" , [this](const Token_Array& tokens, const Tokens& line_data) { loadBackground(tokens, line_data); }}
 	};
 
 	Token_Array block_buffer;
+	Tokens block_lines;
 	for (U64 i = 0; i < token_data.size(); i++) {
 		const Tokens& tokens = token_data[i];
 
 		block_buffer.push_back(tokens);
-
-		const auto it = actions.find(tokens[0]);
-		if (it != actions.end()) {
-			it->second(block_buffer);
-			block_buffer.clear();
+		block_lines.push_back(line_data[i]);
+		if (!tokens.empty()) {
+			const auto it = actions.find(tokens[0]);
+			if (it != actions.end()) {
+				it->second(block_buffer, block_lines);
+				block_buffer.clear();
+				block_lines.clear();
+			}
 		}
 	}
 	LOG--;
 }
 
-void File::loadHeader(const Token_Array& token_data) {
+void File::loadHeader(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Header]"));
 	LOG++;
 	for (const Tokens& tokens : token_data) {
@@ -130,13 +141,13 @@ void File::loadHeader(const Token_Array& token_data) {
 	LOG--;
 }
 
-void File::loadScripts(const Token_Array& token_data) {
+void File::loadScripts(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Scripts]"));
 	LOG++;
 	LOG--;
 }
 
-void File::loadVariables(const Token_Array& token_data) {
+void File::loadVariables(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Variables]"));
 	LOG++;
 	const CORE::Stack<Token_Array> var_data = getBlocks("┌Variable", "└Variable", token_data, false);
@@ -148,13 +159,13 @@ void File::loadVariables(const Token_Array& token_data) {
 	LOG--;
 }
 
-void File::loadNodeGroups(const Token_Array& token_data) {
+void File::loadNodeGroups(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Node-Groups]"));
 	LOG++;
 	LOG--;
 }
 
-void File::loadNodeTree(const Token_Array& token_data) {
+void File::loadNodeTree(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Node-Tree]"));
 	LOG++;
 	const CORE::Stack<Token_Array> node_data = getBlocks("┌Node", "└Node", token_data, true);
@@ -164,7 +175,7 @@ void File::loadNodeTree(const Token_Array& token_data) {
 	LOG--;
 }
 
-void File::loadBuild(const Token_Array& token_data) {
+void File::loadBuild(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Build]"));
 	LOG++;
 
@@ -193,15 +204,11 @@ void File::loadBuild(const Token_Array& token_data) {
 	LOG--;
 }
 
-void File::loadBackground(const Token_Array& token_data) {
+void File::loadBackground(const Token_Array& token_data, const Tokens& line_data) {
 	LOGL(<< MSG_BLUE("[Node-Tree]"));
 	LOG++;
 
-	string shader;
-	for (U64 i = 1; i < token_data.size() - 1; i++) {
-		shader += f_join(token_data[i]) + "\n";
-	}
-	background_shader = f_strip(shader);
+	background_shader = f_join(line_data, "\n", 1, 1);
 	if (GL) {
 		const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", background_shader);
 		if (background_shader != "" && confirm) {

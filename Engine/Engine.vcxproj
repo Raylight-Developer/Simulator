@@ -74,6 +74,7 @@
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec2.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec3.cpp" />
     <ClCompile Include="Source\Nodes\Cast\Make\Make_Vec4.cpp" />
+    <ClCompile Include="Source\Nodes\Rendering\3D\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Header.hpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Color.hpp" />
     <ClInclude Include="Include\Nodes\Cast\Make\Make_Quat.hpp" />
     <ClInclude Include="Include\Rendering.hpp" />
+    <ClInclude Include="Include\Nodes\Rendering\3D\Sphere.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1332ED0C-C278-459F-AD7A-E0FA3A4AB951}</ProjectGuid>
@@ -222,6 +224,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configura
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -264,6 +267,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configura
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>

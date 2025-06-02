@@ -505,6 +505,9 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			else if (type == "RENDER 2D CIRCLE") {
 				node = make_shared<NODES::RENDERING::DIM_2D::Circle>();
 			}
+			else if (type == "RENDER 3D SPHERE") {
+				node = make_shared<NODES::RENDERING::DIM_3D::Sphere>();
+			}
 			else if (type.startsWith("SINGLETON")) {
 				#define NODE_EXISTS(type) false;\
 				for (Ptr_S<Node> node : FILE.node_singletons) {\
