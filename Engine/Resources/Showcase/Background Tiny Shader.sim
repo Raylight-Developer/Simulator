@@ -15,7 +15,7 @@
  ┌Node-Exec
  └Node-Exec
 └Build
-┌Background
+┌Background**
 #version 460 core
 
 uniform float iTime;
@@ -42,15 +42,6 @@ vec3 palette( float t ) {
 void main() {
 	vec2 fragCoord = gl_FragCoord.xy;
 
-	vec2 worldPos = (gl_FragCoord.xy - iResolution * 0.5) / uZoom - uCenter;
-	vec2 minBound = vec2(-60.0, -40.0);
-	vec2 maxBound = vec2( 60.0,  40.0);
-	bool inside = all(greaterThanEqual(worldPos, minBound)) && all(lessThanEqual(worldPos, maxBound));
-	if (inside) {
-		fragColor = vec4(0.4, 0.4, 0.4, 1);
-		return;
-	}
-
 	vec2 uv = (fragCoord * 2.0 - iResolution.xy) / iResolution.y;
 	vec2 uv0 = uv;
 	vec3 finalColor = vec3(0.0);
@@ -70,6 +61,6 @@ void main() {
 		finalColor += col * d;
 	}
 
-	fragColor = clamp(mix(vec4(finalColor, 1.0), vec4(0,0,0,1), 0.9), 0.0, 0.075);
+	fragColor = vec4(finalColor, 1.0);
 }
-└Background
+└Background**

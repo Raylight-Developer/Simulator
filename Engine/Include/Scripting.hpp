@@ -44,5 +44,6 @@ namespace NODES {
 		Script* loadScript(const QString& dll_path);
 		void reloadScript(Script* script);
 		void unloadScript(Script* script);
+		void unloadScripts();
 	}
 }

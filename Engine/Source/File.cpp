@@ -25,22 +25,21 @@ void File::loadNewFile(const string& file_path) {
 	euler_tick.reset();
 	init.reset();
 
-	node_singletons.clear();
-	//for (auto node : nodes) {
-	//	node.reset();
-	//}
-	nodes.clear();
-
 	variables.clear();
 	variable_refs.clear();
 
-	for (auto script : scripts) {
-		NODES::SCRIPT::unloadScript(script);
-	}
-	scripts.clear();
-	dlls.clear();
+	NODES::SCRIPT::unloadScripts();
+
+	node_singletons.clear();
+	nodes.clear();
 
 	loadFile(file_path);
+	for (auto& [k, f] : SIM_HOOK.onInit) {
+		f();
+	}
+	if (FILE.init) {
+		FILE.init->exec();
+	}
 }
 
 void File::loadFile(const string& file_path) {
@@ -80,13 +79,13 @@ void File::load(const Token_Array& token_data) {
 	LOG++;
 
 	const unordered_map<string, function<void(const Token_Array&)>> actions = {
-		{"└Header"     , [this](const Token_Array& tokens) { loadHeader    (tokens); }},
-		{"└Scripts"    , [this](const Token_Array& tokens) { loadScripts   (tokens); }},
-		{"└Variables"  , [this](const Token_Array& tokens) { loadVariables (tokens); }},
-		{"└Node-Groups", [this](const Token_Array& tokens) { loadNodeGroups(tokens); }},
-		{"└Node-Tree"  , [this](const Token_Array& tokens) { loadNodeTree  (tokens); }},
-		{"└Build"      , [this](const Token_Array& tokens) { loadBuild     (tokens); }},
-		{"└Background" , [this](const Token_Array& tokens) { loadBackground(tokens); }}
+		{"└Header"       , [this](const Token_Array& tokens) { loadHeader    (tokens); }},
+		{"└Scripts"      , [this](const Token_Array& tokens) { loadScripts   (tokens); }},
+		{"└Variables"    , [this](const Token_Array& tokens) { loadVariables (tokens); }},
+		{"└Node-Groups"  , [this](const Token_Array& tokens) { loadNodeGroups(tokens); }},
+		{"└Node-Tree"    , [this](const Token_Array& tokens) { loadNodeTree  (tokens); }},
+		{"└Build"        , [this](const Token_Array& tokens) { loadBuild     (tokens); }},
+		{"└Background**" , [this](const Token_Array& tokens) { loadBackground(tokens); }}
 	};
 
 	Token_Array block_buffer;
@@ -333,9 +332,9 @@ void File::saveBuild(CORE::Lace& lace) {
 }
 
 void File::saveBackground(CORE::Lace& lace) {
-	lace NL << "┌Background";
+	lace NL << "┌Background**";
 	lace NL << background_shader;
-	lace NL << "└Background";
+	lace NL << "└Background**";
 }
 
 Token_Array File::getBlock(const string& open, const string& close, const Token_Array& tokens, const bool& include_open_close) {

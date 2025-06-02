@@ -18,14 +18,14 @@ void NODES::SCRIPT::loadDLL(HINSTANCE& dynlib, const QString& dll_path) {
 	const string dll_str = dll_path.toStdString();
 	wstring stemp = wstring(dll_str.begin(), dll_str.end());
 	LPCWSTR file_path = stemp.c_str();
-	LOG NL << "[DLL Loading] Loading: " << dll_str; FLUSH;
+	//LOG NL << "[DLL Loading] Loading: " << dll_str; FLUSH;
 	dynlib = LoadLibrary(file_path);
 	if (!dynlib) {
 		const unsigned int errorCode = static_cast<unsigned int>(GetLastError());
 		LOG NL <<"[DLL Loading] LoadLibrary " << ERROR << "Failed" << " with error code : " << errorCode; FLUSH;
 		exit(EXIT_FAILURE);
 	}
-	LOG NL << "[DLL Loading] " << SUCCESS << "Loaded."; FLUSH;
+	//LOG NL << "[DLL Loading] " << SUCCESS << "Loaded."; FLUSH;
 }
 
 void NODES::SCRIPT::unloadDLL(HINSTANCE& dynlib) {
@@ -47,12 +47,13 @@ NODES::SCRIPT::Script* NODES::SCRIPT::loadScript(const QString& dll_path) {
 		if (script) {
 			script->path = dll_path;
 
+			script->onLoad();
 			FILE.scripts.push(script);
 			FILE.dlls[script] = script_addr;
-			script->onLoad();
 		}
 		LOG--;
 	}
+
 	return script;
 }
 
@@ -63,9 +64,24 @@ void NODES::SCRIPT::unloadScript(Script* script) {
 	HINSTANCE script_addr = FILE.dlls[script];
 
 	script->onUnload();
-	FILE.dlls.remove(script);
-	FILE.scripts.removeDelete(script);
+
+	for (U64 i = 0; i < FILE.nodes.size() ; i++) {
+		auto res = FILE.nodes.cpy(i);
+		if (res.get() == script) {
+			FILE.nodes.removeIndex(i);
+			break;
+		}
+	}
+
 	unloadDLL(script_addr);
+}
+
+void NODES::SCRIPT::unloadScripts() {
+	for (U64 i = 0; i < FILE.scripts.size(); i++) {
+		NODES::SCRIPT::unloadScript(FILE.scripts.ptr(i));
+	}
+	FILE.dlls.clear();
+	FILE.scripts.clear();
 }
 
 void NODES::SCRIPT::Script::execAllDownstream() const {

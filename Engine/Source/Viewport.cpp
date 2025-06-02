@@ -58,13 +58,17 @@ void Viewport::f_tickUpdate() {
 				glUseProgram(0);
 			}
 
-			RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
+			//RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
 
 			for (const auto& [k, f] : SIM_HOOK.onTick) {
 				f(delta);
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(delta);
+				SIM_HOOK.current_frame++;
+			}
+			else {
+				SIM_HOOK.exec_time += delta;
 				SIM_HOOK.current_frame++;
 			}
 			for (const auto& func : SESSION->gl_2d_a_callbacks) {
@@ -107,13 +111,17 @@ void Viewport::f_tickUpdate() {
 				glUseProgram(0);
 			}
 
-			RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
+			//RENDER::Dim_3D::Sphere(F32_V3(0.0, 0.0, 0.0), 1.0);
 
 			for (const auto& [k, f] : SIM_HOOK.onTick) {
 				f(SIM_HOOK.playback_delta_time);
 			}
 			if (FILE.euler_tick) {
 				FILE.euler_tick->exec(SIM_HOOK.playback_delta_time);
+				SIM_HOOK.current_frame++;
+			}
+			else {
+				SIM_HOOK.exec_time += SIM_HOOK.playback_delta_time;
 				SIM_HOOK.current_frame++;
 			}
 			for (const auto& func : SESSION->gl_2d_a_callbacks) {
