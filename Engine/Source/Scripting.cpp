@@ -70,7 +70,7 @@ void NODES::SCRIPT::reloadScript(Script* script) {
 void NODES::SCRIPT::unloadScript(Script* script) {
 	HINSTANCE script_addr = FILE.dlls[script];
 
-	script->onUnload();
+	script->onUnload(); // TODO error on loading new file if the script node is deleted
 
 	for (U64 i = 0; i < FILE.nodes.size() ; i++) {
 		auto res = FILE.nodes.cpy(i);

@@ -4,6 +4,8 @@
 
 struct Script : SCRIPT {
 	PORT_EXEC_I ei_exec;
+	PORT_DATA_I di_resolution;
+
 	PORT_EXEC_O eo_exec;
 
 	Script(Session* session);
@@ -13,3 +15,5 @@ struct Script : SCRIPT {
 
 	void exec(const Exec_I* port) final override;
 };
+
+F32_V2 cubicBezier(const F32_V2& p0, const F32_V2& p1, const F32_V2& p2, const F32_V2& p3, const F32& t);

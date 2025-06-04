@@ -3,51 +3,51 @@
 └Header
 ┌Scripts( 3 )
  ┌Script [ 0 ]
-  * 1674095774752
+  * 2106168883904
  └Script
  ┌Script [ 1 ]
-  * 1674096404816
+  * 2106167973504
  └Script
  ┌Script [ 2 ]
-  * 1674094350032
+  * 2106170222848
  └Script
 └Scripts
 ┌Variables( 0 )
 └Variables
 ┌Node-Groups( 0 )
 └Node-Groups
-┌Node-Tree( 4 )
+┌Node-Tree( 5 )
  ┌Node [ 0 ] Tick
-  * 1673782992784
+  * 2106170222192
   Type SINGLETON::EULER_TICK
   ( -400 -100 )
   ┌In( 0 )
   └In
   ┌Out( 4 )
-   * 1674094350608
-   * 1673408471408
-   * 1673408473088
-   * 1673408471072
+   * 2106170221952
+   * 2106170930016
+   * 2106170921312
+   * 2106170936272
   └Out
   ┌Data
   └Data
  └Node
  ┌Node [ 1 ] Camera Controller
-  * 1674095774752
+  * 2106168883904
   Type SCRIPT
-  ( -200 -100 )
+  ( -240 -100 )
   ┌In( 1 )
-   * 1673782988208
+   * 2106170866032
   └In
   ┌Out( 1 )
-   * 1674094352048
+   * 2106170223072
   └Out
   ┌Data
    D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 2 ] GUI
-  * 1674096404816
+  * 2106167973504
   Type SCRIPT
   ( -400 -200 )
   ┌In( 0 )
@@ -59,26 +59,41 @@
   └Data
  └Node
  ┌Node [ 3 ] SVG Renderer
-  * 1674094350032
+  * 2106170222848
   Type SCRIPT
   ( 0 -100 )
-  ┌In( 1 )
-   * 1673782990640
+  ┌In( 2 )
+   * 2106170870592
+   * 2106168884928
   └In
   ┌Out( 1 )
-   * 1674094350320
+   * 2106170223296
   └Out
   ┌Data
    D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-SVG-Art-Showcase.dll
   └Data
  └Node
+ ┌Node [ 4 ] Constant
+  * 2104913371216
+  Type VARIABLE::CONSTANT
+  ( -200 -30 )
+  ┌In( 0 )
+  └In
+  ┌Out( 1 )
+   * 2106170932192
+  └Out
+  ┌Data
+   Type DOUBLE :: NONE 200
+  └Data
+ └Node
 └Node-Tree
 ┌Build
  ┌Node-Data
+  * 2106170932192 - * 2106168884928
  └Node-Data
  ┌Node-Exec
-  * 1674094350608 - * 1673782988208
-  * 1674094352048 - * 1673782990640
+  * 2106170221952 - * 2106170866032
+  * 2106170223072 - * 2106170870592
  └Node-Exec
 └Build
 ┌Background**

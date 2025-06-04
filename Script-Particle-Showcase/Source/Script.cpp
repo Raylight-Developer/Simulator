@@ -1,5 +1,7 @@
 #include "Script.hpp"
 
+// TODO script fails when trying to connect in release mode: QList iterator error
+
 Script::Script(Session* session) : SCRIPT("Particles", session) {
 	SCRIPT_INIT;
 }
@@ -15,11 +17,12 @@ void Script::onLoad() {
 
 	eo_exec = EXEC_O("");
 
-	samples = 8;
 #ifdef _DEBUG
+	samples = 8;
 	count = 64;
 #else
-	count = 1024;
+	samples = 24;
+	count = 512+256;
 #endif
 	radius = 1.0;
 	terminal = 50.0;
@@ -164,8 +167,8 @@ void circleDynamicCollision(F64_V2& pos_a, F64_V2& pos_b, F64_V2& vel_a, F64_V2&
 	vel_b += impulse * inv_mass_b;
 
 	const F64 penetration = radii - ((dist2 == 0.0) ? 0.0 : glm::sqrt(dist2));
-	if (penetration > 0.01) {
-		const F64 percent = 0.95;
+	if (penetration > 0.005) {
+		const F64 percent = 0.975;
 		const F64_V2 correction = (penetration / (inv_mass_a + inv_mass_b)) * percent * normal;
 
 		pos_a -= correction * inv_mass_a;

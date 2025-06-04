@@ -1,64 +1,162 @@
 ┌Header
  Version 0.0.1
 └Header
-┌Scripts( 0 )
+┌Scripts( 1 )
+ ┌Script [ 0 ]
+  * 2106168883392
+ └Script
 └Scripts
 ┌Variables( 0 )
 └Variables
 ┌Node-Groups( 0 )
 └Node-Groups
-┌Node-Tree( 3 )
+┌Node-Tree( 9 )
  ┌Node [ 0 ] Circle
-  * 2909864614608
+  * 2104915905440
   Type RENDERING::2D::CIRCLE
-  ( -100 -100 )
+  ( 300 -100 )
   ┌In( 4 )
-   * 2909864609424
-   * 2909863712896
-   * 2909863705216
-   * 2909863710016
+   * 2104916283248
+   * 2106168883136
+   * 2106168882880
+   * 2106168877248
   └In
   ┌Out( 1 )
-   * 2909866106016
+   * 2104915903632
   └Out
   ┌Data
   └Data
  └Node
  ┌Node [ 1 ] Tick
-  * 2909864614912
+  * 2104915904320
   Type SINGLETON::EULER_TICK
   ( -400 -100 )
   ┌In( 0 )
   └In
   ┌Out( 4 )
-   * 2909866106304
-   * 2911311714848
-   * 2911311713504
-   * 2911311714176
+   * 2104915902288
+   * 2104916912992
+   * 2104916912176
+   * 2104916914080
   └Out
   ┌Data
   └Data
  └Node
- ┌Node [ 2 ] Constant
-  * 2909864160928
+ ┌Node [ 2 ] Trigonometry
+  * 2106167949600
+  Type MATH::TRIGONOMETRIC
+  ( -200 60 )
+  ┌In( 1 )
+   * 2106168882624
+  └In
+  ┌Out( 1 )
+   * 2104916913536
+  └Out
+  ┌Data
+   COS
+  └Data
+ └Node
+ ┌Node [ 3 ] Trigonometry
+  * 2106167960832
+  Type MATH::TRIGONOMETRIC
+  ( -200 -20 )
+  ┌In( 1 )
+   * 2106168882368
+  └In
+  ┌Out( 1 )
+   * 2104916914896
+  └Out
+  ┌Data
+   SIN
+  └Data
+ └Node
+ ┌Node [ 4 ] Arithmetic
+  * 2104915902976
+  Type MATH::ARITHMETIC
+  ( 0 -20 )
+  ┌In( 2 )
+   * 2106168889024
+   * 2106168881088
+  └In
+  ┌Out( 1 )
+   * 2104916915168
+  └Out
+  ┌Data
+   A*B
+  └Data
+ └Node
+ ┌Node [ 5 ] Arithmetic
+  * 2104915904544
+  Type MATH::ARITHMETIC
+  ( 0 60 )
+  ┌In( 2 )
+   * 2106168884416
+   * 2106168887744
+  └In
+  ┌Out( 1 )
+   * 2104916912720
+  └Out
+  ┌Data
+   A*B
+  └Data
+ └Node
+ ┌Node [ 6 ] Constant
+  * 2106170910624
   Type VARIABLE::CONSTANT
-  ( -400 30 )
+  ( -200 140 )
   ┌In( 0 )
   └In
   ┌Out( 1 )
-   * 2911311715856
+   * 2104916915440
   └Out
   ┌Data
-   Type COLOR :: NONE 1 1 1 1
+   Type DOUBLE :: NONE 250
+  └Data
+ └Node
+ ┌Node [ 7 ] Make
+  * 2106167953968
+  Type CAST::MAKE::VEC2
+  ( 200 -20 )
+  ┌In( 2 )
+   * 2106168880832
+   * 2106168890304
+  └In
+  ┌Out( 1 )
+   * 2104913357776
+  └Out
+  ┌Data
+  └Data
+ └Node
+ ┌Node [ 8 ] Camera Controller
+  * 2106168883392
+  Type SCRIPT
+  ( -200 -100 )
+  ┌In( 1 )
+   * 2106164054432
+  └In
+  ┌Out( 1 )
+   * 2104915386912
+  └Out
+  ┌Data
+   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
   └Data
  └Node
 └Node-Tree
 ┌Build
  ┌Node-Data
-  * 2911311715856 - * 2909863710016
+  * 2104913357776 - * 2106168883136
+  * 2104916914080 - * 2106168882624
+  * 2104916914080 - * 2106168882368
+  * 2104916914896 - * 2106168889024
+  * 2104916915440 - * 2106168881088
+  * 2104916913536 - * 2106168884416
+  * 2104916915440 - * 2106168887744
+  * 2104916915168 - * 2106168880832
+  * 2104916912720 - * 2106168890304
  └Node-Data
  ┌Node-Exec
-  * 2909866106304 - * 2909864609424
+  * 2104915902288 - * 2106164054432
+  * 2104915386912 - * 2104916283248
  └Node-Exec
 └Build
 ┌Background**
@@ -79,6 +177,6 @@ out vec4 fragColor;
 void main() {
 	vec2 fragCoord = gl_FragCoord.xy;
 
-	fragColor = vec4(vTexCoord.x, vTexCoord.y, 0.0, 1.0);
+	fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
 └Background**

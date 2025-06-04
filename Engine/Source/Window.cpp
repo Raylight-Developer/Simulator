@@ -39,10 +39,9 @@ Window::Window() {
 	main_container->addWidget(header);
 	main_container->addWidget(main_splitter);
 
-	session->file.loadFile("./Resources/Test.sim");
-
 	setCentralWidget(main_container);
 	showMaximized();
+
 	LOGL(<< SUCCESS << "Loaded Simulator v-" << SESSION->major_version << "." << SESSION->minor_version << "." << SESSION->patch_version);
 }
 

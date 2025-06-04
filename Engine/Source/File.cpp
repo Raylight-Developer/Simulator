@@ -42,12 +42,6 @@ void File::loadNewFile(const string& file_path) {
 	nodes.clear();
 
 	loadFile(file_path);
-	for (auto& [k, f] : SIM_HOOK.onInit) {
-		f();
-	}
-	if (FILE.init) {
-		FILE.init->exec();
-	}
 }
 
 void File::loadFile(const string& file_path) {
@@ -74,6 +68,13 @@ void File::loadFile(const string& file_path) {
 	}
 	LOGL(<< MSG_GREEN("[File]") >> "Loaded");
 	LOG--;
+
+	for (auto& [k, f] : SIM_HOOK.onInit) {
+		f();
+	}
+	if (init) {
+		init->exec();
+	}
 }
 
 bool File::saveFile(const string& file_path) {
@@ -205,24 +206,27 @@ void File::loadBuild(const Token_Array& token_data, const Tokens& line_data) {
 }
 
 void File::loadBackground(const Token_Array& token_data, const Tokens& line_data) {
-	LOGL(<< MSG_BLUE("[Node-Tree]"));
+	LOGL(<< MSG_BLUE("[Background]"));
 	LOG++;
 
 	background_shader = f_join(line_data, "\n", 1, 1);
+	LOGL(<< background_shader);
 	if (GL) {
-		const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", background_shader);
-		if (background_shader != "" && confirm) {
-			if (SESSION->viewport->gl_data["BG Shader"] != 0) {
-				GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
+		if (background_shader != "") {
+			const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", background_shader);
+			if (confirm) {
+				if (SESSION->viewport->gl_data["BG Shader"] != 0) {
+					GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
+				}
+				SESSION->viewport->gl_data["BG Shader"] = confirm.data;
 			}
-			SESSION->viewport->gl_data["BG Shader"] = confirm.data;
 		}
 		else {
-			if (SESSION->viewport->gl_data["BG Shader"] != 0) {
-				GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
-			}
 			const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
 			if (confirm) {
+				if (SESSION->viewport->gl_data["BG Shader"] != 0) {
+					GL->glDeleteProgram(SESSION->viewport->gl_data["BG Shader"]);
+				}
 				SESSION->viewport->gl_data["BG Shader"] = confirm.data;
 			}
 		}

@@ -21,26 +21,10 @@ void Script::onLoad() {
 	obj_vel = F64_V2(0, 0);
 	obj_rad = 10.0;
 
-	SIM_HOOK.onKeyDown[this] = [this](const string& key) {
-		if (key == "1") {
-			out_color = Color(1, 1, 1, 1);
-		}
-		else if (key == "2") {
-			out_color = Color(1, 0, 0, 1);
-		}
-		else if (key == "3") {
-			out_color = Color(0, 1, 0, 1);
-		}
-		else if (key == "4") {
-			out_color = Color(0, 0, 1, 1);
-		}
-	};
-
 	LOGL(<< "Loaded Controllable Object Script");
 }
 
 void Script::onUnload() {
-	SIM_HOOK.onKeyDown.remove(this);
 
 	LOGL(<< "Unloaded Controllable Object Script");
 }

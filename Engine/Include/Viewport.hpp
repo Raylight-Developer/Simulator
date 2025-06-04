@@ -28,7 +28,6 @@ struct Viewport : QOpenGLWidget, QOpenGLFunctions_4_5_Core {
 
 	void f_timings();
 	void f_guiUpdate();
-	void f_frameUpdate();
 
 	void initializeGL() override;
 	void paintGL() override;

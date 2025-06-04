@@ -200,24 +200,6 @@ void Viewport::f_compile() {
 			gl_data["Paused Shader"] = confirm.data;
 		}
 	}
-	{
-		const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", FILE.background_shader);
-		if (FILE.background_shader != "" && confirm) {
-			if (gl_data["BG Shader"] != 0) {
-				GL->glDeleteProgram(gl_data["BG Shader"]);
-			}
-			gl_data["BG Shader"] = confirm.data;
-		}
-		else {
-			if (gl_data["BG Shader"] != 0) {
-				GL->glDeleteProgram(gl_data["BG Shader"]);
-			}
-			const auto confirm = OpenGL::compileFragShader("./Shaders/Screen.vert", "./Shaders/Background.frag");
-			if (confirm) {
-				gl_data["BG Shader"] = confirm.data;
-			}
-		}
-	}
 
 	render_tex.init(resolution, GL_RGBA, GL_FLOAT);
 }
@@ -225,21 +207,26 @@ void Viewport::f_compile() {
 void Viewport::f_pipeline() {
 	GL = this;
 
-//#ifdef _DEBUG
-//	glEnable(GL_DEBUG_OUTPUT);
-//	glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
-//		LOGL(<< "[OpenGL Debug] (" << id << "): " << message);
-//
-//		if (severity == GL_DEBUG_SEVERITY_HIGH) {
-//			LOGL(<< " --> SEVERITY: HIGH");
-//		}
-//	}, nullptr);
-//#endif
+#ifdef _DEBUG
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+		if (type != GL_DEBUG_TYPE_ERROR) {
+			return;
+		}
+		LOGL(<< "[OpenGL Debug] (" << id << "): " << message);
+
+		if (severity == GL_DEBUG_SEVERITY_HIGH) {
+			LOGL(<< " --> SEVERITY: HIGH");
+		}
+	}, nullptr);
+#endif
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 	glViewport(0, 0, resolution.x, resolution.y);
+
+	SESSION->file.loadFile("./Resources/Default.sim");
 
 	f_compile();
 }
@@ -251,12 +238,20 @@ void Viewport::f_guiUpdate() {
 		frame_counter = 0;
 	}
 
-	if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
-		QPainter painter(this);
+	if (SIM_HOOK.onGuiRender.size() != 0) {
+		if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME || SIM_HOOK.playback_mode == Playback_Mode::PLAYING) {
+			QPainter painter(this);
 
-		for (const auto& [k, f] : SIM_HOOK.onGuiRender) {
-			f(&painter);
+			for (const auto& [k, f] : SIM_HOOK.onGuiRender) {
+				f(&painter);
+			}
 		}
+	}
+	else { // TODO for some reason this code fixes Default.sim not rendering the background.
+		QPainter painter(this);
+		painter.setPen(Qt::transparent);
+		painter.setBrush(Qt::transparent);
+		painter.drawPoint(0,0);
 	}
 }
 
@@ -265,10 +260,6 @@ void Viewport::f_timings() {
 	SIM_HOOK.delta_time = chrono::duration<double>(current_time - last_time).count();
 	last_time = current_time;
 	window_time += SIM_HOOK.delta_time;
-}
-
-void Viewport::f_frameUpdate() {
-	frame_counter++;
 }
 
 void Viewport::initializeGL() {
@@ -288,7 +279,8 @@ void Viewport::paintGL() {
 	f_timings();
 	f_tickUpdate();
 
-	f_frameUpdate();
+	frame_counter++;
+
 	f_guiUpdate();
 
 	SIM_HOOK.mouse_wheel.x = 0.0;

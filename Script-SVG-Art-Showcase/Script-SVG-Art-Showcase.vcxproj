@@ -19,6 +19,7 @@
     <ClInclude Include="Core\Script_Include.hpp" />
     <ClInclude Include="Core\framework.h" />
     <ClInclude Include="Core\pch.h" />
+    <ClInclude Include="Include\earcut.h" />
     <ClInclude Include="Include\nanosvg.h" />
     <ClInclude Include="Include\Script.hpp" />
   </ItemGroup>

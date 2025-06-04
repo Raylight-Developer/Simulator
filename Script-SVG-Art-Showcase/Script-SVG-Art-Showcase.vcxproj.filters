@@ -36,5 +36,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="Include\nanosvg.h" />
+    <ClInclude Include="Include\earcut.h" />
   </ItemGroup>
 </Project>
