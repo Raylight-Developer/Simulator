@@ -22,7 +22,7 @@ void Script::onLoad() {
 	count = 64;
 #else
 	samples = 24;
-	count = 512+256;
+	count = 1024;
 #endif
 	radius = 1.0;
 	terminal = 50.0;

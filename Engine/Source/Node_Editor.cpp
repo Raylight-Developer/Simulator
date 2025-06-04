@@ -116,7 +116,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_O) {
 						auto source_port = static_cast<NODE::PORT::Data_O*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							if (source_port->var_type == drop_port->variable->type and source_port->var_container == drop_port->variable->container) {
+							if (source_port->var_type == drop_port->variable->type && source_port->var_container == drop_port->variable->container) {
 								if (drop_port->connected()) {
 									h_disconnectPort(drop_port);
 									h_connectPorts(source_port, drop_port);
@@ -135,7 +135,7 @@ void Node_Editor::mouseReleaseEvent(QMouseEvent* event) {
 					if (creating_connection->port_l->type() == Graphics_Item_Type::E_DATA_I) {
 						auto source_port = static_cast<NODE::PORT::Data_I*>(creating_connection->port_l);
 						if (source_port->node != drop_port->node) {
-							if (drop_port->var_type == source_port->variable->type and drop_port->var_container == source_port->variable->container) {
+							if (drop_port->var_type == source_port->variable->type && drop_port->var_container == source_port->variable->container) {
 								if (source_port->connected()) {
 									h_disconnectPort(source_port);
 									h_connectPorts(drop_port, source_port);
@@ -556,13 +556,13 @@ void Node_Editor::dropEvent(QDropEvent* event) {
 			}
 			else if (type.startsWith("VARIABLE")) {
 				const QString name = type.remove(0, 9);
-				if (under_mouse and under_mouse->type() == Graphics_Item_Type::E_NODE and static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_GET) {
+				if (under_mouse && under_mouse->type() == Graphics_Item_Type::E_NODE && static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_GET) {
 					auto existing = static_cast<NODES::VARIABLE::Get*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
 					existing->h_setVar(name);
 				}
-				else if (under_mouse and under_mouse->type() == Graphics_Item_Type::E_NODE and static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_SET) {
+				else if (under_mouse && under_mouse->type() == Graphics_Item_Type::E_NODE && static_cast<Node*>(under_mouse)->node_type == NODES::Node_Type::VARIABLE_SET) {
 					auto existing = static_cast<NODES::VARIABLE::Set*>(under_mouse);
 					FILE.variable_refs[existing->var].remove(existing->shared_from_this());
 					FILE.variable_refs[name].push(existing->shared_from_this());
@@ -800,7 +800,7 @@ void Node_Editor::Connect::execute() const {
 }
 
 void Node_Editor::Connect::undo() {
-	if (port_r->connected() and port_r->type() == Graphics_Item_Type::E_DATA_I) {
+	if (port_r->connected() && port_r->type() == Graphics_Item_Type::E_DATA_I) {
 		auto d_port_r = static_cast<NODE::PORT::Data_I*>(port_r);
 		d_port_r->disconnect();
 	}

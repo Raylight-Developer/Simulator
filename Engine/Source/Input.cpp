@@ -22,7 +22,7 @@ bool Input::eventFilter(QObject* obj, QEvent* event) {
 						return false;
 					}
 				}
-				else if (key_event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) and key == Qt::Key::Key_Z) {
+				else if (key_event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) && key == Qt::Key::Key_Z) {
 					H_REDO;
 					return false;
 				}

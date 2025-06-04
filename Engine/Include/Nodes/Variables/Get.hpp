@@ -11,6 +11,7 @@ namespace NODES {
 		struct Get : Node {
 			PORT_DATA_O do_var;
 
+			GUI::Graphics_Widget* proxy_label;
 			GUI::Label* label;
 			QString var;
 

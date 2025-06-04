@@ -25,7 +25,7 @@ void NODES::SCRIPT::loadDLL(HINSTANCE& dynlib, const QString& dll_path) {
 		LOG NL <<"[DLL Loading] LoadLibrary " << ERROR << "Failed" << " with error code : " << errorCode; FLUSH;
 		exit(EXIT_FAILURE);
 	}
-	//LOG NL << "[DLL Loading] " << SUCCESS << "Loaded."; FLUSH;
+	LOG NL << "[DLL Loading] " << SUCCESS << "Loaded."; FLUSH;
 }
 
 void NODES::SCRIPT::unloadDLL(HINSTANCE& dynlib) {

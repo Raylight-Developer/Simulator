@@ -1,9 +1,9 @@
 #include "Variable.hpp"
 
 Variable::Variable() :
-	data(nullptr),
+	container(VAR::Container::NONE),
 	type(VAR::Type::NONE),
-	container(VAR::Container::NONE)
+	data(nullptr)
 {}
 
 Variable::Variable(const F64& data) :

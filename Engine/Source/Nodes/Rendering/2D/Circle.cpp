@@ -19,7 +19,6 @@ NODES::RENDERING::DIM_2D::Circle::Circle() :
 }
 
 void NODES::RENDERING::DIM_2D::Circle::render() {
-	auto center = di_center->GET_DATA(F64_V2);
 	const auto u_center = to_F32(*di_center->GET_DATA(F64_V2));
 	const auto u_radius = to_F32(*di_radius->GET_DATA(F64));
 	const auto u_color  = *di_color->GET_DATA(Color);

@@ -5,25 +5,25 @@
 Node::Node() :
 	QGraphicsItem(),
 	node_type(NODES::Node_Type::NONE),
+	header_color(QColor(25, 25, 25)),
+	node_error(false),
 	label("NODE"),
-	rect(QRectF(0, 0, 200, 200)),
-	node_error(false)
+	rect(QRectF(0, 0, 200, 200))
 {
 	setZValue(1);
 	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
-	header_color = QColor(25, 25, 25);
 }
 
 Node::Node(const NODES::Node_Type& node_type, const QString& label) :
 	QGraphicsItem(),
 	node_type(node_type),
+	header_color(QColor(25, 25, 25)),
+	node_error(false),
 	label(label),
-	rect(QRectF(0, 0, 200, 200)),
-	node_error(false)
+	rect(QRectF(0, 0, 200, 200))
 {
 	setZValue(1);
 	setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable);
-	header_color = QColor(25, 25, 25);
 }
 
 Node::~Node() {
@@ -62,9 +62,9 @@ QRectF Node::boundingRect() const {
 NODE::Port::Port(Node* node) :
 	QGraphicsItem(node),
 	node(node),
+	rect(QRectF(0, 0, 10, 10)),
 	onConnection(nullptr),
-	onDisconnection(nullptr),
-	rect(QRectF(0, 0, 10, 10))
+	onDisconnection(nullptr)
 {
 	setZValue(10);
 }
@@ -120,7 +120,7 @@ int NODE::Connection::type() const {
 
 void NODE::Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setPen(QPen(color, 1.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	if (port_l and port_r) {
+	if (port_l && port_r) {
 		//if (reroutes.empty());
 		pos_l = mapFromItem(port_l, port_l->boundingRect().center());
 		pos_r = mapFromItem(port_r, port_r->boundingRect().center());
@@ -191,8 +191,8 @@ NODE::PORT::Exec_I* NODE::Connection::getExecI() const {
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 	Port(parent),
 	label(label),
-	color(VAR::toColor(VAR_TYPE::NONE)),
 	variable(make_shared<Variable>()),
+	color(VAR::toColor(VAR_TYPE::NONE)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -202,8 +202,8 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label) :
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container) :
 	Port(parent),
 	label(label),
-	color(VAR::toColor(var_type)),
 	variable(make_shared<Variable>(var_type, var_container)),
+	color(VAR::toColor(var_type)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -213,8 +213,8 @@ NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const VAR_TYPE& v
 NODE::PORT::Data_I::Data_I(Node* parent, const QString& label, const Variable& default_variable) :
 	Port(parent),
 	label(label),
-	color(VAR::toColor(default_variable.type)),
 	variable(make_shared<Variable>(default_variable)),
+	color(VAR::toColor(default_variable.type)),
 	connection(nullptr)
 {
 	parent->inputs.push(this);
@@ -308,6 +308,7 @@ void NODE::PORT::Data_I::paint(QPainter* painter, const QStyleOptionGraphicsItem
 			painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
 			break;
 		}
+		default: break;
 	}
 }
 
@@ -405,6 +406,7 @@ void NODE::PORT::Data_O::paint(QPainter* painter, const QStyleOptionGraphicsItem
 			painter->drawLine(rect.center() - QPointF(-3.5, 3.5), rect.center() + QPointF(-3.5, 3.5));
 			break;
 		}
+		default: break;
 	}
 }
 

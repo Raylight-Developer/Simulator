@@ -3,9 +3,7 @@
 #define NANOSVG_ALL_COLOR_KEYWORDS
 #define NANOSVG_IMPLEMENTATION
 #undef FILE
-#include "nanosvg.h"
-
-#include "earcut.h"
+#include "nanosvg.h" // https://github.com/memononen/nanosvg/blob/master/src/nanosvg.h
 
 static NSVGimage* image;
 
@@ -18,7 +16,7 @@ void Script::onLoad() {
 	rect.setHeight(80);
 
 	ei_exec = EXEC_I("");
-	di_resolution = DATA_I("Res", Variable(4.0f));
+	di_resolution = DATA_I("Resolution", Variable(10.0f));
 
 	eo_exec = EXEC_O("");
 

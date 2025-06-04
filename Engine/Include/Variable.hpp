@@ -26,9 +26,9 @@ namespace VAR {
 #define VAR_CONTAINER VAR::Container
 
 struct Variable {
-	any data;
-	VAR::Type type;
 	VAR::Container container;
+	VAR::Type type;
+	any data;
 
 	Variable();
 

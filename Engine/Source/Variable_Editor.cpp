@@ -22,7 +22,7 @@ Variable_Editor::Variable_Editor(QWidget* parent) :
 
 	connect(add_var, &GUI::Button::pressed, [this]() {
 		const QString var_name = QInputDialog::getText(nullptr, "Add Variable", "Enter Variable ID:");
-		if (!var_name.isEmpty() and !FILE.variables.contains(var_name)) {
+		if (!var_name.isEmpty() && !FILE.variables.contains(var_name)) {
 			FILE.variables[var_name] = make_shared<Variable>(VAR_TYPE::NONE);
 			list->addItem(var_name);
 		}
@@ -107,7 +107,7 @@ void Varialbe_Editor::List::startDrag(Qt::DropActions actions) {
 
 		QByteArray type;
 		QDataStream dataStreamType(&type, QIODevice::WriteOnly);
-		dataStreamType << "VARIABLE " + temp->text();
+		dataStreamType << QStringLiteral("VARIABLE ") + temp->text();
 		mimeData->setData("Type", type);
 
 		QDrag* drag = new QDrag(this);

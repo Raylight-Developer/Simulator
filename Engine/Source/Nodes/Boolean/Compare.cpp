@@ -9,7 +9,7 @@ NODES::BOOLEAN::Compare::Compare() :
 	di_a = DATA_I("", VAR_TYPE::NONE);
 	di_b = DATA_I("", VAR_TYPE::NONE);
 
-	do_res  = DATA_O("", VAR_TYPE::BOOL);
+	do_res = DATA_O("", VAR_TYPE::BOOL);
 
 	enums = new GUI::Options();
 	enums->setFixedSize(80, 20);

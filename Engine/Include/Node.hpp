@@ -30,7 +30,7 @@ enum Graphics_Item_Type {
 	E_EXEC_O = QGraphicsItem::UserType + 5,
 	E_EXEC_I = QGraphicsItem::UserType + 6
 };
-#define IS_PORT(type) type >= Graphics_Item_Type::E_DATA_I and type <= Graphics_Item_Type::E_EXEC_I
+#define IS_PORT(type) type >= Graphics_Item_Type::E_DATA_I && type <= Graphics_Item_Type::E_EXEC_I
 
 struct Node : Self<Node>, QGraphicsItem {
 	const NODES::Node_Type node_type;

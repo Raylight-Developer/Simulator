@@ -124,7 +124,7 @@ void File::loadHeader(const Token_Array& token_data, const Tokens& line_data) {
 			const U16 file_major_version = stoU16(version[0]);
 			const U16 file_minor_version = stoU16(version[1]);
 			const U16 file_patch_version = stoU16(version[2]);
-			if (SESSION->major_version != file_major_version or SESSION->minor_version != file_minor_version or SESSION->patch_version != file_patch_version) {
+			if (SESSION->major_version != file_major_version || SESSION->minor_version != file_minor_version || SESSION->patch_version != file_patch_version) {
 				LOGL(<< WARNING << "Version Mismatch: SYSTEM [" <<
 					SESSION->major_version << "." <<
 					SESSION->minor_version << "." <<
@@ -210,7 +210,6 @@ void File::loadBackground(const Token_Array& token_data, const Tokens& line_data
 	LOG++;
 
 	background_shader = f_join(line_data, "\n", 1, 1);
-	LOGL(<< background_shader);
 	if (GL) {
 		if (background_shader != "") {
 			const auto confirm = OpenGL::compileFragShaderFromStr("./Shaders/Screen.vert", background_shader);

@@ -17,7 +17,7 @@ NODES::VARIABLE::Set::Set() :
 	label = new GUI::Label();
 	label->setFixedSize(80, 20);
 
-	PROXY(label);
+	proxy_label = new GUI::Graphics_Widget(label, this);
 	proxy_label->setPos(20, 30);
 }
 
@@ -52,7 +52,6 @@ void NODES::VARIABLE::Set::h_setVar(const QString name) {
 
 void NODES::VARIABLE::Set::setVar(const QString name) {
 	var = name;
-	label->setText(var);
 	if (name != "") {
 		const Variable* var_ref = FILE.variables[var].get();
 		di_value->setType(var_ref->type, var_ref->container);
@@ -62,6 +61,17 @@ void NODES::VARIABLE::Set::setVar(const QString name) {
 		di_value->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 		do_value_pass->setType(VAR_TYPE::NONE, VAR_CONTAINER::NONE);
 	}
+	QFontMetrics metrics(label->font());
+	const int textWidth = metrics.horizontalAdvance(var);
+	const int width = ((textWidth + 19) / 20) * 20;
+	rect.setWidth(40+width);
+	delete proxy_label;
+	label = new GUI::Label(nullptr, var);
+	label->setFixedSize(width, 20);
+	proxy_label = new GUI::Graphics_Widget(label, this);
+	proxy_label->setPos(20, 30);
+	eo_exec->rect.moveCenter(rect.topRight() + QPointF(0, eo_exec->rect.center().y()));
+	do_value_pass->rect.moveCenter(rect.topRight() + QPointF(0, do_value_pass->rect.center().y()));
 }
 
 NODES::VARIABLE::Set::Set_Variable::Set_Variable(Ptr_S<Set> node, const QString& from, const QString& to) :

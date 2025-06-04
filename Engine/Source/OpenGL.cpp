@@ -216,9 +216,7 @@ void OpenGL::Texture::setPixels(const T_V2<U32>& resolution, const void* data) {
 }
 
 GLenum OpenGL::Texture::chooseInternalFormat(const GLenum& format, const GLenum& type) {
-	using Entry = std::tuple<GLenum, GLenum, GLenum>;
-
-	static constexpr std::array<Entry, 9> formatTable = { {
+	static constexpr std::array<std::tuple<GLenum, GLenum, GLenum>, 9> formatTable = { {
 		{ GL_RGBA, GL_FLOAT,         GL_RGBA32F },
 		{ GL_RGBA, GL_HALF_FLOAT,    GL_RGBA16F },
 		{ GL_RGBA, GL_UNSIGNED_BYTE, GL_RGBA8 },

@@ -15,6 +15,7 @@ namespace NODES {
 			PORT_EXEC_O eo_exec;
 			PORT_DATA_O do_value_pass;
 
+			GUI::Graphics_Widget* proxy_label;
 			GUI::Label* label;
 			QString var;
 

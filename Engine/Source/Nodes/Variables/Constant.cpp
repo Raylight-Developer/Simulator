@@ -27,7 +27,7 @@ NODES::VARIABLE::Constant::Constant() :
 		return true;
 	};
 	do_var->onDisconnection = [this](Port* port) {
-		if (not do_var->connected()) {
+		if (! do_var->connected()) {
 			rect = expanded;
 			proxy_var_type->setVisible(true);
 		}

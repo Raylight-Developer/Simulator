@@ -23,12 +23,12 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(undo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
+					new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
+				new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
 				counter++;
 			}
 		}
@@ -41,12 +41,12 @@ History_View::History_View(QWidget* parent) :
 			if (group_count > 1) {
 				auto group = new GUI::Tree_Item(undo, "[" + QString::number(group_count) + "]");
 				for (U64 j = 0; j < group_count; j++) {
-					auto val = new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
+					new GUI::Tree_Item(group, qstr(SESSION->history.undo_stack.inv_ref(counter)->info), 1);
 					counter++;
 				}
 			}
 			else {
-				auto val = new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
+				new GUI::Tree_Item(undo, qstr(SESSION->history.undo_stack.inv_ref(counter)->info));
 				counter++;
 			}
 		}
