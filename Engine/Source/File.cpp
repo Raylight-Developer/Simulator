@@ -5,8 +5,11 @@
 #define NULL_REF "*NULL"
 
 File::File() :
-	background_shader("")
-{}
+	background_shader(""),
+	file_path("")
+{
+	//
+}
 
 File::~File() {
 }
@@ -40,6 +43,8 @@ void File::loadNewFile(const string& file_path) {
 
 	node_singletons.clear();
 	nodes.clear();
+
+	// TODO reset view for node editor
 
 	loadFile(file_path);
 }

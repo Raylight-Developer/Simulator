@@ -198,7 +198,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;ENGINE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -221,12 +221,13 @@
       <Command>
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -239,7 +240,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;ENGINE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -264,12 +265,13 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:
       <Command>
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
-msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>

@@ -75,7 +75,7 @@ void NODES::SCRIPT::unloadScript(Script* script) {
 	for (U64 i = 0; i < FILE.nodes.size() ; i++) {
 		auto res = FILE.nodes.cpy(i);
 		if (res.get() == script) {
-			FILE.nodes.removeIndex(i);
+			FILE.nodes.removeAtIndex(i);
 			break;
 		}
 	}

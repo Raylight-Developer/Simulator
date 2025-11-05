@@ -3,6 +3,9 @@
 #include "KL.hpp"
 #include "KL_GUI.hpp"
 
+#include <QtOpenGLWidgets>
+#include <QtOpengl/qopenglfunctions_4_5_core.h>
+
 namespace OpenGL {
 	CORE::Confirm<GLuint> compileFragShader(const string& vert_file_path, const string& frag_file_path);
 	CORE::Confirm<GLuint> compileFragShaderFromStr(const string& vert_file_path, const string& fragment_code);

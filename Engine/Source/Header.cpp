@@ -5,7 +5,7 @@
 Header::Header(QWidget* parent) :
 	GUI::Linear_Contents(parent, QBoxLayout::Direction::LeftToRight)
 {
-	setFixedHeight(20);
+	setFixedHeight(24);
 
 	auto load_file = new GUI::Button(this);
 	load_file->setText("Load File");
@@ -28,7 +28,7 @@ Header::Header(QWidget* parent) :
 		}
 	});
 
-	connect(save_file, &GUI::Button::pressed, [this]() {
+	connect(save_file, &GUI::Button::pressed, []() {
 		FILE.saveFile(FILE.file_path);
 	});
 }

@@ -28,9 +28,5 @@ namespace RENDER {
 		}
 		void Sphere(const F32_V3& center, const F32& radius, const Color& color = Color(1,1,1,1));
 		void renderSphere();
-		namespace SPHERE {
-			static vector<F32_V4>* center_radius;
-			static vector<F32_V4>* color;
-		}
 	}
 }

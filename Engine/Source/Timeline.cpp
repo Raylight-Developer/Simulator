@@ -56,7 +56,7 @@ Timeline::Timeline(QWidget* parent) :
 		}
 	});
 
-	connect(reset_realtime, &GUI::Square_Button::pressed, [this, reset_realtime, start_stop]() {
+	connect(reset_realtime, &GUI::Square_Button::pressed, [reset_realtime, start_stop]() {
 		if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME) {
 			SIM_HOOK.playback_start = NOW;
 			SIM_HOOK.current_frame = 0;
@@ -78,7 +78,7 @@ Timeline::Timeline(QWidget* parent) :
 		SIM_HOOK.exec_time = 0.0;
 	});
 
-	connect(mode, &GUI::Toggle::toggled, [this, start_stop, samples, samples_label, mode, reset_realtime](bool checked) {
+	connect(mode, &GUI::Toggle::toggled, [start_stop, samples, samples_label, mode, reset_realtime](bool checked) {
 		if (checked) {
 			SIM_HOOK.playback_mode = Playback_Mode::REALTIME;
 			SIM_HOOK.playback_start = NOW;
@@ -110,7 +110,7 @@ Timeline::Timeline(QWidget* parent) :
 		}
 	});
 
-	connect(samples, &GUI::Int_Input::textChanged, [this](const QString& value) {
+	connect(samples, &GUI::Int_Input::textChanged, [](const QString& value) {
 		SIM_HOOK.samples = value.toInt();
 		SIM_HOOK.playback_delta_time = 1.0 / to_F64(SIM_HOOK.samples);
 	});

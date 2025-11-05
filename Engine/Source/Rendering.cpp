@@ -364,9 +364,6 @@ void RENDER::Dim_3D::INIT::Sphere() {
 		SESSION->viewport->gl_data["3D Sphere Shader"] = confirm.data;
 	}
 
-	SPHERE::center_radius = new vector<F32_V4>();
-	SPHERE::color = new vector<F32_V4>();
-
 	{
 		SESSION->viewport->gl_data["SSBO 0"] = 0;
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
@@ -386,8 +383,8 @@ void RENDER::Dim_3D::INIT::Sphere() {
 }
 
 void RENDER::Dim_3D::Sphere(const F32_V3& center, const F32& radius, const Color& color) {
-	SPHERE::center_radius->push_back(F32_V4(center, radius));
-	SPHERE::color->push_back(color.rgba_32());
+	SESSION->render_3d_pos.push_back(F32_V4(center, radius));
+	SESSION->render_3d_col.push_back(color.rgba_32());
 }
 
 void RENDER::Dim_3D::renderSphere() {
@@ -398,20 +395,20 @@ void RENDER::Dim_3D::renderSphere() {
 
 	{
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 0"];
-		const U64 size = SPHERE::center_radius->size() * sizeof(F32_V4);
+		const U64 size = SESSION->render_3d_pos.size() * sizeof(F32_V4);
 		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
 		//GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, *SSBO);
-		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::center_radius->data(), GL_DYNAMIC_DRAW);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SESSION->render_3d_pos.data(), GL_DYNAMIC_DRAW);
 	}
 	{
 		GLuint* SSBO = &SESSION->viewport->gl_data["SSBO 1"];
-		const U64 size = SPHERE::color->size() * sizeof(F32_V4);
+		const U64 size = SESSION->render_3d_col.size() * sizeof(F32_V4);
 		GL->glBindBuffer(GL_SHADER_STORAGE_BUFFER, *SSBO);
 		//GL->glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, *SSBO);
-		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SPHERE::color->data(), GL_DYNAMIC_DRAW);
+		GL->glBufferData(GL_SHADER_STORAGE_BUFFER, size, SESSION->render_3d_col.data(), GL_DYNAMIC_DRAW);
 	}
 	GL->glUniform2ui(GL->glGetUniformLocation(Shader, "uResolution"), SESSION->viewport->resolution.x, SESSION->viewport->resolution.y);
-	GL->glUniform1ui(GL->glGetUniformLocation(Shader, "uCount"), to_U32(SPHERE::center_radius->size()));
+	GL->glUniform1ui(GL->glGetUniformLocation(Shader, "uCount"), to_U32(SESSION->render_3d_pos.size()));
 
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraPos"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.position)));
 	GL->glUniform3fv(GL->glGetUniformLocation(Shader, "uCameraVector"), 1, glm::value_ptr(to_F32(SIM_HOOK.camera_3d.getForwardVec())));
@@ -422,6 +419,6 @@ void RENDER::Dim_3D::renderSphere() {
 	GL->glBindVertexArray(0);
 	GL->glUseProgram(0);
 
-	SPHERE::center_radius->clear();
-	SPHERE::color->clear();
+	SESSION->render_3d_pos.clear();
+	SESSION->render_3d_col.clear();
 }

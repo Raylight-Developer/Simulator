@@ -13,14 +13,17 @@ Script::Script(Session* session) : SCRIPT("SVG Renderer", session) {
 
 void Script::onLoad() {
 	rect.setWidth(160);
-	rect.setHeight(80);
+	rect.setHeight(120);
 
-	ei_exec = EXEC_I("");
-	di_resolution = DATA_I("Resolution", Variable(10.0f));
+	ei_exec       = EXEC_I("");
+	di_resolution = DATA_I("Resolution", Variable(10.0));
+	di_line_width = DATA_I("Line Width", Variable(1.0));
+	di_path       = DATA_I("Path", Variable(QString("D:/Coding/Simulator/Script-SVG-Art-Showcase/Art.svg")));
+	last_path = "D:/Coding/Simulator/Script-SVG-Art-Showcase/Art.svg";
 
 	eo_exec = EXEC_O("");
 
-	image = nsvgParseFromFile("D:/Coding/Simulator/Script-SVG-Art-Showcase/Art.svg", "px", 96.0f);
+	image = nsvgParseFromFile(last_path.c_str(), "px", 96.0f);
 
 	LOGL(<< "Loaded Base Script");
 }
@@ -32,6 +35,13 @@ void Script::onUnload() {
 }
 
 void Script::exec(const Exec_I* port) {
+	const string curr_path = (*di_path->GET_DATA(QString)).toStdString();
+	const F32 line_width = *di_line_width->GET_DATA(F64);
+	if (last_path != curr_path) {
+		if (image) { nsvgDelete(image); }
+		image = nsvgParseFromFile(curr_path.c_str(), "px", 96.0f);
+		last_path = curr_path;
+	}
 	if (image) {
 		const F32 svg_width  = image->width;
 		const F32 svg_height = -image->height;
@@ -40,7 +50,7 @@ void Script::exec(const Exec_I* port) {
 		const F32 segmentLength = *di_resolution->GET_DATA(F64);
 
 		for (NSVGshape* shape = image->shapes; shape != nullptr; shape = shape->next) {
-			const F32 radius = shape->strokeWidth * 0.35f;
+			const F32 radius = shape->strokeWidth * 0.35f * line_width;
 			for (NSVGpath* path = shape->paths; path != nullptr; path = path->next) {
 				// Render Path
 				for (I32 i = 0; i < path->npts - 1; i += 3) {

@@ -5,8 +5,12 @@
 struct Script : SCRIPT {
 	PORT_EXEC_I ei_exec;
 	PORT_DATA_I di_resolution;
+	PORT_DATA_I di_line_width;
+	PORT_DATA_I di_path;
 
 	PORT_EXEC_O eo_exec;
+
+	string last_path;
 
 	Script(Session* session);
 

@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script-GUI-Fps", "Script-GU
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script-SVG-Art-Showcase", "Script-SVG-Art-Showcase\Script-SVG-Art-Showcase.vcxproj", "{C27A045F-F2F4-4C23-911F-288DDC016741}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script-Boid-Showcase", "Script-Boid-Showcase\Script-Boid-Showcase.vcxproj", "{CBAB6D8B-D117-4FF6-8C08-8E5A684C5CBB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Script-Port-List", "Script-Port-List\Script-Port-List.vcxproj", "{1B07B136-0BEA-44A2-A7BD-654860CFAA8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +55,14 @@ Global
 		{C27A045F-F2F4-4C23-911F-288DDC016741}.Debug|x64.Build.0 = Debug|x64
 		{C27A045F-F2F4-4C23-911F-288DDC016741}.Release|x64.ActiveCfg = Release|x64
 		{C27A045F-F2F4-4C23-911F-288DDC016741}.Release|x64.Build.0 = Release|x64
+		{CBAB6D8B-D117-4FF6-8C08-8E5A684C5CBB}.Debug|x64.ActiveCfg = Debug|x64
+		{CBAB6D8B-D117-4FF6-8C08-8E5A684C5CBB}.Debug|x64.Build.0 = Debug|x64
+		{CBAB6D8B-D117-4FF6-8C08-8E5A684C5CBB}.Release|x64.ActiveCfg = Release|x64
+		{CBAB6D8B-D117-4FF6-8C08-8E5A684C5CBB}.Release|x64.Build.0 = Release|x64
+		{1B07B136-0BEA-44A2-A7BD-654860CFAA8B}.Debug|x64.ActiveCfg = Debug|x64
+		{1B07B136-0BEA-44A2-A7BD-654860CFAA8B}.Debug|x64.Build.0 = Debug|x64
+		{1B07B136-0BEA-44A2-A7BD-654860CFAA8B}.Release|x64.ActiveCfg = Release|x64
+		{1B07B136-0BEA-44A2-A7BD-654860CFAA8B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

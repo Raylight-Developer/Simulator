@@ -11,7 +11,7 @@ namespace NODES {
 		struct Constant : Node {
 			PORT_DATA_O do_var;
 
-			CORE::Stack<GUI::Graphics_Widget*> proxies;
+			CORE::Ptr_Stack<GUI::Graphics_Widget*> proxies;
 			GUI::Graphics_Widget* proxy_var_type;
 			GUI::Options* var_type;
 			QRectF expanded;

@@ -18,7 +18,7 @@ struct File {
 	CORE::UMap<QString, Ptr_S<Variable>> variables;
 	CORE::UMap<QString, CORE::Stack<Ptr_S<Node>>> variable_refs;
 
-	CORE::Stack<NODES::SCRIPT::Script*> scripts;
+	CORE::Ptr_Stack<NODES::SCRIPT::Script*> scripts;
 	CORE::UMap<NODES::SCRIPT::Script*, HINSTANCE> dlls;
 
 	string background_shader;

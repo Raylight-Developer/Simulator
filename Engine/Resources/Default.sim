@@ -7,35 +7,7 @@
 └Variables
 ┌Node-Groups( 0 )
 └Node-Groups
-┌Node-Tree( 2 )
- ┌Node [ 0 ] Init
-  * 2723138504368
-  Type SINGLETON::INIT
-  ( -400 -100 )
-  ┌In( 0 )
-  └In
-  ┌Out( 2 )
-   * 2724765441840
-   * 2723138355456
-  └Out
-  ┌Data
-  └Data
- └Node
- ┌Node [ 1 ] Tick
-  * 2724765439840
-  Type SINGLETON::EULER_TICK
-  ( -400 0 )
-  ┌In( 0 )
-  └In
-  ┌Out( 4 )
-   * 2724765441168
-   * 2723138359808
-   * 2723138351376
-   * 2723138358992
-  └Out
-  ┌Data
-  └Data
- └Node
+┌Node-Tree( 0 )
 └Node-Tree
 ┌Build
  ┌Node-Data
@@ -61,6 +33,6 @@ out vec4 fragColor;
 void main() {
 	vec2 fragCoord = gl_FragCoord.xy;
 
-	fragColor = vec4(0.0, vTexCoord.x, vTexCoord.y, 1.0);
+	fragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
 └Background**

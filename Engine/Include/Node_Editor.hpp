@@ -21,7 +21,7 @@ struct Node_Editor : GUI::Graphics_View {
 	Ptr_U<NODE::Connection> lifting_connection;
 	Ptr_U<NODE::Connection> creating_connection;
 
-	CORE::Stack<Node*> selection;
+	CORE::Ptr_Stack<Node*> selection;
 
 	Node_Editor(QWidget* parent = nullptr);
 	~Node_Editor();
@@ -72,7 +72,7 @@ struct Node_Editor : GUI::Graphics_View {
 	struct Delete_Node : Self<Delete_Node>, CORE::CMD {
 		Ptr_S<Node> node;
 		F64_V2 pos;
-		CORE::UMap<Port*, CORE::Stack<Port*>> connections;
+		CORE::UMap<Port*, CORE::Ptr_Stack<Port*>> connections;
 
 		Delete_Node(Ptr_S<Node> node);
 
@@ -91,7 +91,7 @@ struct Node_Editor : GUI::Graphics_View {
 	};
 	struct Disconnect : Self<Disconnect>, CORE::CMD {
 		Port* port;
-		CORE::Stack<Port*> connections;
+		CORE::Ptr_Stack<Port*> connections;
 
 		Disconnect(Port* port);
 

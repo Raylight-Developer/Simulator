@@ -65,10 +65,10 @@ void Node::load(File* file, const Token_Array& tokens) {
 		Token_Array outputs = File::getBlock("┌Out(", "└Out", tokens);
 
 		for (U64 i = 0; i < inputs.size(); i++) {
-			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs.ref(i)));
+			file->pointer_map.set(stoU64(inputs[i][1]), to_U(node->inputs.ptr(i)));
 		}
 		for (U64 i = 0; i < outputs.size(); i++) {
-			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs.ref(i)));
+			file->pointer_map.set(stoU64(outputs[i][1]), to_U(node->outputs.ptr(i)));
 		}
 
 		Token_Array detail_data = File::getBlock("┌Data", "└Data", tokens);

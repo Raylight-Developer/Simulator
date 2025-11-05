@@ -39,8 +39,8 @@ struct Node : Self<Node>, QGraphicsItem {
 	QString label;
 	QRectF rect;
 
-	CORE::Stack<NODE::Port*> inputs;
-	CORE::Stack<NODE::Port*> outputs;
+	CORE::Ptr_Stack<NODE::Port*> inputs;
+	CORE::Ptr_Stack<NODE::Port*> outputs;
 
 	Node();
 	Node(const NODES::Node_Type& node_type, const QString& label);
@@ -136,7 +136,7 @@ namespace NODE {
 			VAR_CONTAINER var_container;
 			QColor color;
 
-			CORE::Stack<Connection*> connections;
+			CORE::Ptr_Stack<Connection*> connections;
 
 			Data_O(Node* parent, const QString& label);
 			Data_O(Node* parent, const QString& label, const VAR_TYPE& var_type, const VAR_CONTAINER& var_container = VAR_CONTAINER::NONE);
@@ -174,7 +174,7 @@ namespace NODE {
 		struct Exec_I : Port {
 			const QString label;
 
-			CORE::Stack<Connection*> connections;
+			CORE::Ptr_Stack<Connection*> connections;
 
 			Exec_I(Node* parent, const QString& label);
 			~Exec_I();

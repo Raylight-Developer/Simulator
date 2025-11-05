@@ -3,6 +3,9 @@
 #include "KL.hpp"
 #include "KL_GUI.hpp"
 
+#include <QtOpenGLWidgets>
+#include <QtOpengl/qopenglfunctions_4_5_core.h>
+
 #include "File.hpp"
 #include "Node.hpp"
 #include "Nodes.hpp"
@@ -68,6 +71,9 @@ struct Session : CORE::Session {
 	vector<function<void()>> gl_3d_callbacks;
 	vector<function<void()>> gl_2d_b_callbacks;
 
+	vector<F32_V4> render_3d_pos;
+	vector<F32_V4> render_3d_col;
+
 	Hook hook;
 	File file;
 	CORE::History_Manager history;
@@ -94,5 +100,5 @@ struct Session : CORE::Session {
 #define FILE SESSION->file
 #define GL SESSION->gl
 #define GL_2D_A_FUNC SESSION->gl_2d_a_callbacks
-#define GL_3D_FUNC SESSION->gl_3d_callbacks
+#define GL_3D_FUNC   SESSION->gl_3d_callbacks
 #define GL_2D_B_FUNC SESSION->gl_2d_b_callbacks

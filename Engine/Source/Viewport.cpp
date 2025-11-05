@@ -18,7 +18,7 @@ Viewport::Viewport() :
 	window_time(0.0)
 {
 	QSurfaceFormat format;
-	format.setSwapInterval(0);
+	format.setSwapInterval(1);  // 0 for no vsync
 	QSurfaceFormat::setDefaultFormat(format);
 	setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 

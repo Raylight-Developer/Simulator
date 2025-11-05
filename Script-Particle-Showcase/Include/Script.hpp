@@ -14,6 +14,8 @@ struct Script : SCRIPT {
 
 	PORT_EXEC_O eo_exec;
 
+	bool initialized;
+
 	CORE::Stack<F64_V2> positions;
 	CORE::Stack<F64_V2> velocities;
 	F64_V2 gravity;

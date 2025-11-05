@@ -1,8 +1,6 @@
 #include "Script.hpp"
 
-// TODO script fails when trying to connect in release mode: QList iterator error
-
-Script::Script(Session* session) : SCRIPT("Particles", session) {
+Script::Script(Session* session) : SCRIPT("Particles", session), initialized(false) {
 	SCRIPT_INIT;
 }
 
@@ -38,6 +36,7 @@ void Script::onLoad() {
 
 		velocities.clear();
 		velocities.assign(count, F64_V2(0.0, 0.0));
+		initialized = true;
 	};
 
 	LOGL(<< "Loaded Particle Showcase Script");
@@ -52,6 +51,15 @@ void Script::onUnload() {
 constexpr F64 MS_60FPS = 1.0 / 60.0;
 
 void Script::exec(const Exec_I* port) {
+	if (!initialized) {
+		positions.clear();
+		positions.assign(count, F64_V2(0.0, 0.0));
+
+		velocities.clear();
+		velocities.assign(count, F64_V2(0.0, 0.0));
+		initialized = true;
+	}
+
 	F64 delta_time = MS_60FPS;
 	if (SIM_HOOK.playback_mode == Playback_Mode::REALTIME) {
 		delta_time = min(SIM_HOOK.delta_time, MS_60FPS) * 5.0;
@@ -64,7 +72,7 @@ void Script::exec(const Exec_I* port) {
 	// Euler Integration O(n)
 	for (U32 sample = 0; sample < samples; sample++) {
 		for (U32 i = 0; i < count; ++i) {
-			velocities.ref(i).x += gravity.x * delta_time;
+			velocities.ptr(i)->x += gravity.x * delta_time;
 			velocities.ref(i).y += gravity.y * delta_time;
 
 			const F64 vx = velocities.ref(i).x;

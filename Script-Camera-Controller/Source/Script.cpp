@@ -22,7 +22,7 @@ void Script::onLoad() {
 		SIM_HOOK.camera_pos_2d = F64_V2(0.0, 0.0);
 		SIM_HOOK.camera_zoom_2d = SIM_HOOK.pixel_ratio * 5.0;
 
-		SIM_HOOK.camera_3d.position = F64_V3(7.5, 2.5, 7.5);
+		SIM_HOOK.camera_3d.position = F64_V3(0.0, 0.0, 50.0);
 		SIM_HOOK.camera_3d.target   = F64_V3(0.0, 0.0, 0.0);
 	};
 	SIM_HOOK.onWheel[this] = [this](const F64_V2& angle) {
