@@ -50,7 +50,7 @@
    * 3102883713120
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 2 ] Tick
@@ -456,7 +456,7 @@
   ┌Out( 0 )
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll
+   ./Script-GUI-Fps.dll
   └Data
  └Node
  ┌Node [ 30 ] Trigonometry

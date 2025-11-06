@@ -6,7 +6,7 @@ Script::Script(Session* session) : SCRIPT("Boids", session), initialized(false),
 
 void Script::onLoad() {
 	rect.setWidth(160);
-	rect.setHeight(160);
+	rect.setHeight(120);
 
 	ei_exec = EXEC_I("");
 

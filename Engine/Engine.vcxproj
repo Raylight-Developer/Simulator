@@ -228,6 +228,8 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Con
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Port-List /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>
@@ -272,6 +274,8 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Con
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Port-List /p:Configuration=$(Configuration) /p:Platform=$(Platform)
       </Command>
     </PostBuildEvent>
     <PreLinkEvent>

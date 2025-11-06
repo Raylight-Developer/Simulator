@@ -138,7 +138,7 @@
    * 2691536882432
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 9 ] Constant

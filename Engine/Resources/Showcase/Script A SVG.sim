@@ -43,7 +43,7 @@
    * 1889325717984
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 2 ] GUI
@@ -55,7 +55,7 @@
   ┌Out( 0 )
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll
+   ./Script-GUI-Fps.dll
   └Data
  └Node
  ┌Node [ 3 ] SVG Renderer
@@ -71,7 +71,7 @@
    * 1889325725152
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-SVG-Art-Showcase.dll
+   ./Script-SVG-Art-Showcase.dll
   └Data
  └Node
  ┌Node [ 4 ] Constant

@@ -53,7 +53,7 @@
    * 2159851893968
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 3 ] Make

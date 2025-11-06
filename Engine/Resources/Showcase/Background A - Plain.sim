@@ -20,7 +20,7 @@
   ┌Out( 0 )
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll
+   ./Script-GUI-Fps.dll
   └Data
  └Node
 └Node-Tree

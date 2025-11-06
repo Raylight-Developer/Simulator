@@ -46,7 +46,7 @@
    * 2131078835456
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 2 ] GUI
@@ -58,7 +58,7 @@
   ┌Out( 0 )
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll
+   ./Script-GUI-Fps.dll
   └Data
  └Node
  ┌Node [ 3 ] Controllable
@@ -76,7 +76,7 @@
    * 2130567268736
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Controllable-Object-Showcase.dll
+   ./Script-Controllable-Object-Showcase.dll
   └Data
  └Node
  ┌Node [ 4 ] Particles
@@ -93,7 +93,7 @@
    * 2131078838336
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Particle-Showcase.dll
+   ./Script-Particle-Showcase.dll
   └Data
  └Node
  ┌Node [ 5 ] Constant

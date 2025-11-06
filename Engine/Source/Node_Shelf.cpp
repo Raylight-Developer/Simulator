@@ -33,16 +33,16 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 
 	auto tree_included = new GUI::Tree_Item(user_scripts, "Included", 1);
 	{
-		new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll" } });
-		new GUI::Tree_Item(tree_included, "GUI Fps"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll"           } });
+		new GUI::Tree_Item(tree_included, "Camera Controller", 2, { {1000, "SCRIPT"}, { 1001, "./Script-Camera-Controller.dll" } });
+		new GUI::Tree_Item(tree_included, "GUI Fps"          , 2, { {1000, "SCRIPT"}, { 1001, "./Script-GUI-Fps.dll"           } });
 	}
 
 	auto tree_showcase = new GUI::Tree_Item(user_scripts, "Showcase", 1);
 	{
-		new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Controllable-Object-Showcase.dll" } });
-		new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Particle-Showcase.dll"            } });
-		new GUI::Tree_Item(tree_showcase, "Boids"              , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Boid-Showcase.dll"                } });
-		new GUI::Tree_Item(tree_showcase, "SVG"                , 2, { {1000, "SCRIPT"}, { 1001, "D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-SVG-Art-Showcase.dll"             } });
+		new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "./Script-Controllable-Object-Showcase.dll" } });
+		new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "./Script-Particle-Showcase.dll"            } });
+		new GUI::Tree_Item(tree_showcase, "Boids"              , 2, { {1000, "SCRIPT"}, { 1001, "./Script-Boid-Showcase.dll"                } });
+		new GUI::Tree_Item(tree_showcase, "SVG"                , 2, { {1000, "SCRIPT"}, { 1001, "./Script-SVG-Art-Showcase.dll"             } });
 	}
 
 	auto tree_variables = new GUI::Tree_Item(this, "Variables");

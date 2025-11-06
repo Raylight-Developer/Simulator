@@ -56,7 +56,7 @@
    * 2224942765824
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Camera-Controller.dll
+   ./Script-Camera-Controller.dll
   └Data
  └Node
  ┌Node [ 3 ] Boids
@@ -73,7 +73,7 @@
    * 2224942774560
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-Boid-Showcase.dll
+   ./Script-Boid-Showcase.dll
   └Data
  └Node
  ┌Node [ 4 ] GUI
@@ -85,7 +85,7 @@
   ┌Out( 0 )
   └Out
   ┌Data
-   D:/Coding/Simulator/x64/$(CONFIGURATION)/Script-GUI-Fps.dll
+   ./Script-GUI-Fps.dll
   └Data
  └Node
  ┌Node [ 5 ] Constant
