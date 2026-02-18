@@ -225,6 +225,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configura
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Newtons-Cradle /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
@@ -271,6 +272,7 @@ msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-GUI-Fps /p:Configura
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Camera-Controller /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Boid-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
+msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Newtons-Cradle /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Particle-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-SVG-Art-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)
 msbuild "$(SolutionDir)/Simulator.sln" /v:minimal /t:Script-Controllable-Object-Showcase /p:Configuration=$(Configuration) /p:Platform=$(Platform)

@@ -41,6 +41,7 @@ NODE_SHELF::Tree::Tree(Node_Shelf* parent) :
 	{
 		new GUI::Tree_Item(tree_showcase, "Controllable Object", 2, { {1000, "SCRIPT"}, { 1001, "./Script-Controllable-Object-Showcase.dll" } });
 		new GUI::Tree_Item(tree_showcase, "Particles"          , 2, { {1000, "SCRIPT"}, { 1001, "./Script-Particle-Showcase.dll"            } });
+		new GUI::Tree_Item(tree_showcase, "Newton"             , 2, { {1000, "SCRIPT"}, { 1001, "./Script-Newtons-Cradle.dll"               } });
 		new GUI::Tree_Item(tree_showcase, "Boids"              , 2, { {1000, "SCRIPT"}, { 1001, "./Script-Boid-Showcase.dll"                } });
 		new GUI::Tree_Item(tree_showcase, "SVG"                , 2, { {1000, "SCRIPT"}, { 1001, "./Script-SVG-Art-Showcase.dll"             } });
 	}

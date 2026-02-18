@@ -22,12 +22,12 @@
     <ClInclude Include="Include\Script.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{299353B2-F307-4259-8F46-CD8F8F6FE872}</ProjectGuid>
+    <ProjectGuid>{F3C5B558-1158-4A33-B056-C7DC9E57A1A5}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.22621.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
-    <ProjectName>Scripting</ProjectName>
+    <ProjectName>Script-Newtons-Cradle</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
